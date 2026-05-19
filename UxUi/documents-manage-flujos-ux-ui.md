@@ -357,9 +357,11 @@ Al activar acuse:
 |---|---|
 | employee | `single_employee` |
 | branch | `branch_employees` |
-| entity | `entity_employees` |
+| entity | No soportado en V1 |
 
 La UI puede autoseleccionar el modo correcto y no mostrarlo como selector si no aporta decision al usuario.
+
+Restriccion V1: si `scope = entity`, la UI debe desactivar la opcion de acuse. No enviar `requiresAcknowledgement = true` ni `acknowledgementMode` para documentos de entidad. `entity_employees` queda reservado para V2.
 
 ### Archivo
 
@@ -677,7 +679,7 @@ Notas de seguridad:
 
 1. Busqueda `q` puede estar limitada en V1 si backend no pagina resultados de searchIndex.
 2. Si el empleado pertenece a varias sucursales, UX debe pedir branch de contexto para documentos de empleado.
-3. `entity_employees` con acuse requiere confirmar soporte real de notificaciones masivas.
+3. `entity_employees` queda diferido a V2; en V1 la UI no debe permitir acuse para documentos de entidad.
 4. El estado exacto de acuse por documento puede requerir un endpoint adicional si se quiere mostrar "confirmado" sin intentar acusar.
 5. Para documentos sensibles, conviene usar labels genericos en notificaciones y cards compactas.
 

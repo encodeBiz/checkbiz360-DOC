@@ -192,6 +192,8 @@ interface DocumentMetadata {
 
 La URL firmada no forma parte persistente del documento. Se genera bajo demanda en el endpoint de descarga.
 
+Nota V1: aunque el dominio reserva `entity_employees`, el backend no permite crear ni actualizar documentos `scope = "entity"` con `requiresAcknowledgement = true`. El acuse masivo de entidad queda diferido a V2 porque requiere resolucion paginada de destinatarios y notificaciones masivas.
+
 ### Acuse
 
 ```typescript
@@ -374,7 +376,7 @@ Campos:
   description?: string;
   visibleToRoles: Array<"worker" | "supervisor" | "manager">;
   requiresAcknowledgement?: boolean; // default false
-  acknowledgementMode?: "single_employee" | "branch_employees" | "entity_employees";
+  acknowledgementMode?: "single_employee" | "branch_employees" | "entity_employees"; // entity_employees reservado para V2
   expiresAt?: string;
   metadata?: string; // JSON serializado de DocumentMetadata
   file: File;
@@ -389,6 +391,8 @@ Respuesta:
   document: Omit<ManagedDocument, "storagePath">;
 }
 ```
+
+Restriccion V1: si `scope = "entity"`, el frontend debe enviar `requiresAcknowledgement = false` y no debe enviar `acknowledgementMode`. El backend rechaza acuse de entidad en V1.
 
 ### GET `/documents`
 
@@ -668,7 +672,32 @@ El frontend nunca envia `keywords` ni `keywords_prefix`. Solo envia `q`.
 | `searchIndex` | `entityId ASC`, `type ASC`, `keywords ARRAY` | busqueda por token exacto |
 | `searchIndex` | `entityId ASC`, `type ASC`, `keywords_prefix ARRAY` | busqueda por prefijo |
 
-Los indices definitivos deben declararse en `firestore.indexes.json`.
+Los indices definitivos estan declarados en `firestore.indexes.json` (confirmado en `feat/documental-manage`).
+
+**Indices desplegados — coleccion `documents` (COLLECTION scope):**
+
+| Campos | Uso principal |
+|---|---|
+| `scope ASC · status ASC · createdAt DESC · __name__ DESC` | Listado por scope sin filtro adicional |
+| `scope ASC · branchId ASC · status ASC · createdAt DESC · __name__ DESC` | Listado por scope + branch |
+| `scope ASC · employeeId ASC · status ASC · createdAt DESC · __name__ DESC` | Listado por scope + empleado |
+| `type ASC · status ASC · createdAt DESC · __name__ DESC` | Filtro por tipo documental |
+| `status ASC · expiresAt ASC` | Deteccion de documentos expirados |
+| `status ASC · createdAt DESC · __name__ DESC` | Vista global sin filtro de scope |
+| `branchId ASC · status ASC · createdAt DESC · __name__ DESC` | Vista global filtrada por branch |
+| `employeeId ASC · status ASC · createdAt DESC · __name__ DESC` | Vista global filtrada por empleado |
+| `scope ASC · createdAt DESC · __name__ DESC` | Cursor sin filtro de status (owner/admin) |
+| `branchId ASC · createdAt DESC · __name__ DESC` | Cursor por branch sin filtro de status |
+| `employeeId ASC · createdAt DESC · __name__ DESC` | Cursor por empleado sin filtro de status |
+
+**Indices desplegados — coleccion `searchIndex`:**
+
+| Campos | Uso principal |
+|---|---|
+| `entityId ASC · type ASC · keywords ARRAY-CONTAINS` | Busqueda por token exacto |
+| `entityId ASC · type ASC · keywords_prefix ARRAY-CONTAINS` | Busqueda por prefijo (flujo `q`) |
+
+El campo `__name__` en los indices de cursor permite usar `startAfter(createdAt, docId)` de forma estable sin indices adicionales.
 
 ---
 
@@ -856,7 +885,9 @@ Combinaciones validas:
 |---|---|
 | `employee` | `single_employee` |
 | `branch` | `branch_employees` |
-| `entity` | `entity_employees` |
+| `entity` | No soportado en V1 |
+
+`entity_employees` queda reservado para V2. En V1, `scope = "entity"` no puede activar acuse porque no existe todavia resolucion paginada de empleados de entidad ni entrega masiva de notificaciones.
 
 ### TDR-003: El acuse se deriva del actor autenticado
 
@@ -882,7 +913,15 @@ uploadedBy: actor.employeeId || actor.uid || "system"
 
 ### TDR-007: Storage rules para `documents/`
 
-Las reglas actuales de Storage son `allow read, write: if true` (entorno dev). Antes del primer deploy a producción del módulo se deben añadir reglas restrictivas para el path `documents/entities/{entityId}/**` que deneguen acceso directo desde cliente. Toda lectura va por URL firmada generada en backend.
+**Estado: implementado en `storage.rules` (`feat/documental-manage`).**
+
+El path `documents/{allPaths=**}` tiene `allow read, write: if false`. Firebase Storage aplica la regla mas especifica que coincide con el path solicitado, por lo que este bloque tiene precedencia sobre el catch-all del resto de modulos.
+
+Mecanismos de acceso legitimo que bypasean las reglas (comportamiento de Firebase por diseno):
+- **Admin SDK** (backend): uploads y lecturas en servidores, nunca expuesto al cliente.
+- **Signed URLs** (descarga cliente): URL firmada generada por el backend con credenciales de service account, TTL 60 min, expira automaticamente.
+
+El catch-all `allow read, write: if true` sigue activo para otros paths (entorno dev). Antes del deploy de cualquier otro modulo a produccion, debe reemplazarse por reglas explicitas por path y eliminar el catch-all.
 
 ### TDR-008: Responsabilidades activas por branch
 
