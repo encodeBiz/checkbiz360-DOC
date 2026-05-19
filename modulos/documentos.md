@@ -1020,53 +1020,59 @@ Si `q` contiene varios tokens, V1 puede resolver por el primer token significati
 
 ## 15. Roadmap
 
-### Fase 1 - Dominio
+### Fase 1 - Dominio ✓
 
-- Crear tipos `DocumentScope`, `DocumentType`, `DocumentVisibilityRole`.
-- Crear entidad `ManagedDocument`.
-- Crear interfaces de repositorio.
-- Crear codigos de error.
+- [x] Crear tipos `DocumentScope`, `DocumentType`, `DocumentVisibilityRole`.
+- [x] Crear entidad `ManagedDocument`.
+- [x] Crear interfaces de repositorio.
+- [x] Crear codigos de error.
 
-### Fase 2 - Permisos
+### Fase 2 - Permisos ✓
 
-- Crear `DocumentPermissionService`.
-- Resolver actor por token.
-- Resolver `owner/admin` via `canWrite`.
-- Resolver responsabilidad branch.
-- Aplicar matriz por `type`.
+- [x] Crear `DocumentPermissionService`.
+- [x] Resolver actor por token.
+- [x] Resolver `owner/admin` via `canWrite`.
+- [x] Resolver responsabilidad branch.
+- [x] Aplicar matriz por `type`.
 
-### Fase 3 - Persistencia y Storage
+### Fase 3 - Persistencia y Storage ✓
 
-- Implementar `FirestoreDocumentRepository`.
-- Implementar subida privada.
-- Implementar URL firmada.
-- Implementar activity y acks.
-- Integrar `searchIndex` para create/update/archive.
+- [x] Implementar `FirestoreDocumentRepository`.
+- [x] Implementar subida privada.
+- [x] Implementar URL firmada.
+- [x] Implementar activity y acks.
+- [x] Integrar `searchIndex` para create/update/archive.
 
-### Fase 4 - HTTP
+### Fase 4 - HTTP ✓
 
-- Crear `documentRouter`.
-- Crear `firebase-checkinbiz-http/documents.ts`.
-- Exponer `apiV100-firebaseEntryHttp-checkinbiz-documentsHandler`.
-- Montar `documentRouter` en un Express propio bajo `/documents`.
-- Implementar endpoints V1.
-- Validar contratos y errores.
+- [x] Crear `documentRouter`.
+- [x] Crear `firebase-checkinbiz-http/documents.ts`.
+- [x] Exponer `apiV100-firebaseEntryHttp-checkinbiz-documentsHandler`.
+- [x] Montar `documentRouter` en un Express propio bajo `/documents`.
+- [x] Implementar endpoints V1.
+- [x] Validar contratos y errores.
 
-### Fase 5 - Notificaciones
+### Fase 5 - Notificaciones ✓
 
-- Notificar documento asignado.
-- Notificar acuse requerido.
-- No bloquear flujo si FCM falla.
+- [x] Notificar documento asignado (respeta `visibleToRoles`).
+- [x] Notificar acuse requerido (respeta `visibleToRoles`).
+- [x] No bloquear flujo si FCM falla.
+
+### Fase 5b - Infraestructura de deploy ✓
+
+- [x] Indices en `firestore.indexes.json`.
+- [x] `SearchIndex.type` actualizado con `"document"`.
+- [x] Storage rules: `documents/**` deniega acceso directo de cliente.
 
 ### Fase 6 - Frontend/App
 
-- Listado con filtros.
-- Detalle.
-- Subida con selector de scope.
-- Selector `visibleToRoles`.
-- Descarga.
-- Acuse.
-- Archivado.
+- [ ] Listado con filtros.
+- [ ] Detalle.
+- [ ] Subida con selector de scope.
+- [ ] Selector `visibleToRoles`.
+- [ ] Descarga.
+- [ ] Acuse.
+- [ ] Archivado.
 
 ---
 
@@ -1091,28 +1097,28 @@ Si `q` contiene varios tokens, V1 puede resolver por el primer token significati
 
 ## 17. Checklist de salida
 
-- [ ] No existe `projectId`.
-- [ ] `visibleToRoles` es obligatorio y validado.
-- [ ] `visibleToRoles` se interpreta como array exacto.
-- [ ] `owner/admin` global tiene acceso superior.
-- [ ] `owner` operativo se trata como nivel superior en backend.
-- [ ] `payroll` y `contract` estan restringidos en V1.
-- [ ] Acuse deriva empleado desde token.
-- [ ] No se persiste URL firmada.
-- [ ] Descarga registra `download_requested`.
-- [ ] `DELETE` archiva, no borra fisicamente.
-- [ ] Indices en `firestore.indexes.json`.
-- [ ] `SearchIndex.type` soporta `"document"`.
-- [ ] `searchIndex` se crea/actualiza desde backend, nunca desde frontend.
-- [ ] `q` consulta `searchIndex` y luego aplica permisos efectivos sobre documentos.
-- [ ] `branchId` requerido cuando `scope = "employee"`.
-- [ ] Permisos de responsables de employee docs se evaluan contra `branchId` del documento, no contra todos los branches del empleado.
-- [ ] scope `entity` verifica responsabilidad activa en entidad, no en branch especifico.
-- [ ] Supervisor no puede crear documentos en V1.
-- [ ] `version` se inicializa en 1 e incrementa en cada PATCH.
-- [ ] `metadata` solo acepta `externalRef` y `tags` (max 10 items).
-- [ ] Paginacion usa cursor, no offset.
-- [ ] `storagePath` nunca se devuelve en listados.
-- [ ] Storage rules bloqueadas antes de deploy a produccion.
+- [x] No existe `projectId`.
+- [x] `visibleToRoles` es obligatorio y validado.
+- [x] `visibleToRoles` se interpreta como array exacto.
+- [x] `owner/admin` global tiene acceso superior.
+- [x] `owner` operativo se trata como nivel superior en backend.
+- [x] `payroll` y `contract` estan restringidos en V1.
+- [x] Acuse deriva empleado desde token.
+- [x] No se persiste URL firmada.
+- [x] Descarga registra `download_requested`.
+- [x] `DELETE` archiva, no borra fisicamente.
+- [x] Indices en `firestore.indexes.json`.
+- [x] `SearchIndex.type` soporta `"document"`.
+- [x] `searchIndex` se crea/actualiza desde backend, nunca desde frontend.
+- [x] `q` consulta `searchIndex` y luego aplica permisos efectivos sobre documentos.
+- [x] `branchId` requerido cuando `scope = "employee"`.
+- [x] Permisos de responsables de employee docs se evaluan contra `branchId` del documento, no contra todos los branches del empleado.
+- [x] scope `entity` verifica responsabilidad activa en entidad, no en branch especifico.
+- [x] Supervisor no puede crear documentos en V1.
+- [x] `version` se inicializa en 1 e incrementa en cada PATCH.
+- [x] `metadata` solo acepta `externalRef` y `tags` (max 10 items).
+- [x] Paginacion usa cursor, no offset.
+- [x] `storagePath` nunca se devuelve en listados.
+- [x] Storage rules bloqueadas antes de deploy a produccion.
 - [ ] Tests unitarios para permisos.
 - [ ] Tests de integracion para repository y endpoints criticos.
