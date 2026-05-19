@@ -102,8 +102,8 @@ type DocumentType =
 |---|---|---|---|
 | `payroll` | `employee` | Alta RRHH | Solo owner/admin y empleado afectado |
 | `contract` | `employee` | Alta RRHH | Solo owner/admin y empleado afectado |
-| `warning` | `employee` | Alta RRHH | Owner/admin; empleado afectado; manager solo si politica V1 lo habilita |
-| `attention_call` | `employee` | Alta RRHH | Owner/admin; empleado afectado; manager solo si politica V1 lo habilita |
+| `warning` | `employee` | Disciplinaria | Owner/admin; manager del branch; empleado afectado |
+| `attention_call` | `employee` | Disciplinaria | Owner/admin; manager del branch; empleado afectado |
 | `justification` | `employee` | Media | Owner/admin; empleado; responsables autorizados |
 | `certificate` | `employee` | Media | Owner/admin; empleado; responsables autorizados |
 | `policy` | `entity` | Interna | Segun `visibleToRoles` |
@@ -197,7 +197,7 @@ La URL firmada no forma parte persistente del documento. Se genera bajo demanda 
 ```typescript
 interface DocumentAcknowledgement {
   employeeId: string;
-  uid?: string;
+  uid: string;
   documentId: string;
   entityId: string;
   acknowledgedAt: Date;
@@ -247,14 +247,16 @@ interface DocumentActivity {
 | Crear documento `entity` | si | no | no | no | no |
 | Crear documento `branch` | si | si | si | no | no |
 | Crear documento `employee` no sensible | si | si | si (mismo branch) | no | no |
-| Crear documento `employee` sensible RRHH | si | no | no | no | no |
+| Crear documento `employee` disciplinario (`warning`, `attention_call`) | si | no | si (mismo branch) | no | no |
+| Crear documento `employee` RRHH puro (`payroll`, `contract`) | si | no | no | no | no |
 | Listar/descargar segun scope | si | segun ambito | segun `visibleToRoles` | segun `visibleToRoles` | segun `visibleToRoles` |
 | Archivar documento | si | si (mismo branch) | si (mismo branch) | no | no |
 | Acusar documento propio | si aplica | si aplica | si aplica | si aplica | si aplica |
 
 Notas V1:
 - Supervisor no puede crear documentos. Se habilita en V2 con flag de configuracion.
-- Manager solo puede crear docs de empleado no sensibles si el empleado pertenece a su branch (`branchId` del documento == branch del manager).
+- Manager puede crear docs disciplinarios (`warning`, `attention_call`) en su branch porque es el emisor habitual de amonestaciones.
+- Manager NO puede crear `payroll` ni `contract` — esos son exclusivos de owner/admin.
 - "mismo branch" = el `branchId` del documento coincide con un branch activo del actor.
 
 ### Regla para documentos de empleado (scope = "employee")
@@ -303,8 +305,8 @@ El backend verifica que el actor tenga al menos una responsabilidad activa en la
 2. Backend resuelve actor.
 3. Backend consulta documentos candidatos con indices.
 4. Backend filtra permiso efectivo.
-5. Backend no devuelve `storagePath` si el cliente no necesita abrir descarga directa.
-6. Backend no devuelve URL firmada en listados.
+5. Backend nunca devuelve `storagePath` al cliente.
+6. Backend nunca devuelve URL firmada en listados.
 
 ### Flujo C: Descarga
 
@@ -371,10 +373,10 @@ Campos:
   title: string;
   description?: string;
   visibleToRoles: Array<"worker" | "supervisor" | "manager">;
-  requiresAcknowledgement?: boolean;
+  requiresAcknowledgement?: boolean; // default false
   acknowledgementMode?: "single_employee" | "branch_employees" | "entity_employees";
   expiresAt?: string;
-  metadata?: string; // JSON serializado
+  metadata?: string; // JSON serializado de DocumentMetadata
   file: File;
 }
 ```
@@ -384,7 +386,7 @@ Respuesta:
 ```typescript
 {
   ok: true;
-  document: ManagedDocument;
+  document: Omit<ManagedDocument, "storagePath">;
 }
 ```
 
@@ -403,7 +405,7 @@ Query:
   createdFrom?: string;
   createdTo?: string;
   limit?: number;     // default 20, max 100
-  cursor?: string;    // documentId del ultimo item de la pagina anterior
+  cursor?: string;    // cursor opaco: documentId|createdAt del ultimo item (base64)
 }
 ```
 
@@ -435,7 +437,7 @@ Respuesta:
 ```typescript
 {
   ok: true;
-  document: ManagedDocument;  // sin storagePath
+  document: Omit<ManagedDocument, "storagePath">;
 }
 ```
 
@@ -463,7 +465,7 @@ Respuesta:
 ```typescript
 {
   ok: true;
-  document: ManagedDocument;
+  document: Omit<ManagedDocument, "storagePath">;
 }
 ```
 
@@ -496,6 +498,9 @@ Respuesta:
 | 400 | `documents/employee_required` | scope employee sin employeeId |
 | 400 | `documents/file_too_large` | archivo supera limite |
 | 400 | `documents/invalid_mime_type` | MIME no en allowlist |
+| 400 | `documents/file_required` | no se adjunto archivo en POST |
+| 400 | `documents/invalid_visibility_roles` | visibleToRoles con valores fuera del enum |
+| 400 | `documents/invalid_acknowledgement_mode` | acknowledgementMode incompatible con scope |
 | 400 | `documents/already_archived` | intento de archivar un documento ya archivado |
 | 400 | `documents/acknowledgement_not_required` | ack en doc sin requiresAcknowledgement |
 | 401 | `auth/unauthorized` | token invalido o ausente |
@@ -621,6 +626,7 @@ functions/src/services-saas/checkinbiz/
       CreateDocument.ts
       FindDocuments.ts
       FindDocumentById.ts
+      UpdateDocument.ts
       GenerateDocumentDownloadUrl.ts
       AcknowledgeDocument.ts
       ArchiveDocument.ts
@@ -635,6 +641,7 @@ functions/src/services-saas/checkinbiz/
       createDocument.controller.ts
       findDocuments.controller.ts
       findDocumentById.controller.ts
+      updateDocument.controller.ts
       downloadDocument.controller.ts
       acknowledgeDocument.controller.ts
       archiveDocument.controller.ts
@@ -853,7 +860,7 @@ El backend NO pagina sobre el resultado filtrado por permisos. Estrategia:
 4. Devolver hasta `limit` items y calcular `nextCursor`.
 5. El cliente debe manejar paginas con menos items que `limit` como comportamiento normal.
 
-Nunca usar `offset` — usar cursor basado en `documentId` + `createdAt` para estabilidad.
+Nunca usar `offset` — usar cursor compuesto `documentId|createdAt` codificado en base64 para estabilidad. El frontend lo trata como opaco.
 
 ### TDR-012: Fire-and-forget para notificaciones
 
