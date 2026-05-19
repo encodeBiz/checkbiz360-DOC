@@ -404,6 +404,7 @@ Query:
   status?: "active" | "archived";
   createdFrom?: string;
   createdTo?: string;
+  q?: string;         // busqueda semiblanda via searchIndex
   limit?: number;     // default 20, max 100
   cursor?: string;    // cursor opaco: documentId|createdAt del ultimo item (base64)
 }
@@ -501,7 +502,7 @@ Respuesta:
 | 400 | `documents/file_required` | no se adjunto archivo en POST |
 | 400 | `documents/invalid_visibility_roles` | visibleToRoles con valores fuera del enum |
 | 400 | `documents/invalid_acknowledgement_mode` | acknowledgementMode incompatible con scope |
-| 400 | `documents/already_archived` | intento de archivar un documento ya archivado |
+| 409 | `documents/already_archived` | intento de archivar un documento ya archivado (conflicto con estado actual) |
 | 400 | `documents/acknowledgement_not_required` | ack en doc sin requiresAcknowledgement |
 | 401 | `auth/unauthorized` | token invalido o ausente |
 | 403 | `documents/unauthorized` | token valido pero sin permisos |
@@ -598,6 +599,60 @@ documents/entities/{entityId}/branch/{branchId}/{documentId}/{timestamp}-{filena
 documents/entities/{entityId}/employee/{employeeId}/{documentId}/{timestamp}-{filename}
 ```
 
+### SearchIndex
+
+El proyecto ya tiene un indice global:
+
+```txt
+searchIndex/{searchIndexId}
+```
+
+El modulo documentos V1 reutiliza esa infraestructura en vez de guardar `searchTokens` dentro de cada documento.
+
+Shape conceptual alineado con `core/searchIndex`:
+
+```typescript
+interface SearchIndex {
+  id?: string;
+  keywords: string[];
+  keywords_prefix: string[];
+  fields: Record<string, string>;
+  type: "document";
+  index: string;    // /entities/{entityId}/documents/{documentId}
+  entityId: string;
+  updatedAt: Date;
+  metadata?: Record<string, string>;
+}
+```
+
+`type = "document"` debe añadirse al union existente de `SearchIndex.type` cuando se implemente el modulo.
+
+Campos fuente para construir `fields`:
+
+```typescript
+{
+  title: string;
+  description?: string;
+  type: DocumentType;
+  filename: string;
+  branchName?: string;
+  employeeFullName?: string;
+  employeeEmail?: string;
+  tags?: string; // metadata.tags join(" ")
+}
+```
+
+La logica existente de `createIndex`:
+
+- normaliza a lowercase,
+- elimina tildes,
+- elimina simbolos,
+- elimina stop words ES,
+- genera `keywords`,
+- genera `keywords_prefix` desde longitud 3 hasta 20.
+
+El frontend nunca envia `keywords` ni `keywords_prefix`. Solo envia `q`.
+
 ### Indices candidatos
 
 | Coleccion | Campos | Uso |
@@ -607,6 +662,11 @@ documents/entities/{entityId}/employee/{employeeId}/{documentId}/{timestamp}-{fi
 | `entities/{entityId}/documents` | `scope ASC`, `employeeId ASC`, `status ASC`, `createdAt DESC` | documentos de empleado |
 | `entities/{entityId}/documents` | `type ASC`, `status ASC`, `createdAt DESC` | filtros por tipo |
 | `entities/{entityId}/documents` | `status ASC`, `expiresAt ASC` | expiraciones |
+| `entities/{entityId}/documents` | `status ASC`, `createdAt DESC` | vista global sin filtro de scope |
+| `entities/{entityId}/documents` | `branchId ASC`, `status ASC`, `createdAt DESC` | vista global filtrada por branch |
+| `entities/{entityId}/documents` | `employeeId ASC`, `status ASC`, `createdAt DESC` | vista global filtrada por empleado |
+| `searchIndex` | `entityId ASC`, `type ASC`, `keywords ARRAY` | busqueda por token exacto |
+| `searchIndex` | `entityId ASC`, `type ASC`, `keywords_prefix ARRAY` | busqueda por prefijo |
 
 Los indices definitivos deben declararse en `firestore.indexes.json`.
 
@@ -627,6 +687,7 @@ functions/src/services-saas/checkinbiz/
       FindDocuments.ts
       FindDocumentById.ts
       UpdateDocument.ts
+      SearchDocuments.ts
       GenerateDocumentDownloadUrl.ts
       AcknowledgeDocument.ts
       ArchiveDocument.ts
@@ -769,6 +830,16 @@ No se implementa como funciones separadas por endpoint y no se monta dentro de `
 
 **Consecuencia:** `status` solo permite `active | archived`.
 
+### ADR-011: Busqueda semiblanda con `searchIndex` global
+
+**Estado:** Aprobado.
+
+**Contexto:** Backoffice necesita una entrada global de Gestion Documental con lista infinita y filtros por fecha, sucursal, empleado, tipo y texto. Firestore no ofrece full-text search real, pero el proyecto ya tiene infraestructura `core/searchIndex` con `keywords` y `keywords_prefix`.
+
+**Decision:** Documents V1 reutiliza la coleccion global `searchIndex` para busqueda semiblanda. No se guarda `searchTokens` embebido en `entities/{entityId}/documents/{documentId}` y no se introduce motor externo en V1.
+
+**Consecuencia:** El listado con `q` primero consulta `searchIndex` para obtener paths de documentos candidatos (`index`) y despues carga documentos, aplica filtros y permisos efectivos. La busqueda soporta tokens y prefijos, no ranking avanzado ni fuzzy real.
+
 ---
 
 ## 14. TDRs
@@ -852,7 +923,9 @@ Debe vivir como constante de modulo, no numero magico en controller.
 
 ### TDR-011: Paginacion segura con filtrado posterior
 
-El backend NO pagina sobre el resultado filtrado por permisos. Estrategia:
+El backend no usa `offset` ni carga toda la coleccion para paginar. Usa cursor sobre candidatos indexados y aplica overfetch controlado antes de devolver la pagina visible.
+
+Estrategia:
 
 1. Query Firestore por el scope mas estrecho disponible: si hay `branchId` o `employeeId`, incluirlos en la query para reducir candidatos.
 2. Si el scope es `entity` (sin branchId/employeeId), la query puede devolver muchos candidatos — usar `limit * 2` como overfetch para compensar el filtrado.
@@ -865,6 +938,44 @@ Nunca usar `offset` — usar cursor compuesto `documentId|createdAt` codificado 
 ### TDR-012: Fire-and-forget para notificaciones
 
 La creacion de documento no debe fallar si falla FCM. Registrar error, no bloquear flujo principal.
+
+### TDR-013: `searchIndex` de documentos se genera en backend
+
+Al crear o actualizar un documento, backend crea o actualiza su entrada en `searchIndex`.
+
+Reglas:
+
+- `type = "document"`.
+- `index = /entities/{entityId}/documents/{documentId}`.
+- `entityId` siempre obligatorio.
+- `fields` se construye solo con campos permitidos.
+- No indexar contenido binario del archivo en V1.
+- No indexar metadata arbitraria; solo `metadata.tags`.
+- No aceptar keywords generadas desde frontend.
+
+Fuentes V1:
+
+```typescript
+title
+description
+type
+filename
+branch.name
+employee.fullName
+employee.email
+metadata.tags
+```
+
+Para `q`, backend normaliza el texto con la misma logica de `createIndex` y consulta:
+
+```txt
+searchIndex
+  where entityId == ...
+  where type == "document"
+  where keywords_prefix array-contains tokenNormalizado
+```
+
+Si `q` contiene varios tokens, V1 puede resolver por el primer token significativo y filtrar el resto en memoria sobre `keywords`/`keywords_prefix` de los candidatos. Si se requiere ranking, fuzzy real o busqueda por frases, se evaluara motor externo en V2.
 
 ---
 
@@ -891,6 +1002,7 @@ La creacion de documento no debe fallar si falla FCM. Registrar error, no bloque
 - Implementar subida privada.
 - Implementar URL firmada.
 - Implementar activity y acks.
+- Integrar `searchIndex` para create/update/archive.
 
 ### Fase 4 - HTTP
 
@@ -926,12 +1038,15 @@ La creacion de documento no debe fallar si falla FCM. Registrar error, no bloque
 - Persistir URLs firmadas como permanentes.
 - Subir archivo antes de validar permisos.
 - No declarar indices compuestos.
+- No declarar indices de `searchIndex`.
 - Borrar fisicamente documentos legales.
 - Confundir `projectId` con `branchId`.
 - Sobreconceder acceso a documentos de empleado evaluando todos los branches del empleado en vez del branchId del documento.
 - Paginar antes de filtrar permisos y devolver paginas vacias al cliente.
 - Usar metadata como campo libre y persistir PII inadvertidamente.
 - Olvidar incrementar `version` en PATCH, rompiendo la trazabilidad del acuse.
+- Indexar PII no necesaria o contenido binario en `searchIndex`.
+- Tratar `searchIndex` como motor full-text real en V1.
 
 ---
 
@@ -948,6 +1063,9 @@ La creacion de documento no debe fallar si falla FCM. Registrar error, no bloque
 - [ ] Descarga registra `download_requested`.
 - [ ] `DELETE` archiva, no borra fisicamente.
 - [ ] Indices en `firestore.indexes.json`.
+- [ ] `SearchIndex.type` soporta `"document"`.
+- [ ] `searchIndex` se crea/actualiza desde backend, nunca desde frontend.
+- [ ] `q` consulta `searchIndex` y luego aplica permisos efectivos sobre documentos.
 - [ ] `branchId` requerido cuando `scope = "employee"`.
 - [ ] Permisos de responsables de employee docs se evaluan contra `branchId` del documento, no contra todos los branches del empleado.
 - [ ] scope `entity` verifica responsabilidad activa en entidad, no en branch especifico.
