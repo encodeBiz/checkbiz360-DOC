@@ -41,6 +41,7 @@ npm run deploy:function:prod -- <nombre-funcion> [nombre-funcion2 ...]
 | Nombre | Endpoint base |
 |---|---|
 | `apiV100-firebaseEntryHttp-checkinbiz-tasksHandler` | `/tasks` |
+| `apiV100-firebaseEntryHttp-checkinbiz-documentsHandler` | `/documents` |
 | `apiV100-firebaseEntryHttp-checkinbiz-requestManualChecklog` | `/checkinbiz/requestManualChecklog` |
 | `apiV100-firebaseEntryHttp-checkinbiz-updateChecklog` | `/checkinbiz/updateChecklog` |
 | `apiV100-firebaseEntryHttp-checkinbiz-createChecklog` | `/checkinbiz/createChecklog` |
@@ -67,6 +68,7 @@ Funciones modificadas en la rama actual. Usar este comando para sincronizar dev:
 npm run deploy:function:dev -- \
   apiV100-firebaseEntryHttp-checkinbiz-calendarHandler \
   apiV100-firebaseEntryHttp-checkinbiz-tasksHandler \
+  apiV100-firebaseEntryHttp-checkinbiz-documentsHandler \
   apiV100-firebaseEntryHttp-checkinbiz-requestManualChecklog \
   apiV100-firebaseEntryHttp-checkinbiz-updateChecklog \
   apiV100-firebaseEntryHttp-checkinbiz-createChecklog \
@@ -88,6 +90,7 @@ Mismo bloque para prod reemplazando `deploy:function:dev` por `deploy:function:p
 |---|---|
 | `calendarHandler` | Fix `dateLocal` query param ignorado + fallback `DateTime.utc()` → `DateTime.now().setZone(tz)` |
 | `tasksHandler` | Módulo tasks completo + `canManageTask` unificado (supervisor puede crear/editar/cancelar/notas/recursos en su sucursal sin asignarse) |
+| `documentsHandler` | Documents Manage V1: handler Express propio `/documents`, upload privado, list/detalle/download/update/ack/archive, `searchIndex`, notificaciones documentales y Storage rules `documents/**` sin acceso directo desde cliente |
 | `requestManualChecklog` | Modo A (jornada completa) + Modo B (solo checkout) + fix Firestore Timestamp en `_executeCheckoutOnly` |
 | `updateChecklog` | Fix status ignorado en resolución empleado + fix `closed` en checkout rechazado + sync `metadata.updated` + guard 404 checklog not found + `rejectionReason` opcional |
 | `createChecklog` | `canWrite` con branch responsibility + detección de overlap en repo + fix `resolveEffectiveDay` medianoche |
@@ -111,4 +114,25 @@ updateChecklog:
 
 tasksHandler (local emulator):
   http://127.0.0.1:5001/encodebiz-services/us-central1/apiV100-firebaseEntryHttp-checkinbiz-tasksHandler/tasks
+
+documentsHandler:
+  https://us-central1-dev-encodebiz.cloudfunctions.net/apiV100-firebaseEntryHttp-checkinbiz-documentsHandler
+```
+
+Nota: `documentsHandler` es la URI base del handler Express. Las rutas funcionales se resuelven sobre esa base, por ejemplo `/documents`, `/documents/:id/download`, `/documents/:id/ack`.
+
+## 8. Deploy recomendado — Documents Manage
+
+### Dev
+
+```bash
+npm run deploy:function:dev -- apiV100-firebaseEntryHttp-checkinbiz-documentsHandler
+```
+
+### Prod
+
+Pendiente hasta validar Fase 6 Frontend/App y QA en dev.
+
+```bash
+npm run deploy:function:prod -- apiV100-firebaseEntryHttp-checkinbiz-documentsHandler
 ```
