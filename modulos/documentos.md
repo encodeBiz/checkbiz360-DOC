@@ -337,9 +337,9 @@ El backend verifica que el actor tenga al menos una responsabilidad activa en la
 
 ## 9. API HTTP
 
-Cloud Function: `apiV100-firebaseEntryHttp-checkinbiz-tasksHandler`
+Cloud Function: `apiV100-firebaseEntryHttp-checkinbiz-documentsHandler`
 
-Router interno: `/documents`
+Router Express interno: `/documents`
 
 | Metodo | Ruta | Descripcion |
 |---|---|---|
@@ -638,9 +638,13 @@ functions/src/services-saas/checkinbiz/
       downloadDocument.controller.ts
       acknowledgeDocument.controller.ts
       archiveDocument.controller.ts
+  firebase-checkinbiz-http/
+    documents.ts
 ```
 
-El router `/documents` se monta dentro de `tasksHandler` por decision de V1 para reutilizar el handler operativo CheckBiz.
+El router `/documents` se expone mediante un handler Express propio: `documentsHandler`.
+
+No se monta dentro de `tasksHandler` porque tasks y documents son modulos desacoplados. Documents tiene reglas propias de Storage privado, documentos sensibles, acuses y auditoria.
 
 ---
 
@@ -716,7 +720,29 @@ El router `/documents` se monta dentro de `tasksHandler` por decision de V1 para
 
 **Consecuencia:** Los responsables de otros branches del mismo empleado no tienen acceso al documento. El backend valida presencia de `branchId` en la subida.
 
-### ADR-008: scope = "entity" visible a cualquier empleado activo con rol en visibleToRoles
+### ADR-008: Documents Manage se expone como un unico `documentsHandler` Express
+
+**Estado:** Aprobado.
+
+**Contexto:** El modulo documental es un bounded context distinto de tasks. Tiene multipart upload, Storage privado, URL firmada, acuses, permisos sensibles y auditoria propia.
+
+**Decision:** Exponer Documents Manage como una unica Cloud Function HTTP:
+
+```txt
+apiV100-firebaseEntryHttp-checkinbiz-documentsHandler
+```
+
+Internamente usa Express y monta las rutas bajo:
+
+```txt
+/documents
+```
+
+No se implementa como funciones separadas por endpoint y no se monta dentro de `tasksHandler`.
+
+**Consecuencia:** El modulo mantiene un deploy independiente, un solo cold start para sus rutas y configuracion propia de memoria/timeout sin acoplarse al ciclo de tasks.
+
+### ADR-009: scope = "entity" visible a cualquier empleado activo con rol en visibleToRoles
 
 **Estado:** Aprobado.
 
@@ -726,7 +752,7 @@ El router `/documents` se monta dentro de `tasksHandler` por decision de V1 para
 
 **Consecuencia:** No se require branch en la evaluacion de permisos para documentos entity. Un empleado que cambia de branch sigue viendo los documentos entity que le eran visibles.
 
-### ADR-009: Archivado logico en V1
+### ADR-010: Archivado logico en V1
 
 **Estado:** Aprobado.
 
@@ -862,7 +888,9 @@ La creacion de documento no debe fallar si falla FCM. Registrar error, no bloque
 ### Fase 4 - HTTP
 
 - Crear `documentRouter`.
-- Montar en `tasksHandler` bajo `/documents`.
+- Crear `firebase-checkinbiz-http/documents.ts`.
+- Exponer `apiV100-firebaseEntryHttp-checkinbiz-documentsHandler`.
+- Montar `documentRouter` en un Express propio bajo `/documents`.
 - Implementar endpoints V1.
 - Validar contratos y errores.
 
@@ -924,4 +952,3 @@ La creacion de documento no debe fallar si falla FCM. Registrar error, no bloque
 - [ ] Storage rules bloqueadas antes de deploy a produccion.
 - [ ] Tests unitarios para permisos.
 - [ ] Tests de integracion para repository y endpoints criticos.
-
