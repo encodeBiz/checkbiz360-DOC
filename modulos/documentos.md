@@ -66,13 +66,13 @@ El modulo debe funcionar para backoffice y app movil, siempre con permisos resue
 type DocumentScope = "entity" | "branch" | "employee";
 ```
 
-| Scope | Campos requeridos | Uso |
-|---|---|---|
-| `entity` | `entityId` | Documento global de empresa |
-| `branch` | `entityId`, `branchId` | Documento de sucursal/proyecto |
-| `employee` | `entityId`, `branchId`, `employeeId` | Documento individual de empleado |
+| Scope | Campos requeridos | Campos opcionales | Uso |
+|---|---|---|---|
+| `entity` | `entityId` | — | Documento global de empresa |
+| `branch` | `entityId`, `branchId` | — | Documento de sucursal/proyecto |
+| `employee` | `entityId`, `employeeId` | `branchId` | Documento individual de empleado |
 
-`branchId` en scope `employee` actua como contexto de autorizacion: define en que sucursal se enmarca el documento y contra que responsabilidades se evaluan los permisos de responsables. No es el branch del empleado en general sino el branch del documento. Resuelve la ambiguedad en empleados multi-branch.
+`branchId` en scope `employee` es opcional. Cuando se proporciona, actua como contexto de autorizacion: define en que sucursal se enmarca el documento y habilita el acceso a managers y supervisores del branch cuyo rol este en `visibleToRoles`. Sin `branchId`, solo owner/admin y el propio empleado pueden leer el documento — los responsables de branch no tienen acceso.
 
 `branchId` representa sucursal o proyecto operativo. No existe `projectId`.
 
@@ -291,7 +291,7 @@ El backend verifica que el actor tenga al menos una responsabilidad activa en la
 3. Backend valida `entityId`, `scope`, `type`, `title`, `visibleToRoles`.
 4. Backend valida campos condicionales:
    - `branchId` si `scope = "branch"`,
-   - `branchId` y `employeeId` si `scope = "employee"` (ambos requeridos),
+   - `employeeId` si `scope = "employee"` (`branchId` es opcional — ver ADR-007),
    - `entityId` solo si `scope = "entity"`.
 5. Backend valida permisos de escritura.
 6. Backend valida MIME y tamano.
@@ -428,7 +428,14 @@ Respuesta:
 }
 ```
 
-`DocumentWithAckStatus` es `Omit<ManagedDocument, "storagePath"> & { ackStatus: DocumentAckStatus | null }`.
+`DocumentWithAckStatus` es:
+
+```typescript
+type DocumentWithAckStatus = Omit<ManagedDocument, "storagePath"> & {
+  ackStatus: DocumentAckStatus | null;
+  branch: BranchInfo | null; // { id, name } cuando branchId presente; null para scope=entity
+};
+```
 
 `ackStatus` se popula por actor. Si el documento no requiere acuse o el actor no tiene `employeeId` resuelto, vale `null`. Cuando aplica:
 
@@ -442,6 +449,8 @@ Respuesta:
 
 `storagePath` nunca se incluye. `acknowledgedAt` se serializa como ISO 8601.
 
+`branch` solo se popula cuando `scope === "branch"`. Para `scope=employee`, `branchId` existe en el documento como contexto de autorización pero no se resuelve a objeto branch — el frontend que muestra documentos de empleado no necesita ese dato. Para `scope=entity`, siempre `null`. `branch` se resuelve con una carga batch en el mismo request (cache en memoria). No requiere llamada adicional desde el cliente.
+
 **`total`:** resultado de una query de agregacion Firestore (`count()`) ejecutada en paralelo con el listado, usando los mismos filtros pero sin cursor ni limit. Para owner/admin el conteo es exacto. Para actores operativos puede incluir documentos que el filtro de permisos en memoria excluye posteriormente (ligero sobreconteo), pero es la aproximacion mas eficiente sin leer todos los documentos.
 
 **`nextCursor`:** valor opaco `documentId|createdAt` en base64. El frontend lo pasa como `cursor` en la siguiente llamada para implementar "cargar mas". Si vale `null`, no hay mas paginas.
@@ -450,15 +459,29 @@ Respuesta:
 
 **Combinaciones de filtro habituales:**
 
-| Parametros | Resultado |
-|---|---|
-| `entityId` | Todos los documentos visibles para el actor en cualquier scope |
-| `entityId` + `scope=entity` | Solo documentos de entidad |
-| `entityId` + `scope=branch` + `branchId` | Documentos de esa sucursal |
-| `entityId` + `scope=employee` + `employeeId` | Documentos de ese empleado en todos sus branches |
-| `entityId` + `scope=employee` + `employeeId` + `branchId` | Documentos de ese empleado emitidos en esa sucursal concreta |
+| Parametros | Flujo interno | Resultado |
+|---|---|---|
+| `entityId` | listFlow | Todos los documentos visibles para el actor en cualquier scope |
+| `entityId` + `scope=entity` | listFlow | Solo documentos de entidad |
+| `entityId` + `scope=branch` + `branchId` | listFlow | Documentos de esa sucursal |
+| `entityId` + `scope=employee` + `employeeId` | listFlow | Solo documentos de scope=employee de ese empleado |
+| `entityId` + `scope=employee` + `employeeId` + `branchId` | listFlow | Documentos de scope=employee de ese empleado en esa sucursal concreta |
+| `entityId` + `employeeId` (sin `scope`) | **employeeAllFlow** | Todos los documentos del empleado: entity + branches del empleado + employee |
+| `entityId` + `q=...` | searchFlow | Busqueda semiblanda, aplica filtros adicionales sobre candidatos |
 
-Nota: `branchId` es opcional en el listado aunque `scope=employee`. Sin el, el backend devuelve todos los documentos de ese empleado independientemente del branch donde fueron emitidos. El `branchId` solo es obligatorio al **crear** un documento con `scope=employee`.
+**`employeeAllFlow` — vista completa del empleado (sin `scope`):**
+
+Cuando se pasa `employeeId` sin `scope`, el backend ejecuta un fan-out de queries en paralelo:
+
+1. `scope=entity` — documentos de entidad visibles por rol
+2. `scope=branch`, uno por cada branch activo del empleado — documentos de esas sucursales
+3. `scope=employee, employeeId=X` — documentos individuales del empleado
+
+Los resultados se mezclan, se deduplicaran, se filtran por permisos efectivos, se ordenan por `createdAt DESC` y se paginan en memoria. El `nextCursor` devuelto puede usarse directamente para "cargar mas" igual que en el listFlow.
+
+Limite interno por sub-query: 500 documentos. Para entidades con volumenes mayores, usar filtros de `type`, `status`, o `createdFrom`/`createdTo` para acotar la carga.
+
+Nota: `branchId` es opcional en el listado aunque `scope=employee`. Sin el, el backend devuelve todos los documentos de scope=employee de ese empleado independientemente del branch. El `branchId` solo es obligatorio al **crear** un documento con `scope=employee`.
 
 ### GET `/documents/:documentId`
 
@@ -479,7 +502,7 @@ Respuesta:
 }
 ```
 
-El campo `ackStatus` sigue el mismo contrato que en `GET /documents` pero se resuelve con una lectura puntual del ack del actor en lugar de la carga masiva del listado.
+El campo `ackStatus` sigue el mismo contrato que en `GET /documents` pero se resuelve con una lectura puntual del ack del actor en lugar de la carga masiva del listado. El campo `branch` se resuelve con una lectura puntual si el documento tiene `branchId`.
 
 ### PATCH `/documents/:documentId`
 
@@ -505,9 +528,11 @@ Respuesta:
 ```typescript
 {
   ok: true;
-  document: Omit<ManagedDocument, "storagePath">;
+  document: DocumentWithAckStatus; // mismo shape que GET /documents/:documentId
 }
 ```
+
+`ackStatus` y `branch` se resuelven con las mismas reglas que en el detalle: `ackStatus` solo si el actor tiene `employeeId` y el documento requiere acuse; `branch` siempre que haya `branchId`.
 
 ### DELETE `/documents/:documentId`
 
@@ -880,15 +905,15 @@ No se monta dentro de `tasksHandler` porque tasks y documents son modulos desaco
 
 **Consecuencia:** `payroll` y `contract` tienen reglas especificas V1.
 
-### ADR-007: `branchId` requerido en scope employee como contexto de autorizacion
+### ADR-007: `branchId` opcional en scope employee
 
-**Estado:** Aprobado.
+**Estado:** Aprobado (revisado).
 
-**Contexto:** Un empleado puede tener responsabilidades en multiples branches. Sin `branchId` en el documento, no hay forma cerrada de saber que responsables pueden acceder.
+**Contexto:** Un empleado puede tener responsabilidades en multiples branches. Sin `branchId` en el documento, no hay forma cerrada de saber que responsables operativos pueden acceder. Sin embargo, forzar `branchId` bloquea casos validos como nominas o contratos donde el branch no es relevante.
 
-**Decision:** `branchId` es requerido cuando `scope = "employee"`. Representa el branch bajo el cual se emite el documento, no todos los branches del empleado.
+**Decision:** `branchId` es opcional cuando `scope = "employee"`. Cuando se proporciona, habilita acceso a managers/supervisores del branch cuyo rol este en `visibleToRoles`. Cuando se omite, solo owner/admin y el empleado afectado pueden leer el documento.
 
-**Consecuencia:** Los responsables de otros branches del mismo empleado no tienen acceso al documento. El backend valida presencia de `branchId` en la subida.
+**Consecuencia:** El frontend puede omitir `branchId` para documentos RRHH puros (payroll, contract) donde el branch no aporta valor de autorizacion. Los responsables de branch nunca acceden a documentos sin `branchId` en scope employee.
 
 ### ADR-008: Documents Manage se expone como un unico `documentsHandler` Express
 
