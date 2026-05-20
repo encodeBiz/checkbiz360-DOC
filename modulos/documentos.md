@@ -424,7 +424,7 @@ Respuesta:
   ok: true;
   documents: DocumentWithAckStatus[];
   nextCursor: string | null;
-  total?: number;                // solo si scope + branchId/employeeId permite conteo exacto
+  total: number;
 }
 ```
 
@@ -441,6 +441,10 @@ Respuesta:
 ```
 
 `storagePath` nunca se incluye. `acknowledgedAt` se serializa como ISO 8601.
+
+**`total`:** resultado de una query de agregacion Firestore (`count()`) ejecutada en paralelo con el listado, usando los mismos filtros pero sin cursor ni limit. Para owner/admin el conteo es exacto. Para actores operativos puede incluir documentos que el filtro de permisos en memoria excluye posteriormente (ligero sobreconteo), pero es la aproximacion mas eficiente sin leer todos los documentos.
+
+**`nextCursor`:** valor opaco `documentId|createdAt` en base64. El frontend lo pasa como `cursor` en la siguiente llamada para implementar "cargar mas". Si vale `null`, no hay mas paginas.
 
 **Estrategia de paginacion segura:** el backend pagina DESPUES de resolver el scope mas estrecho posible via query (scope + branchId o employeeId cuando esten presentes). El filtrado de permisos fino se aplica sobre el resultado ya paginado, con overfetch controlado de hasta `limit * 2` documentos candidatos para compensar. Si el cliente recibe menos items que `limit` con `nextCursor` no nulo, debe solicitar la siguiente pagina. `storagePath` nunca se devuelve en listados.
 
@@ -584,6 +588,30 @@ Payload:
 ```
 
 El backend deriva el `employeeId` desde el actor autenticado. El cliente no debe acusar por otro empleado.
+
+### GET `/documents/:documentId/acks`
+
+Solo accesible por owner/admin. Devuelve todos los acuses registrados para el documento.
+
+Query:
+
+```typescript
+{
+  entityId: string;
+}
+```
+
+Respuesta:
+
+```typescript
+{
+  ok: true;
+  acks: DocumentAcknowledgement[];
+  total: number;
+}
+```
+
+`total` es siempre igual a `acks.length` — no hay paginacion porque el numero de acuses esta acotado al numero de empleados del scope del documento.
 
 ---
 
@@ -1216,6 +1244,8 @@ En el listado de documentos, el frontend puede usar `ackStatus` para:
 
 No es necesario llamar a `GET /documents/:documentId` para saber el estado de acuse en el listado — `ackStatus` ya viene en cada item del array `documents`.
 
+El campo `total` del listado puede usarse para mostrar el contador global ("Documentos: 48") sin esperar a cargar todas las paginas.
+
 ---
 
 ## 19. Referencia de implementacion para frontend
@@ -1254,6 +1284,30 @@ Ver seccion 18 (UX — Flujo de acuse de recibo).
 | Tratar `cursor` como opaco, no parsear | TDR-011, seccion 9 GET /documents |
 | `branchId` obligatorio al crear scope employee, opcional al listar | Seccion 9 GET /documents — combinaciones de filtro |
 | `visibleToRoles` es array exacto, no jerarquico | ADR-005, seccion 5 |
+
+### Implementacion de "cargar mas" (infinite scroll / load more)
+
+El listado de documentos soporta paginacion por cursor. Patron para frontend:
+
+```
+1. Primera carga: GET /documents?entityId=...&limit=20
+   → recibir { documents, nextCursor, total }
+   → mostrar total como contador ("X documentos")
+   → guardar nextCursor en estado local
+
+2. Usuario pulsa "Cargar mas" o hace scroll:
+   → si nextCursor === null, no hacer llamada (ya no hay mas)
+   → GET /documents?entityId=...&limit=20&cursor={nextCursor}
+   → CONCATENAR documents recibidos a la lista existente (no reemplazar)
+   → actualizar nextCursor en estado local
+
+3. Repetir hasta que nextCursor === null
+```
+
+Notas:
+- `total` solo se devuelve en la primera pagina para el contador; en paginas siguientes tambien lo incluye el backend pero es el mismo valor global.
+- `cursor` es opaco — no parsearlo, no construirlo, no cachear entre sesiones.
+- Si el usuario aplica un filtro nuevo, reiniciar la lista desde cero (descartar cursor y concatenacion anterior).
 
 ### Consideraciones de seguridad para el cliente
 
