@@ -21,7 +21,7 @@ El backoffice tendra una entrada principal en menu: **Gestion Documental**. Desd
 
 1. El frontend no decide permisos reales. Muestra acciones segun el usuario, pero el backend siempre valida.
 2. Nunca mostrar ni guardar `storagePath`.
-3. La descarga siempre se solicita al backend. No hay URL persistente.
+3. La descarga siempre se solicita al backend. No hay URL persistente y la URL firmada caduca en 1 minuto.
 4. El filtro `visibleToRoles` es exacto, no jerarquico.
 5. `owner/admin` global siempre tiene acceso superior y no necesita aparecer en visibilidad.
 6. Documentos sensibles deben mostrarse con tratamiento visual discreto.
@@ -121,7 +121,7 @@ Contenido:
 - filtros,
 - accion de subir documento,
 - acceso a detalle,
-- accion de descargar,
+- nombre de archivo como enlace de descarga,
 - accion de archivar si aplica.
 
 Filtros:
@@ -157,7 +157,6 @@ scope = entity
 Acciones:
 
 - ver detalle,
-- descargar,
 - subir documento de entidad si tiene permiso,
 - archivar si tiene permiso.
 
@@ -176,7 +175,6 @@ scope = branch
 Acciones:
 
 - ver detalle,
-- descargar,
 - subir documento de sucursal si tiene permiso,
 - archivar si tiene permiso.
 
@@ -197,18 +195,55 @@ La UI debe pedir o inferir `branchId` si el empleado pertenece a varias sucursal
 Acciones:
 
 - ver detalle,
-- descargar,
 - subir documento de empleado si tiene permiso,
 - archivar si tiene permiso,
 - mostrar estado de acuse si aplica.
 
 ### 5.5 App Movil - Documentos Del Trabajador
 
+Entrada:
+
+```txt
+Herramientas -> Documentacion
+```
+
 Objetivo:
 
 - ver documentos propios,
-- descargar,
+- consultar documentos visibles por rol dentro de sus sucursales/proyectos,
+- buscar y filtrar documentacion relevante para el empleado,
+- descargar desde el nombre del archivo,
 - acusar recibo cuando aplique.
+
+Listado:
+
+- scroll infinito, siguiendo el mismo patron de carga incremental usado en tasks,
+- cards minimalistas,
+- orden por documentos mas recientes primero,
+- sin acciones administrativas visibles,
+- sin boton independiente de descarga.
+
+Filtros disponibles en app:
+
+| Filtro | Campo API | UI |
+|---|---|---|
+| Busqueda | `q` | buscador con debounce |
+| Sucursal/proyecto | `branchId` | selector de sucursales del empleado |
+| Fecha desde | `createdFrom` | date picker |
+| Fecha hasta | `createdTo` | date picker |
+| Tipo | `type` | select opcional |
+
+No mostrar filtro de empleado en app movil. El empleado autenticado es el contexto efectivo y el backend filtra permisos.
+
+Card minimalista recomendada:
+
+- titulo del documento,
+- nombre de archivo como link de descarga,
+- tipo documental,
+- sucursal/proyecto si aplica,
+- fecha de subida o actualizacion,
+- estado de acuse si aplica,
+- indicador discreto de archivado solo si el endpoint lo devuelve para el usuario.
 
 No debe mostrar:
 
@@ -221,7 +256,7 @@ No debe mostrar:
 
 ## 6. Flujo De Listado
 
-1. Usuario entra en Gestion Documental.
+1. Usuario entra en Gestion Documental en backoffice o en Herramientas -> Documentacion en app movil.
 2. Front llama:
 
 ```txt
@@ -444,7 +479,7 @@ No mostrar `storagePath`.
 
 ## 10. Flujo De Descarga
 
-1. Usuario pulsa descargar.
+1. Usuario pulsa el nombre del archivo.
 2. Front llama:
 
 ```txt
@@ -457,7 +492,7 @@ GET /documents/:documentId/download?entityId=...
 {
   ok: true;
   url: string;
-  expiresAt: string;
+  expiresAt: string; // ISO. TTL efectivo: 1 minuto.
 }
 ```
 
@@ -465,9 +500,13 @@ GET /documents/:documentId/download?entityId=...
 
 Notas UX:
 
-- La URL expira.
+- No mostrar boton independiente de descarga en listados ni detalle.
+- El `filename` debe renderizarse como link accesible y reconocible.
+- Si el usuario no tiene permiso efectivo, el nombre del archivo no debe ser interactivo.
+- La URL expira en 1 minuto.
 - Si falla por expiracion, pedir una nueva.
 - No guardar URL firmada en estado persistente.
+- No enviar la URL firmada completa a analytics, crash reports ni logs de cliente.
 
 ---
 
@@ -692,6 +731,9 @@ Notas de seguridad:
 - [ ] Detalle de sucursal/proyecto muestra documentos por `branchId`.
 - [ ] Detalle de empleado muestra documentos por `employeeId` y branch de contexto.
 - [ ] Listado principal soporta filtros de fecha, sucursal, empleado, tipo, estado y texto.
+- [ ] App movil agrega Herramientas -> Documentacion.
+- [ ] App movil lista documentos del empleado con scroll infinito y cards minimalistas.
+- [ ] App movil filtra por sucursal/proyecto, fecha, tipo y busqueda `q`, sin filtro de empleado.
 - [ ] Formulario de subida cambia campos segun `scope`.
 - [ ] `visibleToRoles` es obligatorio y exacto.
 - [ ] No se muestra `storagePath`.

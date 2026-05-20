@@ -315,7 +315,7 @@ El backend verifica que el actor tenga al menos una responsabilidad activa en la
 1. Cliente solicita descarga por `documentId`.
 2. Backend carga documento.
 3. Backend valida permiso efectivo.
-4. Backend genera URL firmada temporal.
+4. Backend genera URL firmada temporal con TTL de 1 minuto.
 5. Backend registra `download_requested`.
 6. Backend devuelve `{url, expiresAt}`.
 
@@ -353,6 +353,7 @@ Router Express interno: `/documents`
 | `GET` | `/documents/:documentId/download` | Generar URL firmada |
 | `PATCH` | `/documents/:documentId` | Editar metadata permitida |
 | `POST` | `/documents/:documentId/ack` | Acusar recibo |
+| `GET` | `/documents/:documentId/acks` | Listar acuses del documento (solo owner/admin) |
 | `DELETE` | `/documents/:documentId` | Archivar |
 
 ### POST `/documents`
@@ -394,6 +395,8 @@ Respuesta:
 
 Restriccion V1: si `scope = "entity"`, el frontend debe enviar `requiresAcknowledgement = false` y no debe enviar `acknowledgementMode`. El backend rechaza acuse de entidad en V1.
 
+Nota: la respuesta de creacion no incluye `ackStatus` — el actor que sube el documento no es el sujeto del acuse en casi ningun caso. El frontend debe consultar `GET /documents/:documentId` para obtener el estado de acuse del actor autenticado.
+
 ### GET `/documents`
 
 Query:
@@ -419,13 +422,39 @@ Respuesta:
 ```typescript
 {
   ok: true;
-  documents: ManagedDocument[];  // sin storagePath
+  documents: DocumentWithAckStatus[];
   nextCursor: string | null;
   total?: number;                // solo si scope + branchId/employeeId permite conteo exacto
 }
 ```
 
+`DocumentWithAckStatus` es `Omit<ManagedDocument, "storagePath"> & { ackStatus: DocumentAckStatus | null }`.
+
+`ackStatus` se popula por actor. Si el documento no requiere acuse o el actor no tiene `employeeId` resuelto, vale `null`. Cuando aplica:
+
+```typescript
+// requiresAcknowledgement = false  →  ackStatus: null
+// requiresAcknowledgement = true, no acuse previo:
+{ required: true; acknowledged: false }
+// requiresAcknowledgement = true, ya acusado:
+{ required: true; acknowledged: true; acknowledgedAt: string; documentVersion: number }
+```
+
+`storagePath` nunca se incluye. `acknowledgedAt` se serializa como ISO 8601.
+
 **Estrategia de paginacion segura:** el backend pagina DESPUES de resolver el scope mas estrecho posible via query (scope + branchId o employeeId cuando esten presentes). El filtrado de permisos fino se aplica sobre el resultado ya paginado, con overfetch controlado de hasta `limit * 2` documentos candidatos para compensar. Si el cliente recibe menos items que `limit` con `nextCursor` no nulo, debe solicitar la siguiente pagina. `storagePath` nunca se devuelve en listados.
+
+**Combinaciones de filtro habituales:**
+
+| Parametros | Resultado |
+|---|---|
+| `entityId` | Todos los documentos visibles para el actor en cualquier scope |
+| `entityId` + `scope=entity` | Solo documentos de entidad |
+| `entityId` + `scope=branch` + `branchId` | Documentos de esa sucursal |
+| `entityId` + `scope=employee` + `employeeId` | Documentos de ese empleado en todos sus branches |
+| `entityId` + `scope=employee` + `employeeId` + `branchId` | Documentos de ese empleado emitidos en esa sucursal concreta |
+
+Nota: `branchId` es opcional en el listado aunque `scope=employee`. Sin el, el backend devuelve todos los documentos de ese empleado independientemente del branch donde fueron emitidos. El `branchId` solo es obligatorio al **crear** un documento con `scope=employee`.
 
 ### GET `/documents/:documentId`
 
@@ -442,9 +471,11 @@ Respuesta:
 ```typescript
 {
   ok: true;
-  document: Omit<ManagedDocument, "storagePath">;
+  document: DocumentWithAckStatus; // Omit<ManagedDocument, "storagePath"> & { ackStatus: DocumentAckStatus | null }
 }
 ```
+
+El campo `ackStatus` sigue el mismo contrato que en `GET /documents` pero se resuelve con una lectura puntual del ack del actor en lugar de la carga masiva del listado.
 
 ### PATCH `/documents/:documentId`
 
@@ -532,9 +563,15 @@ Respuesta:
 {
   ok: true;
   url: string;
-  expiresAt: string;
+  expiresAt: string; // ISO. La URL firmada caduca en 1 minuto.
 }
 ```
+
+Notas:
+
+- La URL completa es sensible mientras este vigente.
+- Front debe usarla inmediatamente y no persistirla en cache, storage local, analytics ni logs.
+- Si la URL expira, el cliente debe solicitar una nueva al backend.
 
 ### POST `/documents/:documentId/ack`
 
@@ -697,6 +734,14 @@ Los indices definitivos estan declarados en `firestore.indexes.json` (confirmado
 | `entityId ASC · type ASC · keywords ARRAY-CONTAINS` | Busqueda por token exacto |
 | `entityId ASC · type ASC · keywords_prefix ARRAY-CONTAINS` | Busqueda por prefijo (flujo `q`) |
 
+**Indices desplegados — subcoleccion `acks` (COLLECTION_GROUP scope):**
+
+| Campos | Uso principal |
+|---|---|
+| `entityId ASC · employeeId ASC` | Carga masiva de todos los acks de un empleado en una entidad para poblar `ackStatus` en listados |
+
+El `queryScope: COLLECTION_GROUP` permite hacer `collectionGroup("acks").where("entityId","==",x).where("employeeId","==",y)` cruzando todos los documentos de la entidad en una sola lectura, evitando N+1 en `GET /documents`.
+
 El campo `__name__` en los indices de cursor permite usar `startAfter(createdAt, docId)` de forma estable sin indices adicionales.
 
 ---
@@ -783,9 +828,9 @@ No se monta dentro de `tasksHandler` porque tasks y documents son modulos desaco
 
 **Contexto:** Los documentos pueden contener datos laborales y personales.
 
-**Decision:** No exponer URLs publicas permanentes. Generar URL firmada al descargar.
+**Decision:** No exponer URLs publicas permanentes. Generar URL firmada al descargar con TTL de 1 minuto.
 
-**Consecuencia:** Cada descarga pasa por backend y se audita.
+**Consecuencia:** Cada descarga pasa por backend y se audita. La URL completa debe tratarse como dato sensible mientras este vigente, aunque parametros como `GoogleAccessId` sean esperados en URLs firmadas de Google Cloud Storage.
 
 ### ADR-005: Visibilidad por array exacto de roles
 
@@ -919,7 +964,7 @@ El path `documents/{allPaths=**}` tiene `allow read, write: if false`. Firebase 
 
 Mecanismos de acceso legitimo que bypasean las reglas (comportamiento de Firebase por diseno):
 - **Admin SDK** (backend): uploads y lecturas en servidores, nunca expuesto al cliente.
-- **Signed URLs** (descarga cliente): URL firmada generada por el backend con credenciales de service account, TTL 60 min, expira automaticamente.
+- **Signed URLs** (descarga cliente): URL firmada generada por el backend con credenciales de service account, TTL 1 min, expira automaticamente.
 
 El catch-all `allow read, write: if true` sigue activo para otros paths (entorno dev). Antes del deploy de cualquier otro modulo a produccion, debe reemplazarse por reglas explicitas por path y eliminar el catch-all.
 
@@ -1066,11 +1111,13 @@ Si `q` contiene varios tokens, V1 puede resolver por el primer token significati
 
 ### Fase 6 - Frontend/App
 
-- [ ] Listado con filtros.
+- [ ] Backoffice: Gestion Documental en menu principal con listado global, scroll infinito y filtros.
+- [ ] App movil: submenú Herramientas -> Documentacion orientado al empleado.
+- [ ] App movil: listado con scroll infinito, cards minimalistas, filtros por sucursal/proyecto, fecha, tipo y busqueda `q`.
 - [ ] Detalle.
 - [ ] Subida con selector de scope.
 - [ ] Selector `visibleToRoles`.
-- [ ] Descarga.
+- [ ] Descarga desde el nombre de archivo como link, sin boton independiente.
 - [ ] Acuse.
 - [ ] Archivado.
 
@@ -1120,5 +1167,96 @@ Si `q` contiene varios tokens, V1 puede resolver por el primer token significati
 - [x] Paginacion usa cursor, no offset.
 - [x] `storagePath` nunca se devuelve en listados.
 - [x] Storage rules bloqueadas antes de deploy a produccion.
+- [x] `ackStatus` incluido en respuestas de listado y detalle para el actor autenticado.
 - [ ] Tests unitarios para permisos.
 - [ ] Tests de integracion para repository y endpoints criticos.
+
+---
+
+## 18. UX — Flujo de acuse de recibo
+
+Esta seccion es la referencia para frontend/app movil al implementar la pantalla de detalle de documento cuando `requiresAcknowledgement = true`.
+
+### Estados posibles
+
+| `ackStatus` | Estado UI | Accion disponible |
+|---|---|---|
+| `null` | El documento no requiere acuse | No mostrar ninguna accion de acuse |
+| `{ required: true, acknowledged: false }` | Pendiente de acuse | Mostrar boton "Confirmar lectura" |
+| `{ required: true, acknowledged: true, ... }` | Ya acusado | Mostrar fecha y version; no boton |
+
+### Regla de renderizado
+
+```
+if ackStatus === null → no renderizar seccion de acuse
+if ackStatus.acknowledged === false → mostrar boton CTA
+if ackStatus.acknowledged === true → mostrar badge + acknowledgedAt (formato local) + documentVersion
+```
+
+### Flujo de interaccion (app movil)
+
+1. App carga el detalle del documento via `GET /documents/:documentId?entityId=...`.
+2. Inspecciona `document.ackStatus`.
+3. Si `acknowledged: false`, renderiza boton "He leido este documento" al final de la pantalla, bloqueando la navegacion hasta que se confirme (o el usuario descarte explicitamente).
+4. Usuario pulsa el boton. App llama `POST /documents/:documentId/ack` con `{ entityId }` — sin `employeeId`, el backend lo resuelve del token.
+5. Si la respuesta es `200 ok: true`, app actualiza el estado local: `ackStatus = { required: true, acknowledged: true, acknowledgedAt: <fecha actual>, documentVersion: <version actual> }`. No es necesario recargar el documento.
+6. Si la respuesta es `409` (`documents/already_acknowledged`), el acuse ya fue registrado por otra sesion: recargar para sincronizar.
+7. Si la respuesta es `403` (`documents/acknowledgement_not_allowed`), el actor no es sujeto del acuse. No mostrar boton.
+
+### Idempotencia
+
+El ack es idempotente por `employeeId` + `documentId`. Si el usuario pulsa el boton dos veces, la segunda llamada es no-operativa. El frontend puede ignorar `409` silenciosamente y tratar al estado como `acknowledged: true`.
+
+### Listado
+
+En el listado de documentos, el frontend puede usar `ackStatus` para:
+- Mostrar un indicador visual (badge, icono) en la card del documento si `ackStatus?.acknowledged === false`.
+- Filtrar documentos pendientes de acuse (filtro local sobre la respuesta).
+- Ordenar pendientes primero sin llamada adicional al backend.
+
+No es necesario llamar a `GET /documents/:documentId` para saber el estado de acuse en el listado — `ackStatus` ya viene en cada item del array `documents`.
+
+---
+
+## 19. Referencia de implementacion para frontend
+
+Esta seccion consolida los punteros exactos que el frontend debe seguir para implementar correctamente la gestion documental sin depender de implementaciones parciales.
+
+### Tipos y contratos
+
+| Concepto | Seccion en este documento |
+|---|---|
+| Modelo de dominio (`ManagedDocument`) | Seccion 6 |
+| Tipo de acuse (`DocumentAcknowledgement`) | Seccion 6 |
+| Campo `ackStatus` en respuestas | Seccion 9 — GET /documents, GET /documents/:documentId |
+| Codigos de error | Seccion 10 |
+
+### Endpoints que devuelven `ackStatus`
+
+- `GET /documents` — cada item del array `documents` incluye `ackStatus` poblado para el actor autenticado.
+- `GET /documents/:documentId` — el campo `document.ackStatus` es la fuente de verdad para la pantalla de detalle.
+
+### Endpoint de acuse
+
+- `POST /documents/:documentId/ack` — ver seccion 9. El `employeeId` no se envia, el backend lo infiere del token.
+
+### Flujo de acuse completo
+
+Ver seccion 18 (UX — Flujo de acuse de recibo).
+
+### Reglas de negocio que el frontend debe respetar
+
+| Regla | Origen |
+|---|---|
+| No acusar documentos `scope = "entity"` en V1 | TDR-002, seccion 9 POST /documents |
+| No enviar `employeeId` en el cuerpo del ack | TDR-003 |
+| No cachear `storagePath` ni URLs firmadas | ADR-004, seccion 9 GET /download |
+| Tratar `cursor` como opaco, no parsear | TDR-011, seccion 9 GET /documents |
+| `branchId` obligatorio al crear scope employee, opcional al listar | Seccion 9 GET /documents — combinaciones de filtro |
+| `visibleToRoles` es array exacto, no jerarquico | ADR-005, seccion 5 |
+
+### Consideraciones de seguridad para el cliente
+
+- La URL firmada de descarga dura 1 minuto. No persistir en localStorage, analytics ni logs.
+- El boton de descarga debe invalidarse o solicitar nueva URL tras la expiracion.
+- No mostrar `storagePath` — el backend nunca lo devuelve, pero si llegara por error de deserializacion no debe renderizarse.
