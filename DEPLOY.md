@@ -58,6 +58,7 @@ npm run deploy:function:prod -- <nombre-funcion> [nombre-funcion2 ...]
 | `apiV100-firebaseEntryHttp-sendEmail` | `/email` |
 | `apiV100-firebaseEntryHttp-merlinIa` | `/merlin` |
 | `apiV100-firebaseEntryHttp-stripeWebhook` | `/stripeWebhook` |
+| `apiV100-firebaseEntryHttp-criticalHandler` | `/auth/login`, `/auth/validate`, `/calendar` (GET) |
 
 ### Firestore Triggers
 
@@ -93,7 +94,8 @@ npm run deploy:function:dev -- \
   apiV100-firebaseEntryHttp-stripeWebhook \
   apiV100-firebaseFirestoreTriggersCheckinBiz-onChecklogWrite \
   apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues \
-  apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateEmployee
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateEmployee \
+  apiV100-firebaseEntryHttp-criticalHandler
 ```
 
 Mismo bloque para prod reemplazando `deploy:function:dev` por `deploy:function:prod`.
@@ -123,6 +125,8 @@ Mismo bloque para prod reemplazando `deploy:function:dev` por `deploy:function:p
 | `onChecklogWrite` | `writeController` patterns |
 | `onCreateIssues` | Issues trigger |
 | `onCreateEmployee` | Fix search index: `FirestoreSearchIndexRepository` compartido — mismo fix que branches/employees |
+| `criticalHandler` | **NUEVA** — Express bundle startup: `POST /auth/login`, `POST /auth/validate` (+ warm-up ping a createChecklog), `GET /calendar`. `1GiB, 2CPU, concurrency:200` |
+| `createChecklog` | Guard `_warmup: true` — responde 200 inmediato sin procesar, para warm-up desde criticalHandler |
 
 ## 7. URLs de dev conocidas
 
