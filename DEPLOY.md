@@ -47,11 +47,17 @@ npm run deploy:function:prod -- <nombre-funcion> [nombre-funcion2 ...]
 | `apiV100-firebaseEntryHttp-checkinbiz-createChecklog` | `/checkinbiz/createChecklog` |
 | `apiV100-firebaseEntryHttp-checkinbiz-calendarHandler` | `/calendar` |
 | `apiV100-firebaseEntryHttp-checkinbiz-createEmployee` | `/checkinbiz/createEmployee` |
+| `apiV100-firebaseEntryHttp-checkinbiz-updateEmployee` | `/checkinbiz/updateEmployee` |
+| `apiV100-firebaseEntryHttp-checkinbiz-deleteEmployee` | `/checkinbiz/deleteEmployee` |
+| `apiV100-firebaseEntryHttp-checkinbiz-createBranch` | `/checkinbiz/createBranch` |
+| `apiV100-firebaseEntryHttp-checkinbiz-updateBranch` | `/checkinbiz/updateBranch` |
+| `apiV100-firebaseEntryHttp-checkinbiz-deleteBranch` | `/checkinbiz/deleteBranch` |
 | `apiV100-firebaseEntryHttp-checkinbiz-employeesExportHandler` | `/checkinbiz/export/employees` |
 | `apiV100-firebaseEntryHttp-checkinbiz-checkbizNotifications` | `/checkinbiz/notifications` |
 | `apiV100-firebaseEntryHttp-users` | `/users` |
 | `apiV100-firebaseEntryHttp-sendEmail` | `/email` |
 | `apiV100-firebaseEntryHttp-merlinIa` | `/merlin` |
+| `apiV100-firebaseEntryHttp-stripeWebhook` | `/stripeWebhook` |
 
 ### Firestore Triggers
 
@@ -59,6 +65,7 @@ npm run deploy:function:prod -- <nombre-funcion> [nombre-funcion2 ...]
 |---|---|
 | `apiV100-firebaseFirestoreTriggersCheckinBiz-onChecklogWrite` | `entities/{entityId}/checklogs/{checklogId}` — onWrite |
 | `apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues` | issues — onCreate |
+| `apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateEmployee` | `entities/{entityId}/employees/{employeeId}` — onCreate |
 
 ## 5. Deploy batch — rama `feat/documental-manage`
 
@@ -73,13 +80,20 @@ npm run deploy:function:dev -- \
   apiV100-firebaseEntryHttp-checkinbiz-updateChecklog \
   apiV100-firebaseEntryHttp-checkinbiz-createChecklog \
   apiV100-firebaseEntryHttp-checkinbiz-createEmployee \
+  apiV100-firebaseEntryHttp-checkinbiz-updateEmployee \
+  apiV100-firebaseEntryHttp-checkinbiz-deleteEmployee \
+  apiV100-firebaseEntryHttp-checkinbiz-createBranch \
+  apiV100-firebaseEntryHttp-checkinbiz-updateBranch \
+  apiV100-firebaseEntryHttp-checkinbiz-deleteBranch \
   apiV100-firebaseEntryHttp-checkinbiz-employeesExportHandler \
   apiV100-firebaseEntryHttp-checkinbiz-checkbizNotifications \
   apiV100-firebaseEntryHttp-users \
   apiV100-firebaseEntryHttp-sendEmail \
   apiV100-firebaseEntryHttp-merlinIa \
+  apiV100-firebaseEntryHttp-stripeWebhook \
   apiV100-firebaseFirestoreTriggersCheckinBiz-onChecklogWrite \
-  apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateEmployee
 ```
 
 Mismo bloque para prod reemplazando `deploy:function:dev` por `deploy:function:prod`.
@@ -90,18 +104,25 @@ Mismo bloque para prod reemplazando `deploy:function:dev` por `deploy:function:p
 |---|---|
 | `calendarHandler` | Fix `dateLocal` query param ignorado + fallback `DateTime.utc()` → `DateTime.now().setZone(tz)` |
 | `tasksHandler` | Módulo tasks completo + `canManageTask` unificado (supervisor puede crear/editar/cancelar/notas/recursos en su sucursal sin asignarse) |
-| `documentsHandler` | Documents Manage V1: handler Express propio `/documents`, upload privado, list/detalle/download/update/ack/archive, `searchIndex`, notificaciones documentales y Storage rules `documents/**` sin acceso directo desde cliente |
+| `documentsHandler` | Documents Manage V1 completo: scope=employee no requiere branchId, `DocumentStorageService` employee path corregido, `employeeAllFlow` fan-out (entity+branch+employee), `total` en todos los listados, cursor pagination, `branch` solo en scope=branch, `UpdateDocument` devuelve `DocumentWithAckStatus`, GET `:id/acks`, notificaciones fix (push falla no bloquea in-app) |
 | `requestManualChecklog` | Modo A (jornada completa) + Modo B (solo checkout) + fix Firestore Timestamp en `_executeCheckoutOnly` |
 | `updateChecklog` | Fix status ignorado en resolución empleado + fix `closed` en checkout rechazado + sync `metadata.updated` + guard 404 checklog not found + `rejectionReason` opcional |
 | `createChecklog` | `canWrite` con branch responsibility + detección de overlap en repo + fix `resolveEffectiveDay` medianoche |
 | `createEmployee` | Controller actualizado |
+| `updateEmployee` | Fix search index duplicado: `FirestoreSearchIndexRepository.create()` usa doc ID determinístico por path + `set()` en lugar de `create()` |
+| `deleteEmployee` | Fix `FirestoreSearchIndexRepository.delete()` — delete directo por doc ID (sin query) |
+| `createBranch` | Fix search index: `set()` idempotente (sin duplicados en retries) |
+| `updateBranch` | Fix search index duplicado en cada actualización: mismo fix que `updateEmployee` |
+| `deleteBranch` | Fix `FirestoreSearchIndexRepository.delete()` — delete directo por doc ID |
 | `employeesExportHandler` | CSV export (nuevo) |
 | `checkbizNotifications` | Serialización FCM + normalización de idioma |
 | `users` | Controllers `assignUser` + `createUser` |
 | `sendEmail` | Email service + mailer controller |
 | `merlinIa` | API express proxy |
+| `stripeWebhook` | Fix selección de secret: usaba siempre `STRIPE_WEBHOOK` (prod) — ahora usa `STRIPE_WEBHOOK_SECRET_TEST` cuando `ENV !== "production"` |
 | `onChecklogWrite` | `writeController` patterns |
 | `onCreateIssues` | Issues trigger |
+| `onCreateEmployee` | Fix search index: `FirestoreSearchIndexRepository` compartido — mismo fix que branches/employees |
 
 ## 7. URLs de dev conocidas
 
