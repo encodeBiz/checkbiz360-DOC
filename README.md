@@ -24,6 +24,7 @@
 - [modulos/checklog.md](./modulos/checklog.md) — Checklogs, solicitud manual Modo A/B, aprobación
 - [modulos/notificaciones.md](./modulos/notificaciones.md) — Push FCM + in-app v3, tipos, bugs
 - [modulos/heuristica.md](./modulos/heuristica.md) — Motor EMA: métricas, patrones, interpretación
+- [modulos/reporting-analitica.md](./modulos/reporting-analitica.md) — Agregados diarios, dashboards y reportes masivos
 - [modulos/documentos.md](./modulos/documentos.md) — Gestión documental, scopes, permisos, storage
 - [modulos/calendario.md](./modulos/calendario.md) — Horarios, festivos, cascada entity→branch→employee, bugs
 

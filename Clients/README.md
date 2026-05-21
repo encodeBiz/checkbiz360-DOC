@@ -1,0 +1,393 @@
+# Centro de Ayuda — CheckBiz360
+
+Bienvenido al centro de ayuda de CheckBiz360, la plataforma de control de asistencia digital de Encodebiz. Este centro de ayuda reúne la documentación completa dirigida al cliente final: propietarios de cuenta, responsables de recursos humanos, managers de área y supervisores de equipo.
+
+Los artículos están organizados en 14 secciones temáticas. Cada sección cubre un módulo o área funcional de la plataforma y contiene artículos independientes que pueden consultarse de forma individual o como lectura secuencial.
+
+---
+
+## Estados de funcionalidad
+
+La siguiente convención identifica el estado de cada funcionalidad en la versión actual de CheckBiz360 (V1). Se aplica en todos los artículos del centro de ayuda y en las tablas de cada módulo de esta página.
+
+| Estado | Significado |
+|---|---|
+| **Disponible** | La funcionalidad está activa en la versión actual y puede utilizarse de inmediato. |
+| **Disponible parcialmente** | La funcionalidad existe pero con capacidades limitadas respecto a la descripción completa. |
+| **Pendiente de desarrollo** | La funcionalidad está planificada y se incluirá en una versión futura de la plataforma. |
+| **No disponible** | La funcionalidad no está implementada y no tiene fecha de entrega planificada actualmente. |
+
+---
+
+## Secciones
+
+### 01. Primeros pasos
+
+Introducción a la plataforma, diferencias frente a otros sistemas y guía de puesta en marcha inicial.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Registro de cuenta y configuración de entidad | **Disponible** | Proceso completo disponible desde el backoffice. |
+| Configuración de sucursales | **Disponible** | Creación, edición y desactivación de sucursales. |
+| Guía de inicio rápido | **Disponible** | Flujo de 10 pasos hasta el primer fichaje validado. |
+| Estructura jerárquica entidad → sucursal → empleado | **Disponible** | Totalmente operativa en V1. |
+
+| Artículo | Descripción |
+|---|---|
+| [Qué es CheckBiz360](01-primeros-pasos/01-que-es-checkbiz360.md) | Descripción general de la plataforma, componentes y casos de uso |
+| [Diferencias con otros software](01-primeros-pasos/02-diferencias-con-otros-software.md) | Comparativa con sistemas tradicionales de control horario |
+| [Crear cuenta y configurar la entidad](01-primeros-pasos/03-crear-cuenta-y-configurar-entidad.md) | Pasos desde el registro hasta la primera sucursal operativa |
+| [Guía de inicio rápido](01-primeros-pasos/04-guia-inicio-rapido.md) | Los 10 pasos para tener el primer fichaje validado en 15 minutos |
+| [Estructura de la plataforma](01-primeros-pasos/05-estructura-de-la-plataforma.md) | Los tres niveles jerárquicos: entidad, sucursal y empleado |
+
+---
+
+### 02. Empleados
+
+Alta, configuración, roles y seguridad de los empleados en la plataforma.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Alta, edición y desactivación de empleados | **Disponible** | CRUD completo con estados laborales. |
+| Roles y niveles de responsabilidad (worker, supervisor, manager, owner) | **Disponible** | Cuatro niveles con permisos diferenciados. |
+| Autenticación en dos factores (2FA) | **Disponible** | Compatible con apps TOTP (Google Authenticator, Authy). |
+| Verificación biométrica y dispositivos de confianza | **Disponible** | Configurable por empleado desde la app. |
+| Empleados asignados a múltiples entidades | **Disponible** | Selector de entidad en el inicio de sesión. |
+| Exportación de empleados a CSV | **Disponible** | Campos básicos exportables desde el backoffice. |
+
+| Artículo | Descripción |
+|---|---|
+| [Crear y gestionar empleados](02-empleados/06-crear-y-gestionar-empleados.md) | Alta, edición, estados laborales y desactivación |
+| [Roles y niveles de responsabilidad](02-empleados/07-roles-y-niveles-de-responsabilidad.md) | Los cuatro niveles: worker, supervisor, manager, owner |
+| [Matriz de permisos por rol](02-empleados/08-matriz-de-permisos-por-rol.md) | Tabla completa de qué puede hacer cada rol |
+| [Autenticación en dos factores (2FA)](02-empleados/09-autenticacion-dos-factores.md) | Configuración, apps compatibles y recuperación de acceso |
+| [Biometría y dispositivos de confianza](02-empleados/10-biometria-y-dispositivos-de-confianza.md) | Verificación biométrica y gestión de dispositivos autorizados |
+| [Empleados multi-entidad](02-empleados/11-empleados-multi-entidad.md) | Un empleado en varias organizaciones, selector de entidad |
+| [Exportar empleados a CSV](02-empleados/12-exportar-empleados-csv.md) | Campos exportados, proceso y consideraciones LOPD |
+
+---
+
+### 03. Control horario
+
+Cómo funciona el sistema de fichaje: validaciones, tipos de registro, geocercas y gestión de jornadas.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Fichaje con validación de geocerca, horario y dispositivo | **Disponible** | Tres capas de validación simultáneas en cada fichaje. |
+| Check-in y check-out desde la app móvil | **Disponible** | Proceso completo operativo en iOS y Android. |
+| Fichaje en remoto (teletrabajo) | **Disponible** | Activación por empleado con validación de zona horaria. |
+| Descansos y pausas (restin/restout) | **Disponible** | Descuento automático configurable por sucursal. |
+| Validación QR previa al fichaje | **Disponible** | Mecanismo configurable por sucursal, no obligatorio. |
+| Solicitud de jornada manual (Modo A y Modo B) | **Disponible** | Requiere aprobación del responsable. |
+| Revisión y validación de fichajes por responsable | **Disponible** | Flujo de aprobación, rechazo y resolución. |
+| Trazabilidad e historial de cambios inmutable | **Disponible** | Registro de solicitudes y modificaciones con auditoría. |
+| Detección de fichaje sospechoso | **Disponible** | Indicador automático basado en patrones anómalos. |
+
+| Artículo | Descripción |
+|---|---|
+| [Cómo funciona el fichaje](03-control-horario/13-como-funciona-el-fichaje.md) | Las tres capas de validación: geocerca, horario y dispositivo |
+| [Check-in y check-out desde la app](03-control-horario/14-checkin-checkout-desde-app.md) | Paso a paso del fichaje desde la app móvil |
+| [Fichaje en remoto](03-control-horario/15-fichaje-en-remoto.md) | Teletrabajo, activación y zona horaria del empleado |
+| [Geocercas y radio de fichaje](03-control-horario/16-geocercas-radio-de-fichaje.md) | Configuración del radio, desactivación y valores recomendados |
+| [Descansos y pausas](03-control-horario/17-descansos-y-pausas.md) | Restin/restout, descuento automático y configuración por sucursal |
+| [Validación del empleado mediante QR](03-control-horario/18-validacion-del-empleado-qr.md) | Token QR, flujo con supervisor y warm-up del sistema |
+| [Solicitar jornada manual](03-control-horario/19-solicitar-jornada-manual.md) | Modo A (jornada completa) y Modo B (solo checkout) |
+| [Revisión y validación de fichajes](03-control-horario/20-revision-y-validacion-de-fichajes.md) | Flujo de aprobación, rechazo y resolución por responsable |
+| [Trazabilidad e historial de cambios](03-control-horario/21-trazabilidad-historial-de-cambios.md) | requestUpdates, inmutabilidad y uso en auditorías |
+| [Estados y códigos de error](03-control-horario/22-estados-y-codigos-de-error.md) | Tablas de estados y códigos de error con causas y soluciones |
+
+---
+
+### 04. Calendario y horarios
+
+Configuración de turnos, horarios base, calendarios laborales y excepciones individuales.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Horarios base y turnos por sucursal | **Disponible** | Turno único o múltiples turnos por día. |
+| Calendario laboral (festivos nacionales y locales) | **Disponible** | Jerarquía de herencia: entidad → sucursal → empleado. |
+| Excepciones de horario individuales | **Disponible** | Excepciones puntuales y periódicas. |
+| Turnos rotativos (alternancia A/B) | **Disponible** | Anclaje de ciclo y compatibilidad con festivos. |
+| Horario flexible con tolerancia de entrada | **Disponible** | Ajuste automático de timestamp dentro del rango. |
+| Herencia de configuración en cascada | **Disponible** | Algoritmo de prioridad para calcular el calendario efectivo. |
+
+| Artículo | Descripción |
+|---|---|
+| [Horarios base y turnos](04-calendario-y-horarios/23-horarios-base-y-turnos.md) | Turno único, múltiples turnos por día, selección del turno activo |
+| [Calendario laboral](04-calendario-y-horarios/24-calendario-laboral.md) | Festivos nacionales, locales, jerarquía entity→branch→employee |
+| [Excepciones de horario](04-calendario-y-horarios/25-excepciones-de-horario.md) | Excepciones puntuales y periódicas, jornada reducida |
+| [Herencia de configuración](04-calendario-y-horarios/26-herencia-de-configuracion.md) | Algoritmo de cascada y depuración del calendario efectivo |
+| [Turnos rotativos](04-calendario-y-horarios/27-turnos-rotativos.md) | Alternancia semanal A/B, anclaje de ciclo, festivos con rotativos |
+| [Horario flexible](04-calendario-y-horarios/28-horario-flexible.md) | Tolerancia de entrada, ajuste automático de timestamp |
+| [Festivos y días no laborables](04-calendario-y-horarios/29-festivos-y-dias-no-laborables.md) | Tipos de festivo, bloqueo de fichajes, sectores que trabajan en festivo |
+
+---
+
+### 05. Gestión documental
+
+Subida, organización, acuse de recibo y control de acceso a los documentos laborales.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Subida y organización de documentos | **Disponible** | Campos, categorías, destinatarios y visibilidad por rol. |
+| Documentos privados con control de acceso por rol | **Disponible** | Tabla de permisos diferenciada por nivel de usuario. |
+| Notificaciones push al recibir documentos | **Disponible** | Navegación directa al documento desde la notificación. |
+| Acuse de recibo (confirmación de lectura) | **Disponible** | El empleado confirma la lectura; queda registrado en el sistema. |
+| Descarga individual de documentos | **Disponible** | Enlace firmado por documento con expiración. |
+| Archivo lógico de documentos (sin borrado permanente) | **Disponible** | Los documentos archivados dejan de ser visibles pero se conservan. |
+| Firma electrónica avanzada (eIDAS) | **Pendiente de desarrollo** | Planificada para una versión futura. |
+| Historial automático de versiones | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Descarga masiva de documentos (ZIP) | **Pendiente de desarrollo** | Planificada para una versión futura. |
+
+| Artículo | Descripción |
+|---|---|
+| [Qué es el módulo documental](05-gestion-documental/30-que-es-el-modulo-documental.md) | Para qué sirve, tipos de documentos y diferencia con almacenamiento genérico |
+| [Subir y organizar documentos](05-gestion-documental/31-subir-y-organizar-documentos.md) | Campos, categorías, destinatarios y visibilidad |
+| [Nóminas y contratos](05-gestion-documental/32-nominas-y-contratos.md) | Flujo mensual, notificación, acceso desde la app y conservación legal |
+| [Documentos privados](05-gestion-documental/33-documentos-privados.md) | Visibilidad por rol, tabla de acceso y casos de uso |
+| [Notificaciones de documentos](05-gestion-documental/34-notificaciones-de-documentos.md) | Push payload, navegación directa al documento desde la notificación |
+| [Acuse de recibo y firma electrónica](05-gestion-documental/35-firma-electronica.md) | Acuse de recibo en V1; firma electrónica avanzada en roadmap |
+| [Historial de versiones](05-gestion-documental/36-historial-de-versiones.md) | Flujo manual disponible en V1; historial automático en roadmap |
+| [Permisos de acceso documental](05-gestion-documental/37-permisos-de-acceso-documental.md) | Tabla de permisos por rol: subir, ver, confirmar, archivar |
+| [Exportar documentos](05-gestion-documental/38-exportar-documentos.md) | Descarga individual en V1; descarga masiva en roadmap |
+
+---
+
+### 06. Tareas
+
+Creación, asignación, seguimiento y valoración de tareas operativas.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Crear y asignar tareas a empleados | **Disponible** | Asignación individual y múltiple con notificación push. |
+| Adjuntos de foto y vídeo en tareas | **Disponible** | Formatos JPG, PNG y vídeo. |
+| Estados de tarea: pendiente, en curso, completada, rechazada | **Disponible** | Ciclo de vida completo con trazabilidad. |
+| Indicador de cumplimiento temporal | **Disponible** | Seguimiento del cumplimiento de plazos sin estado automático. |
+| Validación y valoración de tareas por el responsable | **Disponible** | Aceptación, rechazo con motivo y puntuación del empleado. |
+| Notificaciones push de tareas (asignación, validación, rechazo) | **Disponible** | Eventos principales cubiertos en V1. |
+| Adjuntos de tipo documento (PDF, Word, Excel) | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Estado "vencida" automático al superar la fecha límite | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Recordatorios programados de vencimiento | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Exportación de informes de tareas (CSV/PDF) | **Pendiente de desarrollo** | Planificado para una versión futura. |
+
+| Artículo | Descripción |
+|---|---|
+| [Qué es el módulo de tareas](06-tareas/39-que-es-el-modulo-de-tareas.md) | Para qué sirve y diferencia con el control de asistencia |
+| [Crear una tarea](06-tareas/40-crear-una-tarea.md) | Campos, prioridad, fecha límite y adjuntos de foto/vídeo |
+| [Asignar tareas a empleados](06-tareas/41-asignar-tareas-a-empleados.md) | Asignación individual y múltiple, reasignación, notificación |
+| [Estados de una tarea](06-tareas/42-estados-de-una-tarea.md) | Ciclo de vida en V1 e indicador de cumplimiento temporal |
+| [Seguimiento y actualizaciones](06-tareas/43-seguimiento-y-actualizaciones.md) | Comentarios, historial inmutable, seguimiento en tiempo real |
+| [Prioridades y fechas límite](06-tareas/44-prioridades-y-fechas-limite.md) | Sistema de prioridades e indicador de cumplimiento temporal |
+| [Validación de tareas](06-tareas/45-validacion-de-tareas.md) | Flujo de validación, aceptación y rechazo con motivo |
+| [Valoración del trabajador](06-tareas/46-valoracion-del-trabajador.md) | Escala de puntuación e impacto en el índice de eficiencia |
+| [Notificaciones de tareas](06-tareas/47-notificaciones-de-tareas.md) | Eventos notificados en V1; recordatorios en roadmap |
+| [Informes de tareas](06-tareas/48-informes-de-tareas.md) | Métricas visibles en backoffice en V1; exportación en roadmap |
+
+---
+
+### 07. Inteligencia operativa
+
+Análisis de patrones de comportamiento, índices de rendimiento, costes y detección de anomalías.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Índice de fiabilidad del empleado | **Disponible** | Calculado automáticamente a partir del historial de fichajes. |
+| Índice de eficiencia (horas planificadas vs. reales) | **Disponible** | Disponible por empleado y por sucursal. |
+| Puntuación de promoción (score de mérito objetivo) | **Disponible** | Score de lectura en el perfil del empleado; sin workflow de promoción. |
+| Análisis de costes (varianza y tendencia) | **Disponible** | costVariance y costTrend calculados por turno. |
+| Detección de anomalías (fichajes sospechosos) | **Disponible** | Indicador automático visible en el backoffice. |
+| Paneles de mando (asistencia, eficiencia, costes, anomalías) | **Disponible** | Cuatro paneles operativos en el backoffice. |
+| Workflow de revisión de anomalías (estados pendiente/revisado) | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Alertas de sobrecoste configurables | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Exportación de datos de paneles (CSV/PDF) | **Pendiente de desarrollo** | Planificado para una versión futura. |
+
+| Artículo | Descripción |
+|---|---|
+| [Qué es la inteligencia operativa](07-inteligencia-operativa/49-que-es-la-inteligencia-operativa.md) | El módulo diferenciador de CheckBiz360 y el concepto de patrón de comportamiento |
+| [Patrón de comportamiento](07-inteligencia-operativa/50-patron-de-comportamiento.md) | Cómo se construye el patrón y por qué supera al informe puntual |
+| [Índice de fiabilidad](07-inteligencia-operativa/51-indice-de-fiabilidad.md) | Qué mide, rangos y cómo mejorarlo |
+| [Índice de eficiencia](07-inteligencia-operativa/52-indice-de-eficiencia.md) | Horas planificadas vs. reales y uso en evaluaciones |
+| [Puntuación de promoción](07-inteligencia-operativa/53-puntuacion-de-promocion.md) | Score de mérito objetivo; workflow de promoción en roadmap |
+| [Análisis de costes](07-inteligencia-operativa/54-analisis-de-costes.md) | Coste por hora, varianza y tendencia; alertas configurables en roadmap |
+| [Detección de anomalías](07-inteligencia-operativa/55-deteccion-de-anomalias.md) | Indicador automático en V1; workflow de revisión en roadmap |
+| [Paneles de mando](07-inteligencia-operativa/56-paneles-de-mando.md) | Los 4 paneles del backoffice; exportación en roadmap |
+
+---
+
+### 08. Sucursales y entidad
+
+Creación y configuración de sucursales, asignación de empleados y vista global multi-sucursal.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Crear y gestionar sucursales | **Disponible** | Alta, edición, geocodificación y desactivación. |
+| Configuración avanzada de sucursal (geocerca, pausas, tolerancia) | **Disponible** | Todos los parámetros operativos configurables. |
+| Asignar empleados a sucursales con responsabilidades | **Disponible** | Multi-sucursal con calendario efectivo por asignación. |
+| Configuración de entidad (datos fiscales, zona horaria) | **Disponible** | Propagación de cambios a sucursales dependientes. |
+| Vista global multi-sucursal con KPIs consolidados | **Disponible** | Panel de comparativas entre sucursales en el backoffice. |
+
+| Artículo | Descripción |
+|---|---|
+| [Crear y gestionar sucursales](08-sucursales-y-entidad/57-crear-y-gestionar-sucursales.md) | Alta, campos obligatorios, geocodificación y desactivación |
+| [Configuración avanzada de sucursal](08-sucursales-y-entidad/58-configuracion-avanzada-de-sucursal.md) | Parámetros avanzados: geocerca, pausas, tolerancia, ajuste de timestamp |
+| [Estados de una sucursal](08-sucursales-y-entidad/59-estados-de-una-sucursal.md) | Activa/inactiva, impacto en fichajes e histórico |
+| [Asignar empleados a sucursales](08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md) | Multi-sucursal, responsabilidades y calendario efectivo |
+| [Configuración de entidad](08-sucursales-y-entidad/61-configuracion-de-entidad.md) | Datos fiscales, zona horaria global y propagación de cambios |
+| [Vista global multi-sucursal](08-sucursales-y-entidad/62-vista-global-multi-sucursal.md) | Panel consolidado, KPIs globales y comparativas entre sucursales |
+
+---
+
+### 09. Notificaciones
+
+Tipos de notificación generados automáticamente por el sistema para empleados y responsables.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Notificaciones push por eventos (asistencia, documentos, tareas) | **Disponible** | Enviadas automáticamente en cada evento relevante. |
+| Alertas para responsables (empleado sin fichar, fichaje sospechoso) | **Disponible** | Visibles en el backoffice y en la app del supervisor. |
+| Centro de notificaciones en app y backoffice | **Disponible parcialmente** | Notificaciones visibles mientras no se descartan; sin historial persistente. |
+| Correo de bienvenida y restablecimiento de contraseña | **Disponible** | Únicos correos automáticos del sistema en V1. |
+| Preferencias de notificación configurables por usuario | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Historial persistente de notificaciones | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Notificaciones por email adicionales (alertas operativas, resúmenes) | **Pendiente de desarrollo** | Planificado para una versión futura. |
+
+| Artículo | Descripción |
+|---|---|
+| [Tipos de notificación](09-notificaciones/63-tipos-de-notificacion.md) | Asistencia, documentos, tareas, seguridad y administrativas |
+| [Notificaciones push en la app](09-notificaciones/64-notificaciones-push-en-la-app.md) | Contenido, navegación directa al recurso y diagnóstico |
+| [Configurar preferencias de notificación](09-notificaciones/65-configurar-preferencias-de-notificacion.md) | Eventos notificados en V1; preferencias configurables en roadmap |
+| [Alertas para responsables](09-notificaciones/66-alertas-para-responsables.md) | Empleado que no fichó, fichaje sospechoso, jornada manual pendiente |
+| [Histórico de notificaciones](09-notificaciones/67-historico-de-notificaciones.md) | Centro de notificaciones en V1; historial persistente en roadmap |
+| [Notificaciones por email](09-notificaciones/68-notificaciones-por-email.md) | Bienvenida y restablecimiento en V1; alertas adicionales en roadmap |
+
+---
+
+### 10. App móvil
+
+Descarga, instalación, navegación y uso de la aplicación CheckBiz360 para empleados.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Descarga e instalación en iOS y Android | **Disponible** | Disponible en App Store y Google Play. |
+| Fichaje desde la app con las tres validaciones | **Disponible** | Geocerca, horario y dispositivo validados en tiempo real. |
+| Consulta de historial de asistencia propio | **Disponible** | Filtros por período y detalle de cada registro. |
+| Acceso a documentos y tareas desde la app | **Disponible** | Navegación desde notificación push directamente al recurso. |
+| Configuración de perfil, 2FA y biometría | **Disponible** | Gestionable desde la sección de perfil de la app. |
+| Consulta de datos en caché sin conexión | **Disponible parcialmente** | Solo lectura de datos previamente cargados; fichaje requiere conexión. |
+| Modo offline con cola de sincronización de fichajes | **Pendiente de desarrollo** | Planificado para una versión futura. |
+
+| Artículo | Descripción |
+|---|---|
+| [Descarga e instalación](10-app-movil/69-descarga-e-instalacion.md) | iOS y Android, requisitos mínimos y permisos necesarios |
+| [Primer inicio de sesión](10-app-movil/70-primer-inicio-de-sesion.md) | Activación de cuenta, contraseña y selección de entidad |
+| [Navegación principal de la app](10-app-movil/71-navegacion-principal-de-la-app.md) | Las 5 secciones: fichaje, registros, documentos, tareas y perfil |
+| [Configuración de perfil en la app](10-app-movil/72-configuracion-de-perfil-en-la-app.md) | Datos personales, contraseña, 2FA y biometría desde la app |
+| [Mis registros de asistencia](10-app-movil/73-mis-registros-de-asistencia.md) | Historial propio, filtros, detalle y solicitud de corrección |
+| [Uso sin conexión](10-app-movil/74-uso-sin-conexion.md) | Qué datos son accesibles sin conexión y qué requiere conectividad |
+| [Actualizaciones de la app](10-app-movil/75-actualizaciones-de-la-app.md) | Cómo actualizar y consecuencias de versiones desactualizadas |
+
+---
+
+### 11. Informes y exportación
+
+Generación, filtrado y exportación de informes de asistencia, costes y cumplimiento.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Informe de asistencia en PDF | **Disponible** | Descarga manual desde el backoffice. |
+| Exportación de empleados a CSV | **Disponible** | Datos básicos del directorio de empleados. |
+| Informe de cumplimiento RDL 8/2019 para inspecciones | **Disponible** | Generación desde el backoffice. |
+| Exportación a Excel/CSV de informes generales | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Informes automáticos periódicos enviados por email | **Pendiente de desarrollo** | Planificado para una versión futura. |
+
+| Artículo | Descripción |
+|---|---|
+| [Tipos de informe](11-informes-y-exportacion/76-tipos-de-informe.md) | Asistencia, puntualidad, costes, anomalías y tareas |
+| [Generar y filtrar informes](11-informes-y-exportacion/77-generar-y-filtrar-informes.md) | Filtros disponibles, previsualización y configuraciones guardadas |
+| [Exportar datos](11-informes-y-exportacion/78-exportar-a-excel-y-csv.md) | Empleados a CSV e informe de asistencia en PDF en V1; exportación general en roadmap |
+| [Informe de cumplimiento normativo](11-informes-y-exportacion/79-informe-de-cumplimiento-normativo.md) | Informe para auditorías e inspecciones según RDL 8/2019 |
+| [Informes automáticos](11-informes-y-exportacion/80-informes-automaticos.md) | Funcionalidad planificada en roadmap; no disponible en V1 |
+
+---
+
+### 12. Cumplimiento normativo
+
+Registro de jornada obligatorio en España, protección de datos y preparación para inspecciones.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Registro de jornada conforme al RDL 8/2019 | **Disponible** | Timestamp inmutable con trazabilidad completa. |
+| Informe de inspección de trabajo | **Disponible** | Generación desde el backoffice con todos los datos requeridos. |
+| Conservación de datos conforme a LOPD/RGPD | **Disponible** | Base legal, períodos de retención y derechos de los empleados. |
+
+| Artículo | Descripción |
+|---|---|
+| [Registro horario obligatorio en España](12-cumplimiento-normativo/81-registro-horario-obligatorio-en-espana.md) | RDL 8/2019: qué exige, ámbito de aplicación y sanciones |
+| [Cómo CheckBiz360 cumple el RDL 8/2019](12-cumplimiento-normativo/82-como-checkbiz360-cumple-el-rdl-8-2019.md) | Mecanismos técnicos: timestamp, inmutabilidad, trazabilidad |
+| [Conservación y protección de datos](12-cumplimiento-normativo/83-conservacion-y-proteccion-de-datos.md) | LOPD/RGPD: base legal, retención y derechos de los empleados |
+| [Preparar una inspección de trabajo](12-cumplimiento-normativo/84-preparar-una-inspeccion-de-trabajo.md) | Qué documentación pedir, qué informe presentar y recomendaciones previas |
+
+---
+
+### 13. Soporte e incidencias
+
+Cómo crear y gestionar incidencias y cómo contactar con el equipo de soporte.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Creación de incidencias desde el backoffice | **Disponible** | Formulario con categoría, prioridad y descripción. |
+| Seguimiento y resolución de incidencias | **Disponible** | Estados, comentarios y reapertura. |
+| Contacto con soporte técnico por email y formulario | **Disponible** | Tiempos de respuesta orientativos, no contractuales. |
+| Numeración automática de tickets | **No disponible** | Las incidencias no generan número de referencia automático en V1. |
+
+| Artículo | Descripción |
+|---|---|
+| [Crear una incidencia](13-soporte-e-incidencias/85-crear-una-incidencia.md) | Qué es una incidencia, campos y notificaciones al equipo de soporte |
+| [Seguimiento y resolución de incidencias](13-soporte-e-incidencias/86-seguimiento-y-resolucion-de-incidencias.md) | Estados, comentarios, historial y reapertura |
+| [Contactar con soporte técnico](13-soporte-e-incidencias/87-contactar-con-soporte-tecnico.md) | Canales, tiempos orientativos y qué información incluir |
+| [Problemas frecuentes y soluciones](13-soporte-e-incidencias/88-problemas-frecuentes-y-soluciones.md) | Las 12 situaciones más habituales con pasos de diagnóstico |
+
+---
+
+### 14. Referencia
+
+Glosario, códigos de error, planes y preguntas frecuentes.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Glosario de términos de la plataforma | **Disponible** | 33 términos principales definidos. |
+| Tabla completa de códigos de error | **Disponible** | Causa y solución para cada código. |
+| Comparativa de planes (Bronze y Enterprise) | **Disponible** | Funcionalidades incluidas en cada plan con sección de roadmap. |
+| Preguntas frecuentes de evaluación | **Disponible** | 20 preguntas y respuestas para clientes que evalúan la plataforma. |
+
+| Artículo | Descripción |
+|---|---|
+| [Glosario](14-referencia/89-glosario.md) | Definiciones de los 33 términos principales de la plataforma |
+| [Códigos de error completos](14-referencia/90-codigos-de-error-completos.md) | Tabla de todos los códigos de error con causa y solución |
+| [Planes y funcionalidades](14-referencia/91-planes-y-funcionalidades.md) | Qué módulos incluye cada plan y funcionalidades en roadmap |
+| [Preguntas frecuentes](14-referencia/92-preguntas-frecuentes.md) | 20 preguntas y respuestas para clientes que evalúan la plataforma |
+
+---
+
+## Estructura de archivos
+
+```
+DOCS/Clients/
+├── README.md                          (este índice)
+├── 01-primeros-pasos/                 (5 artículos)
+├── 02-empleados/                      (7 artículos)
+├── 03-control-horario/                (10 artículos)
+├── 04-calendario-y-horarios/          (7 artículos)
+├── 05-gestion-documental/             (9 artículos)
+├── 06-tareas/                         (10 artículos)
+├── 07-inteligencia-operativa/         (8 artículos)
+├── 08-sucursales-y-entidad/           (6 artículos)
+├── 09-notificaciones/                 (6 artículos)
+├── 10-app-movil/                      (7 artículos)
+├── 11-informes-y-exportacion/         (5 artículos)
+├── 12-cumplimiento-normativo/         (4 artículos)
+├── 13-soporte-e-incidencias/          (4 artículos)
+└── 14-referencia/                     (4 artículos)
+```
+
+**Total: 92 artículos**
