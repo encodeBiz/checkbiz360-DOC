@@ -1,5 +1,107 @@
 # Módulo Calendario — Horarios y Festivos
 
+---
+
+## ADR-CAL-001 — GET calendario con cadena de herencia completa
+
+### Problema
+
+El endpoint `GET /calendar` devuelve el calendario efectivo resuelto, pero el cliente no puede saber de dónde vino cada dato. Concretamente:
+
+- `sources.schedule` solo indica el scope de nivel más alto que aportó el horario semanal, pero no qué días individuales fueron sobreescritos por branch o employee.
+- Los festivos en `holidays[]` son una lista plana sin indicación de si vienen de entity, branch o employee. Esto provoca duplicaciones visibles y hace imposible renderizar los festivos heredados como "solo lectura" en el editor de un scope inferior.
+- El campo `raw` (disponible con `?includeRaw=true`) expone los documentos crudos de cada scope pero obliga al cliente a re-implementar la lógica de resolución para entender el origen de cada campo.
+
+### Decisión: añadir `inheritanceChain` al output del use case
+
+El use case `ResolveEffectiveCalendarUseCase` ya recoge los tres documentos (`entityCal`, `branchCal`, `employeeCal`). Lo que falta es:
+
+**1. Campo `source: ResolveScope` en `Holiday`**
+
+```typescript
+export type Holiday = {
+  id: string;
+  name: string;
+  date: string;           // "YYYY-MM-DD"
+  description?: string;
+  source: "entity" | "branch" | "employee";   // ← NUEVO
+};
+```
+
+`concatHolidays()` ya itera los tres niveles en orden — solo hay que etiquetar con el scope antes de hacer `push`. Como el deduplicado ya existe (por `id`), el festivo conserva el source del scope que lo definió primero (entity gana sobre branch gana sobre employee, que es la semántica correcta para festivos compartidos).
+
+**2. `scheduleInheritance` por día en `EffectiveCalendarOutput`**
+
+```typescript
+export interface EffectiveCalendarOutput {
+  // ... campos existentes ...
+  scheduleInheritance?: {
+    monday?: ResolveScope;
+    tuesday?: ResolveScope;
+    wednesday?: ResolveScope;
+    thursday?: ResolveScope;
+    friday?: ResolveScope;
+    saturday?: ResolveScope;
+    sunday?: ResolveScope;
+  };
+}
+```
+
+Se calcula en `resolveSchedule()`: por cada día, si `employeeActive` y `employeeCal.overridesSchedule[day]` existe → `"employee"`; si `branchActive` y `branchCal.overridesSchedule[day]` → `"branch"`; si `entityCal.defaultSchedule[day]` → `"entity"`; si no → `undefined` (día no configurado).
+
+**3. El controller ya expone `includeRaw`** — no hay cambio de API necesario para el raw. El nuevo `scheduleInheritance` y el `source` en holidays se incluyen siempre (no son datos pesados).
+
+### Respuesta resultante (ejemplo)
+
+```json
+{
+  "code": "calendar/effective_resolved",
+  "data": {
+    "timezone": "Europe/Madrid",
+    "weeklySchedule": { "monday": { "shifts": [{"start": {"hour":9,"minute":0}, "end": {"hour":18,"minute":0}}] }, "..." },
+    "holidays": [
+      { "id": "esp-2024-01-01", "name": "Año Nuevo", "date": "2024-01-01", "source": "entity" },
+      { "id": "bcn-2024-09-11", "name": "Diada", "date": "2024-09-11", "source": "branch" }
+    ],
+    "sources": {
+      "timezone": "entity",
+      "schedule": "branch",
+      "advance": "entity"
+    },
+    "scheduleInheritance": {
+      "monday": "entity",
+      "tuesday": "entity",
+      "wednesday": "branch",
+      "thursday": "branch",
+      "friday": "employee",
+      "saturday": "entity",
+      "sunday": "entity"
+    },
+    "overridesDisabled": false,
+    "ids": { "entityId": "...", "branchId": "...", "employeeId": "..." }
+  }
+}
+```
+
+### Impacto en el backoffice
+
+Con `source` en los festivos, el frontend puede renderizar los festivos heredados con badge y sin botón de edición/borrado en el scope hijo. Con `scheduleInheritance`, el editor de horario puede mostrar cada día con el badge de herencia correcto y solo permitir editar los días que pertenecen al scope actual.
+
+Esto resuelve los bugs documentados en la sección 5: duplicación de festivos heredados, `BranchCalendarDetail` que omite festivos heredados, y la imposibilidad de distinguir orígenes.
+
+### Cambios de código (solo backend)
+
+| Archivo | Cambio |
+|---|---|
+| `domain/entities/Calendar.ts` | Añadir `source: ResolveScope` a `Holiday` |
+| `application/calendar/resolveEffectiveCalendar.usecase.ts` | `concatHolidays()` etiqueta `source`; añadir `buildScheduleInheritance()` privado; añadir `scheduleInheritance` al output |
+| `application/calendar/resolveEffectiveCalendar.usecase.ts` | Añadir `scheduleInheritance` a `EffectiveCalendarOutput` interface |
+| Frontend `calendario.md` bug §5 | Tres bugs de herencia quedan resueltos por este cambio |
+
+No hay cambio de ruta, no hay cambio de firma del controller, no hay migración de datos (Firestore no almacena `source` — se calcula en runtime).
+
+---
+
 ## 1. Resumen
 
 El calendario define los horarios de trabajo por día y gestiona festivos/ausencias. Hay tres ámbitos (scopes), y el sistema resuelve el calendario efectivo por prioridad cascada.

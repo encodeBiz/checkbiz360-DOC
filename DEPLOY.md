@@ -161,3 +161,94 @@ Pendiente hasta validar Fase 6 Frontend/App y QA en dev.
 ```bash
 npm run deploy:function:prod -- apiV100-firebaseEntryHttp-checkinbiz-documentsHandler
 ```
+
+---
+
+## 10. Fix Frontend — BUG-5: Empleados inactivos en detalle de sucursal
+
+### Problema
+
+Al desasignar un branch a un empleado (`active: 0` en `EmployeeEntityResponsibility`), el empleado seguía apareciendo como activo en la lista de empleados del detalle del branch. El filtro usaba `employee.status !== 'active'` (estado general del empleado) en lugar de `item.active === 0` (estado de la asignación al branch).
+
+### Archivos modificados (frontend)
+
+| Archivo | Cambio |
+|---|---|
+| `branch/[id]/detail/detail.controller.tsx` | Eliminado filtro `employee.status !== 'active'`; nuevo filtro `item.active !== 0`; `showInactive` state + `onToggleInactive`; estilo visual en columnas (opacity 0.45 + Tooltip) para filas inactivas |
+| `branch/[id]/detail/components/EmployeeList.tsx` | Añadido Switch "Mostrar inactivos" con props `showInactive` + `onToggleInactive` |
+| `branch/[id]/detail/Detail.tsx` | Props `showInactive` + `onToggleInactive` añadidas y pasadas a `EmployeeList` |
+| `branch/[id]/detail/page.tsx` | Destructura y pasa `showInactive` + `onToggleInactive` desde controller a `Detail` |
+| `locales/es/common.json` | +`sucursal.employeeInactive`, `sucursal.showInactive` |
+| `locales/en/common.json` | +`sucursal.employeeInactive`, `sucursal.showInactive` |
+
+### Comportamiento resultante
+
+- Por defecto solo se muestran empleados con `active !== 0`.
+- El Switch "Mostrar inactivos" revela también los desasignados.
+- Filas inactivas aparecen con `opacity: 0.45`, texto en color `text.disabled` y un Tooltip explicativo en la columna de nombre.
+- Las filas inactivas no son clickables (no navegan al detalle del empleado).
+
+### No requiere deploy de funciones
+
+Cambio exclusivamente frontend. No hay modificaciones en Cloud Functions ni Firestore.
+
+---
+
+## 9. Deploy — QA Bugs + Auth + 2FA Backoffice (sesión 2025-05-22)
+
+### Funciones modificadas
+
+| Función | Cambio |
+|---|---|
+| `apiV100-firebaseEntryHttp-checkinbiz-tasksHandler` | BUG-1: `updateTaskStatus` — `FieldValue.delete()` en cancelación/draft; BUG-2: `updateTask` — limpiar campos de notificación correctamente |
+| `apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues` | BUG-4a: título notificación `"Issue received"` → `"Checkbiz360"` |
+| `apiV100-firebaseEntryHttp-enable2FAUser` | **NUEVA** — Genera secreto TOTP para usuario backoffice |
+| `apiV100-firebaseEntryHttp-verify2FAUser` | **NUEVA** — Verifica código TOTP y activa 2FA |
+| `apiV100-firebaseEntryHttp-get2FAUserStatus` | **NUEVA** — Consulta si el usuario tiene 2FA activo |
+
+### Dev
+
+```bash
+# Bugs QA
+npm run deploy:function:dev -- \
+  apiV100-firebaseEntryHttp-checkinbiz-tasksHandler \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues
+
+# 2FA usuario backoffice (nuevas)
+npm run deploy:function:dev -- \
+  apiV100-firebaseEntryHttp-enable2FAUser \
+  apiV100-firebaseEntryHttp-verify2FAUser \
+  apiV100-firebaseEntryHttp-get2FAUserStatus
+
+# Índices Firestore (BUG-4b: índice issues status → state)
+firebase deploy --only firestore:indexes --project dev-encodebiz
+```
+
+### Prod
+
+```bash
+npm run deploy:function:prod -- \
+  apiV100-firebaseEntryHttp-checkinbiz-tasksHandler \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues \
+  apiV100-firebaseEntryHttp-enable2FAUser \
+  apiV100-firebaseEntryHttp-verify2FAUser \
+  apiV100-firebaseEntryHttp-get2FAUserStatus
+
+firebase deploy --only firestore:indexes --project encodebiz-saas
+```
+
+### Variables de entorno frontend — añadir en `.env.production`
+
+```bash
+NEXT_PUBLIC_BACKEND_URI_STATUS2FA_USER=https://apiv100-firebaseentryhttp-get2fauserstatus-3bnjgtprva-uc.a.run.app
+NEXT_PUBLIC_BACKEND_URI_ENABLE2FA_USER=https://apiv100-firebaseentryhttp-enable2fauser-3bnjgtprva-uc.a.run.app
+NEXT_PUBLIC_BACKEND_URI_VERIFY2FA_USER=https://apiv100-firebaseentryhttp-verify2fauser-3bnjgtprva-uc.a.run.app
+```
+
+### Checklist pre-deploy
+
+- [ ] `npx eslint src/...` sin errores (`✖ 0 problems`)
+- [ ] `npx tsc --noEmit --skipLibCheck` sin errores
+- [ ] Verificar que las URLs generadas por Firebase en dev coinciden con las del `.env.development`
+- [ ] Añadir las 3 variables 2FA al `.env.production` antes de deploy de frontend
+- [ ] Verificar Firestore Rules: `users/{uid}/security/**` solo accesible por el propio usuario
