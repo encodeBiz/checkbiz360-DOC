@@ -5,7 +5,7 @@
 | Entorno | Firebase Project | Base URL |
 |---|---|---|
 | Dev | `dev-encodebiz` | `https://us-central1-dev-encodebiz.cloudfunctions.net/` |
-| Prod | `encodebiz-saas` | `https://us-central1-encodebiz-saas.cloudfunctions.net/` |
+| Prod | `encodebiz-services` | `https://us-central1-encodebiz-services.cloudfunctions.net/` |
 
 ## 2. Versión API
 
@@ -59,6 +59,7 @@ npm run deploy:function:prod -- <nombre-funcion> [nombre-funcion2 ...]
 | `apiV100-firebaseEntryHttp-merlinIa` | `/merlin` |
 | `apiV100-firebaseEntryHttp-stripeWebhook` | `/stripeWebhook` |
 | `apiV100-firebaseEntryHttp-criticalHandler` | `/auth/login`, `/auth/validate`, `/calendar` (GET) |
+| `apiV100-firebaseEntryHttp-checkinbiz-analyzeHeuristic` | `/checkinbiz/analyzeHeuristic` |
 
 ### Firestore Triggers
 
@@ -67,10 +68,14 @@ npm run deploy:function:prod -- <nombre-funcion> [nombre-funcion2 ...]
 | `apiV100-firebaseFirestoreTriggersCheckinBiz-onChecklogWrite` | `entities/{entityId}/checklogs/{checklogId}` — onWrite |
 | `apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues` | issues — onCreate |
 | `apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateEmployee` | `entities/{entityId}/employees/{employeeId}` — onCreate |
+| `apiV100-firebaseFirestoreTriggersCheckinBiz-onBranchPattern` | `checkbiz_branch_patterns/{patternId}` — onWrite; guarda snapshot en `pattern_history` |
+| `apiV100-firebaseFirestoreTriggersCheckinBiz-onEmpPattern` | `checkbiz_employee_patterns/{patternId}` — onWrite; guarda snapshot en `pattern_history` |
+| `apiV100-firebaseFirestoreTriggersCheckinBiz-onTaskPattern` | `entities/{entityId}/tasks/{taskId}` — onWrite; actualiza `taskSignals` en BranchPattern y EmployeePattern; recalcula `profileType` |
+| `apiV100-firebaseFirestoreTriggersCheckinBiz-onWriteTaskRating` | task rating — onWrite; sincroniza `avgRating` normalizado a `EmployeePattern.taskSignals` |
 
-## 5. Deploy batch — rama `feat/documental-manage`
+## 5. Deploy batch completo (todas las funciones)
 
-Funciones modificadas en la rama actual. Usar este comando para sincronizar dev:
+Útil para sincronizar un entorno desde cero. Reemplazar `deploy:function:dev` por `deploy:function:prod` para producción.
 
 ```bash
 npm run deploy:function:dev -- \
@@ -95,10 +100,13 @@ npm run deploy:function:dev -- \
   apiV100-firebaseFirestoreTriggersCheckinBiz-onChecklogWrite \
   apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateIssues \
   apiV100-firebaseFirestoreTriggersCheckinBiz-onCreateEmployee \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onBranchPattern \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onEmpPattern \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onTaskPattern \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onWriteTaskRating \
+  apiV100-firebaseEntryHttp-checkinbiz-analyzeHeuristic \
   apiV100-firebaseEntryHttp-criticalHandler
 ```
-
-Mismo bloque para prod reemplazando `deploy:function:dev` por `deploy:function:prod`.
 
 ## 6. Qué cambió por función (rama actual)
 
@@ -191,6 +199,127 @@ Al desasignar un branch a un empleado (`active: 0` en `EmployeeEntityResponsibil
 ### No requiere deploy de funciones
 
 Cambio exclusivamente frontend. No hay modificaciones en Cloud Functions ni Firestore.
+
+---
+
+## 11. Deploy — Heurística V2 (mergeado a `main` el 2026-07-03)
+
+### Qué cambió por función
+
+| Función | Tipo | Cambio |
+|---------|------|--------|
+| `onChecklogWrite` | Firestore trigger | `writeController.ts`: campos V2 (costCV, dataMaturity, dataQuality, scheduledHours, profileType); llama a `ProfileClassifier` en cada checkout; two-tier archetype |
+| `onWriteTaskRating` | Firestore trigger | Extendido: tras actualizar `employee.ratingTask`, sincroniza `avgRating` normalizado al `EmployeePattern.taskSignals` |
+| `onTaskPattern` | Firestore trigger | **NUEVA** — Escucha `entities/{entityId}/tasks/{taskId}`; en transición → `validated`/`rejected` actualiza `BranchPattern.taskSignals` y `EmployeePattern.taskSignals` para todos los empleados asignados; también recalcula `profileType` |
+| `onBranchPattern` | Firestore trigger | Guarda snapshot en `pattern_history` (máx 5 versiones/día) |
+| `onEmpPattern` | Firestore trigger | Guarda snapshot en `pattern_history` (máx 5 versiones/día) |
+| `analyzeHeuristic` | HTTP | Usa `HeuristicCore` V2 (F1+F2+F3): retorna `profileType`, `dataMaturity`, `dataQuality`, indicadores de tareas (TAC/TQI/TRI/PTC) con null-guard cuando taskCount < 3 |
+
+### Thresholds OSD (±15 min aceptable)
+
+OSD = `stdStartHour + stdEndHour`. Umbrales calibrados:
+- `< 0.5h` → success (±15 min en entrada y salida)
+- `0.5–1.0h` → warning
+- `> 1.0h` → error
+
+### Deploy prod (encodebiz-services)
+
+```bash
+# Desde functions/
+npm run deploy:function:prod -- \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onChecklogWrite \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onWriteTaskRating \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onTaskPattern \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onBranchPattern \
+  apiV100-firebaseFirestoreTriggersCheckinBiz-onEmpPattern \
+  apiV100-firebaseEntryHttp-checkinbiz-analyzeHeuristic
+```
+
+### encodebiz-api (Docker Compose — nuevo)
+
+V2 de api-express. Repo independiente en `PLATAFORMA/encodebiz-api/`.  
+Ver documentación completa: [`DOCS/modulos/encodebiz-api.md`](./modulos/encodebiz-api.md)
+
+```bash
+# Desde PLATAFORMA/encodebiz-api/
+
+# Build y arranque completo (prod)
+docker compose up --build -d
+
+# Solo un servicio
+docker compose up --build merlin
+docker compose up --build sync
+
+# Dev local (solo PostgreSQL en puerto 5435)
+docker compose -f docker-compose.dev.yml up -d
+
+# Logs
+docker compose logs -f merlin
+docker compose logs -f sync
+```
+
+**Secrets requeridos en el servidor (NO en repo):**
+```
+./secrets/firebase-sa.json   → service account Firebase (montar como volumen)
+.env                         → DATABASE_URL, ENCODEBIZ_API_KEY, OPENAI_API_KEY
+```
+
+**Variables de entorno Firebase Functions** para Report Pipeline V2 (Fase 1):
+```bash
+# Añadir a .env de Firebase Functions (encodebiz-services)
+ANALYTICS_SERVER_URL=https://api.encodebiz.com   # URL del servidor
+ANALYTICS_API_KEY=<mismo valor que ENCODEBIZ_API_KEY en el servidor>
+```
+
+### api-express (Docker — legacy, en migración a encodebiz-api)
+
+El servicio `custom-gpt-service` (Merlin) aún corre en api-express mientras se completa la migración.
+
+```bash
+# 1. Compilar desde api-express/
+npm run build
+
+# 2. Build de la imagen Docker (desde raíz del proyecto)
+docker buildx build --platform linux/amd64 \
+  -t custom-gpt-service:qa-heuristic-v2 \
+  -f api-express/Dockerfile api-express
+
+# 3. Exportar imagen
+docker save -o api-express/image/custom-gpt-service-qa.tar custom-gpt-service:qa-heuristic-v2
+
+# 4. Subir y arrancar en Plesk (reemplazar contenedor existente)
+docker stop custom-gpt-service && docker rm custom-gpt-service
+docker load -i custom-gpt-service-qa.tar
+docker run -d --name custom-gpt-service --restart unless-stopped \
+  -p 32828:8080 custom-gpt-service:qa-heuristic-v2
+```
+
+### Checklist pre-deploy
+
+- [ ] `npm run build` limpio en `functions/` ✅ (verificado)
+- [ ] `npm run build` limpio en `api-express/` ✅ (verificado)
+- [ ] Verificar que `MERLIN_URL` y `MERLIN_API_KEY` en `.env` del api-express apuntan a dev
+- [ ] Confirmar que los índices Firestore cubren `checkbiz_employee_patterns` con query por `employeeId` + `entityId` (usada en `syncRatingToPatterns`)
+- [ ] Smoke test: crear un checkout válido → verificar que `checkbiz_branch_patterns/{branchId}` recibe `costCV`, `dataMaturity`, `dataQuality`, `profileType`
+- [ ] Smoke test: validar una tarea → verificar que `taskSignals` se actualiza en `checkbiz_branch_patterns` y `checkbiz_employee_patterns`
+- [ ] Smoke test: añadir un rating → verificar que `taskSignals.avgRating` en el patrón del empleado se actualiza
+- [ ] Smoke test: llamar a `analyzeHeuristic` → verificar que el resultado incluye `profileType`, `dataMaturity`, `dataQuality`
+- [ ] Smoke test: llamar a Merlin (`/api/v1/gpt/interpret?mode=interpret`) → verificar que el output menciona valores numéricos específicos (HH:MM, %, ★)
+
+### Índice Firestore requerido
+
+`syncRatingToPatterns` hace un query: `checkbiz_employee_patterns.where("employeeId", ==, id).where("entityId", ==, id)`. Verificar que existe o añadir en `firestore.indexes.json`:
+
+```json
+{
+  "collectionGroup": "checkbiz_employee_patterns",
+  "queryScope": "COLLECTION",
+  "fields": [
+    { "fieldPath": "employeeId", "order": "ASCENDING" },
+    { "fieldPath": "entityId", "order": "ASCENDING" }
+  ]
+}
+```
 
 ---
 

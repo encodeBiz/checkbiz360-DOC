@@ -5,35 +5,49 @@
 EncodeBiz es una plataforma SaaS de gestión operativa para empresas con empleados en sucursales. El producto principal es **CheckBiz**, que gestiona asistencia, tareas, documentos y analítica operativa.
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   CLIENTES                          │
-│                                                     │
-│  ┌──────────────────┐    ┌─────────────────────┐   │
-│  │  encodebiz-front │    │   CheckBiz360        │   │
-│  │  (Backoffice)    │    │   (App móvil)        │   │
-│  │  Next.js 14      │    │   Flutter 3.35.6     │   │
-│  └────────┬─────────┘    └──────────┬──────────┘   │
-└───────────┼──────────────────────────┼──────────────┘
-            │  HTTPS / Bearer Token    │
-            ▼                          ▼
-┌───────────────────────────────────────────────────────┐
-│              encodeBiz-SAAS (Backend)                 │
-│                                                       │
-│  Firebase Functions v2 — TypeScript — Node 22         │
-│  Región: us-central1                                  │
-│  Versión API: v100 (apiV100-*)                        │
-│                                                       │
-│  ┌─────────────┐  ┌───────────────┐  ┌────────────┐ │
-│  │  HTTP       │  │  Firestore    │  │  Schedule  │ │
-│  │  Functions  │  │  Triggers     │  │  Functions │ │
-│  └─────────────┘  └───────────────┘  └────────────┘ │
-└───────────────────────────────────────────────────────┘
-            │
-            ▼
-┌───────────────────────────────────────────────────────┐
-│           Google Firebase / GCP                       │
-│  Firestore  │  Cloud Storage  │  FCM  │  Auth         │
-└───────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                         CLIENTES                             │
+│                                                              │
+│  ┌──────────────────┐        ┌─────────────────────┐        │
+│  │  encodebiz-front │        │   CheckBiz360        │        │
+│  │  (Backoffice)    │        │   (App móvil)        │        │
+│  │  Next.js 14      │        │   Flutter 3.35.6     │        │
+│  └────────┬─────────┘        └──────────┬──────────┘        │
+└───────────┼────────────────────────────┼───────────────────-─┘
+            │  HTTPS / Bearer Token       │
+            ▼                             ▼
+┌───────────────────────────────────────────────────────────────┐
+│              encodeBiz-SAAS (Firebase — Backend Operacional)  │
+│                                                               │
+│  Firebase Functions v2 — TypeScript — Node 22                 │
+│  Región: us-central1  │  Proyecto prod: encodebiz-services    │
+│                                                               │
+│  ┌──────────────┐  ┌────────────────┐  ┌──────────────────┐  │
+│  │ HTTP Functions│  │Firestore       │  │Scheduled Functions│  │
+│  │ (CRUD, auth) │  │Triggers        │  │(planifiers, crons) │  │
+│  └──────────────┘  └────────────────┘  └──────────────────┘  │
+└────────────────────────┬──────────────────────────────────────┘
+                         │  S2S (X-Encodebiz-Key)  │
+                         ▼                          │
+┌──────────────────────────────────────────────────────────────┐
+│          encodebiz-api (V2 API — Microservicios)             │
+│                                                              │
+│  npm workspaces + Docker Compose + nginx                     │
+│                                                              │
+│  ┌────────────┐  ┌──────────────┐  ┌──────┐  ┌──────────┐  │
+│  │  merlin    │  │  checkinbiz  │  │ sync │  │analytics │  │
+│  │  :3001     │  │  :3002       │  │ :3003│  │  :3004   │  │
+│  │  IA / OpenAI│  │  Heurística  │  │Firebase│ │Histórico │  │
+│  └────────────┘  └──────────────┘  └──────┘  └──────────┘  │
+└────────────────────────┬─────────────────────────────────────┘
+                         │
+                         ▼
+┌──────────────────────────────────────────────────────────────┐
+│              Infraestructura                                 │
+│                                                              │
+│  Google Firebase/GCP                   PostgreSQL 16         │
+│  Firestore │ Storage │ FCM │ Auth       (datos analíticos)    │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ## 2. Stack Técnico por Capa
