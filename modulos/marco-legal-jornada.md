@@ -4,6 +4,8 @@
 > Última revisión normativa: mayo 2026. BOE-A-2015-11430 muestra texto consolidado con última actualización publicada el 04/12/2025.
 > Este documento es un resumen operativo para el diseño del módulo `ContractProfile`. No sustituye asesoría jurídica laboral.
 
+Este marco legal alimenta las plantillas de España. No aplica automáticamente a entidades de otras jurisdicciones y no debe bloquear la configuración del cliente. Las discrepancias contra este marco generan warnings auditables; la responsabilidad final de la configuración contractual recae en el administrador de la entidad.
+
 ---
 
 ## 1. Jornada Ordinaria — Art. 34 ET
@@ -17,9 +19,10 @@
 | Distribución irregular | Hasta 10 % de la jornada, si no hay CT | Con CT, el porcentaje puede modificarse. Preaviso 5 días al trabajador |
 
 **Implicaciones para CheckBiz360:**
-- `weeklyHoursContracted` no puede superar 40 h en jornada completa.
+- En plantillas de España, `weeklyHoursContracted > 40` genera warning legal.
 - Si un empleado acumula >40 h/semana de media anual, el sistema debe alertar.
 - Las 12 h de descanso entre jornadas se pueden validar en el checkout (comparar `checkOutAt` con el próximo `scheduledStartAt`).
+- **Fuera de scope V1:** el preaviso de 5 días para distribución irregular no tiene campo ni proceso en el módulo `ContractProfile`. El sistema no rastrea ni valida la comunicación de cambios de jornada por distribución irregular. Queda como deuda V2: `CONTRACTS-V2-IRREGULAR-DISTRIBUTION-NOTICE`.
 
 ---
 
@@ -37,9 +40,9 @@
 | Menores de 18 años | Prohibidas absolutamente | Sin excepciones |
 
 **Implicaciones para CheckBiz360:**
-- El campo `overtime.yearlyLimitHours` en `ContractProfile` tiene como techo legal 80.
+- En plantillas de España, `overtime.yearlyLimitHours > 80` genera warning legal.
 - El sistema debe acumular `overtimeHoursYTD` por empleado y alertar al 80 % del límite configurado.
-- Si el empleado tiene `nightShift.enabled = true` y `nightShift.overtimeAllowed = false` (default correcto por ley), el motor debe bloquear el cómputo de extras nocturnas y marcar la anomalía.
+- Si el empleado tiene `nightShift.enabled = true` y `nightShift.overtimeAllowed = true`, el motor debe marcar warning legal en plantillas de España.
 
 ---
 
@@ -80,7 +83,7 @@
 **Implicaciones para CheckBiz360:**
 - Si `contractType = "part_time"`, el motor usa el bloque `complementaryHours` en lugar de `overtime`.
 - El sistema debe distinguir horas complementarias (dentro del límite del 30/60 %) de horas extraordinarias (si se supera ese límite).
-- Alert: cuando el empleado parcial supera `weeklyHoursContracted * complementaryHoursLimitPercent / 100`.
+- Alert: cuando el empleado parcial supera `weeklyHoursContracted * (pactLimitPercent + voluntaryLimitPercentAplicable) / 100`.
 
 ---
 
@@ -124,7 +127,7 @@
 | Conservación | 4 años mínimo (accesible a trabajadores, RLT e Inspección) |
 | Disponibilidad | El registro debe estar disponible en el centro de trabajo o accesible en tiempo real |
 
-**CheckBiz360 cumple este requisito** mediante el timestamp inmutable de cada checklog (inicio y fin de jornada con coordenadas GPS, dispositivo y turno activo).
+**CheckBiz360 está diseñado para soportar este requisito** mediante el timestamp inmutable de cada checklog (inicio y fin de jornada con coordenadas GPS, dispositivo y turno activo), sujeto a que la entidad mantenga políticas de conservación, acceso y disponibilidad compatibles con su jurisdicción.
 
 ---
 
@@ -154,19 +157,22 @@ Superar el límite de horas extraordinarias (80 h/año), hacer trabajar a menore
 
 ---
 
-## 9. Resumen para Diseño del Módulo ContractProfile
+## 9. Referencias para Warnings de la Plantilla España
 
-| Campo del modelo | Límite legal de referencia | Flexible por CT |
+Estos valores alimentan warnings en plantillas con `jurisdiction = "ES"`. No son bloqueos de guardado.
+
+| Campo del modelo | Referencia legal España | Flexible por CT |
 |---|---|---|
-| `weeklyHoursContracted` | Max 40 h | No (es la jornada máxima) |
+| `weeklyHoursContracted` | Warning si supera 40 h | No (es la jornada máxima) |
 | `dailyHoursMax` | Max 9 h ordinarias | Sí |
 | `minRestBetweenShiftsHours` | Min 12 h | No |
-| `overtime.yearlyLimitHours` | Max 80 h | Solo a la baja |
+| `overtime.yearlyLimitHours` | Warning si supera 80 h | Solo a la baja |
 | `overtime.payRate` | Min 1.0 (igual a ordinaria) | Sí (al alza) |
-| `overtime.restMaxWeeks` | Max 16 semanas (4 meses) | Sí (a la baja) |
+| `overtime.restMaxMonths` | Max 4 meses calendario | Sí (a la baja) |
 | `nightShift.startTime / endTime` | 22:00–06:00 | Sí por CT |
 | `nightShift.dailyHoursMaxNight` | Max 8 h/noche (media 15 días) | No |
-| `complementaryHours.limitPercent` | Max 30 % (60 % con CT) | Sí |
+| `complementaryHours.pactLimitPercent` | Max 30 % (60 % con CT) | Sí |
+| `complementaryHours.voluntaryLimitPercent` | Max 15 % adicional (30 % con CT) | Sí |
 | `complementaryHours.noticeDays` | Min 3 días | Sí (a la baja si CT lo permite) |
 
 ---

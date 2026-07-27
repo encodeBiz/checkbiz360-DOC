@@ -13,6 +13,13 @@
 
 ## Navegación
 
+### Seguridad
+- [Security-Audit/](../Security-Audit/README.md) — Auditoría de seguridad 2026-05-25: hallazgos, severidades y plan de remediación
+  - [AUDIT-BACKEND.md](../Security-Audit/2026-05-25/AUDIT-BACKEND.md) — 8 hallazgos en Cloud Functions / Firestore / Storage
+  - [AUDIT-BACKOFFICE.md](../Security-Audit/2026-05-25/AUDIT-BACKOFFICE.md) — 6 hallazgos en Next.js backoffice
+  - [AUDIT-MOBILE.md](../Security-Audit/2026-05-25/AUDIT-MOBILE.md) — 6 hallazgos en app Flutter
+  - [REMEDIATION-PLAN.md](../Security-Audit/2026-05-25/REMEDIATION-PLAN.md) — Plan priorizado por fases con owners y estimados
+
 ### Arquitectura y dominio
 - [ARQUITECTURA.md](./ARQUITECTURA.md) — Visión de sistema, capas, stack, comunicación
 - [DOMINIO.md](./DOMINIO.md) — Entidades, roles, enums, máquinas de estado
@@ -36,6 +43,6 @@
 ## Reglas de uso
 
 1. Esta carpeta `DOCS/` es la fuente única de verdad. Las docs en sub-proyectos han sido eliminadas o deprecadas.
-2. Cada sub-proyecto mantiene su propio `AGENTS.md` y `AI-RULES.md` como guía operativa de ese repo.
+2. Cada sub-proyecto mantiene su propio `AGENTS.md` como guía operativa de ese repo.
 3. Cuando un módulo tenga cambios de contrato, actualizar el archivo correspondiente aquí antes de mergar código.
 4. El módulo de tareas es el más crítico — leer `modulos/task.md` antes de tocar cualquier controlador de tareas.

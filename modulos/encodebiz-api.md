@@ -2,7 +2,7 @@
 
 > Repo: `PLATAFORMA/encodebiz-api/` — standalone, git propio  
 > Stack: Node 22 · TypeScript strict · npm workspaces · Docker Compose · nginx  
-> Última actualización: 2026-07-04
+> Última actualización: 2026-07-04 (Fase 2 + 3 implementadas)
 
 ---
 
@@ -34,10 +34,11 @@ encodebiz-api/
 │   ├── merlin/    :3001      → IA interpretación operativa (OpenAI)
 │   ├── checkinbiz/:3002      → HeuristicCore V2 on-demand
 │   ├── sync/      :3003      → Ingesta Firebase → PostgreSQL (S2S)
-│   └── analytics/ :3004      → Histórico patrones, reportes, TrendAnalysis
+│   ├── analytics/ :3004      → Histórico patrones y snapshots (S2S)
+│   └── reports/   :3005      → Generación PDF y pipeline de reportes (migra checkinbiz_generate_report)
 ├── nginx/nginx.conf          → Reverse proxy (puerto 80)
 ├── migrations/001_init.sql   → Schema PostgreSQL (idempotente)
-├── docker-compose.yml        → Producción: nginx + postgres + 4 servicios
+├── docker-compose.yml        → Producción: nginx + postgres + 5 servicios
 └── docker-compose.dev.yml    → Desarrollo local: solo postgres en :5435
 ```
 
@@ -101,18 +102,36 @@ try {
 
 ---
 
-### analytics — Histórico y reportes analíticos (:3004)
+### analytics — Histórico de patrones (:3004)
 
-Construye reportes enriquecidos desde PostgreSQL y sirve histórico de patrones.  
+Recibe snapshots de BranchPattern desde Firebase y los persiste en PostgreSQL para que Merlin tenga contexto histórico.  
 Auth: **API key S2S** (`X-Encodebiz-Key: <secret>`)
 
 ```
-# Implementado (Fase 3 lectura):
-GET  /api/analytics/patterns/history    → snapshots históricos de patrones
-
-# Pendiente (Fase 2):
-POST /api/analytics/build/daily-report  → reporte diario enriquecido con task ratings
+GET  /api/analytics/patterns/history         → snapshots históricos (últimos N días)
+POST /api/analytics/build/pattern-snapshot   → upsert en pattern_snapshots (llamado por onBranchPatternSync)
 ```
+
+**Flujo Fase 3:** `onChecklogWrite` → `branchRepo.upsert` → Firestore `checkbiz_branch_patterns/{id}` → `onBranchPatternSync` (trigger) → `POST /api/analytics/build/pattern-snapshot`
+
+No recalcula: extrae los campos del BranchPattern (ya calculados en Firebase) + consulta `task_ratings_raw` para el rating 30d.
+
+---
+
+### reports — Generación de reportes PDF (:3005)
+
+Migra `checkinbiz_generate_report` de Firebase Functions. Genera PDFs idénticos a producción pero sin escanear Firestore bajo demanda.  
+Auth: **Firebase JWT** en `/generate`, **API key** en el resto.
+
+```
+POST /api/reports/generate          → genera PDF desde employee_daily_reports + Storage + Firestore history
+POST /api/reports/cron/trigger      → disparo manual del cron (testing)
+GET  /api/reports/status            → qué fechas tienen datos pre-computados
+```
+
+**Flujo:** Cron horario (`:05`) detecta branches en 02:xx local → calcula ciclos de ayer desde `checklogs_raw` → upsert en `employee_daily_reports`. Al llamar a `/generate`, lee los datos pre-computados, construye el PDF con PDFKit, sube a Firebase Storage y guarda historial en `entities/{entityId}/reports`.
+
+**Respuesta idéntica a producción:** `{ reporData: {..., ref: {path}}, code: "report/success" }`
 
 ---
 
@@ -121,13 +140,13 @@ POST /api/analytics/build/daily-report  → reporte diario enriquecido con task 
 | Fase | Descripción | Estado | Servicio |
 |------|-------------|--------|----------|
 | **0** | Fundación: servidor, migrations SQL, health, auth, Zod | ✅ **Completo** | Todos |
-| **1** | Raw Sync: Firebase triggers → PostgreSQL | ✅ **Completo** (server-side). Falta: `SyncChecklogService` en Firebase Functions | `sync` |
-| **2** | Daily Report enriquecido desde PostgreSQL + task ratings | ⏳ **Pendiente** | `analytics` |
-| **3** | Histórico de patrones: snapshot diario en `pattern_snapshots` | ⏳ **Pendiente** (GET existe, captura no activa hasta Fase 2) | `analytics` |
+| **1** | Raw Sync: Firebase triggers → PostgreSQL (checklogs + task ratings) | ✅ **Completo** | `sync` + Firebase |
+| **2** | PDF Pipeline: cron hourly → `employee_daily_reports` → `/generate` endpoint | ✅ **Completo** | `reports` |
+| **3** | Pattern Snapshots: `onBranchPatternSync` → `pattern_snapshots` | ✅ **Completo** | `analytics` + Firebase |
 | **4** | IA con contexto histórico: TrendAnalysis → Merlin | ⏳ **Pendiente** | `merlin` + `analytics` |
 | **5** | HeuristicCore migrado al servidor, Firebase como proxy puro | ⏳ **Pendiente** | `checkinbiz` |
 
-**Siguiente paso concreto (Fase 1 cierre):** implementar `SyncChecklogService` y `SyncTaskRatingService` en Firebase Functions (`functions/src/core/analytics/`) y conectarlos a los triggers existentes `onWhriteChecklog` y `onWriteTaskRating`.
+**Próximo paso (deploy):** añadir `ANALYTICS_SERVER_URL` y `ANALYTICS_API_KEY` en `.env.encodebiz-services` de Firebase Functions (apuntan al servidor `encodebiz-api`). Sin estas vars, los triggers de sync y el snapshot de patrones no envían datos al servidor.
 
 Ver diseño completo: [`04_fases.md`](../ingenieria/report-pipeline-v2/04_fases.md)
 
@@ -136,11 +155,12 @@ Ver diseño completo: [`04_fases.md`](../ingenieria/report-pipeline-v2/04_fases.
 ## Schema PostgreSQL
 
 ```
-checklogs_raw       → réplica analítica de checklogs (Fase 1)
-task_ratings_raw    → valoraciones de tareas (Fase 1)
-sync_log            → auditoría de syncs con status/duration_ms
-daily_reports       → reportes diarios pre-computados (Fase 2)
-pattern_snapshots   → fotografía diaria del BranchPattern (Fase 3)
+checklogs_raw           → réplica analítica de checklogs (Fase 1)
+task_ratings_raw        → valoraciones de tareas (Fase 1)
+sync_log                → auditoría de syncs con status/duration_ms
+daily_reports           → agregado diario por sucursal (reservado, no activo)
+pattern_snapshots       → snapshot diario del BranchPattern (Fase 3)
+employee_daily_reports  → datos por empleado para generación de PDF (Fase 2)
 ```
 
 Schema completo: [`migrations/001_init.sql`](../../encodebiz-api/migrations/001_init.sql)  
@@ -216,12 +236,20 @@ El archivo `./secrets/firebase-sa.json` no se sube al repo (está en `.gitignore
 
 | Variable | Servicio | Descripción |
 |---|---|---|
-| `DATABASE_URL` | sync, analytics, checkinbiz | PostgreSQL connection string |
-| `ENCODEBIZ_API_KEY` | sync, analytics | API key S2S compartida con Firebase Functions |
+| `DATABASE_URL` | sync, analytics, checkinbiz, reports | PostgreSQL connection string |
+| `ENCODEBIZ_API_KEY` | sync, analytics, reports (cron trigger) | API key S2S compartida con Firebase Functions |
 | `OPENAI_API_KEY` | merlin | Clave OpenAI para Responses API |
 | `GOOGLE_APPLICATION_CREDENTIALS` | todos | Path a firebase-sa.json |
-| `PORT` | todos | Puerto del servicio (default: 3001/3002/3003/3004) |
+| `FIREBASE_STORAGE_BUCKET` | reports | Bucket para subir los PDFs generados (`encodebiz-services.firebasestorage.app` en prod) |
+| `PORT` | todos | Puerto del servicio (3001–3005) |
 | `NODE_ENV` | todos | `production` en prod |
+
+**Firebase Functions** (`.env.encodebiz-services`):
+
+| Variable | Descripción |
+|---|---|
+| `ANALYTICS_SERVER_URL` | URL pública del servidor `encodebiz-api` (nginx :80). Requerido por `onChecklogSync`, `onTaskRatingSync`, `onBranchPatternSync` |
+| `ANALYTICS_API_KEY` | Debe coincidir con `ENCODEBIZ_API_KEY` del servidor |
 
 ---
 
@@ -232,6 +260,7 @@ El archivo `./secrets/firebase-sa.json` no se sube al repo (está en `.gitignore
 /api/v1/checkinbiz/ → checkinbiz:3002
 /api/sync/          → sync:3003
 /api/analytics/     → analytics:3004
+/api/reports/       → reports:3005
 ```
 
 ---
@@ -243,7 +272,9 @@ Firebase Functions actúan como proxy delgado hacia los servicios de `encodebiz-
 ```
 Estado actual:
   ✅ merlin      — Firebase merlinIa → proxy → encodebiz-api/merlin (pendiente de conectar)
-  ⏳ sync        — Falta SyncChecklogService en Firebase Functions
+  ✅ sync        — onChecklogSync + onTaskRatingSync → encodebiz-api/sync (Fase 1 completa)
+  ✅ reports     — checkinbiz_generate_report → proxy → encodebiz-api/reports (Fase 2 completa)
+  ✅ analytics   — onBranchPatternSync → encodebiz-api/analytics (Fase 3 completa)
   ⏳ checkinbiz  — Falta en Fase 5 (Firebase analyzeHeuristic → proxy → checkinbiz:3002)
 
 Permanece en Firebase (sin plan de migración):

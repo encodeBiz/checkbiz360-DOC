@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Manual de usuario — Integración Rentman · checkbiz360</title>
+<style>
+  :root {
+    --ink: #1A1D23;
+    --muted: #55606E;
+    --soft: #7A8494;
+    --line: #DCE0E6;
+    --line-2: #EAEDF1;
+    --surface: #FFFFFF;
+    --surface-2: #F5F6F8;
+    --amber: #B4700E;
+    --amber-soft: #FBF1DE;
+    --teal: #1C766E;
+    --teal-soft: #E1EFED;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  @page { size: A4; margin: 18mm 16mm; }
+
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0; color: var(--ink); background: #fff;
+    font-family: var(--sans); font-size: 10.5pt; line-height: 1.55;
+  }
+
+  h1, h2, h3, h4 { margin: 0; line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
+  p { margin: 0; }
+  strong { font-weight: 650; }
+  em { font-style: normal; color: var(--amber); font-weight: 600; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 7.5pt; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--amber); font-weight: 600;
+  }
+  .muted { color: var(--muted); }
+
+  /* ── flow ── */
+  .stack > * + * { margin-top: 8pt; }
+
+  section { page-break-before: always; padding-top: 2pt; }
+  section.cover, section.first { page-break-before: avoid; }
+
+  .sec-h { display: flex; align-items: baseline; gap: 10pt; border-bottom: 1.5pt solid var(--ink); padding-bottom: 7pt; margin-bottom: 14pt; }
+  .sec-h .no { font-family: var(--mono); font-size: 11pt; font-weight: 700; color: var(--amber); }
+  .sec-h h2 { font-size: 17pt; font-weight: 750; }
+
+  h3 { font-size: 12pt; font-weight: 700; margin-top: 16pt; margin-bottom: 5pt; }
+  h3:first-of-type { margin-top: 0; }
+
+  p + p { margin-top: 6pt; }
+  .lead { font-size: 11.5pt; color: var(--muted); }
+
+  /* ── cover ── */
+  .cover { min-height: 244mm; display: flex; flex-direction: column; }
+  .cover .top { display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 8pt; font-weight: 750; font-size: 11pt; }
+  .brand .dot { width: 17pt; height: 17pt; border-radius: 5pt; background: var(--amber); color: #fff; display: grid; place-items: center; font-size: 9pt; }
+  .badge { font-family: var(--mono); font-size: 7.5pt; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1pt solid var(--line); border-radius: 999px; padding: 4pt 10pt; }
+  .cover .mid { margin-top: auto; margin-bottom: auto; }
+  .cover h1 { font-size: 34pt; font-weight: 800; letter-spacing: -.02em; }
+  .cover .sub { font-size: 13pt; color: var(--muted); margin-top: 12pt; max-width: 132mm; }
+  .cover .meta { margin-top: 26pt; display: flex; gap: 30pt; font-family: var(--mono); font-size: 8pt; letter-spacing: .04em; color: var(--soft); text-transform: uppercase; }
+  .cover .meta b { display: block; color: var(--ink); font-family: var(--sans); font-size: 9.5pt; letter-spacing: 0; text-transform: none; margin-top: 3pt; }
+  .cover .foot { border-top: 1pt solid var(--line); padding-top: 8pt; font-size: 8pt; color: var(--soft); display: flex; justify-content: space-between; }
+  .draft { color: var(--amber); font-weight: 600; }
+
+  /* ── toc ── */
+  .toc { list-style: none; margin: 0; padding: 0; }
+  .toc li { display: flex; align-items: baseline; gap: 10pt; padding: 8pt 0; border-bottom: 1pt solid var(--line-2); }
+  .toc .n { font-family: var(--mono); font-size: 9pt; color: var(--amber); font-weight: 700; width: 20pt; }
+  .toc .t { font-weight: 600; }
+  .toc .d { color: var(--muted); font-size: 9pt; }
+
+  /* ── callouts / cards ── */
+  .note { border-left: 3pt solid var(--teal); background: var(--teal-soft); padding: 9pt 12pt; border-radius: 0 6pt 6pt 0; font-size: 9.5pt; }
+  .warn { border-left: 3pt solid var(--amber); background: var(--amber-soft); padding: 9pt 12pt; border-radius: 0 6pt 6pt 0; font-size: 9.5pt; }
+  .note .lbl, .warn .lbl { font-family: var(--mono); font-size: 7pt; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 3pt; }
+  .note .lbl { color: var(--teal); }
+  .warn .lbl { color: var(--amber); }
+
+  .card { border: 1pt solid var(--line); border-radius: 8pt; padding: 12pt 14pt; break-inside: avoid; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 9pt; }
+  .card h4 { font-size: 10.5pt; font-weight: 700; margin-bottom: 3pt; display: flex; align-items: center; gap: 6pt; }
+  .card p { font-size: 9pt; color: var(--muted); }
+  .pill { font-family: var(--mono); font-size: 6.5pt; letter-spacing: .06em; text-transform: uppercase; padding: 2pt 6pt; border-radius: 999px; font-weight: 600; }
+  .p-bi { background: var(--teal-soft); color: var(--teal); }
+  .p-out { background: var(--amber-soft); color: var(--amber); }
+  .p-own { background: var(--surface-2); color: var(--muted); border: 1pt solid var(--line); }
+
+  /* ── steps ── */
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+  ol.steps > li { position: relative; padding: 0 0 14pt 30pt; break-inside: avoid; }
+  ol.steps > li::before {
+    counter-increment: s; content: counter(s);
+    position: absolute; left: 0; top: 0; width: 20pt; height: 20pt; border-radius: 999px;
+    background: var(--ink); color: #fff; font-family: var(--mono); font-size: 9pt; font-weight: 700;
+    display: grid; place-items: center;
+  }
+  ol.steps > li:not(:last-child)::after {
+    content: ""; position: absolute; left: 9.5pt; top: 22pt; bottom: 2pt; width: 1pt; background: var(--line);
+  }
+  ol.steps h4 { font-size: 10.5pt; font-weight: 700; margin-bottom: 2pt; }
+  ol.steps p { font-size: 9.5pt; color: var(--muted); }
+  code { font-family: var(--mono); font-size: 8.7pt; background: var(--surface-2); border: 1pt solid var(--line); border-radius: 4pt; padding: 1pt 4pt; }
+
+  /* ── faq ── */
+  .faq { break-inside: avoid; padding: 9pt 0; border-bottom: 1pt solid var(--line-2); }
+  .faq h4 { font-size: 10.5pt; font-weight: 650; }
+  .faq p { font-size: 9.5pt; color: var(--muted); margin-top: 3pt; }
+  .faq .q { color: var(--teal); font-weight: 700; margin-right: 4pt; }
+
+  /* ── table ── */
+  table { width: 100%; border-collapse: collapse; font-size: 9pt; break-inside: avoid; }
+  th, td { text-align: left; padding: 7pt 8pt; border-bottom: 1pt solid var(--line-2); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 7.5pt; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-bottom: 1.5pt solid var(--line); }
+  td strong { color: var(--ink); }
+
+  .foot-note { margin-top: 14pt; font-size: 8pt; color: var(--soft); }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover first">
+  <div class="top">
+    <div class="brand"><span class="dot">◆</span> checkbiz360 <span class="muted" style="font-weight:500">×</span> Rentman</div>
+    <span class="badge">Add-on · Integraciones</span>
+  </div>
+  <div class="mid">
+    <p class="eyebrow">Manual de usuario</p>
+    <h1 style="margin-top:10pt">Integración<br>con Rentman</h1>
+    <p class="sub">Cómo conectar tu cuenta de Rentman con checkbiz360 para controlar la jornada, las tareas y el registro horario legal de tu equipo — sin duplicar datos.</p>
+    <div class="meta">
+      <span>Producto<b>checkbiz360</b></span>
+      <span>Módulo<b>Integración Rentman</b></span>
+      <span>Dirigido a<b>Owner y Manager</b></span>
+    </div>
+  </div>
+  <div class="foot">
+    <span class="draft">Versión preliminar — describe el producto previsto</span>
+    <span>encodeBiz · 2026</span>
+  </div>
+</section>
+
+<!-- TOC -->
+<section>
+  <div class="sec-h"><h2>Contenido</h2></div>
+  <ul class="toc">
+    <li><span class="n">1</span><div class="stack"><span class="t">Qué es esta integración</span><span class="d">Para qué sirve y qué problema resuelve</span></div></li>
+    <li><span class="n">2</span><div class="stack"><span class="t">Antes de empezar</span><span class="d">Requisitos y a quién va dirigido</span></div></li>
+    <li><span class="n">3</span><div class="stack"><span class="t">Activar y conectar</span><span class="d">Paso a paso, desde cero hasta la primera sincronización</span></div></li>
+    <li><span class="n">4</span><div class="stack"><span class="t">Qué se sincroniza</span><span class="d">Proyectos, asignaciones, tareas y horas</span></div></li>
+    <li><span class="n">5</span><div class="stack"><span class="t">El día a día</span><span class="d">Cómo trabajan el responsable y el empleado</span></div></li>
+    <li><span class="n">6</span><div class="stack"><span class="t">Cómo funciona la sincronización</span><span class="d">Qué esperar del sync bidireccional</span></div></li>
+    <li><span class="n">7</span><div class="stack"><span class="t">Preguntas frecuentes</span><span class="d">Las dudas más habituales</span></div></li>
+    <li><span class="n">8</span><div class="stack"><span class="t">Soporte</span><span class="d">Cómo pedir ayuda</span></div></li>
+  </ul>
+</section>
+
+<!-- 1 -->
+<section>
+  <div class="sec-h"><span class="no">01</span><h2>Qué es esta integración</h2></div>
+  <p class="lead">La integración con Rentman conecta tu planificación de producción con el control operativo y horario de checkbiz360. Tu equipo trabaja en checkbiz360; tu operación sigue reflejándose en Rentman. Los dos sistemas se mantienen al día, en ambos sentidos, <strong>sin que tengas que introducir la misma información dos veces.</strong></p>
+
+  <h3>El problema que resuelve</h3>
+  <p>Rentman planifica muy bien tus proyectos, tu equipo y tus asignaciones — pero no cubre el <strong>registro horario legal</strong> obligatorio en España (RDL 8/2019), ni ofrece una aplicación sencilla para que el equipo de campo fiche y ejecute su trabajo del día. Esta integración pone esas dos piezas encima de lo que ya tienes, y devuelve las horas a Rentman.</p>
+
+  <div class="note"><span class="lbl">En una frase</span>Tu producción vive en Rentman; tu cumplimiento legal y tu equipo, en checkbiz360. Conectas una vez y ambos quedan sincronizados.</div>
+
+  <h3>Qué NO cambia</h3>
+  <p>No tienes que abandonar Rentman ni migrar nada. Sigues usando Rentman como hasta ahora; checkbiz360 se suma para lo que Rentman no hace.</p>
+</section>
+
+<!-- 2 -->
+<section>
+  <div class="sec-h"><span class="no">02</span><h2>Antes de empezar</h2></div>
+
+  <h3>Requisitos</h3>
+  <table>
+    <tr><th>Necesitas</th><th>Detalle</th></tr>
+    <tr><td><strong>Cuenta de Rentman activa</strong></td><td>Con permiso para generar un token de integración (Configuration → Account → Integrations).</td></tr>
+    <tr><td><strong>El módulo Rentman activado</strong></td><td>Es un add-on dentro de <strong>Integraciones</strong> en checkbiz360, con su propio plan. Se activa igual que otros módulos de la plataforma.</td></tr>
+    <tr><td><strong>Rol Owner o Manager</strong></td><td>La configuración de la integración solo está disponible para estos roles.</td></tr>
+  </table>
+
+  <div class="warn"><span class="lbl">Importante</span>La integración <strong>no se activa sola</strong>: requiere que la contrates, la enciendas y la configures. Hasta completar la configuración, no sincroniza nada.</div>
+
+  <h3>A quién va dirigido este manual</h3>
+  <p>A la persona que configura y supervisa la integración (Owner o Manager). El equipo de campo no necesita configurar nada: solo usa la app como siempre.</p>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="sec-h"><span class="no">03</span><h2>Activar y conectar</h2></div>
+  <p class="lead" style="margin-bottom:16pt">De cero a la primera sincronización, en cuatro pasos.</p>
+  <ol class="steps">
+    <li>
+      <h4>Activa el módulo en checkbiz360</h4>
+      <p>Entra en <strong>Integraciones</strong> y activa <strong>Rentman</strong>. Si aún no está contratado, verás la opción para añadirlo a tu plan.</p>
+    </li>
+    <li>
+      <h4>Genera tu token en Rentman</h4>
+      <p>En Rentman, ve a <code>Configuration → Account → Integrations</code> y genera un <strong>token personal</strong>. Cópialo (tiene validez de varios años).</p>
+    </li>
+    <li>
+      <h4>Pega el token en checkbiz360</h4>
+      <p>En la configuración del módulo Rentman, pega el token. Se guarda <strong>cifrado</strong> y nunca se muestra de nuevo. Pulsa <strong>Probar conexión</strong> para confirmar que es válido.</p>
+    </li>
+    <li>
+      <h4>Revisa el emparejamiento y listo</h4>
+      <p>checkbiz360 propone el emparejamiento de tus empleados con el equipo de Rentman (por correo electrónico). Confírmalo o ajústalo, y la sincronización arranca sola.</p>
+    </li>
+  </ol>
+  <div class="note"><span class="lbl">Seguridad</span>Tu token de Rentman se almacena cifrado y solo lo usa el servicio de sincronización. No se comparte ni se muestra en pantalla.</div>
+</section>
+
+<!-- 4 -->
+<section>
+  <div class="sec-h"><span class="no">04</span><h2>Qué se sincroniza</h2></div>
+  <p class="lead" style="margin-bottom:14pt">Cada pieza de Rentman encuentra su sitio en checkbiz360. Tres capas, un solo flujo de trabajo.</p>
+
+  <div class="cards">
+    <div class="card">
+      <h4><span class="pill p-bi">Bidireccional</span></h4>
+      <h4>Proyectos / eventos → centros de trabajo</h4>
+      <p>Cada proyecto o evento de Rentman se refleja como un <strong>centro de trabajo</strong> en checkbiz360, con su localización — donde el equipo ficha con geolocalización. Créalo donde prefieras: aparece en ambos lados.</p>
+    </div>
+    <div class="card">
+      <h4><span class="pill p-bi">Bidireccional</span></h4>
+      <h4>Asignaciones de trabajadores</h4>
+      <p>Quién trabaja en qué proyecto. Las asignaciones de Rentman se reflejan en checkbiz360 y son el origen de <strong>las tareas</strong> de cada persona.</p>
+    </div>
+    <div class="card">
+      <h4><span class="pill p-own">Solo checkbiz360</span></h4>
+      <h4>Tareas</h4>
+      <p>El trabajo concreto del día, que Rentman no tiene. Nacen de la asignación: cada persona ve, ejecuta y valida sus tareas con fotos y evidencias.</p>
+    </div>
+    <div class="card">
+      <h4><span class="pill p-out">Hacia Rentman</span></h4>
+      <h4>Jornada y horas</h4>
+      <p>El fichaje (entrada, salida, descansos) cumple la ley y es el envoltorio de tiempo: <strong>una jornada cubre varias tareas</strong>. El total de horas se envía a Rentman.</p>
+    </div>
+  </div>
+
+  <div class="warn" style="margin-top:12pt"><span class="lbl">Recuerda</span>La <strong>asignación</strong> define el trabajo (→ tareas). La <strong>jornada</strong> es el tiempo, y contiene varias tareas. Son cosas distintas.</div>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="sec-h"><span class="no">05</span><h2>El día a día</h2></div>
+
+  <h3>El responsable (Owner / Manager)</h3>
+  <p>Planifica proyectos y asigna al equipo — en Rentman o en checkbiz360, da igual: se refleja en ambos. Desde checkbiz360 crea y sigue las tareas de cada proyecto, valida el trabajo y consulta la asistencia y las horas.</p>
+
+  <h3>El empleado (equipo de campo)</h3>
+  <p>Abre la app de checkbiz360 y ve sus proyectos asignados y sus tareas del día. Ficha la entrada y la salida con geolocalización (y verificación biométrica si está configurada), va completando sus tareas y adjunta fotos o evidencias. No tiene que tocar Rentman.</p>
+
+  <h3>El resultado, de vuelta en Rentman</h3>
+  <p>Cuando el empleado cierra su jornada, las horas trabajadas se registran en checkbiz360 (cumpliendo el registro horario legal) y se envían a Rentman como horas reales, listas para tus cálculos de coste y facturación.</p>
+
+  <div class="note"><span class="lbl">Tranquilidad</span>Si Rentman no estuviera disponible en ese momento, el fichaje <strong>nunca se bloquea</strong>: se registra en checkbiz360 y se envía a Rentman en cuanto vuelve a estar accesible.</div>
+</section>
+
+<!-- 6 -->
+<section>
+  <div class="sec-h"><span class="no">06</span><h2>Cómo funciona la sincronización</h2></div>
+  <p class="lead">La sincronización es <strong>automática, periódica y en ambos sentidos</strong>. checkbiz360 consulta Rentman cada pocos minutos y concilia los cambios de un lado y del otro.</p>
+
+  <h3>Qué esperar</h3>
+  <table>
+    <tr><th>Aspecto</th><th>Comportamiento</th></tr>
+    <tr><td><strong>Automática</strong></td><td>No hay que lanzarla a mano. Corre en segundo plano.</td></tr>
+    <tr><td><strong>Bidireccional</strong></td><td>Un cambio en Rentman llega a checkbiz360 y viceversa.</td></tr>
+    <tr><td><strong>Casi en tiempo real</strong></td><td>Por intervalos cortos, no instantánea. Un cambio tarda unos minutos en reflejarse.</td></tr>
+    <tr><td><strong>Sin duplicados</strong></td><td>Un dato se introduce una vez y aparece en los dos sistemas. La integración evita copias.</td></tr>
+    <tr><td><strong>Fiable</strong></td><td>Si una sincronización falla, la siguiente la retoma. No se pierde información.</td></tr>
+  </table>
+
+  <div class="warn"><span class="lbl">Buena práctica</span>Para evitar confusiones, decide con tu equipo <strong>dónde se crea cada cosa</strong> (por ejemplo, los proyectos en Rentman y las tareas en checkbiz360). La integración lo soporta en ambos sentidos, pero un criterio claro simplifica el día a día.</div>
+</section>
+
+<!-- 7 -->
+<section>
+  <div class="sec-h"><span class="no">07</span><h2>Preguntas frecuentes</h2></div>
+
+  <div class="faq"><h4><span class="q">P.</span>¿Tengo que dejar de usar Rentman?</h4><p>No. Sigues usándolo igual. checkbiz360 se suma para el fichaje legal y las tareas.</p></div>
+  <div class="faq"><h4><span class="q">P.</span>¿Se duplican los datos entre los dos sistemas?</h4><p>No. Un dato se introduce una vez y la sincronización lo refleja en el otro lado.</p></div>
+  <div class="faq"><h4><span class="q">P.</span>¿Es en tiempo real?</h4><p>Casi. La sincronización corre por intervalos cortos; un cambio tarda unos minutos en verse.</p></div>
+  <div class="faq"><h4><span class="q">P.</span>¿Qué pasa si Rentman falla o no responde?</h4><p>El fichaje de tu equipo nunca se bloquea. Las horas se envían a Rentman en cuanto vuelve a estar disponible.</p></div>
+  <div class="faq"><h4><span class="q">P.</span>¿El registro horario cumple la ley española?</h4><p>Sí. checkbiz360 registra la jornada conforme al RDL 8/2019, con trazabilidad completa.</p></div>
+  <div class="faq"><h4><span class="q">P.</span>¿Quién puede configurar la integración?</h4><p>Los roles Owner y Manager. El equipo de campo no configura nada.</p></div>
+  <div class="faq"><h4><span class="q">P.</span>¿La integración tiene coste?</h4><p>Sí. Es un módulo de pago dentro de Integraciones, con su propio plan, igual que otros módulos de checkbiz360.</p></div>
+  <div class="faq"><h4><span class="q">P.</span>¿Puedo desactivarla?</h4><p>Sí. Puedes pausarla (conserva la configuración) o darla de baja en cualquier momento.</p></div>
+</section>
+
+<!-- 8 -->
+<section>
+  <div class="sec-h"><span class="no">08</span><h2>Soporte</h2></div>
+  <p class="lead">¿Necesitas ayuda con la integración?</p>
+  <p style="margin-top:10pt">Desde el backoffice de checkbiz360 puedes abrir una <strong>incidencia</strong> (rol Owner o Manager): descríbela y nuestro equipo de soporte la recibe directamente. Para dudas sobre tu cuenta de Rentman —por ejemplo, generar el token o permisos— consulta también el soporte de Rentman.</p>
+
+  <div class="note" style="margin-top:14pt"><span class="lbl">Antes de escribir</span>Ten a mano: el nombre de tu entidad en checkbiz360, el proyecto o empleado afectado, y qué esperabas que ocurriera frente a lo que ocurrió. Nos ayuda a resolverlo más rápido.</div>
+
+  <p class="foot-note">Este manual describe el funcionamiento previsto de la integración Rentman de checkbiz360. Algunas pantallas o pasos pueden variar en la versión final. © encodeBiz, 2026.</p>
+</section>
+
+</body>
+</html>

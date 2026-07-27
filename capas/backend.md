@@ -147,6 +147,45 @@ Formato estándar de error:
 
 Los códigos de error están en [DOMINIO.md](../DOMINIO.md#7-códigos-de-error-estándar).
 
+---
+
+## 10. encodebiz-api — Microservicios (V2 de api-express)
+
+Repo independiente: `PLATAFORMA/encodebiz-api/`. Arquitectura monorepo npm workspaces + Docker, idéntica a GroundApp.
+
+### Servicios
+
+| Servicio | Puerto | Descripción |
+|---|---|---|
+| `merlin` | 3001 | IA Merlin: interpretación operativa con OpenAI. Migrado de `api-express/customGPT` |
+| `checkinbiz` | 3002 | Heurística V2, análisis on-demand, patrones |
+| `sync` | 3003 | Ingesta S2S Firebase triggers → PostgreSQL |
+| `analytics` | 3004 | Histórico de patrones, TrendAnalysis, daily reports |
+
+### Auth por servicio
+
+- `merlin`, `checkinbiz`: Firebase JWT (`Authorization: Bearer <token>`)
+- `sync`, `analytics`: API key S2S (`X-Encodebiz-Key`)
+
+### PostgreSQL — tablas
+
+| Tabla | Propósito | Fase |
+|---|---|---|
+| `checklogs_raw` | Réplica analítica de checklogs | 1 |
+| `task_ratings_raw` | Valoraciones de tareas | 1 |
+| `daily_reports` | Reportes diarios pre-computados | 2 |
+| `pattern_snapshots` | Fotografía diaria del BranchPattern | 3 |
+| `sync_log` | Auditoría de syncs Firebase → PG | 1 |
+
+### Principio clave
+> Firebase = fuente operacional (tiempo real). PostgreSQL = fuente analítica (histórico para IA).
+
+### Migración gradual
+
+Firebase HTTP functions quedan como proxy delgado mientras los endpoints migran a encodebiz-api servicio a servicio. Ver estado de migración en `DEPLOY.md`.
+
+---
+
 ## 9. Reglas Operativas
 
 - Nunca enviar secretos en código fuente ni en logs

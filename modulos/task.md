@@ -452,3 +452,60 @@ La app puede leer tareas directamente desde Firestore (streams en tiempo real). 
 "task/evidence_required"
 "task/note_not_found"
 ```
+
+## 14. Evolución — Geo a nivel Task (Fase 2, NO implementado)
+
+> Estado: **propuesta de roadmap**. Nada de esta sección existe todavía en el modelo ni en la API. Documenta la siguiente evolución acordada para no perder el diseño.
+
+### Motivación
+
+CheckBiz nace con el geo-fence a dos niveles: **entidad** (`ratioChecklog` global) y **sucursal** (`Branch.address.geo` + su `ratioChecklog`). Ese modelo asume ubicaciones fijas.
+
+En empresas **de eventos y cuadrillas móviles** (caso real: Sonoibiza, audiovisuales en Ibiza) el equipo no trabaja en un punto fijo: cada evento ocurre en un venue distinto (boda, club, hotel, corporativo). Hoy esto se modela con **sucursales = departamentos** (Sonido, Iluminación, Vídeo), todas compartiendo el geo de la base/almacén, y con las **tareas** representando cada evento. Con ese enfoque el fichaje solo prueba "presencia en base", no presencia en el evento real.
+
+La Fase 2 cierra ese hueco: **dar coordenada propia a la tarea**, de modo que el fichaje pueda validarse contra la ubicación del evento sobre el terreno.
+
+### Jerarquía de geo resultante (3 niveles)
+
+| Nivel | Fuente del geo | Qué valida | Estado |
+|---|---|---|---|
+| Entidad | `ratioChecklog` global | Radio por defecto | ✅ Actual |
+| Sucursal / Departamento | `Branch.address.geo` + `ratioChecklog` | Presencia "en base" (preparar/cargar) | ✅ Actual |
+| **Tarea** | `Task.geo` + `Task.ratioChecklog` | Presencia **en el evento**, sobre el terreno | 🔜 Fase 2 |
+
+### Diseño propuesto (aditivo — no rompe nada)
+
+Añadir campos **opcionales** a `Task`. Cuando están ausentes, el comportamiento es idéntico al actual (validación contra el geo de la sucursal / entidad).
+
+```typescript
+interface Task {
+  // ...campos actuales...
+  geo?: {
+    lat: number;
+    lng: number;
+    address?: string;      // dirección legible del evento
+    timeZone?: string;
+  };
+  ratioChecklog?: number;     // radio en metros específico del evento; hereda de branch/entidad si se omite
+  disableRatioChecklog?: boolean; // permitir fichaje sin radio para esta tarea concreta
+}
+```
+
+### Resolución del geo efectivo (cascada)
+
+Al fichar contra una tarea, el radio y centro se resuelven en cascada de lo más específico a lo más general:
+
+```
+Task.geo / Task.ratioChecklog
+  └─ si ausente → Branch.address.geo / Branch.ratioChecklog
+       └─ si ausente → Entity.ratioChecklog (radio global)
+```
+
+`Task.disableRatioChecklog = true` anula la validación de radio solo para esa tarea (eventos donde no aplica geo-fence).
+
+### Impacto y compatibilidad
+
+- **Modelo:** solo se **suman** campos opcionales a `Task`. Los documentos hijos ya duplican `branchId`/`taskId`; se puede propagar el geo de la tarea al `CheckLog` asociado si el fichaje se vincula a una tarea.
+- **Datos existentes:** cero migración. Tareas sin `geo` siguen validando contra la sucursal.
+- **Demo / configuración actual (departamentos + tareas):** todo lo montado hoy sigue siendo válido íntegramente; las tareas solo ganarán ubicación cuando llegue la Fase 2.
+- **Pendiente de definir en su momento:** vínculo `CheckLog ↔ Task` (hoy el fichaje no referencia tarea), UI de captura de coordenada del evento, y cómo se refleja en el radio efectivo del cliente móvil.
