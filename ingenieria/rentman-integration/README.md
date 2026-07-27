@@ -59,8 +59,13 @@ El modelo se ordena en tres niveles distintos — **no** confundir asignación c
 
 ## 5. Estado del código
 
-Existe un **esqueleto** del módulo en `encodebiz-api/services/checkinbiz/src/modules/integrations/rentman/`
+Existe un **esqueleto** en su **microservicio propio** `encodebiz-api/services/rentman/`
 (dominio, cliente HTTP con backoff/paginación, cifrado de token, mapping en PostgreSQL,
-migración `002_rentman.sql`). Se construyó asumiendo push de horas one-way vía webhooks;
-**este plan lo reorienta** a sync bidireccional por polling. Los parsers de campos ahí
-son provisionales — este doc los corrige con datos reales.
+migración `002_rentman.sql`, script de Fase 0). Puerto **3008**, plantilla del servicio
+`documents`, rutas bajo `/api/v1/rentman`.
+
+- **Extraído de checkinbiz** a servicio propio el 2026-07-28 (rama `feat/rentman-service`,
+  commit `2051c13`). checkinbiz quedó sin código de Rentman. Ver `adr/0002`.
+- Se construyó asumiendo push de horas one-way vía webhooks; **este plan lo reorienta** a
+  sync bidireccional por polling. Los parsers de campos son provisionales — los docs los
+  corrigen con datos reales.

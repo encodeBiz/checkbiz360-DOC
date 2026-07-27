@@ -1,6 +1,6 @@
 # 02 — Arquitectura objetivo (to-be)
 
-> **Qué cubre:** cómo queda la integración: sync bidireccional por polling desde el servicio `sync`, con encodeBiz como cabina de gestión.
+> **Qué cubre:** cómo queda la integración: **microservicio propio `rentman`** que hace sync bidireccional por polling, con encodeBiz como cabina de gestión.
 
 ---
 
@@ -15,10 +15,10 @@
   └──────────────┬──────────────┘            │ timeregistration(activity)│
                  │                            └───────────▲──────────────┘
                  │  escribe/lee (REST)                    │
-        ┌────────▼─────────┐   poll cada X (REST)         │
-        │  servicio `sync` │◄────────────────────────────┘
-        │  (job programado)│   reconcilia en ambos sentidos
-        └────────┬─────────┘
+        ┌─────────▼──────────┐  poll cada X (REST)         │
+        │ servicio `rentman` │◄────────────────────────────┘
+        │ (job programado)   │  reconcilia en ambos sentidos
+        └─────────┬──────────┘
                  │  mapping + estado en PostgreSQL
         ┌────────▼─────────┐
         │ rentman_*_mapping│  (crew↔employee, project↔…, projectcrew↔…)
@@ -27,8 +27,12 @@
 ```
 
 - **Sin webhooks.** No exponemos endpoint público ni gestionamos secret de webhook.
-- **El `sync` manda el ritmo.** Un job programado (cada pocos minutos) ejecuta la
-  reconciliación. Ver `adr/0001`.
+- **Servicio propio `rentman`** (puerto 3008, Express/Docker), **no un módulo de checkinbiz**:
+  aísla los rate-limits de Rentman y su scheduler. Ver `adr/0002`.
+- **El servicio `rentman` manda el ritmo.** Un job programado (cada pocos minutos) ejecuta
+  la reconciliación. Ver `adr/0001`.
+- **Push de horas sin acoplar checkinbiz:** el job lee los checklogs cerrados desde
+  PostgreSQL (`checklogs_raw`, que ya llena el servicio `sync`) y los imputa a Rentman.
 
 ## 2. El ciclo de reconciliación (una pasada)
 
@@ -117,6 +121,9 @@ la jornada es *el envoltorio de tiempo* y contiene varias tareas. Son capas dist
 | Webhook público + secret | **Polling** desde `sync`, sin endpoint público |
 | Escribe `timeregistrationactivity` | Escribe `timeregistration` (el fichaje) |
 | Refs numéricas, duración cruda | Refs **string**, duración en **segundos** |
-| Vive en `checkinbiz` (composition local) | Job de reconciliación en servicio **`sync`** |
+| Vivía en `checkinbiz` (módulo local) | **Microservicio propio `services/rentman`** (puerto 3008) |
 
 El stub de webhook queda **aparcado** (no se borra aún, pero no es la vía).
+
+> **Estado del código (2026-07-28):** ya extraído a `services/rentman` en la rama
+> `feat/rentman-service` (commit `2051c13`). checkinbiz quedó sin código de Rentman.
