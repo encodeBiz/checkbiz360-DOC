@@ -65,6 +65,7 @@ enero de 2026.
 | [TDR-002](tdr/TDR-002-fragilidad-y-redundancia.md) | Concentración de cobertura (bus factor) y relevo por puesto |
 | [TDR-003](tdr/TDR-003-fiabilidad-normalizada-por-madurez.md) | Separación de `dataQuality` y `dataMaturity`; detección de señal muerta |
 | [TDR-004](tdr/TDR-004-contrato-api-panel.md) | Contrato del API: una llamada por vista, comparación y madurez incluidas |
+| [TDR-005](tdr/TDR-005-panel-analisis-cruce-de-ejes.md) | **Panel Análisis: el cruce de los cuatro ejes.** No descartar, clasificar |
 
 ---
 
@@ -105,6 +106,7 @@ que quede resuelto.
 3. Efecto centro (TDR-001) — el diferencial
 4. Fragilidad y redundancia (TDR-002)
 5. Contrato unificado `GET /panel/overview` (TDR-004)
+6. Panel Análisis y cruce de los cuatro ejes (TDR-005) — **pendiente**
 6. **Reestructuración completa del panel en el front** — última fase
 
 ---
