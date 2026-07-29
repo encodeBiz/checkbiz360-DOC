@@ -88,14 +88,23 @@ declara— **con un suelo absoluto de GPS como guarda**: el móvil se equivoca e
 metros, no en porcentaje, y sin ese suelo toda la plantilla de un cliente con
 valla de 50 m sale infractora mientras uno con 500 m sale limpio haciendo lo mismo.
 
-### 4.4 Tareas
+### 4.4 Tareas — APLAZADO POR DECISIÓN (2026-07-29)
 **No existe.** `avgTaskRating30d` está a 0 en 491 snapshots y `task_ratings_raw`
-tiene 1 fila. Antes de construir este eje hay que averiguar por qué no se escribe
-— se sospecha el mismo patrón que `experienceByJob`: un trigger que no dispara o
-un sync que no llega.
+tiene 1 fila. Se sospecha el mismo patrón que `experienceByJob`: un trigger que no
+dispara o un sync que no llega, y probablemente en Firebase Functions, no aquí.
 
-**Hasta entonces el eje se publica como `sin_evidencia` para todo el mundo, y se
-dice en pantalla.** No se omite: su ausencia es información.
+**Decisión del propietario: el cruce arranca con TRES ejes y las tareas se
+incorporan cuando el módulo madure.** No se investiga ahora. Perseguir una fuente
+que todavía no escribe retrasa un cruce que ya es útil con tres.
+
+Hasta entonces el eje se publica como `sin_evidencia` para todo el mundo y se dice
+en pantalla. No se omite: su ausencia es información, y el contrato ya lo
+contempla, así que el día que llegue dato solo hay que rellenarlo.
+
+**Consecuencia en el contrato**: `axesWithEvidence` se mide sobre
+`axesInService` (3), no sobre 4. Con 4 como denominador la plantilla entera
+parecería incompleta por un eje que nadie ha empezado a construir. Los ejes
+aplazados van listados en `deferredAxes`.
 
 ## 5. El cruce
 
@@ -139,16 +148,22 @@ con 14; lo que mejora es la señal, no el tamaño.
 
 ## 7. Orden de construcción
 
-1. **Tasa de fallo del fichaje** — la lectura más potente y la única agnóstica de
-   la causa. Con denominador mínimo.
-2. **Las tres lecturas restantes del geo** y el cierre del cuadre por cajones.
-3. **El cruce de los tres ejes disponibles**, con tareas declarado
-   `sin_evidencia`.
-4. **Investigar por qué no llegan las valoraciones de tareas** y, cuando lleguen,
-   activar el cuarto eje.
+1. ~~**Tasa de fallo del fichaje**~~ — HECHO (PR #31, #33). `BuildCheckFailure`.
+   El denominador NO son las marcas brutas: el lote de jornadas incompletas fabrica
+   checkouts que la valla rechaza, y contarlos invertía el ranking entero. El
+   umbral no es un porcentaje fijo sino la comparación de cada persona con sus
+   propios compañeros.
+2. ~~**Las tres lecturas restantes del geo**~~ — HECHO (PR #32).
+   `BuildGeoCompliance` reparte en seis cajones que cuadran y nombra lo OBSERVADO,
+   nunca la causa.
+3. ~~**El cruce de los ejes disponibles**~~ — HECHO (PR #33).
+   `BuildWorkerProfile`, con tareas declarado `sin_evidencia`.
+4. ~~**Investigar por qué no llegan las valoraciones**~~ — APLAZADO por decisión
+   del propietario (ver §4.4). Se retoma cuando el módulo de tareas madure.
 5. **Merlin**: builder con prompt de analista que recibe las **claves estables**
    del cruce, no datos crudos. Narra y prioriza; no calcula. Así el relato no puede
    contradecir a la pantalla, y si el modelo falla el panel sigue funcionando.
+   ← SIGUIENTE
 
 ## 8. Criterio de aceptación
 
