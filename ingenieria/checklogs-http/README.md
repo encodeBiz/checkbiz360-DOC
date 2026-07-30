@@ -69,8 +69,8 @@ Las rutas pasan al servicio `checkinbiz` (puerto 3002), que ya existe y ya sirve
 
 - [x] **Fase 0** — Promoción de lo común a `@encodebiz/shared` y repunte de `tasks` y `documents` ✔ typecheck y build del monorepo verdes; `tasks` y `documents` arrancan y responden igual que antes
 - [x] **Fase 1** — Port de las tres rutas al servicio `checkinbiz` ✔ compila y arranca; las tres rutas responden 401 sin token y el ping de calentamiento responde 200. **Pendiente:** verificación funcional contra Firestore real (tabla de errores de [03](./03_contratos-api.md) y los cuatro casos frágiles)
-- [ ] **Fase 2** — Cutover del back office (dos variables de entorno — ver [05](./05_conexion-de-clientes.md))
-- [ ] **Fase 3** — Cutover de la app móvil (cambio de URLs + release en stores)
+- [~] **Fase 2** — Cutover del back office (dos variables de entorno — ver [05](./05_conexion-de-clientes.md)). Aplicado en `.env` y `.env.production` locales: `UPDATE_LOG` y `REQUEST_MANUAL_CHECKLOG` apuntan ya al servidor. **Pendiente:** cambiar las variables en el entorno de despliegue (`.env*` está en el `.gitignore`, así que el fichero del repo no viaja), y la verificación funcional — una corrección de fichaje de extremo a extremo y una jornada manual en sus dos modos
+- [ ] **Fase 3** — Cutover de la app móvil (cambio de URLs + release en stores) **y de `CREATE_LOG` del front**, que comparte variable con el kiosco QR
 - [ ] **Fase 4** *(futuro)* — Retirada de los handlers originales
 
 Ver [04_fases.md](./04_fases.md) para criterios de éxito y rollback de cada fase.

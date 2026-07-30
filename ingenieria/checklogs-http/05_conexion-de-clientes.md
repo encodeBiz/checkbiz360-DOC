@@ -24,9 +24,24 @@ Sin cambios de código: `src/lib/http/serverBackendProxy.ts` ya resuelve el dest
 +NEXT_BACKEND_URI_CHECKINBIZ_REQUEST_MANUAL_CHECKLOG=https://api.checkbiz360.com/api/v1/checkinbiz/checklogs/manual-request
 ```
 
-`NEXT_BACKEND_URI_CHECKINBIZ_CREATE_LOG` está en la allowlist del proxy pero **ningún componente del front lo llama**. Se deja apuntando a Firebase hasta confirmar que está muerto; retirarlo es una decisión aparte.
+### Por qué `CREATE_LOG` no entra aquí
 
-Si el despliegue del front usa variables de Vercel en vez del fichero, hay que cambiarlas también ahí — el `.env` del repo no las pisa.
+Una versión anterior de este documento decía que `NEXT_BACKEND_URI_CHECKINBIZ_CREATE_LOG` estaba en la allowlist pero que ningún componente del front lo llamaba. **Es falso**: `createLog` tiene dos consumidores vivos, y ejercitan los dos modos de auth de [ADR-004](./adr/ADR-004-auth-por-ruta-no-global.md).
+
+| Consumidor | Token que manda | Rama de auth |
+|---|---|---|
+| `src/app/tools/checking/page.context.tsx` — kiosco QR | sesión de empleado | `validateTokenJWT` |
+| `…/attendance/AttendanceFormModal.controller.tsx` — alta del back office | ID token de Firebase, con `isAdmin: true` | `validateToken` |
+
+La conclusión de dejarlo en Firebase se mantiene, pero por otro motivo: **una sola variable sirve a los dos consumidores y no se pueden separar sin tocar código**. Moverla arrastraría al kiosco, que es un empleado fichando en tiempo real y con prisa — exactamente el tráfico que este plan quiere mover el último. `CREATE_LOG` va con la Fase 3, junto a la app, no en el cutover del back office.
+
+Y conviene saberlo antes de la Fase 3: el kiosco ya maneja `checklog/out_of_radius` y `auth/untrusted_device`, así que **la huella de dispositivo de confianza también se ejercita desde el front**, no solo desde la app. Con una diferencia a favor: las llamadas del front salen del proxy de Next, así que el `user-agent` que ve el backend siempre ha sido el del servidor de Next, no el del navegador. El proxy no cambia en ningún momento del cutover, así que la huella tampoco.
+
+### Lo que no cambia
+
+Las rutas siguen pasando por `/api/proxy/**`. **Eso no es un detalle de implementación:** el guard de sesión 2FA vive en el Edge (`src/proxy.ts`) y está montado sobre esa ruta — sin cookie devuelve `401 auth/2fa_required` y caducada `401 auth/2fa_expired`, que es lo que hace saltar el modal de re-verificación. La cookie la emite el propio front en su origen, `HttpOnly` y `SameSite=Lax`: no viaja a otro dominio y JS no puede adjuntarla. Llamar directo desde el navegador a `api.checkbiz360.com` dejaría estas rutas fuera del guard, protegidas solo por el ID token de Firebase. El cutover cambia **el destino del proxy, nunca el hecho de que haya proxy**.
+
+Si el despliegue del front usa variables de Vercel en vez del fichero, hay que cambiarlas también ahí — el `.env` del repo no las pisa. De hecho `.env*` está en el `.gitignore`, así que este cutover **no deja rastro en el repo del front**: no hay commit que revisar, y el cambio real es el de las variables del entorno de despliegue.
 
 **Rollback:** devolver los valores anteriores y redesplegar. Efecto inmediato.
 

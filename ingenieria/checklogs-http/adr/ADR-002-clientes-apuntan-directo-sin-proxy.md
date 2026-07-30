@@ -14,12 +14,20 @@ Se valoró repetir el patrón para el fichaje: convertir `createChecklog` y `upd
 
 ## Decisión
 
-Ningún proxy nuevo. Los tres endpoints de checklogs se consumen **directamente** contra `https://api.checkbiz360.com/api/v1/checkinbiz/checklogs…`:
+Ningún proxy **de Firebase** nuevo. Los tres endpoints de checklogs se consumen sin intermediario en Cloud Functions, contra `https://api.checkbiz360.com/api/v1/checkinbiz/checklogs…`:
 
 - **Back office** — cambia el valor de sus variables de entorno. Sin cambio de código.
 - **App móvil** — cambia las URLs en `AppConstants` y se publica versión.
 
 Las Cloud Functions originales se quedan como están, sirviendo a las versiones de app que aún no se hayan actualizado, hasta que la penetración permita retirarlas.
+
+### "Sin proxy" NO incluye el proxy de Next del back office
+
+Conviene decirlo explícitamente porque el título de este ADR se presta a lo contrario. Lo que se descarta es **interponer una Cloud Function** entre el cliente y el servidor. El back office sigue llamando a través de `/api/proxy/**` (`src/lib/http/serverBackendProxy.ts`) y eso no se toca en ninguna fase: ahí es donde el Edge (`src/proxy.ts`) aplica el guard de sesión 2FA, valida el ID token antes de reenviar y mantiene la allowlist de destinos.
+
+La cookie de sesión 2FA la emite el propio front en su origen, `HttpOnly` y `SameSite=Lax`: no viaja a otro dominio y JS no puede adjuntarla. Si el navegador llamara directo a `api.checkbiz360.com`, esas rutas quedarían fuera del guard y protegidas solo por el ID token de Firebase — que dura una hora y se renueva solo. El cutover cambia **el destino del proxy, nunca el hecho de que haya proxy**.
+
+La app móvil sí va directa: no tiene proxy de Next delante, y su 2FA es otra cosa (el `sessionToken` firmado con `JWT_2FA_SECRET`, que viaja en la propia petición).
 
 ## Justificación
 

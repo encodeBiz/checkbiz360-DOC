@@ -72,6 +72,7 @@ Empieza aquí el periodo de observación, y empieza por el back office a propós
 **Prerequisito:** Fase 2 estable.
 
 - `AppConstants.createChecklogEndpoint` y `updateChecklogEndpoint` pasan a `https://api.checkbiz360.com/api/v1/checkinbiz/checklogs` y `…/checklogs/update`. Ver [05_conexion-de-clientes.md](./05_conexion-de-clientes.md).
+- **`NEXT_BACKEND_URI_CHECKINBIZ_CREATE_LOG` del front entra aquí**, no en la Fase 2. Esa variable la comparten el kiosco QR (`/tools/checking`) y el alta del back office, y no se pueden separar sin tocar código: moverla arrastra al kiosco, que es fichaje de empleado en tiempo real. Va con la app porque es el mismo tipo de tráfico, aunque su rollback sí sea una variable de entorno.
 - Release en stores.
 - Las Cloud Functions originales **se quedan** sirviendo a las versiones antiguas.
 
@@ -86,8 +87,9 @@ Empieza aquí el periodo de observación, y empieza por el back office a propós
 **Prerequisito:** Fase 3 estable y penetración de versiones de app por encima del umbral que se fije. Conviene fijarlo ahora: sin umbral, la retirada se aplaza sola.
 
 - Eliminar los handlers originales de checklogs del codebase por defecto.
-- Decidir qué hacer con `checkinbiz_create_log` en la allowlist del front, que hoy no tiene consumidor.
 - Evaluar si conviene un alias REST (`PATCH /checklogs/:id`) ahora que el contrato ya no tiene que imitar a Firebase.
+
+Las tres entradas de checklogs se quedan en la allowlist del proxy de Next (`checkinbiz_create_log`, `checkinbiz_update_log`, `checkinbiz_request_manual_checklog`): lo que se retira son los handlers de Firebase, no el proxy. El proxy es donde el Edge aplica el guard de sesión 2FA, así que sigue haciendo falta apunte a donde apunte.
 
 ---
 
