@@ -124,7 +124,45 @@ Reglas:
 
 ---
 
-## 7. Notas importantes
+## 7. Formato de `task.description` (Markdown)
+
+Desde el panel admin la descripción se escribe con un editor simple que **guarda texto plano con sintaxis Markdown** (no HTML). El campo sigue siendo un `string` y el contrato de la API no cambia.
+
+Subconjunto que puede llegar (CommonMark + task lists de GFM):
+
+| Sintaxis | Significado |
+|---|---|
+| `# ` / `## ` / `### ` | Título |
+| `- texto` | Lista con viñetas |
+| `1. texto` | Lista numerada |
+| `- [ ] texto` / `- [x] texto` | Lista de tareas (checklist) |
+| `> texto` | Cita |
+| `---` | Separador |
+| `**negrita**`, `*cursiva*`, `` `código` `` | Marcas en línea |
+| `[texto](https://…)` | Enlace |
+
+Ejemplo real de lo que puede venir en el campo:
+
+```
+## Apertura
+- [ ] Revisar cámaras
+- [x] Contar caja
+- [ ] Abrir persiana
+
+**Ojo:** avisar al supervisor si falta efectivo.
+```
+
+En Flutter:
+
+- **Mínimo viable:** pintarlo tal cual con un `Text`. Es legible sin más — por eso se eligió Markdown y no HTML.
+- **Recomendado:** `flutter_markdown` (`MarkdownBody(data: task.description ?? '')`) para títulos, listas, negritas y enlaces.
+- **Checklists:** el paquete `markdown` de Dart no convierte `- [ ]` en checkbox; lo pinta como viñeta con el texto `[ ]`. Si se quiere el checkbox real, hay que añadir un builder propio para los ítems de lista que empiecen por `[ ] ` / `[x] `.
+- **Solo lectura:** los checks son parte del texto de la descripción, no un estado persistido. Marcarlos en la app **no** cambia nada en el servidor; el avance de la tarea se sigue reportando con los cambios de estado y las notas/evidencias.
+- **Nunca renderizar como HTML:** el texto lo escribe un usuario; tratarlo como Markdown/plano evita inyección.
+
+---
+
+## 8. Notas importantes
 
 - **Notificaciones push:** las recibe el empleado igual que hoy (creada/asignada/validada…); no requiere nada en la app más allá del registro de token FCM que ya hace.
 - **Aviso de inicio tardío:** lo sigue emitiendo el schedule de Firebase (no se migró). La app no cambia por esto.
