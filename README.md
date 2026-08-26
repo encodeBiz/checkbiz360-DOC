@@ -42,6 +42,7 @@
 
 ### QA
 - [Qa/automatizacion-qa-staging.md](./Qa/automatizacion-qa-staging.md) — Qué se automatiza en staging, qué se queda manual y roadmap por fases
+- [Qa/fase2-autenticacion-y-acceso.md](./Qa/fase2-autenticacion-y-acceso.md) — Fase 2 de la regresión: qué se automatiza y los 7 hallazgos que la condicionan
 - [Qa/task-module-qa-plan.md](./Qa/task-module-qa-plan.md) — Plan de pruebas del módulo de tareas (revisar §3: el endpoint ya no es Cloud Function)
 
 ## Reglas de uso
