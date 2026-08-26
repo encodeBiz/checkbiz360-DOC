@@ -40,6 +40,10 @@
 - [capas/app-movil.md](./capas/app-movil.md) — Flutter, feature-first, Riverpod, DI, navegación
 - [capas/backoffice.md](./capas/backoffice.md) — Next.js, App Router, patrones, convenciones
 
+### QA
+- [Qa/automatizacion-qa-staging.md](./Qa/automatizacion-qa-staging.md) — Qué se automatiza en staging, qué se queda manual y roadmap por fases
+- [Qa/task-module-qa-plan.md](./Qa/task-module-qa-plan.md) — Plan de pruebas del módulo de tareas (revisar §3: el endpoint ya no es Cloud Function)
+
 ## Reglas de uso
 
 1. Esta carpeta `DOCS/` es la fuente única de verdad. Las docs en sub-proyectos han sido eliminadas o deprecadas.
