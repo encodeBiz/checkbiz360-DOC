@@ -33,8 +33,8 @@ el panel funciona entero.
 
 Todo el dominio `attendance`, `workday` e `issue`, con los lanzadores en los casos de uso del
 contenedor. Los lanzadores están localizados todos ([03 §3](./03_catalogo-de-eventos.md#3-mapa-de-lanzadores));
-lo único que queda por decidir antes de publicar es la normalización de `Issue.type`, que hoy se
-escribe de dos formas distintas.
+la normalización de `Issue.type` ya está decidida y corregida (`journeyRegistration`); queda
+convertir las incidencias antiguas antes de publicar `issue.opened`.
 
 Al terminar, `onChecklogWebhook` se borra.
 

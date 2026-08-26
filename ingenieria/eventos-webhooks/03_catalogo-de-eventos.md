@@ -145,12 +145,18 @@ vive el dato**.
 | `employee.responsibility_changed` | `responsibilitiesHandler` |
 | `service.activated/deactivated` | `onActivateCheckbiz` y el flujo de suscripciones |
 
-### Una inconsistencia que hay que resolver al definir el payload
+### `Issue.type` — resuelto el 2026-08-26
 
-El sanitizador escribe la incidencia con `type: "journey_registration"`, mientras que la entidad
-`Issue` del contenedor declara `"journeyRegistration"`. Son el mismo tipo escrito de dos formas.
-Antes de publicar `issue.opened` hacia fuera hay que decidir cuál es la buena y normalizar: un
-catálogo público no puede exponer las dos.
+El sanitizador escribía `type: "journey_registration"` en snake_case, mientras que el
+contenedor y el front lo declaran y lo esperan en camelCase. Era el único sitio que lo
+escribía así, con la consecuencia de que las únicas incidencias que la plataforma genera sola
+eran también las únicas que el front no sabía etiquetar.
+
+**Queda `journeyRegistration`.** Corregido en el SaaS y desplegado en desarrollo.
+
+Lo que ese cambio no toca: las incidencias **ya creadas** conservan el valor viejo. Antes de
+publicar `issue.opened` hacia fuera hay que convertirlas, o el consumidor verá dos tipos para
+el mismo hecho.
 
 ### Por qué el trigger encoge
 
