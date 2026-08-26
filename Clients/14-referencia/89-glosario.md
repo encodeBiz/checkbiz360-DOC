@@ -6,8 +6,14 @@ Este glosario recoge los términos operativos más relevantes de CheckBiz360, or
 
 ## A
 
+### Acuse de recibo
+Confirmación explícita de que un empleado ha accedido a un documento que lo requiere. Queda registrada con la fecha y la versión concreta del documento que se leyó, de modo que una versión posterior no hereda el acuse de la anterior. No es una firma electrónica: la firma con validez eIDAS está en el roadmap.
+
 ### Ajuste de horario
-Mecanismo opcional de la plataforma que modifica automáticamente la hora registrada en un fichaje para redondearla o aproximarla a un valor configurado. Por ejemplo, un checkin realizado a las 08:57 puede ajustarse a las 09:00 si la regla de ajuste está activa. El valor original del fichaje siempre queda registrado junto al valor ajustado para mantener la trazabilidad.
+Concepto que **no aplica** en la versión actual: el fichaje guarda siempre la hora real y no se redondea. Lo que decide si el tiempo trabajado fuera de la franja oficial se computa es la modalidad de *jornada estricta o flexible* del calendario.
+
+### Asistente de IA (Merlin)
+Componente de inteligencia artificial que interpreta los datos operativos y los expone como un relato accionable en el panel operativo, en el detalle de sucursal y en el detalle de empleado. Narra y prioriza sobre las cifras que ya muestra la pantalla: no recalcula ni genera datos propios, de forma que su lectura no puede contradecir a los paneles.
 
 ---
 
@@ -26,12 +32,18 @@ Configuración que define los días laborables y festivos para una sucursal o pa
 ### Checkin / Checkout
 Registro de la hora de entrada (checkin) y de salida (checkout) de un empleado en su jornada laboral. Son los eventos fundamentales del control horario. Un checkin sin checkout correspondiente genera una jornada incompleta. Véase también: Fichaje / Checklog.
 
+### Cumplimiento temporal
+Indicador que acompaña a cada tarea y refleja su situación frente a la fecha límite, con independencia de su estado. Sus valores son: sin iniciar, a tiempo, en riesgo, vencida, completada a tiempo y completada tarde. Una tarea vencida sigue estando en su estado de trabajo (por ejemplo, "en progreso"); el vencimiento se refleja en este indicador, no en el estado.
+
 ### Código de error
 Identificador alfanumérico que el sistema devuelve cuando una operación no puede completarse. Los códigos de error siguen el formato `modulo/tipo_de_error` (por ejemplo, `checklog/out_of_radius`). Permiten identificar la causa exacta de un fallo sin necesidad de interpretar mensajes de texto. Véase el artículo [Códigos de error completos](./90-codigos-de-error-completos.md).
 
 ---
 
 ## D
+
+### Dependencia
+Indicador que mide cuánta parte de la operación de un centro recae en pocas personas. Se lee de forma directa —*media operación depende de 1 persona*, *depende de 2 personas*, *reparto saludable*— y se complementa con la vista de relevo por puesto.
 
 ### Dispositivo de confianza
 Dispositivo móvil autorizado explícitamente por el Owner o el Manager para que un empleado concreto pueda realizar fichajes desde él. La plataforma puede configurarse para rechazar fichajes procedentes de dispositivos no registrados como de confianza.
@@ -40,8 +52,14 @@ Dispositivo móvil autorizado explícitamente por el Owner o el Manager para que
 
 ## E
 
+### Efecto del centro
+Indicador que compara el rendimiento de cada persona **en un centro concreto** con su propio rendimiento global. El promedio de esas diferencias entre todos los que pasan por allí mide el efecto que el centro ejerce sobre las personas, ya descontado el talento individual. Responde a si el problema es la persona o el sitio.
+
 ### Empleado / Employee
 Usuario de CheckBiz360 con rol Worker, Supervisor o Manager que forma parte de la plantilla de una entidad. En la plataforma, el término "employee" hace referencia al registro de datos de una persona en la organización, incluyendo su perfil, asignaciones, fichajes y documentos.
+
+### Evidencia
+Foto o vídeo que un empleado adjunta a una tarea para acreditar el trabajo realizado. Si la tarea tiene activada la exigencia de evidencia, el sistema no permite completarla sin al menos un archivo adjunto y devuelve el código `task/evidence_required`.
 
 ### Entidad / Entity
 La unidad organizativa raíz de CheckBiz360. Corresponde a una empresa o cliente que ha contratado la plataforma. Cada entidad puede tener múltiples sucursales, empleados y configuraciones propias. El Owner es el responsable máximo de la entidad.
@@ -71,11 +89,11 @@ Mecanismo por el que los empleados o sucursales adoptan automáticamente la conf
 
 ## I
 
-### Índice de eficiencia
-Métrica calculada por el módulo de inteligencia operativa que mide el rendimiento operativo de un empleado en relación con sus horas trabajadas y tareas completadas. Se expresa como un valor numérico y permite comparar empleados o periodos de forma objetiva.
+### Índice de eficiencia operativa
+Indicador que mide el equilibrio entre el coste real asumido y el coste esperado según el patrón histórico. La referencia es siempre el propio histórico, no una escala universal ni una comparación directa entre personas.
 
 ### Índice de fiabilidad
-Puntuación que refleja la consistencia y regularidad del comportamiento de fichaje de un empleado a lo largo del tiempo. Un índice alto indica que el empleado ficha de forma puntual y consistente. Un índice bajo puede señalar irregularidades que merecen atención. Disponible en el módulo de inteligencia operativa.
+Indicador de la calidad del comportamiento observado, **separada del tiempo que se lleva midiendo**: quien lleva poco en la empresa no arrastra una fiabilidad baja por ello. Es uno de los tres índices principales del panel de Operación, junto al efecto del centro y la dependencia.
 
 ---
 
@@ -83,6 +101,9 @@ Puntuación que refleja la consistencia y regularidad del comportamiento de fich
 
 ### Jornada incompleta (`incomplete_workday`)
 Jornada laboral en la que existe un checkin pero no el checkout correspondiente, o viceversa. El sistema la marca automáticamente como incompleta y la excluye del cálculo de horas trabajadas hasta que se completa mediante una jornada manual.
+
+### Jornada estricta / flexible
+Modalidad de cómputo del calendario. Con **jornada estricta** manda el horario oficial: lo trabajado antes o después no se contabiliza, y retrasos y salidas anticipadas se descuentan. Con **jornada flexible** manda el tiempo real: lo trabajado fuera de la franja se suma como extra. Existe la misma distinción para los descansos.
 
 ### Jornada manual
 Corrección retroactiva de un fichaje realizada por un Owner o Manager desde el backoffice. Se utiliza cuando un empleado olvidó fichar, cuando el sistema no pudo registrar el evento por un fallo técnico puntual o cuando es necesario ajustar datos de asistencia históricos. Queda registrada con el nombre del usuario que la realizó y la fecha de la modificación.
@@ -94,15 +115,18 @@ Corrección retroactiva de un fichaje realizada por un Owner o Manager desde el 
 ### Manager
 Rol de usuario con capacidad para gestionar empleados, sucursales, documentos, informes e incidencias dentro de las sucursales que le han sido asignadas. El Manager actúa bajo la supervisión del Owner y no puede modificar la configuración global de la entidad.
 
+### Merlin
+Véase *Asistente de IA (Merlin)*.
+
 ### Módulo documental
-Conjunto de funcionalidades de CheckBiz360 que permite subir, organizar, asignar y firmar documentos laborales (contratos, nóminas, comunicados, políticas de empresa). Los empleados pueden firmar digitalmente los documentos desde la app móvil. Disponible en el Plan Enterprise.
+Conjunto de funcionalidades de CheckBiz360 que permite subir, organizar y distribuir documentos laborales (contratos, nóminas, comunicados, políticas de empresa, protocolos y prevención de riesgos), con visibilidad por rol y acuse de recibo del empleado. Está incluido en la suscripción, sin depender del plan. La firma electrónica avanzada no forma parte de la versión actual: lo que existe hoy es el acuse de recibo.
 
 ---
 
 ## N
 
 ### Notificación push
-Mensaje enviado directamente al dispositivo móvil de un empleado a través del sistema de notificaciones del sistema operativo (APNs en iOS, FCM en Android). CheckBiz360 utiliza notificaciones push para avisar de nuevas tareas, documentos pendientes de firma, alertas de jornada y comunicados del sistema.
+Mensaje enviado directamente al dispositivo móvil de un empleado a través del sistema de notificaciones del sistema operativo (APNs en iOS, FCM en Android). CheckBiz360 utiliza notificaciones push para avisar de nuevas tareas, documentos pendientes de acuse de recibo, alertas de jornada y comunicados del sistema.
 
 ---
 
@@ -118,11 +142,14 @@ Rol con acceso completo a todas las funcionalidades de una entidad en CheckBiz36
 ### Pausa (`restin` / `restout`)
 Registro del inicio (`restin`) y fin (`restout`) de una pausa dentro de la jornada laboral. Las pausas se descontarán o no del tiempo trabajado según la configuración de la sucursal. Al igual que el checkin y checkout, las pausas requieren que el empleado esté dentro de la geocerca si así está configurado.
 
+### Panel operativo
+Pantalla del backoffice que consolida la actividad del periodo en tres vistas: la comparativa entre sucursales, el detalle por empleado y el análisis del periodo. Es el punto de entrada a la inteligencia operativa y donde aparece el relato del asistente de IA.
+
 ### Plan de suscripción
-Nivel de contratación de CheckBiz360 que determina qué módulos y funcionalidades están disponibles para una entidad. Los planes disponibles son: Plan Bronze y Plan Enterprise. Véase [Planes y funcionalidades](./91-planes-y-funcionalidades.md).
+Modalidad de contratación de CheckBiz360. Hay dos: **Bronce**, desde 2 €/empleado al mes, y **Empresarial**, con precio a medida, que añade soporte preferente e integraciones. Ambos dan acceso a todos los módulos de la plataforma. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md).
 
 ### Puntuación de promoción
-Métrica del módulo de inteligencia operativa que combina varios indicadores de rendimiento (fiabilidad, eficiencia, puntualidad, resolución de tareas) para generar una puntuación global orientada a facilitar decisiones de desarrollo profesional o reconocimiento de empleados.
+Índice único que combinaría fiabilidad, eficiencia y valoraciones en una sola cifra comparable entre empleados. **No existe en la versión actual**: lo que sí hay es la *evaluación operativa del empleado*, un diagnóstico de su patrón que incluye la señal de candidato a promoción. Véase [Evaluación operativa del empleado](../07-inteligencia-operativa/53-puntuacion-de-promocion.md).
 
 ---
 
@@ -154,6 +181,9 @@ Rol intermedio entre Manager y Worker. El Supervisor puede revisar los fichajes 
 
 ## T
 
+### Tarea
+Unidad de trabajo asignada a uno o varios empleados de una sucursal, con fecha límite y, opcionalmente, fecha prevista de inicio. Recorre siete estados —borrador, asignada, en progreso, completada, validada, rechazada y cancelada— y lleva asociado un indicador de cumplimiento temporal independiente del estado.
+
 ### Token de validación
 Código temporal generado por el sistema para verificar la identidad de un usuario en operaciones sensibles, como el primer inicio de sesión, el restablecimiento de contraseña o la autorización de un nuevo dispositivo. Los tokens de validación caducan pasado un tiempo determinado.
 
@@ -182,7 +212,7 @@ Este artículo es de consulta libre para todos los roles de la plataforma: Owner
 
 | Artículo | Descripción |
 |---|---|
-| [Codigos de error completos](./90-codigos-de-error-completos.md) | Referencia de todos los códigos de error del sistema |
-| [Planes y funcionalidades](./91-planes-y-funcionalidades.md) | Descripción de módulos disponibles por nivel de plan |
+| [Códigos de error completos](./90-codigos-de-error-completos.md) | Referencia de todos los códigos de error del sistema |
+| [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md) | Precio de cada plan, periodo de prueba y módulos incluidos |
 | [Preguntas frecuentes](./92-preguntas-frecuentes.md) | Respuestas a las dudas más habituales sobre CheckBiz360 |
-| [Control horario: conceptos básicos](../03-control-horario/20-como-funciona-el-control-horario.md) | Introducción al módulo de control horario |
+| [Control horario: conceptos básicos](../03-control-horario/13-como-funciona-el-fichaje.md) | Introducción al módulo de control horario |

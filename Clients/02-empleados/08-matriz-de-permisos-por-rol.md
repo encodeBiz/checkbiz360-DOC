@@ -92,5 +92,5 @@ La visualización y modificación de los permisos de rol está disponible para l
 
 - [Roles y niveles de responsabilidad](07-roles-y-niveles-de-responsabilidad.md)
 - [Crear y gestionar empleados](06-crear-y-gestionar-empleados.md)
-- [Gestión documental](../05-gestion-documental/)
-- [Inteligencia operativa](../07-inteligencia-operativa/)
+- [Permisos de acceso documental](../05-gestion-documental/37-permisos-de-acceso-documental.md)
+- [Qué es la inteligencia operativa](../07-inteligencia-operativa/49-que-es-la-inteligencia-operativa.md)

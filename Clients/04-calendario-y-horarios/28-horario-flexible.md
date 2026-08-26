@@ -1,89 +1,83 @@
-# Horario flexible
+# Jornada estricta y jornada flexible
 
-El horario flexible en CheckBiz360 no significa que el empleado pueda fichar a cualquier hora sin control. Significa que el sistema ofrece un margen de tolerancia de entrada configurable y un mecanismo de ajuste automático de horario que garantiza que las horas trabajadas se computen de forma correcta, independientemente de que el empleado llegue unos minutos antes o después de la hora oficial del turno.
+CheckBiz360 no computa las horas trabajadas de una única manera: cada calendario decide si aplica el **horario oficial** o el **tiempo realmente trabajado**. Esa decisión se toma con un interruptor, **Jornada estricta / Jornada flexible**, y es probablemente el ajuste que más impacto tiene sobre los informes de horas.
 
----
-
-## Qué es el horario flexible en CheckBiz360
-
-En un entorno de control de asistencia estricto, un fichaje registrado 10 minutos antes del inicio del turno generaría un cómputo de horas incorrecto: el sistema contaría esos 10 minutos como tiempo trabajado aunque el empleado aún no estuviera en su puesto en horario oficial.
-
-El horario flexible resuelve este problema mediante dos mecanismos complementarios:
-
-- La **tolerancia de entrada**, que define cuántos minutos antes del inicio del turno el sistema acepta el fichaje como válido.
-- El **ajuste automático de horario**, que normaliza el timestamp del registro a la hora oficial del turno cuando el empleado ficha dentro del margen de tolerancia.
+Existe el mismo interruptor para los descansos, con la misma lógica.
 
 ---
 
-## Tolerancia de entrada
+## Jornada estricta
 
-Este parámetro define el margen de tolerancia de entrada, expresado en minutos, antes del inicio oficial del turno. Si un empleado intenta fichar antes de que el turno haya comenzado pero dentro de ese margen, el sistema acepta el fichaje en lugar de rechazarlo.
+Con la jornada estricta, **manda el horario configurado**. El sistema no reconoce tiempo trabajado fuera de la franja oficial:
 
-Por ejemplo, si el turno comienza a las 09:00 y la tolerancia de entrada tiene un valor de 15, el sistema acepta fichajes a partir de las 08:45. Un fichaje a las 08:47 se procesa normalmente. Un fichaje a las 08:30 (30 minutos antes del turno, fuera del margen) generaría el error `checklog/out_of_schedule`.
+- Las entradas **antes** del horario no se contabilizan.
+- Las entradas tarde y las salidas anticipadas **se descuentan**.
+- Las salidas **después** del horario no se contabilizan como tiempo extra.
 
-Este parámetro no amplía el cómputo de horas: su función es simplemente determinar si el fichaje se acepta o se rechaza. El ajuste del timestamp es responsabilidad del segundo mecanismo.
+Es la opción adecuada cuando la jornada está cerrada por convenio o por política interna y no se quiere que la costumbre de llegar diez minutos antes acabe generando horas extra en el informe. El empleado que llega a las 08:50 a un turno de 09:00 no acumula esos diez minutos; el que llega a las 09:10, sí ve el retraso descontado.
 
-### Cómo configurar la tolerancia de entrada
+## Jornada flexible
 
-1. Acceda al backoffice con rol owner o manager.
-2. Navegue a **Configuración** de la entidad o sucursal.
-3. Acceda al apartado **Horarios y tolerancias**.
-4. Localice el campo **Tolerancia de entrada (minutos)** y establezca el valor deseado.
-5. Guarde los cambios.
+Con la jornada flexible, **manda lo que registró el empleado**:
 
-> **Nota:** La tolerancia de entrada se configura a nivel de sucursal o entidad y se aplica a todos los empleados que hereden ese horario. Si necesita una tolerancia diferente para un empleado concreto, puede definirla dentro de una excepción individual de horario.
+- Se contabiliza la jornada real trabajada.
+- El tiempo trabajado antes o después del horario **se suma como extra**.
+- Los retrasos y las salidas anticipadas **se descuentan**.
 
----
+Es la opción adecuada cuando el horario es una referencia y lo que se quiere medir es la dedicación efectiva: equipos de campo, servicios con picos de trabajo, turnos que se alargan por necesidad operativa.
 
-## Ajuste automático de horario
-
-Cuando esta opción está activada, el sistema aplica el ajuste automático de timestamp en los fichajes que se realizan dentro del margen de tolerancia pero antes del inicio oficial del turno.
-
-El funcionamiento es el siguiente: si el empleado ficha a las 08:52 y el turno comienza a las 09:00, el timestamp almacenado en el registro no será las 08:52 sino las 09:00. El sistema desplaza la hora registrada al inicio oficial del turno.
-
-Este ajuste se almacena de forma interna en el registro de fichaje. El timestamp original (08:52) también se conserva para auditoría, pero el cómputo de horas utiliza el timestamp ajustado.
-
-### Por qué es importante activar el ajuste automático de horario
-
-Sin este ajuste, un empleado que tiene la costumbre de llegar 10 minutos antes acumularía, a lo largo del mes, entre 3 y 4 horas de tiempo registrado antes del inicio oficial de sus turnos. Estas horas quedarían reflejadas en los informes de jornada y podrían generar discrepancias con la nómina o con la política de la empresa.
-
-Con el ajuste activado, todos los fichajes dentro del margen quedan normalizados a la hora oficial y el cómputo de horas refleja únicamente el tiempo de jornada contratado.
+> **Importante:** ninguna de las dos modalidades cambia lo que el empleado registra. El fichaje siempre guarda la hora real; lo que cambia es cómo se computa esa hora al calcular el tiempo trabajado. La trazabilidad del registro original se conserva en ambos casos.
 
 ---
 
-## Casos de uso del horario flexible
+## Cómo se configura
 
-### Flexibilidad de entrada con cómputo de horas correcto
+1. Acceda a **Calendario** en el menú lateral.
+2. Elija el ámbito sobre el que quiere trabajar: **Configuración general** (entidad), **Sucursal** o **Empleado**.
+3. Bajo el horario semanal, localice el interruptor de **Jornada estricta / Jornada flexible**.
+4. Actívelo o desactívelo. El recuadro que aparece debajo resume las reglas de cómputo que quedan aplicadas, para que no haya duda de lo que se está eligiendo.
+5. Guarde el calendario.
 
-Una empresa de servicios profesionales permite a sus empleados llegar entre las 08:30 y las 09:30. El turno oficial comienza a las 09:00 pero la tolerancia de entrada tiene un valor de 30. Los empleados que llegan a las 08:45 fichan sin problemas. Con el ajuste automático de horario activado, su registro de entrada queda ajustado a las 09:00 y no se generan horas extra no deseadas.
-
-### Notificación de entrada anticipada sin ajuste de timestamp
-
-Algunas empresas prefieren registrar la hora real de llegada pero recibir una alerta si el empleado entra con mucha antelación. En este caso, se activa la tolerancia de entrada pero se desactiva el ajuste automático de horario. El sistema acepta el fichaje anticipado y almacena el timestamp real sin ajuste, lo que permite al responsable revisar el patrón de entradas.
-
-### Control estricto de entradas
-
-Si la empresa necesita un control estricto sin margen de tolerancia, se configura la tolerancia de entrada a 0 o a un valor muy bajo (1-2 minutos). El empleado solo puede fichar a partir del inicio exacto del turno, con un margen mínimo para evitar rechazos por desfases de segundos en el reloj del dispositivo.
+Al ser parte del calendario, sigue la misma **herencia** que el resto de la configuración: lo que se define en la entidad baja a las sucursales, y lo que se define en una sucursal baja a sus empleados, salvo que ese nivel tenga su propia configuración. Consulte [Herencia de configuración](./26-herencia-de-configuracion.md).
 
 ---
 
-## Interacción entre tolerancia y ajuste de timestamp
+## Descanso estricto y descanso flexible
 
-| Tolerancia de entrada | Ajuste automático de horario | Comportamiento |
+Los descansos tienen su propio interruptor, con una diferencia importante respecto a la jornada: **cambia lo que el empleado tiene que hacer**.
+
+| Modalidad | Cómo se computa | Qué hace el empleado |
 |---|---|---|
-| 15 minutos | Activado | Acepta fichajes 15 min antes. El timestamp se ajusta al inicio del turno. |
-| 15 minutos | Desactivado | Acepta fichajes 15 min antes. El timestamp registra la hora real. |
-| 0 minutos | Cualquiera | Solo acepta fichajes a partir del inicio exacto del turno. |
+| **Descanso estricto** | Se aplica exactamente la duración configurada. No se reconocen descansos más largos ni más cortos | **No marca** inicio ni fin de la pausa |
+| **Descanso flexible** | Se contabiliza el tiempo real de descanso, según la duración efectiva | **Marca** el inicio y el fin de cada pausa desde la app |
 
-> **Aviso:** Si activa el ajuste automático de horario sin configurar la tolerancia de entrada, el ajuste automático solo tendrá efecto si el fichaje cae dentro de la ventana activa del turno, que por defecto empieza en el instante exacto de inicio. Asegúrese de configurar ambos ajustes de forma coherente.
+Con el descanso estricto se indica además la **duración en minutos** que el sistema descontará de la jornada.
+
+La elección depende de la operativa real: el descanso estricto simplifica —nadie tiene que acordarse de fichar la pausa— pero no refleja las desviaciones; el flexible refleja lo que ocurrió, a cambio de exigir dos fichajes más al día.
+
+---
+
+## Cómo elegir entre una y otra
+
+| Situación | Recomendación |
+|---|---|
+| Jornada cerrada por convenio, sin horas extra | Jornada estricta |
+| Se quiere evitar que las llegadas anticipadas generen tiempo extra | Jornada estricta |
+| Equipos de campo o servicios con jornada variable | Jornada flexible |
+| Se retribuyen o se compensan las horas extra realmente trabajadas | Jornada flexible |
+| Pausa fija de comida, igual todos los días | Descanso estricto |
+| Pausas variables según la carga de trabajo | Descanso flexible |
+
+> **Aviso:** cambiar de modalidad afecta al cómputo de las jornadas que se registren a partir de ese momento. Antes de cambiarla en una entidad con actividad, valore hacerlo coincidir con el inicio de un periodo de nómina para que el informe del mes no mezcle dos criterios de cómputo.
 
 ---
 
 ## Artículos relacionados
 
-- [Horarios base y turnos](23-horarios-base-y-turnos.md)
-- [Excepciones de horario](25-excepciones-de-horario.md)
-- [Herencia de configuración](26-herencia-de-configuracion.md)
-- [Turnos rotativos](27-turnos-rotativos.md)
-- [Cómo funciona el fichaje](../03-control-horario/13-como-funciona-el-fichaje.md)
-- [Estados y códigos de error](../03-control-horario/22-estados-y-codigos-de-error.md)
+| Artículo | Descripción |
+|---|---|
+| [Horarios base y turnos](./23-horarios-base-y-turnos.md) | Configuración del horario semanal y de varios turnos por día |
+| [Excepciones de horario](./25-excepciones-de-horario.md) | Ajustes puntuales sobre el horario heredado |
+| [Herencia de configuración](./26-herencia-de-configuracion.md) | Prioridad entre entidad, sucursal y empleado |
+| [Descansos y pausas](../03-control-horario/17-descansos-y-pausas.md) | Cómo se registran las pausas desde la app |
+| [Cómo funciona el fichaje](../03-control-horario/13-como-funciona-el-fichaje.md) | Las validaciones que se aplican en cada fichaje |

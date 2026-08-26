@@ -8,7 +8,7 @@ El horario base define cuándo se espera que un empleado esté presente en su pu
 
 El horario base es el conjunto de turnos que forman la jornada laboral estándar de un grupo de empleados. Se define en la entidad o en cada sucursal y especifica, para cada día de la semana, qué turnos están activos y en qué franja horaria se encuadran.
 
-Cuando un empleado ficha, el sistema consulta su calendario efectivo y localiza el turno correspondiente a ese momento. Si el fichaje cae dentro de la franja de un turno activo (considerando la tolerancia de entrada configurada), el registro se acepta como válido.
+Cuando un empleado ficha, el sistema consulta su calendario efectivo y localiza el turno correspondiente a ese momento. Si el fichaje cae dentro de la franja de un turno activo (según el horario y la modalidad de jornada configurada), el registro se acepta como válido.
 
 ---
 
@@ -39,9 +39,9 @@ El sistema evalúa el fichaje contra el turno cuya franja horaria corresponde al
 
 En el momento del fichaje, el sistema recorre los turnos activos del día y determina cuál está vigente en ese instante. La selección se basa en la comparación entre la hora del fichaje y las franjas horarias de los turnos definidos para ese día.
 
-Si hay varios turnos en el día, el sistema selecciona aquel cuya ventana de tiempo incluye el momento del fichaje. Si el fichaje cae entre dos turnos (por ejemplo, durante una pausa entre el bloque de mañana y el de tarde), el sistema puede rechazarlo con el código `checklog/out_of_schedule` si no existe una tolerancia que cubra ese intervalo.
+Si hay varios turnos en el día, el sistema selecciona aquel cuya ventana de tiempo incluye el momento del fichaje. Si el fichaje cae entre dos turnos —por ejemplo, durante la pausa entre el bloque de mañana y el de tarde— el sistema lo rechaza con el código `checklog/out_of_schedule`.
 
-> **Nota:** La tolerancia de entrada amplía la ventana de aceptación antes del inicio del turno, pero no extiende el cierre del turno anterior. Este ajuste se explica en detalle en el artículo sobre horario flexible.
+> **Nota:** que el tiempo trabajado fuera de la franja cuente o no depende de la modalidad de jornada —estricta o flexible— configurada en el calendario. Se explica en detalle en [Jornada estricta y jornada flexible](28-horario-flexible.md).
 
 ---
 
@@ -76,6 +76,28 @@ El horario base puede configurarse a dos niveles:
 
 Esta arquitectura es especialmente útil en empresas con múltiples centros que operan en diferentes franjas horarias o con distintos días laborables.
 
+También puede configurarse a **nivel de empleado**, para quienes tengan un horario propio distinto al de su sucursal.
+
+---
+
+## Pausas dentro del turno
+
+Además de los turnos, cada día admite **pausas** con su hora de inicio y de fin. Se configuran en el mismo horario semanal, bajo el día correspondiente, y pueden añadirse varias.
+
+Cómo se computen esas pausas —con la duración fija configurada o con el tiempo real que marque el empleado— depende de la modalidad de descanso elegida. Consulte [Jornada estricta y jornada flexible](28-horario-flexible.md).
+
+---
+
+## Presets de calendario
+
+Configurar el horario semanal centro a centro es repetitivo cuando varias sucursales comparten el mismo patrón. Para evitarlo, el calendario permite **guardar la configuración como preset** y aplicarla después donde haga falta.
+
+- **Guardar configuración** almacena el horario actual con el nombre que le dé.
+- **Aplicar** vuelca un preset guardado sobre el calendario que esté editando.
+- Los presets que dejen de usarse pueden eliminarse.
+
+Es la vía práctica para dar de alta una sucursal nueva con el horario de las demás sin rehacerlo día por día.
+
 ---
 
 ## Artículos relacionados
@@ -83,6 +105,6 @@ Esta arquitectura es especialmente útil en empresas con múltiples centros que 
 - [Calendario laboral](24-calendario-laboral.md)
 - [Excepciones de horario](25-excepciones-de-horario.md)
 - [Herencia de configuración](26-herencia-de-configuracion.md)
-- [Turnos rotativos](27-turnos-rotativos.md)
-- [Horario flexible](28-horario-flexible.md)
+- [Turnos rotativos](27-turnos-rotativos.md) — no disponible en la versión actual; alternativas
+- [Jornada estricta y jornada flexible](28-horario-flexible.md)
 - [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md)

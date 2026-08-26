@@ -2,7 +2,7 @@
 
 CheckBiz360 envía notificaciones automáticas a las personas implicadas cada vez que ocurre un evento relevante en el ciclo de vida de una tarea. El objetivo es que nadie tenga que revisar manualmente el estado de las tareas: el sistema informa a cada persona en el momento exacto en que debe actuar o estar al tanto.
 
-Las notificaciones disponibles en V1 se basan en eventos concretos: nueva asignación, validación y rechazo de una tarea. Los recordatorios automáticos de vencimiento se describen al final de este artículo.
+Las notificaciones se basan en eventos concretos del ciclo de vida —asignación, validación, rechazo, actualización— y en dos avisos que dispara el propio sistema: el de **inicio tardío** y los de **vencimiento**. Ambos se describen más abajo.
 
 ---
 
@@ -66,12 +66,34 @@ Las notificaciones de tareas se distribuyen por dos canales:
 
 ---
 
-## Recordatorios automáticos y configuración de frecuencia
+### Aviso de inicio tardío
+
+**Destinatario:** las personas implicadas en la tarea.
+
+**Cuándo se envía:** cuando han pasado **15 minutos** de la fecha prevista de inicio sin que la tarea se haya iniciado.
+
+**Requisitos:** la tarea debe tener **fecha prevista de inicio** y la opción **Notificar si no inicia a tiempo** activada. Sin fecha prevista de inicio, la opción no tiene efecto.
+
+Es el único aviso que se configura tarea a tarea, y se activa al crearla o editarla. El envío queda registrado en la actividad de la tarea, de modo que el responsable puede comprobar si llegó a producirse.
+
+---
+
+### Avisos de vencimiento
+
+**Destinatario:** las personas implicadas en la tarea.
+
+**Cuándo se envían:** cuando la tarea se acerca a su fecha límite y cuando la supera sin completarse.
+
+Cada aviso se emite **una sola vez por tarea** y queda registrado, para que un mismo vencimiento no genere notificaciones repetidas día tras día.
+
+---
+
+## Configuración de la frecuencia de los avisos
 
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-Los recordatorios automáticos programados (aviso previo al vencimiento y notificación en el momento exacto en que una tarea vence) están planificados para una versión futura. Cuando estén disponibles, permitirán configurar la antelación del aviso, activar un segundo recordatorio y ajustar la frecuencia por prioridad de tarea.
+La antelación de los avisos de vencimiento no es configurable por el cliente en la versión actual. Poder ajustar esa anticipación, activar un segundo recordatorio y variar la frecuencia según la prioridad de la tarea está planificado para una versión futura.
 
 ---
 

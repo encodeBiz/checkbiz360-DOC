@@ -94,4 +94,4 @@ La configuración de roles y responsabilidades está disponible para los roles *
 - [Crear y gestionar empleados](06-crear-y-gestionar-empleados.md)
 - [Matriz de permisos por rol](08-matriz-de-permisos-por-rol.md)
 - [Empleados multi-entidad](11-empleados-multi-entidad.md)
-- [Exportar empleados a CSV](12-exportar-empleados-csv.md)
+- [Exportar el listado de empleados](12-exportar-empleados-csv.md)

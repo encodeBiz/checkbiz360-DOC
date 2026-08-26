@@ -1,47 +1,35 @@
-# Exportar datos: empleados a CSV e informe de asistencia en PDF
+# Exportar datos: asistencia y tareas
 
-CheckBiz360 permite obtener datos fuera de la plataforma en dos escenarios distintos: exportar el listado de empleados en formato CSV y descargar el informe de asistencia en formato PDF. Este artículo describe ambas opciones, los datos que incluyen y las consideraciones prácticas para su uso.
-
----
-
-## Exportar empleados a CSV
-
-Desde el backoffice es posible exportar el listado completo de empleados de la entidad en formato CSV. Esta función es útil para importar datos en software externo de nóminas, ERPs o herramientas de RRHH.
-
-### Características del archivo CSV exportado
-
-- Codificación **UTF-8** con BOM para garantizar la correcta visualización de caracteres especiales (tildes, ñ) en Excel y otros programas.
-- Separador de campos: **punto y coma (;)**.
-- Separador decimal: **coma (,)** según el estándar español.
-- Valores de texto entrecomillados con comillas dobles cuando contienen el separador o saltos de línea.
-
-> **Aviso:** Si importa el archivo CSV en un software que utilice coma como separador de campos, deberá ajustar la configuración de importación de ese programa o convertir el archivo previamente.
-
-### Cómo exportar el listado de empleados
-
-1. Acceda al backoffice con un rol de Owner o Manager.
-2. Navegue a la sección **Empleados**.
-3. Pulse el botón **Exportar** o el icono de descarga disponible en la parte superior del listado.
-4. El archivo CSV se descargará automáticamente en la carpeta de descargas de su navegador.
-
-### Campos incluidos en la exportación de empleados
-
-El CSV de empleados incluye los datos de ficha de cada empleado registrado en la entidad: nombre completo, dirección de email, sucursal asignada, rol, estado de la cuenta y fecha de alta, entre otros campos identificativos.
+CheckBiz360 saca datos de la plataforma mediante **informes**: el de asistencia, en **PDF o Excel (XLSX)**, y el de tareas, en **Excel (XLSX)**. Este artículo describe ambos, los datos que incluyen y las consideraciones prácticas de uso.
 
 ---
 
-## Descargar el informe de asistencia en PDF
+## Exportar el directorio de empleados
 
-El informe de asistencia se genera manualmente desde el backoffice y se descarga como archivo PDF. No existe generación automática ni programada; cada descarga la realiza el responsable en el momento en que la necesita.
+> **Estado: Pendiente de desarrollo**
+> Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
+
+El listado de **Empleados** no genera hoy un fichero descargable. Lo que sí funciona es el sentido contrario: la **importación** de empleados desde un CSV, útil al poner en marcha la plataforma con una plantilla grande.
+
+Si necesita una extracción completa del directorio, solicítela a soporte en hola@encodebiz.com. Consulte [Exportar el listado de empleados](../02-empleados/12-exportar-empleados-csv.md).
+
+---
+
+## Descargar el informe de asistencia (PDF o Excel)
+
+El informe de asistencia se genera bajo demanda desde el backoffice y puede descargarse en **PDF** o en **Excel (XLSX)**. No existe generación automática ni programada; cada informe lo lanza el responsable cuando lo necesita.
+
+Elija el formato según el uso: **PDF** para presentar o archivar —es el que conviene ante una inspección—, **Excel** para trabajar los datos en una hoja de cálculo o pasarlos a la gestoría.
 
 ### Cómo generar y descargar el informe de asistencia
 
 1. Acceda al backoffice con un rol de Owner o Manager.
 2. Vaya a la sección **Informes**.
-3. Configure los filtros del informe: período, empleado o sucursal según sus necesidades.
-4. Pulse **Generar informe**.
-5. Una vez generado, pulse **Descargar PDF**.
-6. El archivo se descargará en la carpeta de descargas de su navegador.
+3. Genere un informe nuevo y seleccione el tipo *Registro de jornada*.
+4. Elija el **formato**: PDF o Excel (XLSX).
+5. Configure el **periodo** y, si lo necesita, filtre por sucursal o empleado.
+6. Genere el informe. Aparecerá en el histórico con su tipo y su formato.
+7. Descárguelo desde el histórico, tantas veces como haga falta.
 
 ### Campos incluidos en el informe de asistencia
 
@@ -57,12 +45,22 @@ El informe de asistencia se genera manualmente desde el backoffice y se descarga
 
 ---
 
-## Exportación a Excel/CSV de informes generales
+## Descargar el informe de tareas (Excel)
+
+El informe de tareas se genera igual que el de asistencia, seleccionando el tipo *Informe de tareas*. Solo se produce en **Excel (XLSX)**.
+
+Admite filtros por **sucursal** y por **estado** de la tarea. El periodo se aplica sobre la **fecha límite** de cada tarea, no sobre su fecha de creación: un informe de julio recoge las tareas que vencían en julio, aunque se crearan antes.
+
+Si ninguna tarea cumple los filtros, el sistema lo indica y no genera un fichero vacío.
+
+---
+
+## Exportación de los paneles de inteligencia operativa
 
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-La posibilidad de exportar los informes de asistencia, costes y otros informes de gestión directamente a formato Excel (.xlsx) o CSV está planificada para una versión futura de la plataforma. Cuando esté disponible, permitirá descargar los datos tabulares de cualquier informe para importarlos en software de nóminas, gestorías o herramientas de análisis.
+La exportación directa de los datos de los paneles —costes, anomalías y comparativas entre sucursales— a Excel o CSV está planificada para una versión futura. Hoy esos datos se consultan en pantalla; lo que sí puede exportarse son los informes de asistencia y de tareas descritos arriba.
 
 ---
 

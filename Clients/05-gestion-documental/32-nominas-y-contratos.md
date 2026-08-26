@@ -10,14 +10,14 @@ El proceso habitual de distribución de nóminas en CheckBiz360 sigue estos paso
 
 1. Al cierre de cada periodo, genere los recibos de salario desde su software de nóminas o gestoría en formato PDF.
 2. Acceda al backoffice de CheckBiz360 y navegue hasta la sección **Documentos**.
-3. Pulse **Nuevo documento** y seleccione la categoría **Nómina**.
+3. Cree un documento nuevo y seleccione el tipo **Nómina**.
 4. Asigne el documento al empleado correspondiente e indique el periodo en el título, por ejemplo: `Nómina - Abril 2026`.
 5. Active la opción de notificación push si desea que el empleado reciba un aviso en su dispositivo.
 6. Publique el documento.
 
 El empleado recibe la notificación en su app, pulsa sobre ella y accede directamente al detalle del documento, donde puede visualizarlo y descargarlo.
 
-Si trabaja con muchos empleados, puede repetir el proceso asignando documentos de forma individual o, cuando el sistema lo permita, cargando en lote. Mantenga el mismo formato de título en todos los registros para facilitar las búsquedas posteriores.
+Si trabaja con muchos empleados, repita el proceso documento a documento: la carga en lote no está disponible en la versión actual. Mantenga el mismo formato de título en todos los registros para facilitar las búsquedas posteriores.
 
 ### Acceso del empleado desde la app
 
@@ -29,7 +29,7 @@ El historial de nóminas queda accesible de forma acumulativa, de modo que el em
 
 - Suba siempre el documento en formato PDF para asegurar la compatibilidad de visualización en iOS y Android.
 - Use un formato de título uniforme que incluya el tipo de documento y el periodo: `Nómina - Mes Año`.
-- Si una nómina contiene una corrección respecto a un mes anterior, suba el documento corregido como una nueva versión o como un documento nuevo e indíquelo en la descripción.
+- Si una nómina contiene una corrección respecto a un mes anterior, archive la nómina incorrecta y suba la corregida como documento nuevo, indicándolo en la descripción.
 - Si trabaja con gestoría externa, acuerde con ella que le entregue los archivos nombrados de forma estandarizada para facilitar la carga masiva.
 
 ## Gestión de contratos
@@ -39,18 +39,18 @@ El historial de nóminas queda accesible de forma acumulativa, de modo que el em
 Cuando se produce una nueva contratación, el proceso para registrar el contrato en CheckBiz360 es el siguiente:
 
 1. Genere el contrato firmado (o pendiente de firma, según el momento) en formato PDF.
-2. Acceda al módulo documental y cree un nuevo documento con la categoría **Contrato**.
+2. Acceda al módulo documental y cree un documento nuevo con el tipo **Contrato**.
 3. Asígnelo al empleado e indique en el título el tipo de contrato y la fecha de inicio, por ejemplo: `Contrato indefinido - 01/05/2026`.
-4. Si el contrato requiere firma electrónica del empleado, active la opción correspondiente antes de publicar.
+4. Si necesita constancia de que el empleado lo ha recibido, active el **acuse de recibo** antes de publicar.
 5. Publique el documento.
 
 ### Renovaciones y modificaciones
 
-Cuando un contrato se prorroga o se modifican las condiciones laborales, se recomienda subir el nuevo documento como una versión actualizada del contrato existente, no como un documento independiente. Esto mantiene el historial contractual del empleado ordenado y vinculado en un único expediente.
+Cuando un contrato se prorroga o se modifican las condiciones laborales, archive el contrato anterior y suba el nuevo. El historial automático de versiones está en el roadmap, así que la trazabilidad se mantiene con el archivado y con una convención de títulos coherente.
 
-Para modificaciones parciales —como un anexo de cambio de jornada o una subida salarial—, puede subir el anexo como un documento separado con la categoría **Contrato** e indicar en la descripción a qué contrato principal hace referencia.
+Para modificaciones parciales —como un anexo de cambio de jornada o una subida salarial—, puede subir el anexo como un documento separado con el tipo **Contrato** e indicar en la descripción a qué contrato principal hace referencia.
 
-> **Importante:** CheckBiz360 no es un gestor de firma de contratos con validez jurídica externa; gestiona la firma electrónica dentro del contexto de la relación laboral registrada en la plataforma. Para contratos que requieran certificación cualificada, consulte con su asesoría jurídica la necesidad de complementar el proceso con un servicio de firma certificada externo.
+> **Importante:** CheckBiz360 **no firma contratos**. Lo que ofrece hoy es distribución trazable y acuse de recibo: queda constancia de que el empleado accedió al documento, cuándo y sobre qué versión. La firma del contrato debe realizarse por su cauce habitual —en papel o con un servicio de firma electrónica externo— y subirse aquí ya firmada. La firma electrónica avanzada dentro de la plataforma está en el roadmap.
 
 ## Conservación documental y obligaciones legales
 
@@ -70,6 +70,6 @@ CheckBiz360 mantiene el archivo documental activo mientras la entidad tenga la c
 - [Subir y organizar documentos](31-subir-y-organizar-documentos.md)
 - [Documentos privados](33-documentos-privados.md)
 - [Notificaciones de documentos](34-notificaciones-de-documentos.md)
-- [Firma electrónica](35-firma-electronica.md)
+- [Acuse de recibo](35-firma-electronica.md)
 - [Historial de versiones](36-historial-de-versiones.md)
 - [Exportar documentos](38-exportar-documentos.md)

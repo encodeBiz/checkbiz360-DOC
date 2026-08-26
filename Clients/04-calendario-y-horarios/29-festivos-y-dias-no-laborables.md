@@ -50,7 +50,7 @@ CheckBiz360 permite deshabilitar un festivo puntualmente para que los empleados 
 
 1. Acceda al backoffice con rol owner o manager.
 2. Navegue a **Sucursales** y seleccione la sucursal que trabaja ese día.
-3. Acceda a **Configuración > Calendario laboral**.
+3. Acceda a **Calendario** en el menú lateral.
 4. Localice la fecha del festivo en la lista de días no laborables.
 5. Seleccione la entrada y pulse **Desactivar para esta fecha**.
 6. Confirme la acción. La fecha deja de estar bloqueada para los empleados de esa sucursal.
@@ -101,5 +101,5 @@ Se recomienda configurar el calendario de festivos al inicio de cada año natura
 - [Calendario laboral](24-calendario-laboral.md)
 - [Excepciones de horario](25-excepciones-de-horario.md)
 - [Herencia de configuración](26-herencia-de-configuracion.md)
-- [Turnos rotativos](27-turnos-rotativos.md)
+- [Turnos rotativos](27-turnos-rotativos.md) — no disponible en la versión actual; alternativas
 - [Estados y códigos de error](../03-control-horario/22-estados-y-codigos-de-error.md)

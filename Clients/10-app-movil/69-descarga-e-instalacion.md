@@ -41,7 +41,7 @@ Además de la versión del sistema operativo, la aplicación requiere:
 1. Abra la aplicación **Google Play Store** en su dispositivo Android.
 2. Pulse la barra de búsqueda en la parte superior.
 3. Escriba **CheckBiz360** y pulse el icono de búsqueda.
-4. Seleccione la aplicación de **EncodeBiz** en los resultados. El paquete oficial es `com.encodebiz.checkbiz360`.
+4. Seleccione la aplicación publicada por **EncodeBiz** en los resultados.
 5. Pulse el botón **Instalar**.
 6. Acepte los permisos solicitados (ubicación, notificaciones, almacenamiento) cuando el sistema los solicite durante o después de la instalación.
 7. Una vez finalizada la instalación, pulse **Abrir** para acceder a la aplicación.
@@ -67,9 +67,7 @@ Una vez instalada la aplicación, esta le solicitará los siguientes permisos:
 - Compruebe que la tienda (App Store o Google Play) está correctamente configurada con una cuenta activa.
 - Verifique que su dispositivo cumple los requisitos mínimos de versión de sistema operativo indicados al inicio de este artículo.
 - En App Store, asegúrese de que la región de su cuenta está establecida en un país donde la app esté disponible.
-- Si el problema persiste, acceda directamente mediante los siguientes enlaces:
-  - iOS: `https://apps.apple.com/app/id6737189938`
-  - Android: `https://play.google.com/store/apps/details?id=com.encodebiz.checkbiz360`
+- Si el problema persiste, solicite a su responsable el enlace directo a la ficha de la app en la tienda correspondiente.
 
 ### El dispositivo no cumple los requisitos de compatibilidad
 

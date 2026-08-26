@@ -1,121 +1,70 @@
 # Seguimiento y resolución de incidencias
 
-Una vez creada una incidencia en CheckBiz360, el sistema ofrece herramientas para supervisar su evolución, añadir información adicional y verificar que el problema ha quedado completamente resuelto. Este artículo describe el ciclo de vida completo de una incidencia: desde su apertura hasta su cierre definitivo, incluyendo cómo reabrir un caso si el problema reaparece.
+Una vez creada, la incidencia vive en la sección **Incidencias** del backoffice hasta que se resuelve. Este artículo describe sus estados, cómo se responde y qué queda registrado.
+
+Recuerde que las incidencias son un canal **interno de su organización**. Para problemas de la plataforma, el canal es el soporte de EncodeBiz: consulte [Contactar con soporte técnico](./87-contactar-con-soporte-tecnico.md).
 
 ---
 
 ## Estados de una incidencia
 
-Cada incidencia pasa por una serie de estados que reflejan su situación en el proceso de resolución. Puede consultar el estado actual en cualquier momento accediendo a **Soporte > Incidencias** en el backoffice.
-
 | Estado | Significado |
 |---|---|
-| Abierta | La incidencia ha sido registrada y está pendiente de ser analizada por el equipo de soporte |
-| En revisión | El equipo de soporte ha comenzado a investigar el problema. Pueden solicitar información adicional |
-| Resuelta | El equipo de soporte ha aplicado una solución. Se espera confirmación por parte del cliente |
-| Cerrada | El cliente ha confirmado que el problema está resuelto, o han transcurrido 7 días desde la resolución sin objeción |
+| **Pendiente** | Registrada, a la espera de que alguien la tome |
+| **En revisión** | Alguien está investigando el problema. Es el estado con el que nace una incidencia creada desde el backoffice |
+| **Resuelto** | El problema se ha solucionado. La incidencia deja de admitir respuestas |
+
+No hay un estado "cerrada" ni un cierre automático por tiempo: una incidencia permanece abierta hasta que alguien la marca como resuelta.
 
 ### Quién puede cambiar el estado
 
-- El equipo de soporte de CheckBiz360 puede mover una incidencia a cualquier estado.
-- El **Owner** o el **Manager** que abrió la incidencia puede:
-  - Marcarla como **Resuelta** si el problema ha desaparecido antes de que el equipo de soporte intervenga.
-  - **Reabrir** una incidencia que estaba en estado Resuelta o Cerrada si el problema persiste o reaparece.
-- Los roles de Supervisor y Worker no tienen acceso al módulo de incidencias.
+El estado se cambia de dos formas: editando la incidencia, o **al responder** en su hilo, donde cada respuesta puede llevar asociado un cambio de estado. Ambas acciones corresponden a los roles con acceso al backoffice: **Owner** y **Manager**.
 
 ---
 
-## Cómo añadir comentarios y actualizaciones
+## Responder a una incidencia
 
-Durante la vida de una incidencia, es habitual que el equipo de soporte solicite información adicional o que usted quiera reportar una nueva observación. Todos estos intercambios se registran en el hilo de comentarios de la incidencia.
+El seguimiento se hace mediante respuestas. Cada respuesta queda en el hilo, con su autor y su fecha, y puede además mover el estado.
 
-### Añadir un comentario
+1. Acceda a **Incidencias** en el menú lateral.
+2. Localice la incidencia con los filtros de estado, sucursal o empleado.
+3. Abra su detalle.
+4. Pulse **Responder**.
+5. Escriba el mensaje y, si procede, seleccione el nuevo **estado**.
+6. Confirme.
 
-1. Acceda a **Soporte > Incidencias** en el backoffice.
-2. Localice la incidencia por su número de seguimiento o mediante los filtros disponibles.
-3. Haga clic en el número de la incidencia para abrir su detalle.
-4. Desplácese hasta la sección **Comentarios** en la parte inferior de la pantalla.
-5. Escriba su mensaje en el campo de texto.
-6. Si desea adjuntar una captura de pantalla o un archivo adicional, pulse el icono de adjunto antes de enviar.
-7. Pulse **Enviar comentario**.
+> **Importante:** una incidencia en estado *Resuelto* ya no admite respuestas. Si el problema reaparece, cree una incidencia nueva y haga referencia en el comentario a la anterior.
 
-El equipo de soporte recibirá una notificación por correo electrónico con su comentario. Del mismo modo, usted recibirá una notificación cada vez que el equipo de soporte añada una respuesta.
-
-> **Aviso:** No abra una nueva incidencia para proporcionar información sobre un caso ya existente. Utilice siempre el hilo de comentarios de la incidencia original para mantener todo el contexto agrupado.
+> **Aviso:** no abra una incidencia nueva para añadir información a un caso que sigue abierto. Use el hilo de respuestas para mantener el contexto agrupado.
 
 ---
 
-## Historial de actuaciones
+## Historial del caso
 
-Cada incidencia mantiene un registro cronológico de todas las acciones realizadas sobre ella. Este historial incluye:
-
-- Fecha y hora de cada cambio de estado.
-- Nombre del usuario (cliente o soporte) que realizó la acción.
-- Contenido de cada comentario añadido.
-- Archivos adjuntos con la fecha en que fueron subidos.
-
-El historial no puede modificarse ni eliminarse. Sirve como trazabilidad completa del caso desde su apertura hasta su cierre.
-
-### Acceder al historial completo
-
-1. Abra la incidencia desde **Soporte > Incidencias**.
-2. En la pantalla de detalle, el historial aparece en la columna o sección **Actividad**, ordenado de más reciente a más antiguo.
-3. Si el historial es extenso, utilice el desplazamiento vertical para ver las actuaciones más antiguas.
+El detalle de la incidencia muestra el planteamiento inicial y, debajo, todas las respuestas en orden cronológico, cada una con su autor, la fecha y el cambio de estado que produjo. El listado indica también cuántas respuestas acumula cada incidencia, lo que permite localizar de un vistazo las que llevan más idas y venidas.
 
 ---
 
 ## Cuándo marcar una incidencia como resuelta
 
-Puede marcar una incidencia como resuelta cuando haya verificado por su cuenta que el problema ha desaparecido y que la operativa ha vuelto a la normalidad. No espere a recibir confirmación del equipo de soporte si ya ha comprobado que todo funciona correctamente.
+Márquela como resuelta cuando haya comprobado que el problema ha desaparecido y la operativa ha vuelto a la normalidad. Conviene dejar una última respuesta explicando **qué lo causaba y qué se hizo**: es lo que convierte el histórico de incidencias en algo consultable cuando el mismo síntoma reaparezca meses después.
 
-### Pasos para marcar como resuelta
-
-1. Abra la incidencia desde **Soporte > Incidencias**.
-2. Pulse el botón **Marcar como resuelta** en la parte superior derecha del detalle.
-3. El sistema le pedirá que confirme la acción y le ofrecerá un campo opcional para añadir una nota de cierre.
-4. Confirme. El estado pasará a **Resuelta**.
-
-Transcurridos 7 días naturales desde que una incidencia se marca como Resuelta sin que se haya reabierto, el sistema la cierra automáticamente y pasa al estado **Cerrada**.
+Si un mismo síntoma genera incidencias repetidas, es señal de una causa de fondo —una geocerca mal dimensionada, un calendario que no cubre un turno— que conviene atacar en la configuración en lugar de resolver caso por caso.
 
 ---
 
-## Reabrir una incidencia si el problema persiste
+## Exportar el historial de incidencias
 
-Si después de marcar una incidencia como resuelta el mismo problema vuelve a aparecer, no es necesario crear una nueva incidencia. Puede reabrir el caso existente para que el equipo de soporte retome la investigación con todo el contexto previo disponible.
+> **Estado: No disponible**
+> La exportación del listado de incidencias a CSV o PDF no está implementada en la versión actual y no tiene fecha planificada.
 
-### Pasos para reabrir una incidencia
-
-1. Acceda a **Soporte > Incidencias** y localice la incidencia en estado **Resuelta** o **Cerrada**.
-2. Abra el detalle de la incidencia.
-3. Pulse el botón **Reabrir incidencia**.
-4. En el campo que aparece, describa brevemente por qué está reabriendo el caso: cuándo ha vuelto a aparecer el problema y qué ha cambiado respecto a la situación anterior.
-5. Confirme la reapertura.
-
-La incidencia volverá al estado **Abierta** y el equipo de soporte recibirá una notificación automática.
-
-> **Aviso:** Si la reapertura de una incidencia se produce en repetidas ocasiones por el mismo síntoma, es señal de que el problema puede tener una causa raíz más profunda. En ese caso, indíquelo expresamente en el comentario de reapertura para que el equipo de soporte escale la investigación.
-
----
-
-## Exportar el historial de incidencias para auditoría
-
-CheckBiz360 permite exportar el registro completo de incidencias de su entidad en formato CSV o PDF. Esta función es útil para auditorías internas, revisiones de calidad de servicio o como documentación de soporte ante terceros.
-
-### Pasos para exportar
-
-1. Acceda a **Soporte > Incidencias**.
-2. Aplique los filtros que desee: rango de fechas, estado, prioridad o empleado afectado.
-3. Pulse el botón **Exportar** en la barra de herramientas superior.
-4. Seleccione el formato de exportación: **CSV** para trabajar con los datos en una hoja de cálculo, o **PDF** para un documento de solo lectura.
-5. Confirme. El archivo se descargará automáticamente en su dispositivo.
-
-El archivo exportado incluye: número de incidencia, fecha de apertura, tipo, prioridad, estado, empleado afectado, sucursal y resumen de actuaciones.
+Las incidencias se consultan y filtran en pantalla. Si necesita el histórico para una auditoría, solicítelo a soporte en hola@encodebiz.com.
 
 ---
 
 ## Nota de rol
 
-Este artículo está dirigido a **Owner** y **Manager**. Solo estos roles tienen acceso al módulo de incidencias en el backoffice y pueden gestionar los estados, comentarios y exportaciones descritos en este artículo.
+Este artículo está dirigido a **Owner** y **Manager**, los únicos roles con acceso al módulo de incidencias en el backoffice.
 
 ---
 
@@ -123,7 +72,7 @@ Este artículo está dirigido a **Owner** y **Manager**. Solo estos roles tienen
 
 | Artículo | Descripción |
 |---|---|
-| [Crear una incidencia](./85-crear-una-incidencia.md) | Cómo abrir una nueva incidencia y asignar su prioridad |
-| [Contactar con soporte técnico](./87-contactar-con-soporte-tecnico.md) | Canales de soporte y tiempos de respuesta orientativos |
-| [Problemas frecuentes y soluciones](./88-problemas-frecuentes-y-soluciones.md) | FAQ técnica con las situaciones más habituales |
-| [Exportar a Excel y CSV](../11-informes-y-exportacion/78-exportar-a-excel-y-csv.md) | Formatos de exportación disponibles en la plataforma |
+| [Crear una incidencia](./85-crear-una-incidencia.md) | Campos, tipos y creación de una incidencia |
+| [Contactar con soporte técnico](./87-contactar-con-soporte-tecnico.md) | Canal con el equipo de EncodeBiz |
+| [Problemas frecuentes y soluciones](./88-problemas-frecuentes-y-soluciones.md) | Diagnóstico de las situaciones más habituales |
+| [Códigos de error completos](../14-referencia/90-codigos-de-error-completos.md) | Causa y solución de cada código |

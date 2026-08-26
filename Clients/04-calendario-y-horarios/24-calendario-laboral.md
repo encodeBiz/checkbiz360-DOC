@@ -51,7 +51,7 @@ Para añadir un festivo al calendario laboral, siga estos pasos:
 **A nivel entidad:**
 
 1. Acceda al backoffice con rol owner.
-2. Navegue a **Configuración > Entidad > Calendario laboral**.
+2. Navegue a **Calendario** y sitúese en la pestaña **Configuración general**.
 3. Pulse el botón **Añadir día no laborable**.
 4. Seleccione la fecha en el selector de calendario.
 5. Indique el tipo (festivo nacional, puente, cierre interno, etc.) y, opcionalmente, añada una descripción.
@@ -61,7 +61,7 @@ Para añadir un festivo al calendario laboral, siga estos pasos:
 
 1. Acceda al backoffice con rol owner o manager.
 2. Navegue a **Sucursales** y seleccione la sucursal correspondiente.
-3. Acceda a **Configuración > Calendario laboral** dentro de la sucursal.
+3. Acceda a **Calendario** y sitúese en la pestaña **Sucursal**.
 4. Siga los pasos 3 a 6 del procedimiento anterior.
 
 Los cambios son efectivos de forma inmediata. Una vez guardado el festivo, cualquier intento de fichaje en esa fecha por parte de los empleados afectados será bloqueado.

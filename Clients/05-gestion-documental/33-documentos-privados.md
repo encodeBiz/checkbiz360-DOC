@@ -37,7 +37,7 @@ La siguiente tabla muestra qué puede ver cada rol según el estado de visibilid
 
 Las cartas de amonestación, apercibimientos y otros documentos de carácter disciplinario suelen prepararse antes de entregarse formalmente al empleado. Subirlos con visibilidad privada permite tenerlos listos en el sistema sin que el empleado tenga acceso hasta el momento en que se produce la comunicación oficial.
 
-Una vez realizada la notificación formal, el responsable cambia la visibilidad a pública y el empleado puede acceder al documento desde la app y firmarlo si es necesario.
+Una vez realizada la notificación formal, el responsable cambia la visibilidad a pública y el empleado puede acceder al documento desde la app y acusar recibo si se le solicita.
 
 ### Evaluaciones de desempeño
 
@@ -75,4 +75,4 @@ Si sube un documento como privado, trabaja en él internamente y posteriormente 
 - [Subir y organizar documentos](31-subir-y-organizar-documentos.md)
 - [Notificaciones de documentos](34-notificaciones-de-documentos.md)
 - [Permisos de acceso documental](37-permisos-de-acceso-documental.md)
-- [Firma electrónica](35-firma-electronica.md)
+- [Acuse de recibo](35-firma-electronica.md)

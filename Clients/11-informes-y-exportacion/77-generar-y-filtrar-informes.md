@@ -101,6 +101,6 @@ Para periodos largos con plantillas grandes, le recomendamos iniciar la generaci
 | Artículo | Descripción |
 |---|---|
 | [Tipos de informe disponibles](./76-tipos-de-informe.md) | Descripción de cada tipo de informe y acceso por rol |
-| [Exportar a Excel y CSV](./78-exportar-a-excel-y-csv.md) | Formatos de exportación y campos incluidos |
+| [Exportar datos](./78-exportar-a-excel-y-csv.md) | Formatos de exportación y campos incluidos |
 | [Informe de cumplimiento normativo](./79-informe-de-cumplimiento-normativo.md) | El informe específico para el RDL 8/2019 |
 | [Informes automáticos](./80-informes-automaticos.md) | Envío periódico de informes por email |

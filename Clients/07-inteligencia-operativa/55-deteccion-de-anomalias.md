@@ -43,7 +43,7 @@ Cuando el sistema activa el indicador de anomalía para un empleado, el flujo de
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-En una versión futura, el indicador de anomalía estará integrado en un workflow de revisión con estados gestionables directamente en la plataforma (pendiente de revisión, revisado, archivado), lo que permitirá hacer seguimiento del ciclo de vida de cada alerta sin salir del backoffice. Asimismo, se prevé la posibilidad de configurar notificaciones de alerta para que los responsables sean avisados de forma automática cuando se active un nuevo indicador. Por ahora, el responsable debe consultar el panel de anomalías de forma proactiva para detectar nuevos indicadores activos.
+En una versión futura, el indicador de anomalía estará integrado en un workflow de revisión con estados gestionables directamente en la plataforma (pendiente de revisión, revisado, archivado), lo que permitirá hacer seguimiento del ciclo de vida de cada alerta sin salir del backoffice. Asimismo, se prevé la posibilidad de configurar notificaciones de alerta para que los responsables sean avisados de forma automática cuando se active un nuevo indicador. Por ahora, el responsable debe revisar el panel de Operación de forma proactiva: la pestaña de **Análisis** recoge dónde y cuándo falla el fichaje, que es donde afloran estos patrones.
 
 ## Lo que el indicador de anomalía no implica
 
@@ -57,5 +57,5 @@ En ningún caso debe usarse el indicador de anomalía como única base para inic
 
 - [Qué es la inteligencia operativa](49-que-es-la-inteligencia-operativa.md)
 - [El patrón de comportamiento del empleado](50-patron-de-comportamiento.md)
-- [Paneles de mando](56-paneles-de-mando.md)
-- [Cumplimiento normativo](../12-cumplimiento-normativo/)
+- [El panel de Operación](56-paneles-de-mando.md)
+- [Preparar una inspección de trabajo](../12-cumplimiento-normativo/84-preparar-una-inspeccion-de-trabajo.md)

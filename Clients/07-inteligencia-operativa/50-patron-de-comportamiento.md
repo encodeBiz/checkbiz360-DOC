@@ -30,7 +30,7 @@ Un empleado puede tener un buen mes aislado después de una conversación con su
 
 ### Patrones positivos
 
-Un patrón positivo se caracteriza por consistencia y estabilidad. El empleado llega dentro del margen de puntualidad de forma habitual, completa sus jornadas con pocas desviaciones, no acumula ausencias injustificadas y sus valoraciones de tareas son regularmente buenas. Este perfil genera índices de fiabilidad y eficiencia altos y es el que mayor puntuación de promoción acumula.
+Un patrón positivo se caracteriza por consistencia y estabilidad. El empleado llega dentro del margen de puntualidad de forma habitual, completa sus jornadas con pocas desviaciones, no acumula ausencias injustificadas y sus valoraciones de tareas son regularmente buenas. Este perfil genera indicadores de fiabilidad y eficiencia altos y es el que la evaluación operativa señala como candidato a promoción.
 
 Otro patrón positivo relevante es el de mejora progresiva: un empleado cuyos índices eran moderados hace seis meses pero muestran una tendencia clara de mejora. Este perfil indica que las acciones de gestión están funcionando y que el empleado tiene capacidad de desarrollo.
 
@@ -44,7 +44,7 @@ El patrón más difícil de detectar sin un sistema es el de deterioro lento: un
 
 El EmployeePattern se presenta en la ficha de cada empleado dentro del módulo de inteligencia operativa. Los responsables con acceso al módulo pueden consultar:
 
-- Los índices calculados (fiabilidad, eficiencia, puntuación de promoción) con su evolución temporal en gráfica.
+- Los indicadores calculados —fiabilidad, eficiencia operativa, coste y confiabilidad del patrón— con su evolución temporal en gráfica.
 - El historial de comportamiento con los eventos más relevantes.
 - El estado actual del flag de anomalía si estuviese activo.
 
@@ -54,7 +54,7 @@ El EmployeePattern se presenta en la ficha de cada empleado dentro del módulo d
 
 - [Qué es la inteligencia operativa](49-que-es-la-inteligencia-operativa.md)
 - [Índice de fiabilidad](51-indice-de-fiabilidad.md)
-- [Índice de eficiencia](52-indice-de-eficiencia.md)
-- [Puntuación de promoción](53-puntuacion-de-promocion.md)
+- [Índice de eficiencia operativa](52-indice-de-eficiencia.md)
+- [Evaluación operativa del empleado](53-puntuacion-de-promocion.md)
 - [Detección de anomalías](55-deteccion-de-anomalias.md)
-- [Paneles de mando](56-paneles-de-mando.md)
+- [El panel de Operación](56-paneles-de-mando.md)

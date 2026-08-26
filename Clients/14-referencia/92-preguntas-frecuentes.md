@@ -20,7 +20,7 @@ No. CheckBiz360 es una plataforma completamente en la nube (SaaS). No requiere i
 
 ### 3. ¿Qué pasa con los datos si cancelo mi suscripción?
 
-Si cancela su suscripción, sus datos se conservan durante un periodo de 90 días naturales desde la fecha de baja. Durante ese periodo puede solicitar la exportación completa de todos sus registros. Transcurridos los 90 días, los datos se eliminan de forma definitiva de los servidores de CheckBiz360 conforme a la política de retención de datos y al RGPD.
+Al cancelar, la suscripción permanece activa hasta la fecha de cancelación que muestra la propia tarjeta del plan en el backoffice: el servicio no se interrumpe en el momento de solicitarla. A partir de la baja efectiva, sus datos se conservan durante 90 días naturales, periodo en el que puede solicitar la exportación completa de sus registros. Transcurridos los 90 días se eliminan de forma definitiva conforme a la política de retención y al RGPD.
 
 ---
 
@@ -34,19 +34,19 @@ CheckBiz360 acepta importaciones de datos de empleados en formato CSV. Si dispon
 
 ### 5. ¿Funciona para empleados que trabajan en diferentes países?
 
-Sí. CheckBiz360 soporta configuraciones multi-país. Cada sucursal puede tener su propia zona horaria, calendario efectivo con festivos locales y configuración de radio de fichaje. El sistema calcula correctamente los registros de jornada respetando la zona horaria de cada sucursal, independientemente de donde esté hospedado el servidor.
+Sí. CheckBiz360 soporta configuraciones multi-país. Cada sucursal puede tener su propia zona horaria, calendario efectivo con festivos locales y configuración de radio de fichaje. El sistema calcula correctamente los registros de jornada respetando la zona horaria de cada sucursal, independientemente de dónde esté hospedado el servidor.
 
 ---
 
 ### 6. ¿Los empleados pueden ver los datos de sus compañeros?
 
-No. Cada empleado con rol Worker solo puede ver sus propios datos de asistencia, documentos y tareas desde la app. El sistema no permite a un Worker acceder al perfil, los fichajes ni los documentos de otro empleado. Solo los roles de Manager y Owner tienen acceso a datos de múltiples empleados, dentro de los límites de las sucursales que gestionan.
+No. Cada empleado con rol Worker solo puede ver sus propios datos de asistencia, documentos y tareas desde la app. El sistema no permite a un Worker acceder al perfil, los fichajes ni los documentos de otro empleado. Los roles de Supervisor, Manager y Owner acceden a datos de varios empleados, siempre dentro de los límites de las sucursales que tienen asignadas.
 
 ---
 
 ### 7. ¿Se puede usar sin smartphone (empleados sin móvil)?
 
-El fichaje mediante la app móvil es el método principal de CheckBiz360. Sin embargo, los managers pueden registrar jornadas manualmente desde el backoffice para empleados que no dispongan de smartphone. Si toda o parte de la plantilla trabaja sin dispositivos móviles, contacte con soporte para conocer las opciones de registro alternativas disponibles en su plan.
+El fichaje mediante la app móvil es el método principal de CheckBiz360. Sin embargo, los responsables pueden registrar jornadas manualmente desde el backoffice para empleados que no dispongan de smartphone. Si toda o parte de la plantilla trabaja sin dispositivos móviles, contacte con soporte para conocer las opciones de registro alternativas.
 
 ---
 
@@ -60,7 +60,7 @@ Si un empleado pierde su dispositivo, el Manager o Owner debe acceder al backoff
 
 ### 9. ¿Se puede integrar con el software de nóminas?
 
-Sí, en el plan empresarial. CheckBiz360 ofrece una API que permite conectar la plataforma con sistemas de nóminas y recursos humanos externos. Los clientes de planes inferiores pueden exportar los datos de asistencia en CSV y procesarlos manualmente en su software de nóminas. Si tiene una necesidad de integración específica, contacte con soporte para evaluar las opciones.
+Con el plan Empresarial, sí: incluye integraciones por webhook y desarrollos a medida contra sistemas de nóminas, ERP o CRM, que se acuerdan caso por caso. Con el plan Bronce puede exportar la asistencia en PDF o Excel (XLSX) y las tareas en Excel, y procesarlos en su software de nóminas. Si tiene una necesidad de integración concreta, contacte con soporte para evaluarla.
 
 ---
 
@@ -74,7 +74,7 @@ Sí. CheckBiz360 trata los datos personales de los empleados de conformidad con 
 
 ### 11. ¿Qué pasa si hay una jornada que no se registró correctamente?
 
-El Manager o el Owner puede corregir cualquier jornada mediante la función de jornada manual, disponible en la sección de control horario del backoffice. Esta función permite añadir un checkin o checkout retroactivo, corregir una hora registrada o añadir una jornada completa para un día en el que no hubo registro. Todas las correcciones manuales quedan registradas con el nombre del responsable que las realizó, la fecha de la modificación y la justificación opcional.
+El Manager o el Owner puede corregir cualquier jornada mediante la función de jornada manual, disponible en la sección de asistencia del backoffice. Esta función permite añadir un checkin o checkout retroactivo, corregir una hora registrada o añadir una jornada completa para un día en el que no hubo registro. Todas las correcciones manuales quedan registradas con el nombre del responsable que las realizó, la fecha de la modificación y el motivo.
 
 ---
 
@@ -84,17 +84,17 @@ Sí. CheckBiz360 permite configurar horarios y turnos a nivel de sucursal, y tam
 
 ---
 
-## Límites y capacidad
+## Precio, límites y capacidad
 
-### 13. ¿Cuántos empleados puedo gestionar?
+### 13. ¿Cuántos empleados puedo gestionar y cuánto cuesta?
 
-El límite de empleados activos depende del plan de suscripción contratado. Cada plan define un número máximo de empleados. Puede consultar el límite actual y el número de empleados activos en **Configuración > Suscripción** en el backoffice. Si necesita aumentar la capacidad, puede actualizar su plan desde esa misma sección.
+No hay un límite de empleados por plan. El plan Bronce se factura **por empleado y mes, desde 2 €**: el coste acompaña al tamaño real de la plantilla, sin cuota fija de entrada ni coste de implantación. Para organizaciones grandes —orientativamente a partir de 100 empleados— o con necesidades de integración, el plan Empresarial se acuerda a medida con el equipo comercial. Consulte [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md) para el detalle.
 
 ---
 
 ### 14. ¿Puedo gestionar varias empresas desde una sola cuenta?
 
-La gestión multi-entidad está disponible en el plan empresarial. Con este plan, puede administrar múltiples empresas o razones sociales desde un único panel de control, con configuraciones, empleados y datos completamente independientes por entidad. Los planes base, avanzado y premium están diseñados para una sola entidad.
+Sí. Una misma cuenta puede administrar varias empresas o razones sociales, con empleados, configuración y datos completamente independientes por entidad. El selector de entidad del backoffice permite cambiar entre ellas, y un mismo empleado puede pertenecer a más de una entidad.
 
 ---
 
@@ -106,22 +106,30 @@ CheckBiz360 aplica cifrado en tránsito (TLS 1.2 o superior) y en reposo para to
 
 ---
 
-### 17. ¿Cómo sé que los fichajes son auténticos y no los está haciendo otra persona?
+### 16. ¿Cómo sé que los fichajes son auténticos y no los está haciendo otra persona?
 
 CheckBiz360 combina varios mecanismos para garantizar la autenticidad de los fichajes:
 
 - **Geolocalización**: el fichaje solo se acepta si el dispositivo está dentro de la geocerca de la sucursal.
 - **Biometría requerida**: si está activada, el empleado debe autenticarse con su huella dactilar o reconocimiento facial antes de que se acepte el fichaje.
 - **Dispositivos de confianza**: solo los dispositivos autorizados explícitamente pueden realizar fichajes.
-- **Detección de anomalías** (plan avanzado y superiores): el sistema identifica automáticamente patrones sospechosos como precisión GPS excesiva o geolocalización estática.
+- **Detección de anomalías**: el sistema identifica automáticamente patrones sospechosos, como una precisión temporal excesiva o una geolocalización estática.
 
 ---
 
 ## Portabilidad y cambio de plataforma
 
-### 18. ¿Puedo exportar todos mis datos si decido cambiar de software?
+### 17. ¿Puedo exportar todos mis datos si decido cambiar de software?
 
-Sí. En cualquier momento puede exportar todos sus datos desde el backoffice: registros de asistencia, perfiles de empleados, documentos e informes. Los datos de asistencia se exportan en formato CSV, que es compatible con la mayoría de los sistemas de gestión de recursos humanos. Si necesita una exportación completa de todos los datos de la entidad, contacte con soporte en hola@encodebiz.com.
+Sí. Desde el backoffice puede exportar la asistencia en PDF o Excel (XLSX) y las tareas en Excel (XLSX). La exportación del directorio de empleados está en el roadmap; mientras tanto, y para una extracción completa de todos los datos de la entidad —incluidos documentos e históricos— contacte con soporte en hola@encodebiz.com.
+
+---
+
+## Usos específicos
+
+### 18. ¿Se puede usar CheckBiz360 para empleados a tiempo parcial?
+
+Sí. La plataforma gestiona correctamente empleados a tiempo parcial. Puede configurar turnos de cualquier duración y horario para cada empleado, incluyendo jornadas reducidas, turnos fraccionados o empleados que trabajan solo algunos días de la semana. Los informes y cálculos de horas se adaptan automáticamente al turno asignado de cada trabajador.
 
 ---
 
@@ -129,25 +137,17 @@ Sí. En cualquier momento puede exportar todos sus datos desde el backoffice: re
 
 ### 19. ¿Hay una versión de prueba gratuita?
 
-CheckBiz360 ofrece un periodo de prueba para que las empresas puedan evaluar la plataforma antes de comprometerse con una suscripción. Durante el periodo de prueba tiene acceso a las funcionalidades principales de la plataforma con un límite reducido de empleados. Para iniciar una prueba o consultar las condiciones actuales, contacte con el equipo en hola@encodebiz.com.
+Sí. La primera suscripción de cada entidad incluye **45 días de prueba**, con la plataforma completa y sin límite reducido de empleados. La prueba no vuelve a aplicarse en suscripciones posteriores de la misma entidad. Para arrancar una prueba o consultar condiciones concretas, escriba a hola@encodebiz.com.
 
 ---
 
 ### 20. ¿Qué soporte técnico está incluido en el plan?
 
-Todos los planes incluyen acceso a este centro de ayuda (base de conocimiento), soporte por correo electrónico en hola@encodebiz.com y gestión de incidencias a través del backoffice. Los tiempos de respuesta varían según la prioridad de la incidencia: las incidencias críticas tienen cobertura 24 horas y respuesta en menos de una hora; las incidencias de prioridad baja tienen un tiempo de respuesta de hasta 24 horas hábiles. El plan empresarial incluye además un gestor de cuenta dedicado con tiempos de respuesta prioritarios. Consulte el artículo [Contactar con soporte técnico](../13-soporte-e-incidencias/87-contactar-con-soporte-tecnico.md) para ver la tabla completa de tiempos de respuesta.
+Todos los planes incluyen acceso a este centro de ayuda (base de conocimiento), soporte por correo electrónico en hola@encodebiz.com y gestión de incidencias a través del backoffice. Los tiempos de respuesta varían según la prioridad de la incidencia: las incidencias críticas tienen cobertura 24 horas y respuesta en menos de una hora; las incidencias de prioridad baja tienen un tiempo de respuesta de hasta 24 horas hábiles. El plan Empresarial añade canales de soporte preferentes. Consulte el artículo [Contactar con soporte técnico](../13-soporte-e-incidencias/87-contactar-con-soporte-tecnico.md) para ver la tabla completa de tiempos de respuesta.
 
 ---
 
-## Usos específicos
-
-### 16. ¿Se puede usar CheckBiz360 para empleados a tiempo parcial?
-
-Sí. La plataforma gestiona correctamente empleados a tiempo parcial. Puede configurar turnos de cualquier duración y horario para cada empleado, incluyendo jornadas reducidas, turnos fraccionados o empleados que trabajan solo algunos días de la semana. Los informes y cálculos de horas se adaptan automáticamente al turno asignado de cada trabajador.
-
----
-
-> **Aviso:** Las condiciones específicas de cada plan (límites, precios, periodos de prueba) pueden actualizarse. Para obtener información actualizada sobre precios y condiciones comerciales, contacte con el equipo de ventas en hola@encodebiz.com.
+> **Aviso:** las condiciones comerciales pueden actualizarse. Los precios de referencia de este centro de ayuda son *desde 2 €/empleado al mes* para el plan Bronce y *a medida* para el plan Empresarial, con 45 días de prueba en la primera suscripción. Para una oferta cerrada, contacte con el equipo de ventas en hola@encodebiz.com.
 
 ---
 
@@ -161,8 +161,8 @@ Este artículo está dirigido principalmente a **Owner** y a personas evaluando 
 
 | Artículo | Descripción |
 |---|---|
-| [Planes y funcionalidades](./91-planes-y-funcionalidades.md) | Descripción detallada de los módulos disponibles por plan |
+| [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md) | Precio de cada plan, periodo de prueba y módulos incluidos |
 | [Glosario](./89-glosario.md) | Definición de los términos técnicos de la plataforma |
 | [Contactar con soporte técnico](../13-soporte-e-incidencias/87-contactar-con-soporte-tecnico.md) | Canales de soporte, horarios y tiempos de respuesta |
-| [Primeros pasos: configuración inicial](../01-primeros-pasos/01-configuracion-inicial.md) | Guía para poner en marcha CheckBiz360 desde cero |
-| [Cumplimiento normativo RDL 8/2019](../12-cumplimiento-normativo/82-rdl-8-2019-y-registro-horario.md) | Cómo CheckBiz360 cumple con la normativa española de registro horario |
+| [Crear cuenta y configurar la entidad](../01-primeros-pasos/03-crear-cuenta-y-configurar-entidad.md) | Guía para poner en marcha CheckBiz360 desde cero |
+| [Cómo CheckBiz360 cumple el RDL 8/2019](../12-cumplimiento-normativo/82-como-checkbiz360-cumple-el-rdl-8-2019.md) | Cómo cumple la plataforma con la normativa española de registro horario |

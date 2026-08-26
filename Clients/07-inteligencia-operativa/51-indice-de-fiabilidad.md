@@ -2,15 +2,19 @@
 
 ## Qué mide
 
-El índice de fiabilidad mide la consistencia del comportamiento de un empleado en relación con sus compromisos horarios. Responde a una pregunta concreta: ¿puede el manager confiar en que este empleado estará donde debe estar, cuando debe estar y durante el tiempo previsto?
+La fiabilidad mide **la calidad del comportamiento observado, separada del tiempo que se lleva midiendo**. Responde a una pregunta concreta: ¿puede el responsable confiar en que este empleado estará donde debe estar, cuando debe estar y durante el tiempo previsto?
 
-Un empleado fiable no es necesariamente el más brillante ni el más productivo en tareas complejas. Es el empleado cuyo comportamiento es predecible: llega a tiempo, completa su jornada y no genera ausencias inesperadas. Esa consistencia tiene un valor operativo alto, especialmente en equipos donde la planificación de turnos depende de la presencia de cada persona.
+Esa separación es deliberada e importante: alguien que lleva un mes en la empresa no arrastra una fiabilidad baja por el hecho de tener poco recorrido. Lo que se ajusta en ese caso es el **nivel de confianza del patrón**, que indica cuánta solidez tiene el cálculo.
+
+Un empleado fiable no es necesariamente el más brillante ni el más productivo en tareas complejas. Es aquel cuyo comportamiento es predecible: llega a tiempo, completa su jornada y no genera ausencias inesperadas. Esa consistencia tiene un valor operativo alto, especialmente donde la planificación de turnos depende de la presencia de cada persona.
+
+La fiabilidad es además uno de los **tres índices principales del panel de Operación**, junto al efecto del centro y la dependencia, y se lee tanto a nivel de organización como de centro y de persona. Consulte [El panel de Operación](./56-paneles-de-mando.md).
 
 ## Qué comportamientos influyen en el índice
 
 El índice de fiabilidad se construye a partir del análisis acumulado de varios comportamientos:
 
-**Puntualidad en la entrada.** El sistema registra cuántos días el empleado ha fichado dentro del margen de tolerancia configurado para su sucursal. Las llegadas tardías repetidas reducen el índice de forma proporcional a su frecuencia y a la desviación respecto al horario previsto.
+**Puntualidad en la entrada.** El sistema compara la hora de entrada real con la prevista en el calendario efectivo. Las llegadas tardías repetidas reducen el índice de forma proporcional a su frecuencia y a la magnitud de la desviación.
 
 **Cumplimiento de la jornada completa.** No basta con llegar a tiempo; el sistema también evalúa si el empleado completa el tiempo de trabajo previsto. Las salidas anticipadas frecuentes afectan al índice de manera similar a las tardanzas de entrada.
 
@@ -18,18 +22,19 @@ El índice de fiabilidad se construye a partir del análisis acumulado de varios
 
 **Desviaciones de horario.** El sistema no solo mira si el empleado llega tarde o sale antes, sino la magnitud de esas desviaciones a lo largo del tiempo. Desviaciones pequeñas y esporádicas tienen un impacto menor que desviaciones grandes y recurrentes.
 
-## Escala y rangos
+## Cómo se presenta
 
-El índice se expresa en una escala de 0 a 100. Para interpretar los valores de forma práctica, puede tomar como referencia los siguientes rangos:
+La fiabilidad no se publica como una nota sobre 100 ni como un ranking. Se muestra con su **variación respecto al periodo anterior** —que suele decir más que el valor absoluto— y con su **estado de madurez**:
 
-| Rango | Interpretación |
+| Estado | Significado |
 |---|---|
-| 85 - 100 | Fiabilidad alta. El empleado mantiene un comportamiento muy consistente con sus compromisos horarios. |
-| 65 - 84 | Fiabilidad aceptable. Puede haber desviaciones puntuales, pero el patrón general es estable. |
-| 45 - 64 | Fiabilidad moderada. Existen incidencias recurrentes que conviene revisar con el empleado. |
-| 0 - 44 | Fiabilidad baja. El patrón muestra problemas sistemáticos de asistencia o puntualidad que requieren atención. |
+| **Acumulando datos** | Hay actividad, pero aún no la suficiente para concluir |
+| **Evidencia parcial** | Se puede leer con reservas |
+| **Sin datos suficientes** | No hay base para pronunciarse |
 
-> **Nota:** Los rangos anteriores son orientativos. La interpretación debe considerar siempre el contexto del sector, la naturaleza del puesto y las posibles circunstancias personales del empleado que el sistema no puede capturar.
+Cuando falta volumen, el panel indica cuántos registros hacen falta y cuántos hay. Una fiabilidad que no aparece **no** significa fiabilidad baja: significa que todavía no se puede afirmar nada.
+
+> **Nota:** la interpretación debe considerar siempre el contexto del sector, la naturaleza del puesto y las circunstancias que el sistema no puede capturar.
 
 ## Cómo mejora un empleado su índice
 
@@ -53,7 +58,7 @@ Para los responsables de equipo, el índice de fiabilidad tiene varios usos prá
 
 El índice de fiabilidad mide comportamiento, no causas. Una puntuación baja puede deberse a problemas de conciliación, a una carga de trabajo mal distribuida, a conflictos dentro del equipo o a circunstancias personales que el sistema no conoce. El índice identifica el patrón; la responsabilidad de entender el motivo y actuar en consecuencia es del manager.
 
-Tampoco mide la calidad del trabajo ni el rendimiento en tareas. Un empleado con fiabilidad alta puede tener un desempeño bajo en sus responsabilidades. Para una visión más completa del empleado, conviene consultar también el índice de eficiencia y la puntuación de promoción.
+Tampoco mide la calidad del trabajo ni el rendimiento en tareas. Un empleado con fiabilidad alta puede tener un desempeño bajo en sus responsabilidades. Para una visión más completa del empleado, consulte también el índice de eficiencia operativa y su evaluación operativa.
 
 > **Importante:** El índice de fiabilidad no debe utilizarse como criterio único para ninguna decisión de gestión de personas. Es un indicador de apoyo dentro de un conjunto más amplio de información.
 
@@ -61,6 +66,6 @@ Tampoco mide la calidad del trabajo ni el rendimiento en tareas. Un empleado con
 
 - [Qué es la inteligencia operativa](49-que-es-la-inteligencia-operativa.md)
 - [El patrón de comportamiento del empleado](50-patron-de-comportamiento.md)
-- [Índice de eficiencia](52-indice-de-eficiencia.md)
-- [Puntuación de promoción](53-puntuacion-de-promocion.md)
-- [Paneles de mando](56-paneles-de-mando.md)
+- [Índice de eficiencia operativa](52-indice-de-eficiencia.md)
+- [Evaluación operativa del empleado](53-puntuacion-de-promocion.md)
+- [El panel de Operación](56-paneles-de-mando.md)

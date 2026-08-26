@@ -25,11 +25,11 @@ Un empleado puede haber fichado correctamente y aun así no haber completado las
 
 ### Checklist de apertura y cierre de establecimiento
 
-Los comercios y locales de atención al público necesitan que se realicen una serie de acciones concretas antes de abrir o al cerrar. Con el módulo de tareas, el responsable puede crear una tarea recurrente de apertura que incluya instrucciones detalladas, y el empleado de turno confirma su ejecución desde la app.
+Los comercios y locales de atención al público necesitan que se realicen una serie de acciones concretas antes de abrir o al cerrar. El responsable crea una tarea de apertura y escribe los pasos como **lista de comprobación en la descripción**, que el empleado de turno sigue desde la app y confirma al terminar.
 
 ### Tareas de mantenimiento
 
-Las incidencias técnicas o las revisiones periódicas de instalaciones pueden gestionarse como tareas asignadas al responsable de mantenimiento. El sistema guarda el historial de ejecución y permite adjuntar evidencias fotográficas o documentos de resultado.
+Las incidencias técnicas o las revisiones periódicas de instalaciones pueden gestionarse como tareas asignadas al responsable de mantenimiento. El sistema guarda el historial de ejecución y permite adjuntar evidencias en foto o vídeo del resultado.
 
 ### Actividades de formación
 
@@ -47,15 +47,15 @@ El módulo de tareas respeta la jerarquía de roles de CheckBiz360. Cada rol tie
 
 ### Owner y Manager
 
-Tienen acceso completo al módulo. Pueden crear, asignar, modificar y eliminar tareas en cualquier sucursal de la entidad. Son los únicos que pueden valorar el desempeño del empleado al completar una tarea y configurar los permisos de los supervisores.
+Tienen acceso completo al módulo. Pueden crear, asignar, modificar y cancelar tareas en cualquier sucursal de la entidad, validarlas y valorar el desempeño del empleado.
 
 ### Supervisor
 
-Puede crear y asignar tareas si el manager le ha concedido ese permiso. También puede validar tareas completadas si tiene habilitado el permiso de validación. Sus capacidades dependen directamente de la configuración que le haya otorgado el manager.
+Su alcance se decide **en cada tarea**, no en su perfil. Toda tarea incluye dos opciones —**Permitir validación por supervisor** y **Permitir valoración por supervisor**, ambas activadas por defecto— que habilitan al supervisor de la sucursal a cerrar el circuito de esa tarea concreta. La creación de tareas por supervisores está desactivada por defecto.
 
 ### Worker (empleado)
 
-Recibe las tareas asignadas, puede ver su descripción y adjuntos, actualizar el estado de progreso y marcarlas como completadas. No puede crear ni asignar tareas a otros empleados.
+Recibe las tareas asignadas, consulta su descripción y sus evidencias, inicia el trabajo, añade notas de progreso, sube evidencias y marca la tarea como completada. No puede crear ni asignar tareas a otros empleados.
 
 ---
 

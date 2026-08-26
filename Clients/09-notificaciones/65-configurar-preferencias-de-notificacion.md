@@ -10,7 +10,7 @@ El sistema genera notificaciones ante los siguientes tipos de eventos:
 
 | Evento | Descripción |
 |---|---|
-| Nuevo documento disponible | Se asigna un documento al empleado para su consulta o firma |
+| Nuevo documento disponible | Se asigna un documento al empleado para su consulta o acuse de recibo |
 | Nueva tarea asignada | El responsable asigna una tarea al empleado |
 | Tarea validada o rechazada | El responsable emite el resultado de la validación de una tarea completada |
 | Jornada aprobada o rechazada | El responsable resuelve una solicitud de jornada manual |
@@ -22,8 +22,9 @@ El sistema genera notificaciones ante los siguientes tipos de eventos:
 | Fichaje sospechoso | El sistema detecta un fichaje irregular en el equipo |
 | Empleado que no ha fichado | Un empleado con turno no ha registrado entrada |
 | Jornada manual pendiente de aprobación | Un empleado ha enviado una solicitud de jornada que requiere validación |
-| Documento firmado | Un empleado ha firmado un documento asignado |
+| Acuse de recibo registrado | Un empleado ha confirmado la lectura de un documento asignado |
 | Tarea completada | Un empleado ha marcado una tarea como terminada |
+| Tarea sin iniciar a tiempo | Han pasado 15 minutos de la hora prevista de inicio sin que la tarea arranque |
 
 ---
 

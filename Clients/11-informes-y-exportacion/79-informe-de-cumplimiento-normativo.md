@@ -87,7 +87,7 @@ El RDL 8/2019 establece que los trabajadores tienen derecho a acceder a sus prop
 | Artículo | Descripción |
 |---|---|
 | [Tipos de informe disponibles](./76-tipos-de-informe.md) | Descripción de todos los tipos de informe |
-| [Exportar a Excel y CSV](./78-exportar-a-excel-y-csv.md) | Formatos de exportación disponibles |
+| [Exportar datos](./78-exportar-a-excel-y-csv.md) | Formatos de exportación disponibles |
 | [Registro horario obligatorio en España](../12-cumplimiento-normativo/81-registro-horario-obligatorio-en-espana.md) | Qué exige el RDL 8/2019 |
 | [Cómo CheckBiz360 cumple el RDL 8/2019](../12-cumplimiento-normativo/82-como-checkbiz360-cumple-el-rdl-8-2019.md) | Mecanismos técnicos de cumplimiento |
 | [Preparar una inspección de trabajo](../12-cumplimiento-normativo/84-preparar-una-inspeccion-de-trabajo.md) | Guía práctica para una visita de la ITSS |

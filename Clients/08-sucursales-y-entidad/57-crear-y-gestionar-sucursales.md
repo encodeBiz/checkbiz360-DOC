@@ -15,24 +15,25 @@ Al crear una sucursal deberá cumplimentar los siguientes campos:
 - **Nombre**: identificador visible de la sucursal en todo el sistema. Utilice un nombre claro y único dentro de su organización (por ejemplo, "Madrid Centro" o "Almacén Norte").
 - **Dirección**: dirección postal completa del centro de trabajo. El sistema geocodifica automáticamente esta dirección para obtener las coordenadas GPS que se utilizarán como punto central de la geocerca de fichaje. Es importante que la dirección sea precisa para garantizar la exactitud de las coordenadas.
 - **Radio de fichaje**: distancia en metros desde el punto central de la sucursal dentro de la cual el sistema considera válido un fichaje por geolocalización. Un radio de 100 metros es el valor recomendado para oficinas en entornos urbanos; puede ampliarse para instalaciones industriales o espacios abiertos.
-- **Zona horaria**: zona horaria en la que opera la sucursal. Este parámetro determina cómo se interpretan los timestamps de fichaje y cómo se calculan las jornadas. Es especialmente relevante en organizaciones con sucursales en distintos países o regiones.
+- **Zona horaria**: forma parte de la dirección y determina cómo se interpretan las horas de fichaje y cómo se calculan las jornadas. Es especialmente relevante en organizaciones con centros en distintos países o regiones. Si no se indica, la sucursal hereda la zona horaria de la entidad.
 
 ### Campos opcionales
 
-- **Descripción**: texto libre para identificar la sucursal con más detalle. Visible únicamente en el backoffice para los administradores.
+- **NIF**: identificador fiscal del centro, cuando difiere del de la entidad.
 - **Estado**: activa o inactiva. Por defecto, una sucursal recién creada queda activa.
-- **Configuración avanzada**: parámetros adicionales descritos en el artículo de configuración avanzada. Pueden dejarse con sus valores por defecto en el momento de la creación y ajustarse posteriormente.
+- **Datos adicionales**: campos libres en formato clave/valor para información propia de su organización.
+- **Calendario**: horario semanal, pausas y modalidad de jornada. Si no se configura, la sucursal hereda el calendario de la entidad.
 
 ### Pasos para crear la primera sucursal
 
-1. Acceda al backoffice web en `app.checkbiz360.com` e inicie sesión con sus credenciales.
-2. En el menú lateral, seleccione **Organización** y luego **Sucursales**.
-3. Pulse el botón **Nueva sucursal** en la esquina superior derecha.
+1. Acceda al backoffice en `saas.encodebiz.com` e inicie sesión con sus credenciales.
+2. En el menú lateral, dentro de CheckBiz, seleccione **Sucursales**.
+3. Pulse el botón de crear sucursal.
 4. Introduzca el nombre de la sucursal en el campo correspondiente.
 5. Escriba la dirección postal completa en el campo **Dirección**. Seleccione la sugerencia que aparece en el desplegable de autocompletado para asegurarse de que el sistema obtiene las coordenadas correctas.
 6. Compruebe que el mapa interactivo muestra el marcador en la posición correcta. Si la posición no es exacta, puede arrastrar el marcador manualmente para ajustarla.
 7. Introduzca el radio de fichaje en metros. Si no tiene un criterio definido, comience con 100 metros y ajústelo tras las primeras semanas de operación.
-8. Seleccione la zona horaria correspondiente en el desplegable.
+8. Compruebe la zona horaria asociada a la dirección.
 9. Complete los campos opcionales si lo considera necesario.
 10. Pulse **Guardar**. El sistema confirmará la creación con un mensaje de éxito y la nueva sucursal aparecerá en el listado.
 
@@ -42,7 +43,7 @@ Al crear una sucursal deberá cumplimentar los siguientes campos:
 
 Para modificar los datos de una sucursal existente:
 
-1. Acceda a **Organización** > **Sucursales** en el menú lateral.
+1. Acceda a **Sucursales** en el menú lateral.
 2. Localice la sucursal que desea editar y pulse sobre su nombre o el icono de edición.
 3. Modifique los campos que necesite actualizar.
 4. Si cambia la dirección, el sistema geocodificará de nuevo y actualizará las coordenadas. Compruebe el mapa antes de guardar.
@@ -54,7 +55,7 @@ Para modificar los datos de una sucursal existente:
 
 Desactivar una sucursal impide que los empleados asignados puedan fichar desde ella, pero conserva todo el histórico de datos. Esta operación es reversible.
 
-1. Acceda a **Organización** > **Sucursales**.
+1. Acceda a **Sucursales**.
 2. Pulse el icono de edición de la sucursal que desea desactivar.
 3. Cambie el campo **Estado** a **Inactiva**.
 4. Pulse **Guardar cambios**.

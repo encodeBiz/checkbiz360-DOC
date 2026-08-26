@@ -10,21 +10,30 @@ El empleado gestiona sus tareas desde la sección de tareas de la app móvil. Al
 
 ### Iniciar una tarea
 
-Cuando el empleado está listo para comenzar, abre el detalle de la tarea y pulsa **Iniciar tarea**. El estado cambia de "pendiente" a "en curso" y el responsable lo ve reflejado en el backoffice en tiempo real.
+Cuando el empleado está listo para comenzar, abre el detalle de la tarea y pulsa **Iniciar tarea**. El estado cambia de *asignada* a *en progreso* y el responsable lo ve reflejado en el backoffice.
 
 ### Marcar una tarea como completada
 
-Una vez finalizada la actividad, el empleado pulsa **Marcar como completada**. El sistema puede solicitar un comentario de cierre o una evidencia adjunta antes de confirmar, si el responsable ha configurado ese requisito al crear la tarea.
+Una vez finalizada la actividad, el empleado pulsa **Marcar como completada**. Si la tarea tiene activada la exigencia de evidencia —lo está por defecto—, el sistema no permite cerrarla sin al menos una foto o vídeo adjuntos, y devuelve el error `task/evidence_required`.
 
 > **Consejo:** Animar a los empleados a añadir un comentario breve al completar la tarea —aunque no sea obligatorio— mejora la calidad del registro y facilita la validación por parte del responsable.
 
 ---
 
-## Comentarios y notas de progreso
+## Notas de progreso
 
-Durante el tiempo que una tarea esté activa, el empleado puede añadir comentarios en cualquier momento desde el detalle de la tarea en la app. Estos comentarios son visibles para el responsable en el backoffice.
+Durante el tiempo que una tarea esté activa, el empleado puede añadir notas en cualquier momento desde el detalle de la tarea en la app. Son visibles para el responsable en el backoffice, y viceversa.
 
-Los comentarios son útiles para:
+Cada nota se clasifica con un tipo, que permite distinguir de un vistazo la naturaleza de la comunicación:
+
+| Tipo de nota | Para qué se usa |
+|---|---|
+| **Especificación** | Precisar cómo debe hacerse el trabajo |
+| **Nota operativa** | Informar del avance o del día a día de la ejecución |
+| **Aclaración** | Resolver una duda planteada sobre la tarea |
+| **Nota de incidencia** | Dejar constancia de un problema encontrado durante la ejecución |
+
+Las notas son útiles para:
 
 - Informar de que se ha completado una parte de la tarea y se continúa con otra.
 - Comunicar una incidencia o dificultad encontrada durante la ejecución.
@@ -54,12 +63,12 @@ El responsable no necesita esperar a que el empleado informe: los cambios de est
 
 Desde el panel de tareas del backoffice, el manager o supervisor puede:
 
-- Ver el estado actual de todas las tareas activas, filtradas por empleado, sucursal, tipo o fecha.
-- Acceder al detalle de cada tarea para leer los comentarios del empleado.
-- Consultar el porcentaje de tareas completadas en un periodo determinado.
-- Identificar tareas que llevan demasiado tiempo en estado "en curso" sin avance.
+- Ver el estado actual de todas las tareas activas, filtradas por estado, prioridad, empleado o sucursal.
+- Acceder al detalle de cada tarea para leer las notas del empleado y revisar sus evidencias.
+- Identificar tareas que llevan demasiado tiempo *en progreso* sin avance.
+- Detectar las que están *en riesgo* o *vencidas* por el indicador de cumplimiento temporal.
 
-> **Nota:** Si una tarea permanece en estado "en curso" durante más tiempo del esperado sin nuevas actualizaciones, el sistema puede generar una alerta al responsable según la configuración de recordatorios establecida.
+> **Nota:** el sistema avisa por su cuenta en dos situaciones: cuando una tarea con hora prevista de inicio no ha arrancado 15 minutos después, y cuando se acerca o se supera la fecha límite. Que una tarea lleve mucho tiempo *en progreso* sin novedades no dispara ningún aviso automático: eso se detecta revisando el listado.
 
 ---
 

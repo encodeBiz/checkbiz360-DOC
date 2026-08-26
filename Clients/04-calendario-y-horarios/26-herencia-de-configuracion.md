@@ -96,6 +96,6 @@ El empleado puede tener una excepción individual que marque ese día como labor
 - [Horarios base y turnos](23-horarios-base-y-turnos.md)
 - [Calendario laboral](24-calendario-laboral.md)
 - [Excepciones de horario](25-excepciones-de-horario.md)
-- [Turnos rotativos](27-turnos-rotativos.md)
-- [Horario flexible](28-horario-flexible.md)
+- [Turnos rotativos](27-turnos-rotativos.md) — no disponible en la versión actual; alternativas
+- [Jornada estricta y jornada flexible](28-horario-flexible.md)
 - [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md)

@@ -21,13 +21,17 @@ CheckBiz360 se compone de dos elementos que trabajan de forma coordinada:
 
 La diferencia fundamental de CheckBiz360 frente al software tradicional reside en lo que ocurre después del registro. La plataforma procesa cada fichaje en contexto y extrae inteligencia aplicable al negocio:
 
-### Detección de anomalías con IA
+### Detección de patrones anómalos
 
-El motor de análisis identifica automáticamente patrones fuera de lo habitual: llegadas tardías recurrentes, ausencias no justificadas, fichajes fuera del perímetro de geocerca o registros que no coinciden con el turno asignado. Las anomalías se clasifican por severidad y se notifican a los responsables en tiempo real, sin que nadie tenga que buscarlas.
+El motor de análisis identifica patrones fuera de lo habitual: llegadas tardías recurrentes, ausencias no justificadas, fichajes fuera del perímetro de geocerca o registros que no coinciden con el turno asignado. Las anomalías afloran en la pestaña de **Análisis** del panel de Operación, que ordena la lectura de menos a más señalable: primero el proceso y la configuración, al final las personas.
+
+### Asistente de IA
+
+Un asistente de inteligencia artificial interpreta los datos del panel y los convierte en un relato accionable: qué mirar primero y por qué. Narra y prioriza sobre las cifras que ya muestra la pantalla, sin recalcular nada, de modo que su lectura no puede contradecir a los paneles.
 
 ### Análisis de costes por empleado
 
-Cada registro de asistencia está vinculado al coste horario del empleado. CheckBiz360 calcula automáticamente el coste real de cada turno, sucursal y periodo, permitiendo comparativas entre unidades y proyecciones de cierre mensual.
+Cada registro se vincula a la tarifa horaria que el empleado tiene en su sucursal. A partir de ahí, la plataforma calcula el coste por hora, por jornada y acumulado del periodo, y permite comparar centros entre sí. Requiere que las tarifas estén configuradas: sin ellas no hay análisis económico.
 
 ### Trazabilidad completa para auditorías
 
@@ -35,7 +39,7 @@ Todos los cambios en el sistema —modificaciones de registros, ajustes de horar
 
 ### Cumplimiento RDL 8/2019
 
-La plataforma genera automáticamente el resumen mensual de jornada por empleado en el formato exigido por la normativa española, listo para ser firmado y archivado. No es necesario preparar documentación adicional.
+La plataforma genera bajo demanda el informe de jornada por empleado y periodo, en PDF o en Excel, listo para archivar o presentar. No hay que preparar documentación adicional.
 
 ## Casos de uso por sector
 
@@ -44,7 +48,7 @@ CheckBiz360 está diseñado para adaptarse a modelos operativos diversos:
 | Sector | Caso de uso típico |
 |---|---|
 | Retail multi-tienda | Control de turnos por tienda, comparativa de productividad entre centros |
-| Hostelería | Gestión de turnos rotativos, control de costes en cocina y sala |
+| Hostelería | Cobertura de turnos de mañana y tarde, control de costes en cocina y sala |
 | Logística | Seguimiento de equipos de campo distribuidos geográficamente |
 | Servicios profesionales | Imputación de horas por proyecto o cliente |
 | Educación | Control de presencia de personal en distintos centros |

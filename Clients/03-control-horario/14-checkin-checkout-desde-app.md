@@ -54,7 +54,7 @@ Aparece cuando el dispositivo está fuera del radio de fichaje definido para la 
 
 ### Fuera de horario
 
-Aparece cuando el intento de fichaje se realiza fuera del turno activo y fuera de la tolerancia configurada.
+Aparece cuando el intento de fichaje se realiza fuera del turno activo del empleado.
 
 **Qué hacer:** Revise su turno asignado en la sección de horarios de la app. Si considera que el fichaje es correcto, solicite a su responsable una jornada manual.
 

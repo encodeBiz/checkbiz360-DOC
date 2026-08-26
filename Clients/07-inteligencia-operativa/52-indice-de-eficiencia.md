@@ -1,61 +1,59 @@
-# Índice de eficiencia
+# Índice de eficiencia operativa
 
 ## Qué mide
 
-El índice de eficiencia mide la relación entre las horas que un empleado tiene planificadas y las horas que realmente trabaja. Su objetivo es responder a una pregunta diferente a la del índice de fiabilidad: no si el empleado está presente, sino si el tiempo que pasa en el trabajo se ajusta a lo que estaba previsto.
+El índice de eficiencia operativa mide el **equilibrio entre el coste real asumido y el coste esperado** según el patrón histórico. No responde a "¿estuvo el empleado?" ni a "¿cuántas horas hizo?", sino a si la operación se mueve dentro de un rango saludable respecto a su propio comportamiento consolidado.
 
-Un empleado eficiente en términos de este índice es aquel cuyas horas reales se acercan de forma sistemática a las horas planificadas, sin grandes desfases en ninguno de los dos sentidos. Tanto las jornadas significativamente más cortas como las significativamente más largas de lo previsto generan desviaciones que el índice recoge.
+Para calcularlo, el sistema usa el coste efectivo medio por jornada, el coste medio consolidado del histórico, la consistencia del patrón y el volumen estadístico disponible. Exige una base mínima de datos: sin ella, el indicador no se pronuncia.
 
-## La relación entre horas planificadas y horas reales
+> **Importante:** el término de referencia es **el propio histórico**, no una escala universal ni una comparación directa entre personas. Un centro o una persona no se miden contra un ideal externo, sino contra lo que ellos mismos vienen haciendo.
 
-El punto de partida del cálculo es siempre el horario asignado al empleado. Cada turno tiene una duración prevista. Al final del turno, el sistema compara lo que estaba planificado con lo que realmente ocurrió.
+Junto a él, el perfil incluye el **índice de ineficiencia operativa**, su lectura inversa, y el **retorno por hora trabajada**, que relaciona las horas netas con el coste asociado y la estabilidad del patrón. Este último describe la utilización estructural del tiempo, **no la productividad individual**: una hora con bajo retorno señala un problema de organización del trabajo antes que de la persona que la trabajó.
 
-Hay dos tipos de desviación posibles:
+## Qué entra en el cálculo
 
-**Déficit de horas.** El empleado trabaja menos tiempo del previsto de forma recurrente. Puede deberse a salidas anticipadas, a fichajes de entrada tardíos o a una combinación de ambos. Si este comportamiento es sistemático, el índice de eficiencia desciende porque las horas reales están consistentemente por debajo de las planificadas.
+El índice se apoya en cuatro elementos, y los cuatro importan:
 
-**Exceso de horas.** El empleado trabaja de forma habitual más tiempo del previsto. A primera vista puede parecer un comportamiento positivo, pero desde la perspectiva de la eficiencia planificada supone también una desviación. Un exceso sistemático puede indicar que el dimensionamiento del turno es incorrecto, que el empleado tiene dificultades para completar su trabajo en el tiempo asignado o que se están generando horas extra no controladas que tienen coste económico.
+- **El coste efectivo medio por jornada** del periodo analizado.
+- **El coste medio consolidado** del histórico, que actúa como referencia.
+- **La consistencia del patrón**: un comportamiento errático rebaja la conclusión aunque las cifras cuadren.
+- **El volumen estadístico** disponible. Sin una base mínima de jornadas, el indicador no se pronuncia.
 
-El empleado con el índice de eficiencia más alto es el que trabaja consistentemente lo que tiene asignado, ni menos ni más.
+Ese último punto es deliberado: el sistema prefiere decir *acumulando datos* antes que dar por buena una conclusión construida sobre cuatro jornadas.
 
-## Diferencia entre eficiencia y puntualidad
+## Diferencia entre eficiencia y fiabilidad
 
-Es importante no confundir el índice de eficiencia con la puntualidad que mide el índice de fiabilidad. Un empleado puede llegar siempre a tiempo y aun así tener un índice de eficiencia bajo si sale sistemáticamente antes de lo previsto. Del mismo modo, un empleado que llega unos minutos tarde pero compensa quedándose más tiempo puede tener un índice de eficiencia alto a pesar de las tardanzas.
+Conviene no confundirlos, porque miden cosas distintas:
 
-Son dos dimensiones distintas del comportamiento horario. La fiabilidad mide la consistencia en los momentos clave (entrada, salida, presencia). La eficiencia mide si el tiempo total trabajado coincide con el tiempo planificado.
+- La **fiabilidad** mide la consistencia del comportamiento: si la persona está donde debe, cuando debe.
+- La **eficiencia operativa** mide el equilibrio económico: si lo que cuesta operar se corresponde con lo que viene costando históricamente.
 
-## Cómo afectan las horas extra y las ausencias parciales
+Un centro puede tener fiabilidad alta y eficiencia baja —todo el mundo cumple su horario, pero el coste por jornada se ha disparado— o al revés. Leerlos juntos es lo que da la imagen completa.
 
-Las horas extra planificadas que forman parte del turno asignado no generan desviación, porque el sistema las recoge como horas previstas. Las horas extra no planificadas, en cambio, sí crean una desviación positiva que el índice de eficiencia registra.
+## Cómo interpretarlo
 
-Las ausencias parciales, es decir, los días en que el empleado está presente pero abandona el puesto antes del final de su jornada, tienen el mismo efecto que las salidas anticipadas sistemáticas: reducen el tiempo real trabajado respecto al planificado y afectan negativamente al índice.
+El indicador no se publica como una nota sobre 100 ni como un ranking entre personas. Se lee **por su desviación respecto al propio histórico** y siempre acompañado de su estado de madurez y de su nivel de confianza.
 
-> **Nota:** Las ausencias completas justificadas (baja médica, vacaciones aprobadas) no penalizan el índice de eficiencia porque el sistema excluye esos días del cálculo. Solo se cuentan los días en que el empleado tenía turno activo y debía estar presente.
+Ante un valor que llama la atención, el orden sensato de preguntas es:
+
+1. **¿Hay datos suficientes?** Si el estado dice *acumulando datos* o *evidencia parcial*, no hay conclusión que sacar todavía.
+2. **¿Está la configuración completa?** Un coste por jornada extraño suele venir de tarifas horarias sin rellenar o mal puestas, no de la operación. El bloque de estado de los datos del panel lo indica.
+3. **¿Es la persona o es el centro?** Antes de atribuir un mal indicador a alguien, mire el efecto del centro en el panel de Operación. Es exactamente la pregunta que ese indicador responde.
+4. **¿Es sostenido o puntual?** Una desviación aislada no es una tendencia. Los indicadores están construidos para no penalizar la flexibilidad puntual.
 
 ## Uso en evaluaciones de desempeño
 
-El índice de eficiencia tiene un rol específico en las evaluaciones de desempeño: aporta una perspectiva económica y operativa que va más allá de la simple asistencia.
+Este índice describe la **utilización estructural del tiempo y el equilibrio de costes**, no el desempeño individual. Un empleado no "rinde menos" porque su coste por rendimiento sea alto: puede estar en un turno mal dimensionado, cubriendo una posición sin relevo o en un centro que degrada a quien pasa por él.
 
-Un empleado con alta fiabilidad y alta eficiencia representa el perfil de menor coste operativo no planificado: llega cuando debe, trabaja lo que debe y sale cuando debe. Este perfil es especialmente valioso en sectores donde cada hora de desviación tiene un coste directo o donde la coordinación de turnos es crítica.
+Para evaluaciones formales, combine este índice con la fiabilidad y con la evaluación operativa del empleado: cada uno mide un aspecto distinto y ninguno, aislado, ofrece una imagen completa. La calidad del trabajo realizado se mide con la validación y la valoración de tareas, no aquí.
 
-En cambio, un empleado con alta fiabilidad pero eficiencia moderada puede estar compensando tardanzas con salidas más tardías de forma no coordinada, o acumulando horas extra que no están siendo gestionadas correctamente. El índice hace visible ese comportamiento.
-
-Para evaluaciones formales, se recomienda combinar el índice de eficiencia con el índice de fiabilidad y la puntuación de promoción, ya que cada uno mide un aspecto distinto del rendimiento y ninguno de ellos, de forma aislada, ofrece una imagen completa.
-
-## Escala y rangos orientativos
-
-| Rango | Interpretación |
-|---|---|
-| 85 - 100 | Eficiencia alta. Las horas reales se ajustan de forma consistente a las planificadas. |
-| 65 - 84 | Eficiencia aceptable. Desviaciones ocasionales que no afectan de forma significativa a la planificación. |
-| 45 - 64 | Eficiencia moderada. Desviaciones recurrentes que conviene analizar y gestionar. |
-| 0 - 44 | Eficiencia baja. El tiempo trabajado difiere sistemáticamente del planificado. Revisión necesaria. |
+> **Importante:** ningún indicador de este módulo debe usarse como criterio único de una decisión sobre una persona.
 
 ## Artículos relacionados
 
 - [Qué es la inteligencia operativa](49-que-es-la-inteligencia-operativa.md)
 - [El patrón de comportamiento del empleado](50-patron-de-comportamiento.md)
 - [Índice de fiabilidad](51-indice-de-fiabilidad.md)
-- [Puntuación de promoción](53-puntuacion-de-promocion.md)
+- [Evaluación operativa del empleado](53-puntuacion-de-promocion.md)
 - [Análisis de costes](54-analisis-de-costes.md)
-- [Paneles de mando](56-paneles-de-mando.md)
+- [El panel de Operación](56-paneles-de-mando.md)

@@ -17,5 +17,5 @@ Esta funcionalidad será especialmente útil para equipos que necesiten un segui
 |---|---|
 | [Tipos de informe disponibles](./76-tipos-de-informe.md) | Qué contiene cada tipo de informe |
 | [Generar y filtrar informes](./77-generar-y-filtrar-informes.md) | Generación manual de informes con filtros |
-| [Exportar datos: empleados a CSV e informe de asistencia en PDF](./78-exportar-a-excel-y-csv.md) | Opciones de exportación disponibles en V1 |
+| [Exportar datos](./78-exportar-a-excel-y-csv.md) | Asistencia en PDF o Excel y tareas en Excel |
 | [Informe de cumplimiento normativo](./79-informe-de-cumplimiento-normativo.md) | El informe para la Inspección de Trabajo |

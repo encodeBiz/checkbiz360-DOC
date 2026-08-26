@@ -64,7 +64,7 @@ Puede gestionar qué tipos de notificaciones desea recibir:
 3. Active o desactive cada categoría según sus preferencias pulsando el interruptor correspondiente.
 4. Los cambios se guardan de forma automática.
 
-> **Aviso:** Desactivar las notificaciones de documentos puede hacer que no sea alertado cuando su organización publique documentos que requieren su firma o acuse de recibo. Se recomienda mantener activadas al menos las notificaciones de documentos y tareas.
+> **Aviso:** Desactivar las notificaciones de documentos puede hacer que no sea alertado cuando su organización publique documentos que requieren su acuse de recibo. Se recomienda mantener activadas al menos las notificaciones de documentos y tareas.
 
 ---
 

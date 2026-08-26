@@ -21,8 +21,8 @@ El código es válido durante un intervalo de tiempo breve (generalmente 30 segu
 
 ### Paso a paso para el empleado
 
-1. Abra la aplicación móvil de CheckBiz360 e inicie sesión con sus credenciales.
-2. Acceda a la pantalla de configuración de seguridad desde el menú de perfil, en la ruta **Configuración de seguridad** (`/configure-security`).
+1. Inicie sesión con sus credenciales: en la app móvil, desde la sección de perfil; en el backoffice, desde **Mi cuenta**.
+2. Localice el apartado de **seguridad** de su cuenta.
 3. Active la opción **Autenticación en dos factores**.
 4. La plataforma generará un código QR y una clave secreta manual.
 5. Abra su aplicación autenticadora (ver opciones en la siguiente sección) y añada una nueva cuenta.

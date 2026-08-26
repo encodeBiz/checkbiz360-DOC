@@ -1,73 +1,81 @@
-# Puntuación de promoción
+# Evaluación operativa del empleado
 
-## Qué mide
+La ficha de cada empleado incluye una **evaluación operativa**: un diagnóstico automático que interpreta su comportamiento real y lo traduce en conclusiones sobre desempeño, estabilidad y potencial dentro del equipo.
 
-La puntuación de promoción es el índice más completo del módulo de inteligencia operativa. Combina información de distintas dimensiones del rendimiento de un empleado en un único valor que permite comparar a empleados de distintos equipos, sucursales o funciones con un criterio uniforme y objetivo.
+Es la herramienta para identificar talento, riesgos operativos y oportunidades de mejora con criterios objetivos, en lugar de con la impresión del responsable más cercano.
 
-Su objetivo declarado es apoyar las decisiones de desarrollo interno: ascensos, ampliaciones de responsabilidad, asignación a proyectos de mayor complejidad o preparación para asumir roles de supervisión. Dicho de otro modo, responde a la pregunta: entre todos los empleados de la organización, ¿quiénes tienen el perfil más sólido para crecer?
+---
 
-## Qué factores combina
-
-La puntuación de promoción integra tres dimensiones:
-
-**Índice de fiabilidad.** La consistencia del empleado en sus compromisos horarios es la base del perfil. Un candidato a crecer dentro de la organización debe ser predecible y confiable. La fiabilidad tiene un peso significativo en la puntuación compuesta.
-
-**Índice de eficiencia.** La relación entre horas planificadas y horas reales trabajadas refleja la disciplina operativa del empleado. Un perfil de alta eficiencia indica que el empleado no solo está presente, sino que organiza su tiempo de forma alineada con lo que la empresa espera de él.
-
-**Valoraciones de tareas.** Las valoraciones que el manager asigna a las tareas completadas por el empleado son la dimensión cualitativa de la puntuación. Este componente introduce el rendimiento real en el trabajo, algo que los indicadores de asistencia por sí solos no pueden capturar. Un empleado con asistencia perfecta pero con valoraciones sistemáticamente bajas tendrá una puntuación de promoción limitada.
-
-Los tres factores se combinan de forma ponderada. No se trata de una suma simple, sino de un índice que refleja el equilibrio entre los tres. Un desequilibrio marcado en cualquiera de las dimensiones (por ejemplo, fiabilidad muy alta pero valoraciones de tareas muy bajas) produce una puntuación moderada aunque los otros dos factores sean buenos.
-
-## Por qué es más útil que solo la asistencia
-
-En muchas organizaciones, las promociones se deciden con base en la antigüedad, la asistencia o la opinión directa del manager más cercano. Estos criterios tienen problemas bien conocidos: favorecen a quienes llevan más tiempo en el mismo puesto, ignoran el rendimiento real y están expuestos a sesgos de simpatía o de visibilidad.
-
-La puntuación de promoción corrige estos problemas de tres maneras:
-
-1. Incorpora el rendimiento en tareas, no solo la presencia.
-2. Se basa en datos acumulados a lo largo del tiempo, no en una impresión reciente.
-3. Es comparable entre empleados que trabajan con distintos managers o en distintas sucursales, porque usa los mismos criterios para todos.
-
-## Cómo consultar la puntuación de promoción
-
-La puntuación de promoción es una métrica de consulta disponible en el perfil del empleado dentro del backoffice. Para acceder a ella:
-
-1. Acceda al backoffice y navegue a la sección de gestión de empleados.
-2. Seleccione el empleado cuyo perfil desea revisar.
-3. Dentro de la ficha del empleado, localice el apartado de inteligencia operativa o indicadores de rendimiento, donde se muestra la puntuación de promoción junto con los valores de sus tres componentes.
-4. Para comparar empleados, puede acceder al panel de inteligencia operativa y ordenar el listado por puntuación de promoción. Se recomienda filtrar por un periodo de al menos seis meses para que el dato sea representativo.
-5. Revise el detalle de los tres componentes de los candidatos con mayor puntuación para entender si el resultado está equilibrado o si alguna dimensión arrastra la puntuación de forma desproporcionada.
-
-> **Importante:** Una puntuación de promoción alta es una señal positiva, no una garantía de idoneidad para un puesto concreto. El sistema no evalúa competencias técnicas, habilidades de liderazgo ni ajuste cultural, elementos que solo pueden valorarse a través de procesos de evaluación humana.
-
-## Workflow de promoción
+## Qué no es: una puntuación única de promoción
 
 > **Estado: Pendiente de desarrollo**
-> Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
+> Un índice numérico único que combine fiabilidad, eficiencia y valoraciones en una sola cifra comparable entre empleados no existe en la versión actual, y tampoco un listado ordenado por esa cifra.
 
-En una versión futura, la plataforma incorporará un workflow de promoción completo integrado con la puntuación de promoción: notificaciones automáticas al alcanzar determinados umbrales, flujos de aprobación con múltiples niveles de validación y registro del historial de decisiones de desarrollo interno. Por ahora, la puntuación es una métrica de consulta que el responsable utiliza como insumo en sus propios procesos de evaluación y decisión.
+Lo que sí existe es la evaluación operativa descrita en este artículo, que incluye una señal de **candidato a promoción** cuando el comportamiento del empleado la justifica. Es una conclusión cualitativa derivada de su patrón, no un número que se pueda ordenar en una tabla.
 
-## Evitar sesgos en las promociones
+---
 
-Uno de los beneficios menos evidentes de la puntuación de promoción es su función como contrapeso a los sesgos subjetivos. En organizaciones con varios managers o varias sucursales, la percepción del rendimiento de un empleado depende en gran medida del responsable directo que lo evalúa. Dos empleados con el mismo rendimiento real pueden recibir valoraciones muy distintas según quién los gestione.
+## Qué muestra la ficha del empleado
 
-Al tener un indicador calculado con los mismos criterios para todos, la dirección puede detectar situaciones en las que empleados con puntuación alta no están siendo considerados para crecer, o en las que empleados con puntuación moderada están siendo priorizados. No para imponer una decisión, sino para hacer las preguntas correctas.
+El perfil operativo se construye sobre el patrón de comportamiento del empleado y se organiza en dos bloques.
 
-## Limitaciones
+### Datos operativos
 
-La puntuación de promoción no es un oráculo. Sus limitaciones más relevantes son:
+Cómo trabaja la persona en términos de horarios, carga de trabajo y coherencia de sus registros:
 
-- No mide competencias técnicas específicas del puesto al que se aspira.
-- Depende de la calidad de las valoraciones de tareas: si los managers no valoran las tareas con regularidad o de forma consistente, el componente cualitativo pierde representatividad.
-- No captura circunstancias externas que pueden afectar temporalmente el rendimiento de un empleado con alto potencial.
-- El sistema necesita un historial suficiente; en empleados recientes, la puntuación no es representativa.
+| Indicador | Qué muestra |
+|---|---|
+| Horario operativo medio | Las horas de inicio y fin habituales |
+| Carga horaria semanal | El volumen de trabajo por semana |
+| Dispersión horaria | Cuánto varían sus horas de entrada y salida |
+| Coste por hora trabajada | El coste unitario a partir de la tarifa configurada |
+| Coste por jornada | El coste medio de un día de trabajo |
+| Coste por rendimiento | El coste ponderado por la efectividad observada |
+| Rendimiento del coste invertido | Qué se obtiene por cada unidad de coste |
+| Coste acumulado | La suma del periodo |
+| Nivel de confiabilidad | Cuánto se puede confiar en el patrón calculado |
+| Volumen de datos | Cuántas observaciones lo sustentan |
+| Experiencia total | El recorrido acumulado de la persona |
+| Responsabilidad principal y ocupación | Su rol y puesto predominantes |
 
-> **Nota:** La puntuación de promoción complementa el juicio del manager; no lo sustituye. El objetivo del índice es hacer la conversación sobre talento más informada y más justa, no automatizar decisiones que requieren criterio humano.
+Estos datos ayudan a entender la estabilidad operativa del empleado, el uso real de su tiempo y la fiabilidad de la información registrada en sus jornadas.
+
+### Dispersión semanal de entrada y salida
+
+Una comparativa que muestra el nivel de variabilidad real en los horarios de entrada y salida a lo largo de la semana. Es una lectura útil: una dispersión muy alta suele indicar un problema de planificación del centro más que de la persona.
+
+---
+
+## Cómo consultarla
+
+1. Acceda a **Empleados** en el menú lateral.
+2. Abra la ficha del empleado.
+3. Consulte el apartado de perfil operativo.
+
+Si el empleado no acumula todavía suficientes jornadas, la ficha lo indica expresamente en lugar de mostrar un perfil poco fiable: *no existen suficientes datos recopilados para realizar un análisis del perfil laboral*.
+
+---
+
+## Cómo usar esta información en decisiones de personal
+
+Tres advertencias sobre el uso de estos datos, que conviene tener presentes:
+
+**Compare a la persona consigo misma antes que con otras.** El panel de Operación mide precisamente cuánto influye el centro en el rendimiento de quien pasa por él. Un empleado con indicadores discretos en un centro que *degrada a quien pasa por él* no es necesariamente un empleado discreto.
+
+**Mire el nivel de confiabilidad antes que el indicador.** Un dato calculado sobre pocas jornadas no sostiene una decisión sobre la carrera de nadie.
+
+**Estos indicadores describen el entorno y el uso del tiempo, no la valía profesional.** No miden la calidad del trabajo realizado; para eso están la validación y la valoración de tareas.
+
+> **Aviso legal:** las decisiones sobre personas no deberían adoptarse de forma automatizada a partir de estos indicadores. El RGPD reconoce al empleado el derecho a no ser objeto de decisiones basadas únicamente en tratamientos automatizados que le afecten significativamente. Use estos datos como apoyo a una valoración humana, y documente el criterio.
+
+---
 
 ## Artículos relacionados
 
-- [Qué es la inteligencia operativa](49-que-es-la-inteligencia-operativa.md)
-- [El patrón de comportamiento del empleado](50-patron-de-comportamiento.md)
-- [Índice de fiabilidad](51-indice-de-fiabilidad.md)
-- [Índice de eficiencia](52-indice-de-eficiencia.md)
-- [Paneles de mando](56-paneles-de-mando.md)
+| Artículo | Descripción |
+|---|---|
+| [Patrón de comportamiento](./50-patron-de-comportamiento.md) | Cómo se construye el patrón sobre el que se calculan los indicadores |
+| [Índice de fiabilidad](./51-indice-de-fiabilidad.md) | Qué mide la fiabilidad y cómo mejorarla |
+| [El panel de Operación](./56-paneles-de-mando.md) | El efecto del centro y la dependencia de la operación |
+| [Análisis de costes](./54-analisis-de-costes.md) | Cómo se calculan los indicadores de coste |
+| [Valoración del trabajador](../06-tareas/46-valoracion-del-trabajador.md) | La valoración cualitativa del trabajo realizado |

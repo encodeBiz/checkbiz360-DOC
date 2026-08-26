@@ -41,7 +41,7 @@ Cuando un fichaje queda en estado `failed`, el sistema asocia un código de erro
 
 | Código | Causa | Acción recomendada |
 |---|---|---|
-| `checklog/out_of_schedule` | El fichaje se realizó fuera del turno activo y fuera de la tolerancia configurada. | Revisar el horario asignado al empleado. Si la presencia era correcta, solicitar una jornada manual. |
+| `checklog/out_of_schedule` | El fichaje se realizó fuera del turno activo del empleado. | Revisar el horario asignado al empleado. Si la presencia era correcta, solicitar una jornada manual. |
 | `checklog/out_of_radius` | El dispositivo se encontraba fuera del radio de fichaje de la sucursal en el momento del registro. | Revisar las coordenadas GPS de la sucursal y el valor del radio configurado. Si el radio no cubre el área de trabajo real, ampliarlo. |
 | `checklog/day_disabled` | El día en que se intentó fichar está desactivado en el calendario de la sucursal o del empleado. | Revisar la configuración del calendario. Si el día debe estar habilitado, activarlo en el calendario efectivo correspondiente. |
 | `auth/untrusted_device` | El dispositivo desde el que se intentó fichar no está registrado como dispositivo de confianza. El empleado tiene activada la autenticación de doble factor. | Registrar el dispositivo actual como dispositivo de confianza a través del proceso de 2FA. |

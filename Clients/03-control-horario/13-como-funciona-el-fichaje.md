@@ -18,11 +18,11 @@ Si el empleado trabaja en modalidad de teletrabajo y tiene activado el campo "tr
 
 ### Capa 2 — Horario efectivo
 
-Una vez validada la ubicación, el sistema comprueba que el fichaje se realiza dentro del turno activo del empleado para ese día. La comparación tiene en cuenta la tolerancia de entrada configurada en la sucursal, que permite cierto margen antes y después de la hora oficial del turno.
+Una vez validada la ubicación, el sistema comprueba que el fichaje se realiza dentro del turno activo del empleado para ese día, según su calendario efectivo.
 
-Si el empleado ficha antes de que comience su turno pero dentro de la tolerancia permitida, el sistema aplica el ajuste automático de timestamp (`adjustedTimestamp`): el registro de hora se desplaza a la hora de inicio oficial del turno. Esto evita que las horas trabajadas se computen de forma incorrecta por fichajes muy anticipados.
+El fichaje siempre guarda la **hora real**. Lo que decide si el tiempo trabajado fuera de la franja oficial se computa o no es la **modalidad de jornada** del calendario: con jornada estricta no se contabiliza; con jornada flexible se suma como tiempo extra. Consulte [Jornada estricta y jornada flexible](../04-calendario-y-horarios/28-horario-flexible.md).
 
-Si el fichaje se realiza completamente fuera del turno activo y fuera de la tolerancia, el sistema lo rechaza con el código `checklog/out_of_schedule`.
+Si el fichaje se realiza fuera del turno activo, el sistema lo rechaza con el código `checklog/out_of_schedule`.
 
 ### Capa 3 — Dispositivo y biometría
 
@@ -63,7 +63,7 @@ Si un empleado no pudo fichar por causas justificadas, el responsable puede crea
 
 ## Roles con acceso a esta funcionalidad
 
-La configuración de las capas de validación (radio, tolerancia, biometría, 2FA) es gestionada por usuarios con rol **owner** o **manager**. Los empleados interactúan con el sistema de fichaje desde la app móvil sin necesidad de configurar nada.
+La configuración de las capas de validación (zona de chequeo, biometría, 2FA) es gestionada por usuarios con rol **owner** o **manager**. Los empleados interactúan con el sistema de fichaje desde la app móvil sin necesidad de configurar nada.
 
 ---
 

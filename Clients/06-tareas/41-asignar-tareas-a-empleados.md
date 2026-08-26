@@ -18,9 +18,11 @@ Este método es adecuado para tareas de mantenimiento, formación específica, g
 
 Cuando la tarea es de carácter colectivo o se quiere distribuir trabajo entre varios miembros, es posible seleccionar más de un empleado durante la asignación. Todos los destinatarios recibirán la tarea en su app simultáneamente.
 
-> **Nota:** En la asignación múltiple, cada empleado ve su propia instancia de la tarea. Las actualizaciones que uno realiza no afectan automáticamente a las de los demás. El manager puede seguir el estado de cada empleado por separado desde el backoffice.
+> **Importante:** en la asignación múltiple hay **una sola tarea** compartida por todos los asignados, no una copia para cada uno. Por defecto, **cualquiera de ellos puede completarla**, y al hacerlo la tarea queda cerrada para el grupo. Lo que sí se registra por separado es la participación de cada empleado: su asignación, cuándo empezó y qué aportó.
 
-Si la entidad tiene varias sucursales, puede filtrar los empleados por sucursal al crear la tarea. Esto facilita asignar actividades operativas a todos los trabajadores de un centro sin tener que seleccionarlos uno a uno.
+Si necesita que cada persona ejecute el trabajo de forma independiente, cree una tarea por empleado.
+
+Una tarea pertenece siempre a una sucursal, así que la selección de empleados se hace sobre los que trabajan en ese centro.
 
 ---
 
@@ -46,13 +48,13 @@ Cuando se le asigna una tarea, el empleado recibe una notificación push en su d
 
 Dentro del detalle de la tarea, el empleado puede consultar:
 
-- El título y la descripción completa de la actividad.
-- La prioridad asignada (alta, media o baja).
-- La fecha y hora límite para completarla.
-- Los archivos adjuntos que el responsable haya incluido (imágenes, documentos, instrucciones).
-- El historial de comentarios y actualizaciones previas.
+- El título y la descripción completa de la actividad, con su formato: listas, listas de comprobación, títulos y enlaces.
+- La prioridad asignada (crítica, alta, media o baja).
+- La fecha y hora límite, y la fecha prevista de inicio si se indicó.
+- Las evidencias ya subidas y las notas de la tarea.
+- El historial de actualizaciones previas.
 
-El empleado puede actualizar el estado de la tarea, añadir comentarios de progreso y, cuando finalice, marcarla como completada.
+El empleado puede iniciar la tarea, añadir notas de progreso, subir evidencias y, cuando finalice, marcarla como completada.
 
 ---
 

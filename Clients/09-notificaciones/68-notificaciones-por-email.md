@@ -47,7 +47,7 @@ El correo incluye:
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-El envío de notificaciones operativas por email (alertas de eventos, recordatorios de firma, avisos de tareas, etc.) y el mecanismo de fallback automático por email cuando una notificación push no puede entregarse al dispositivo del usuario están planificados para una versión futura de la plataforma.
+El envío de notificaciones operativas por email (alertas de eventos, recordatorios de acuse de recibo, avisos de tareas, etc.) y el mecanismo de fallback automático por email cuando una notificación push no puede entregarse al dispositivo del usuario están planificados para una versión futura de la plataforma.
 
 ---
 

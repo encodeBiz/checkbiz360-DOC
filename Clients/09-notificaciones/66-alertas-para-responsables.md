@@ -38,7 +38,7 @@ Si un empleado registra fichajes fuera del radio definido para su sucursal de fo
 
 El Owner y el Manager pueden ajustar la distribución de alertas desde el backoffice:
 
-1. Acceda a **Organización** > **Sucursales** y abra la sucursal para la que desea configurar alertas.
+1. Acceda a **Sucursales** y abra la sucursal para la que desea configurar alertas.
 2. Seleccione la pestaña **Responsables** o **Configuración de alertas**.
 3. Verá la lista de Managers y Supervisores asignados a esa sucursal.
 4. Pulse el icono de configuración junto al nombre del responsable para ajustar qué tipos de alerta recibe.

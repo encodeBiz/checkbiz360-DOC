@@ -1,91 +1,67 @@
 # Turnos rotativos
 
-En determinados sectores y empresas, la jornada laboral no es uniforme de una semana a otra. Los trabajadores alternan entre diferentes franjas horarias siguiendo un patrón cíclico predefinido. CheckBiz360 soporta esta modalidad mediante la configuración de turnos rotativos, que permiten definir ciclos de alternancia semanal y asignarlos a los empleados que los requieran.
+En sectores como la industria, la logística, la sanidad o la hostelería la jornada no es uniforme de una semana a otra: los equipos alternan franjas horarias siguiendo un ciclo. Este artículo explica cómo se cubre esa necesidad en CheckBiz360.
 
 ---
 
-## Qué es un turno rotativo
+## Estado de la funcionalidad
 
-Un turno rotativo es un esquema de horario en el que el empleado no trabaja siempre en la misma franja horaria, sino que alterna entre dos o más franjas siguiendo un ciclo regular. El ciclo más habitual es la alternancia semanal (semana A y semana B), aunque el sistema permite ciclos más largos.
+> **Estado: Pendiente de desarrollo**
+> Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-Esta modalidad es frecuente en sectores como la industria, la logística, la sanidad y la hostelería, donde la cobertura horaria continua o ampliada requiere distribuir las horas entre equipos que se alternan.
-
----
-
-## Configuración de alternancia semanal (semana A / semana B)
-
-Para configurar un turno rotativo con alternancia semanal, es necesario definir dos grupos de turnos: los que aplican en la semana A y los que aplican en la semana B. Cada grupo especifica las franjas horarias para cada día activo de esa semana.
-
-### Paso a paso para crear un turno rotativo
-
-1. Acceda al backoffice con rol owner o manager.
-2. Navegue a **Configuración > Horarios** en la entidad o sucursal correspondiente.
-3. Pulse **Nuevo horario** y seleccione el tipo **Rotativo**.
-4. Defina el ciclo de rotación: indique el número de semanas que compone un ciclo completo (2 para el ciclo A/B estándar).
-5. Configure la semana A: para cada día activo, defina los parámetros del turno (`start.hour`, `start.minute`, `end.hour`, `end.minute`).
-6. Configure la semana B: repita el proceso con los valores horarios correspondientes a esta semana.
-7. Defina la fecha de inicio del ciclo: esta fecha ancla el calendario y determina qué semana es A y cuál es B en cualquier fecha futura.
-8. Guarde el horario.
-9. Asigne el horario rotativo a los empleados que deban seguirlo.
+CheckBiz360 **no dispone de un tipo de horario rotativo** con ciclo de alternancia automático: no existe una configuración de "semana A / semana B" con fecha de anclaje que el sistema resuelva por su cuenta. El horario semanal configurado para una entidad, sucursal o empleado se repite igual todas las semanas.
 
 ---
 
-## Ejemplo real: entrada a las 7:00 en semana A, 15:00 en semana B
+## Cómo cubrir la rotación con lo que existe hoy
 
-Imagine una empresa de logística que necesita cobertura de turno de mañana y turno de tarde. Dos grupos de empleados se alternan cada semana:
+Hay dos formas de operar con equipos rotativos. La elección depende de si la rotación es estable o cambia con frecuencia.
 
-| Semana | Lunes a viernes | Inicio | Fin |
-|---|---|---|---|
-| Semana A (mañana) | Activos | 07:00 | 15:00 |
-| Semana B (tarde) | Activos | 15:00 | 23:00 |
+### Opción 1: una sucursal por turno (rotación estable)
 
-La configuración de la semana A tiene `start.hour: 7`, `start.minute: 0`, `end.hour: 15`, `end.minute: 0`. La semana B tiene `start.hour: 15`, `start.minute: 0`, `end.hour: 23`, `end.minute: 0`.
+Si los turnos son fijos y lo que rota son las personas, configure **una sucursal por franja horaria** —por ejemplo "Planta - Mañana" y "Planta - Tarde", con las mismas coordenadas y la misma geocerca— y mueva la asignación del empleado de una a otra cuando le toque cambiar.
 
-Si el ciclo comienza el lunes 5 de enero con la semana A, el sistema calculará automáticamente que:
+Es la opción más limpia: cada sucursal tiene su horario, sus festivos y su calendario efectivo, y el histórico de fichajes queda imputado a la franja en la que realmente se trabajó.
 
-- La semana del 5 de enero es semana A (turno de mañana).
-- La semana del 12 de enero es semana B (turno de tarde).
-- La semana del 19 de enero vuelve a ser semana A.
-- Y así sucesivamente de forma indefinida.
+### Opción 2: horario personalizado en el empleado (rotación variable)
 
----
+Si la rotación es irregular, configure el horario en la ficha del **empleado** en lugar de heredarlo de la sucursal, y ajústelo al cambiar de ciclo. El calendario del empleado tiene prioridad sobre el de su sucursal.
 
-## Ciclo de rotación
+Es más flexible, pero exige mantener el cambio a mano en cada ciclo y para cada persona.
 
-El ciclo de rotación es el número de semanas que transcurren antes de que el patrón se repita. Para una alternancia A/B, el ciclo es de 2 semanas. Es posible configurar ciclos más largos, por ejemplo de 3 semanas (A, B, C), para esquemas de rotación más complejos.
-
-La fecha de inicio del ciclo es el parámetro crítico: define el punto de anclaje desde el que el sistema calcula qué semana del ciclo corresponde a cada fecha. Si esta fecha se configura incorrectamente, todos los turnos quedan desfasados una semana.
-
-> **Aviso:** Verifique siempre la fecha de inicio del ciclo antes de activar un horario rotativo. Una vez que los empleados empiezan a fichar con este horario, corregir el anclaje del ciclo puede requerir revisar y ajustar fichajes ya registrados.
+> **Aviso:** en ambos casos, cambie el horario **antes** de que empiece el ciclo nuevo. Cada fichaje se valida contra el calendario efectivo vigente en ese momento; actualizar el horario después no reevalúa los fichajes ya registrados.
 
 ---
 
-## Consideraciones de festivos con turnos rotativos
+## Ejemplo: mañana y tarde alternas
 
-Los festivos del calendario laboral se aplican con independencia del tipo de turno. Esto significa que si una fecha está marcada como festivo en la entidad o la sucursal, el sistema devolverá `checklog/day_disabled` incluso si ese día corresponde a un turno activo dentro del ciclo rotativo.
+Una empresa de logística necesita cobertura de 07:00 a 15:00 y de 15:00 a 23:00, con dos equipos que se alternan cada semana.
 
-Esta interacción puede generar situaciones específicas que conviene gestionar con anticipación:
+Con la Opción 1, se crean dos sucursales sobre la misma nave:
 
-- Si un festivo cae en semana A y otro en semana B, ambos se bloquean igualmente independientemente del turno vigente.
-- Si la empresa trabaja en festivo, debe desactivar el festivo para la fecha concreta o para la sucursal afectada antes de que los empleados intenten fichar.
-- Si solo trabajan los empleados de turno de tarde en un festivo, la forma más precisa de gestionar este caso es mediante excepciones individuales que anulen el festivo solo para esos empleados.
+| Sucursal | Horario de lunes a viernes |
+|---|---|
+| Nave - Mañana | 07:00 – 15:00 |
+| Nave - Tarde | 15:00 – 23:00 |
 
-> **Nota:** Para una guía completa sobre cómo manejar el trabajo en festivos, consulte el artículo [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md).
+Cada lunes de cambio, el responsable reasigna los empleados de una sucursal a la otra. El fichaje de cada semana se valida contra el horario correcto y los informes distinguen la actividad de cada franja.
 
 ---
 
-## Asignación de horarios rotativos a empleados
+## Rotación y festivos
 
-Una vez creado el horario rotativo en la configuración de la sucursal o entidad, puede asignarse a empleados concretos desde su ficha individual o de forma masiva desde la gestión de horarios.
+Los festivos se aplican por fecha, con independencia del turno que tocara ese día: un festivo configurado en la entidad o en la sucursal deshabilita el día para todos los empleados que hereden ese calendario, y un intento de fichaje devuelve `checklog/day_disabled`.
 
-Si varios grupos de empleados siguen el mismo ciclo pero con desfase (un grupo empieza en semana A mientras otro empieza en semana B), deberá crear dos instancias del horario rotativo con fechas de inicio de ciclo diferentes: una anclada en semana A y otra en semana B.
+Si en su organización se trabaja en festivo por turnos, no marque el día como festivo en la sucursal: trátelo como laborable y registre las ausencias de quienes libran en la ficha de cada empleado. Consulte [Festivos y días no laborables](./29-festivos-y-dias-no-laborables.md).
 
 ---
 
 ## Artículos relacionados
 
-- [Horarios base y turnos](23-horarios-base-y-turnos.md)
-- [Calendario laboral](24-calendario-laboral.md)
-- [Excepciones de horario](25-excepciones-de-horario.md)
-- [Herencia de configuración](26-herencia-de-configuracion.md)
-- [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md)
+| Artículo | Descripción |
+|---|---|
+| [Horarios base y turnos](./23-horarios-base-y-turnos.md) | Configuración del horario semanal y de varios turnos por día |
+| [Calendario laboral](./24-calendario-laboral.md) | Festivos y calendario efectivo |
+| [Excepciones de horario](./25-excepciones-de-horario.md) | Ajustes puntuales sobre el horario heredado |
+| [Herencia de configuración](./26-herencia-de-configuracion.md) | Prioridad entre entidad, sucursal y empleado |
+| [Asignar empleados a sucursales](../08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md) | Mover a un empleado entre centros o turnos |

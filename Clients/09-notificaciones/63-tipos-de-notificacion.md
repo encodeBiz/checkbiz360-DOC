@@ -19,14 +19,14 @@ Las notificaciones de asistencia informan sobre eventos relacionados con el regi
 
 ### Notificaciones de documentos
 
-Las notificaciones de documentos gestionan el flujo de firma y distribución de documentos a través de la plataforma.
+Las notificaciones de documentos gestionan la distribución de documentos y el seguimiento del acuse de recibo.
 
 | Tipo | Descripción | Destinatarios |
 |---|---|---|
 | Nuevo documento disponible | Se envía al empleado cuando se le asigna un documento para su consulta | Worker |
-| Firma pendiente | Recordatorio de que un documento asignado está pendiente de firma | Worker |
-| Documento firmado | Notificación al responsable cuando un empleado ha firmado un documento | Manager, Supervisor |
-| Documento rechazado | Notificación al responsable cuando un empleado ha rechazado firmar un documento | Manager |
+| Acuse de recibo pendiente | Recordatorio de que un documento asignado está pendiente de confirmar | Worker |
+
+> **Nota:** la plataforma gestiona **acuse de recibo**, no firma electrónica. No existe, por tanto, una notificación de "documento firmado" ni de rechazo de firma.
 
 ### Notificaciones de tareas
 

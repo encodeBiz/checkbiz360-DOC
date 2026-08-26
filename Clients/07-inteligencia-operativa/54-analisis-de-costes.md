@@ -8,31 +8,36 @@ El sistema no requiere integración con la nómina ni acceso a datos contables e
 
 ## Configurar el coste por hora del empleado
 
-El punto de partida es definir el coste horario de cada empleado en su perfil. Este valor lo introduce el responsable con acceso de Manager u Owner en la ficha del empleado, dentro del apartado de configuración económica.
+El punto de partida es definir la **tarifa horaria** de cada empleado. Se configura **en la vinculación del empleado con su sucursal**, no en sus datos personales: una misma persona puede tener tarifas distintas en centros distintos, junto a su puesto y su responsabilidad allí.
 
-Para configurarlo:
+Para configurarla:
 
-1. Acceda al backoffice y navegue a la sección de gestión de empleados.
-2. Seleccione el empleado al que desea asignar la tarifa.
-3. En la ficha del empleado, localice el campo de coste por hora.
-4. Introduzca el valor en euros por hora. Este valor debe reflejar el coste real para la empresa, no el salario bruto: incluya la parte proporcional de las cotizaciones sociales a cargo de la empresa si desea obtener un coste total real.
-5. Guarde los cambios. El sistema aplicará esta tarifa a todos los registros futuros y recalculará los históricos disponibles.
+1. Acceda a **Empleados** y abra la ficha del empleado.
+2. Vaya al apartado de sucursales y abra la vinculación con el centro correspondiente.
+3. Introduzca la tarifa junto al puesto y la responsabilidad.
+4. Guarde los cambios.
 
-> **Nota:** Si el empleado tiene diferentes tarifas según el tipo de jornada (turno ordinario, turno nocturno, festivo), puede configurarlo a nivel de turno en el módulo de horarios. Consulte la documentación de calendarios y horarios para más detalle.
+El valor debe reflejar el **coste real para la empresa**, no el salario bruto: incluya la parte proporcional de las cotizaciones sociales a cargo de la empresa si quiere un coste total realista.
+
+> **Importante:** sin tarifa configurada no hay análisis de costes posible. Es la causa más frecuente de que los indicadores económicos aparezcan vacíos o extraños. El bloque de **estado de los datos** del panel de Operación indica esta cobertura de configuración: consúltelo antes de dar por buena —o por mala— cualquier cifra de coste.
 
 ## Qué calcula el sistema
 
-A partir de las horas registradas y la tarifa configurada, el sistema calcula automáticamente tres valores para cada empleado y periodo:
+A partir de las horas registradas y la tarifa configurada, la ficha del empleado muestra:
 
-**Coste planificado.** El coste que debería haberse incurrido si el empleado hubiese trabajado exactamente las horas previstas en su horario. Es el valor de referencia contra el que se compara el coste real.
+| Indicador | Qué muestra |
+|---|---|
+| **Coste por hora trabajada** | El coste unitario real de una hora efectiva |
+| **Coste por jornada** | El coste medio de un día de trabajo |
+| **Coste por rendimiento** | El coste ponderado por la efectividad observada |
+| **Rendimiento del coste invertido** | Qué se obtiene por cada unidad de coste |
+| **Coste acumulado** | La suma real del periodo |
 
-**Coste real.** El coste calculado a partir de las horas efectivamente trabajadas según los fichajes registrados y validados. Si el empleado trabajó más horas de las previstas, el coste real será mayor que el planificado; si trabajó menos, será menor.
-
-**Desviación de coste.** La diferencia entre el coste real y el coste planificado, expresada tanto en valor absoluto (euros) como en porcentaje. Una desviación positiva indica sobrecoste; una desviación negativa indica infrautilización de la jornada.
+Todos se calculan sobre **jornadas validadas** y se comparan contra el histórico consolidado del propio empleado o centro, no contra un presupuesto: la plataforma no gestiona presupuestos ni costes planificados.
 
 ## Comparativas entre sucursales
 
-Una de las funcionalidades más valoradas del módulo es la capacidad de comparar el coste de operación entre distintas sucursales de la misma entidad. Esta vista está disponible en el panel de costes del backoffice y permite filtrar por periodo, centro y empleado.
+El panel de Operación permite comparar centros entre sí dentro de un periodo. El coste, eso sí, ha dejado de presidir la lectura: no es una medida de operatividad sino una consecuencia, y por eso vive dentro del perfil de cada centro y de cada persona, no como pestaña propia.
 
 Las comparativas permiten detectar situaciones que un análisis sucursal por sucursal no revela:
 
@@ -57,7 +62,7 @@ La exportación de los datos del análisis de costes en formato CSV y PDF no est
 ## Artículos relacionados
 
 - [Qué es la inteligencia operativa](49-que-es-la-inteligencia-operativa.md)
-- [Índice de eficiencia](52-indice-de-eficiencia.md)
-- [Paneles de mando](56-paneles-de-mando.md)
-- [Informes y exportación](../11-informes-y-exportacion/)
-- [Sucursales y entidad](../08-sucursales-y-entidad/)
+- [Índice de eficiencia operativa](52-indice-de-eficiencia.md)
+- [El panel de Operación](56-paneles-de-mando.md)
+- [Tipos de informe](../11-informes-y-exportacion/76-tipos-de-informe.md)
+- [Asignar empleados a sucursales](../08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md)

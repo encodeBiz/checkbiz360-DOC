@@ -1,22 +1,18 @@
 # Estados de una tarea
 
-Cada tarea en CheckBiz360 atraviesa un ciclo de vida definido, desde el momento en que se crea hasta que queda archivada. Comprender los distintos estados y las transiciones entre ellos es fundamental para hacer un seguimiento correcto del trabajo asignado.
+Cada tarea en CheckBiz360 atraviesa un ciclo de vida definido, desde que se crea hasta que queda cerrada. Comprender los estados y las transiciones entre ellos es fundamental para hacer un seguimiento correcto del trabajo asignado.
+
+Una tarea lleva **dos indicadores independientes**: su **estado**, que refleja en qué punto del trabajo está, y su **cumplimiento temporal**, que refleja cómo va respecto a la fecha límite. Conviene no confundirlos: una tarea puede estar *en progreso* y a la vez *vencida*.
 
 ---
 
 ## El ciclo de vida de una tarea
 
-El recorrido habitual de una tarea sigue esta secuencia:
+El recorrido habitual es:
 
-**Pendiente → En curso → Completada → Validada**
+**Borrador → Asignada → En progreso → Completada → Validada**
 
-Sin embargo, existen estados alternativos que puede alcanzar dependiendo de lo que ocurra durante su ejecución:
-
-**Completada → Rechazada → Pendiente**
-
-Adicionalmente, el sistema registra un **indicador de cumplimiento temporal** (`timeComplianceStatus`) que refleja si la tarea fue completada dentro del plazo establecido, independientemente de su estado. Este indicador no constituye un estado de tarea en sí mismo, sino un dato de seguimiento.
-
-A continuación se describe cada estado en detalle.
+Con dos desvíos posibles: el responsable puede **rechazar** una tarea completada, o **cancelar** la tarea en cualquier momento antes de su cierre.
 
 ---
 
@@ -24,35 +20,60 @@ A continuación se describe cada estado en detalle.
 
 | Estado | Descripción | Quién puede activarlo |
 |---|---|---|
-| **Pendiente** | La tarea ha sido creada y asignada, pero el empleado aún no ha comenzado a trabajar en ella. | Sistema (al crear la tarea) |
-| **En curso** | El empleado ha iniciado la tarea y está trabajando en ella. | Empleado desde la app |
-| **Completada** | El empleado ha marcado la tarea como terminada y está pendiente de revisión por el responsable. | Empleado desde la app |
-| **Validada** | El responsable ha revisado la tarea completada y la ha aceptado como correctamente ejecutada. | Manager o supervisor con permiso |
-| **Rechazada** | El responsable revisó la tarea marcada como completada y la devolvió al empleado por no cumplir los requisitos. | Manager o supervisor con permiso |
+| **Borrador** | La tarea está creada pero aún no se ha puesto en circulación. Sirve para prepararla antes de enviarla al equipo. | Quien la crea, desde el backoffice |
+| **Asignada** | La tarea está enviada a sus responsables, que han recibido la notificación, pero nadie ha empezado todavía. | Quien la crea, o el sistema al asignar |
+| **En progreso** | Un empleado asignado ha iniciado la tarea y está trabajando en ella. | Empleado desde la app |
+| **Completada** | El empleado ha marcado la tarea como terminada y queda pendiente de revisión. | Empleado desde la app |
+| **Validada** | El responsable ha revisado el trabajo y lo ha aceptado como correcto. Es el cierre satisfactorio. | Manager, u owner o supervisor con permiso de validación |
+| **Rechazada** | El responsable ha revisado la tarea completada y la ha devuelto con un motivo obligatorio. | Manager, u owner o supervisor con permiso de validación |
+| **Cancelada** | La tarea se anula porque ya no procede. Requiere motivo y no computa como incumplimiento. | Manager u owner desde el backoffice |
+
+Los estados *Validada*, *Rechazada* y *Cancelada* no pueden asignarse a mano al crear o editar una tarea: son resultado de una acción del ciclo de vida (validar, rechazar, cancelar).
+
+---
+
+## Indicador de cumplimiento temporal
+
+En paralelo al estado, cada tarea mantiene un indicador de cumplimiento frente a su fecha límite:
+
+| Indicador | Qué significa |
+|---|---|
+| **Sin iniciar** | Todavía no se ha empezado a trabajar en ella |
+| **A tiempo** | En marcha, dentro de plazo |
+| **En riesgo** | En marcha, pero acercándose a la fecha límite |
+| **Vencida** | Ha superado la fecha límite sin completarse |
+| **Completada a tiempo** | Se cerró dentro del plazo |
+| **Completada tarde** | Se cerró después de la fecha límite |
+
+Cuando la tarea está rechazada, el indicador muestra *Rechazada*, porque el cumplimiento del plazo deja de ser la información relevante.
 
 ---
 
 ## Qué desencadena cada cambio de estado
 
-### De pendiente a en curso
+### De borrador a asignada
 
-El empleado abre la tarea en la app y pulsa el botón de inicio. Este cambio indica que ha tomado conciencia de la actividad y ha comenzado a trabajar en ella. El backoffice refleja este cambio en tiempo real.
+Quien crea la tarea la guarda con estado *Asignada*, o edita una tarea en borrador para ponerla en circulación. En ese momento los empleados asignados reciben la notificación push.
 
-### De en curso a completada
+### De asignada a en progreso
 
-El empleado pulsa el botón de finalización en la app. Antes de confirmar, el sistema puede pedirle un comentario de cierre o la carga de una evidencia adjunta, dependiendo de la configuración de la tarea.
+El empleado abre la tarea en la app y pulsa iniciar. El backoffice refleja el cambio y, si la tarea tenía activado el aviso de inicio tardío, ese aviso deja de estar pendiente.
+
+### De en progreso a completada
+
+El empleado pulsa finalizar en la app. Si la tarea tiene activada la exigencia de evidencia, el sistema no permite cerrarla sin al menos una foto o vídeo adjuntos, y devuelve el error `task/evidence_required`.
 
 ### De completada a validada
 
-El manager o supervisor con permiso de validación revisa la tarea desde el backoffice y la acepta. En ese momento la tarea queda cerrada y se pueden activar las acciones de valoración del empleado.
+El responsable revisa el trabajo desde el backoffice y lo acepta. La tarea queda cerrada y se habilita la valoración del empleado.
 
 ### De completada a rechazada
 
-El responsable revisa la tarea y considera que no cumple los requisitos. La rechaza indicando el motivo, y la tarea vuelve automáticamente al estado "pendiente" con el comentario del rechazo visible para el empleado.
+El responsable revisa el trabajo y lo devuelve indicando un **motivo obligatorio**, visible para el empleado en el detalle de la tarea. Si el trabajo debe rehacerse, el responsable puede editar la tarea y devolverla al estado *Asignada*.
 
-### Indicador de cumplimiento temporal
+### Cancelación
 
-Cuando una tarea supera su fecha límite sin haber sido completada, el sistema actualiza el indicador `timeComplianceStatus` para reflejar el incumplimiento. Este indicador es visible en el detalle de la tarea desde el backoffice y permite al responsable identificar retrasos sin que la tarea cambie a un estado diferente.
+Una tarea que ya no procede se cancela indicando un motivo. Es un cierre administrativo: no se contabiliza como incumplimiento del empleado.
 
 ---
 
@@ -61,33 +82,33 @@ Cuando una tarea supera su fecha límite sin haber sido completada, el sistema a
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-La transición automática al estado explícito "vencida" y el marcado periódico programado de tareas como vencidas están planificados para una versión futura. En V1, el seguimiento del cumplimiento de plazos se realiza a través del indicador `timeComplianceStatus`.
+El paso automático a un estado explícito de tarea "vencida" está planificado para una versión futura. Hoy el vencimiento se refleja en el indicador de cumplimiento temporal, no en el estado de la tarea.
 
 ---
 
 ## Diferencia entre completada y validada
 
-Esta distinción es importante porque implica niveles de responsabilidad diferentes.
+Esta distinción implica niveles de responsabilidad diferentes.
 
-**Completada** significa que el empleado ha declarado que ha terminado la tarea. Es una acción unilateral: el empleado la cierra desde su lado, pero el responsable aún no ha verificado el resultado.
+**Completada** significa que el empleado ha declarado que ha terminado. Es una acción unilateral: cierra desde su lado, pero el responsable aún no ha verificado el resultado.
 
-**Validada** significa que el responsable ha comprobado el trabajo y lo ha aceptado como correcto. Es el estado final definitivo de una tarea bien ejecutada.
+**Validada** significa que el responsable ha comprobado el trabajo y lo ha aceptado. Es el cierre definitivo de una tarea bien ejecutada.
 
-En organizaciones donde la calidad de ejecución es crítica, como en restauración, logística o instalaciones técnicas, la distinción entre ambos estados garantiza que ninguna tarea quede cerrada sin supervisión.
+En organizaciones donde la calidad de ejecución es crítica —restauración, logística, instalaciones técnicas— esta distinción garantiza que ninguna tarea quede cerrada sin supervisión.
 
-> **Importante:** Las valoraciones de desempeño del empleado solo pueden registrarse sobre tareas en estado "validada". Una tarea "completada" pero no validada no genera puntuación en el índice de eficiencia del empleado.
+> **Importante:** la valoración del empleado se registra sobre el trabajo ya revisado. Una tarea completada pero no validada no cierra el circuito de calidad.
 
 ---
 
 ## Visualización de estados en el backoffice
 
-Desde el panel de tareas del backoffice, es posible filtrar las tareas por estado. Esto permite al responsable:
+Desde el listado de tareas se puede filtrar por estado y por prioridad. Esto permite al responsable:
 
 - Ver de un vistazo cuántas tareas están pendientes de validación.
-- Identificar tareas con incumplimiento de plazo a través del indicador de cumplimiento temporal.
-- Comprobar el avance general de las tareas activas en una sucursal o para un empleado concreto.
+- Identificar tareas vencidas o en riesgo a través del indicador de cumplimiento temporal.
+- Comprobar el avance de las tareas activas en una sucursal o para un empleado concreto.
 
-Los estados se muestran con etiquetas de color para facilitar la lectura rápida: gris (pendiente), azul (en curso), verde (completada), verde oscuro (validada) y rojo (rechazada).
+Cada tarea muestra dos etiquetas de color: una para el estado y otra para el cumplimiento temporal. El código de color es coherente en toda la plataforma: gris para lo que aún no ha arrancado (borrador, cancelada, sin iniciar), azul para lo que está en curso o a la espera de revisión (asignada, completada), ámbar para lo que requiere atención (en progreso, en riesgo, completada tarde), verde para lo correcto (validada, a tiempo, completada a tiempo) y rojo para lo que ha fallado (rechazada, vencida).
 
 ---
 

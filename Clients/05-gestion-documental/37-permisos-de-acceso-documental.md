@@ -14,7 +14,7 @@ CheckBiz360 define cuatro roles principales con distintos niveles de acceso al m
 | Editar documentos | No | Según delegación | Sí | Sí |
 | Eliminar documentos | No | No | Sí | Sí |
 | Solicitar firma | No | No | Sí | Sí |
-| Firmar documentos | Sí (los propios) | Sí (los propios) | No aplica | No aplica |
+| Acusar recibo | Sí (los propios) | Sí (los propios) | No aplica | No aplica |
 | Ver documentos privados | No | Según delegación | Sí | Sí |
 | Exportar documentos | No | No | Sí | Sí |
 
@@ -77,6 +77,6 @@ Se recomienda marcar los documentos obsoletos como privados en lugar de eliminar
 
 - [Qué es el módulo documental](30-que-es-el-modulo-documental.md)
 - [Documentos privados](33-documentos-privados.md)
-- [Firma electrónica](35-firma-electronica.md)
+- [Acuse de recibo](35-firma-electronica.md)
 - [Exportar documentos](38-exportar-documentos.md)
 - [Subir y organizar documentos](31-subir-y-organizar-documentos.md)

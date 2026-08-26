@@ -30,7 +30,7 @@ Desde esa pantalla, el empleado puede:
 
 - Leer el documento completo.
 - Descargarlo en su dispositivo.
-- Firmarlo si el documento tiene activa la solicitud de firma.
+- Acusar recibo si el documento lo exige.
 
 Si el empleado no tiene la app instalada o las notificaciones push desactivadas en su dispositivo, no recibirá el aviso. En ese caso, el documento seguirá estando disponible en la app en la sección de documentos, pero sin el aviso proactivo.
 
@@ -60,5 +60,5 @@ Si un empleado indica que no recibe notificaciones, verifique primero que los pe
 - [Qué es el módulo documental](30-que-es-el-modulo-documental.md)
 - [Subir y organizar documentos](31-subir-y-organizar-documentos.md)
 - [Documentos privados](33-documentos-privados.md)
-- [Firma electrónica](35-firma-electronica.md)
+- [Acuse de recibo](35-firma-electronica.md)
 - [Permisos de acceso documental](37-permisos-de-acceso-documental.md)

@@ -50,7 +50,7 @@ La sección de documentos centraliza todos los archivos laborales que su organiz
 
 - Nóminas, contratos, comunicados internos y cualquier otro documento que el administrador haya publicado para usted.
 - La posibilidad de consultar los documentos directamente desde la app o descargarlos en su dispositivo.
-- El estado de firma o acuse de recibo de cada documento, cuando aplique.
+- El estado de acuse de recibo de cada documento, cuando aplique.
 
 ---
 
@@ -58,11 +58,13 @@ La sección de documentos centraliza todos los archivos laborales que su organiz
 
 La sección de tareas muestra las actividades que le han sido asignadas por su manager o administrador. Desde aquí puede:
 
-- Consultar el listado de tareas pendientes, en curso y completadas.
-- Ver el detalle de cada tarea: descripción, fecha límite, prioridad y archivos adjuntos.
-- Actualizar el estado de una tarea marcándola como completada o en progreso.
+- Consultar el listado de tareas asignadas con su estado y su prioridad.
+- Ver el detalle de cada tarea: descripción, fecha límite, fecha prevista de inicio y evidencias.
+- Iniciar una tarea, añadir notas de progreso, subir evidencias en foto o vídeo y marcarla como completada.
 
-> **Aviso:** La sincronización del estado de las tareas requiere conexión a internet. Si no dispone de conexión, los cambios se guardarán localmente y se sincronizarán de forma automática en cuanto se restablezca la conectividad.
+La **descripción se muestra con su formato**: los títulos, las listas y las listas de comprobación que el responsable escribió desde el backoffice se ven como tales, no como texto plano con símbolos. Las casillas de una lista de comprobación son una guía de trabajo: se leen, pero no se marcan desde la app, porque forman parte del texto de la tarea y no de su estado. Los enlaces se abren en el navegador del dispositivo.
+
+> **Aviso:** actualizar el estado de una tarea requiere conexión a internet.
 
 ---
 

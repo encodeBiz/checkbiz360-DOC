@@ -6,11 +6,11 @@ El módulo de tareas de CheckBiz360 incluye un sistema de valoración de desempe
 
 ## Quién puede valorar
 
-La capacidad de valorar a un empleado está restringida por defecto a los roles de manager y owner. Esto garantiza que las puntuaciones provengan de personas con autoridad y criterio sobre los resultados esperados.
+Valoran los roles de **manager** y **owner**. Cada tarea incluye además la opción **Permitir valoración por supervisor**, activada por defecto, que habilita a los supervisores de la sucursal a puntuar el trabajo de esa tarea concreta.
 
-El manager puede extender este permiso a los supervisores de su equipo si lo considera apropiado para su estructura organizativa. Los supervisores con el permiso habilitado pueden valorar las tareas que ellos mismos han validado.
+Es una decisión por tarea, no un permiso del perfil del empleado: se marca al crear la tarea o al editarla, junto a las opciones de validación y de evidencia obligatoria.
 
-> **Nota:** Un empleado nunca puede valorarse a sí mismo ni a otros empleados. Las valoraciones fluyen siempre de un nivel de responsabilidad superior a uno inferior.
+> **Nota:** nadie puede valorarse a sí mismo. Al registrar la valoración, quien la hace queda excluido de la lista de empleados valorables de esa tarea. Cada valoración guarda quién la hizo y con qué nivel de responsabilidad.
 
 ---
 
@@ -30,15 +30,17 @@ CheckBiz360 utiliza una escala numérica del 1 al 5 para puntuar el desempeño e
 
 ## Cómo registrar una valoración
 
-La valoración se realiza desde el backoffice, inmediatamente después de validar la tarea o en cualquier momento posterior desde el detalle de la tarea validada.
+La valoración se registra desde el detalle de la tarea en el backoffice, normalmente justo después de revisar el trabajo.
 
-1. Abra el detalle de una tarea en estado **Validada**.
-2. Localice el apartado **Valoración del empleado**.
-3. Seleccione la puntuación del 1 al 5.
-4. Opcionalmente, añada un comentario privado que justifique la puntuación o destaque aspectos concretos de la ejecución.
-5. Pulse **Guardar valoración**.
+1. Abra el detalle de la tarea.
+2. En el apartado **Valoraciones**, pulse **Valorar**.
+3. Elija al **empleado** que quiere valorar entre los asignados a la tarea.
+4. Seleccione la puntuación del 1 al 5.
+5. Añada un **comentario** que justifique la puntuación o destaque aspectos concretos de la ejecución.
+6. Si ayuda a explicar la valoración, adjunte una **imagen** (JPG, PNG o WEBP, hasta 5 MB): una foto del resultado suele decir más que el comentario.
+7. Confirme.
 
-El empleado puede ver su puntuación desde la app en el detalle de la tarea. Si el responsable ha incluido un comentario, este también es visible para el empleado, fomentando la retroalimentación directa.
+Cada valoración queda listada en el detalle de la tarea con su autor, el rol desde el que se emitió y la fecha.
 
 ---
 

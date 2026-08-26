@@ -6,7 +6,9 @@ El backoffice de CheckBiz360 centraliza todo el proceso de carga y distribución
 
 Para subir documentos necesita tener el rol de Manager o Owner en la entidad. Los supervisores pueden tener acceso a esta función si el manager les ha delegado ese permiso. Si no ve la opción de subida en su panel, consulte con el responsable de la entidad para verificar sus permisos.
 
-Los formatos aceptados son PDF e imágenes (JPG, PNG). Se recomienda el uso de PDF para garantizar que el documento se visualiza correctamente en cualquier dispositivo, especialmente en la app móvil del empleado.
+Los formatos aceptados son PDF e imágenes (JPG, PNG), con un **máximo de 10 MB por archivo**. Un fichero mayor se rechaza con el error `documents/file_too_large`, y un formato no admitido con `documents/invalid_mime_type`.
+
+Se recomienda el PDF: es el que garantiza que el documento se visualiza correctamente en cualquier dispositivo, especialmente en la app móvil del empleado.
 
 ## Cómo subir un documento
 
@@ -28,16 +30,33 @@ El título es el nombre con el que el empleado verá el documento en su app. Sea
 
 Campo opcional que permite añadir contexto al documento. Puede usarlo para indicar el periodo que cubre, si contiene alguna corrección respecto a versiones anteriores o cualquier instrucción para el empleado.
 
-### Categoría
+### Tipo de documento
 
-Seleccione la categoría que corresponda al tipo de documento:
+Seleccione el tipo que corresponda. Hay doce:
 
-- **Nómina**: recibos de salario, liquidaciones finales, complementos extraordinarios.
-- **Contrato**: contratos de trabajo, prórrogas, modificaciones de condiciones laborales.
-- **Certificado**: certificados de empresa, de vida laboral, bajas médicas u otros emitidos por organismos externos.
-- **Otro**: cualquier documento que no encaje en las categorías anteriores, como cartas de comunicación interna, evaluaciones de desempeño o amonestaciones.
+- **Nómina**: recibos de salario, liquidaciones, complementos.
+- **Contrato**: contratos de trabajo, prórrogas, modificaciones de condiciones.
+- **Amonestación** y **Llamada de atención**: documentación disciplinaria.
+- **Justificante**: justificantes de ausencia y de permisos.
+- **Certificado**: certificados de empresa, de vida laboral, de retenciones.
+- **Política**: políticas de empresa, código de conducta.
+- **Procedimiento**: instrucciones de trabajo, protocolos operativos.
+- **Prevención de riesgos**: evaluaciones de riesgos, formación PRL, entrega de EPI.
+- **Protocolo de sucursal**: normativa específica de un centro.
+- **Documento de proyecto**: documentación asociada a un proyecto o cliente.
+- **Otro**: cualquier documento que no encaje en los anteriores.
 
-La categoría no afecta al acceso ni a la visibilidad del documento, pero facilita enormemente la búsqueda y la organización del archivo cuando el volumen de documentos crece.
+> **Importante:** a diferencia de lo que ocurre con una simple etiqueta, **algunos tipos están restringidos por rol**. Quien no tenga nivel suficiente para ese tipo recibe el error `documents/restricted_document_type`. El tipo, por tanto, sí afecta al acceso, además de facilitar la búsqueda.
+
+### Ámbito
+
+Además del tipo, cada documento tiene un ámbito que determina a quién va dirigido:
+
+- **Empleado**: un documento personal, como una nómina o un contrato.
+- **Sucursal**: dirigido a todo el personal de un centro, como un protocolo de apertura.
+- **Entidad**: dirigido a toda la plantilla, como una política de empresa.
+
+El ámbito determina también el modo de acuse de recibo disponible: de un empleado concreto, de los empleados de una sucursal o de toda la entidad.
 
 ### Empleado o empleados destinatarios
 
@@ -63,10 +82,10 @@ A medida que el volumen de documentos crece, mantener el archivo ordenado result
 Aplique estas convenciones desde el principio:
 
 - **Título consistente**: use siempre el mismo formato de nombre, por ejemplo `[Tipo] - [Empleado/Periodo]`.
-- **Categoría correcta**: no use la categoría "Otro" como cajón de sastre. Reserve las categorías específicas para los documentos que correspondan.
+- **Tipo correcto**: no use "Otro" como cajón de sastre. Con doce tipos disponibles, casi todo tiene su sitio, y el tipo condiciona quién puede ver el documento.
 - **Periodos claros en la descripción**: especialmente en nóminas, indique el mes y año en el título o en la descripción.
 
-Los filtros del panel de documentos le permiten buscar por categoría, por empleado y por fecha de subida, lo que facilita la gestión incluso cuando el archivo contiene cientos de documentos.
+Los filtros del panel de documentos le permiten buscar por tipo, por ámbito, por empleado y por fecha de subida, lo que facilita la gestión incluso cuando el archivo contiene cientos de documentos.
 
 ## Artículos relacionados
 

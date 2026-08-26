@@ -87,5 +87,5 @@ Para desactivar una excepción antes de su fecha de fin prevista, selecciónela 
 - [Horarios base y turnos](23-horarios-base-y-turnos.md)
 - [Calendario laboral](24-calendario-laboral.md)
 - [Herencia de configuración](26-herencia-de-configuracion.md)
-- [Horario flexible](28-horario-flexible.md)
+- [Jornada estricta y jornada flexible](28-horario-flexible.md)
 - [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md)

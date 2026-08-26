@@ -25,7 +25,7 @@ La asignación a sucursal es el vínculo que une a un empleado con una sucursal.
 
 También puede asignar empleados directamente desde la ficha de la sucursal:
 
-1. Navegue a **Organización** > **Sucursales** y abra la sucursal deseada.
+1. Navegue a **Sucursales** y abra la sucursal deseada.
 2. Acceda a la pestaña **Empleados** dentro de la ficha de la sucursal.
 3. Pulse **Asignar empleado** e introduzca el nombre o el correo electrónico del empleado en el buscador.
 4. Seleccione el rol y el calendario y pulse **Confirmar**.
@@ -42,7 +42,7 @@ CheckBiz360 admite que un mismo empleado esté asignado a varias sucursales simu
 
 Cuando un empleado con múltiples responsabilidades ficha desde la app, el sistema determina automáticamente en qué sucursal está fichando comparando la ubicación GPS del dispositivo con las coordenadas y radios de cada sucursal asignada. Si el empleado está dentro del radio de la sucursal A, el fichaje se registra en la sucursal A; si está en el radio de la sucursal B, se registra en la sucursal B.
 
-En caso de que el empleado esté fuera del radio de todas sus sucursales asignadas y la geocerca no esté desactivada, el fichaje será rechazado con el código `checklog/out-of-range`.
+En caso de que el empleado esté fuera del radio de todas sus sucursales asignadas y la geocerca no esté desactivada, el fichaje será rechazado con el código `checklog/out_of_radius`.
 
 > **Aviso:** Si los radios de dos sucursales se solapan geográficamente, puede haber ambigüedad en la asignación del fichaje. En esos casos, el sistema prioriza la sucursal cuyo centro esté más próximo a la posición real del empleado. Revise los radios configurados si detecta asignaciones incorrectas de forma recurrente.
 

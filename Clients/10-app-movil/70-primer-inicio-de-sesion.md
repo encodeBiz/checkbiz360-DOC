@@ -58,7 +58,7 @@ Si su usuario está vinculado a más de una organización o entidad dentro de Ch
 ### El correo de bienvenida no llegó
 
 1. Espere hasta 10 minutos tras la confirmación del administrador; en ocasiones los servidores de correo pueden tener retrasos.
-2. Revise la carpeta de **correo no deseado** o **spam** buscando remitentes del dominio `encodebiz.com` o `checkbiz360.com`.
+2. Revise la carpeta de **correo no deseado** o **spam** buscando remitentes del dominio `encodebiz.com`.
 3. Compruebe que la dirección de correo con la que fue registrado en el sistema es correcta consultando con su administrador o manager.
 4. Si el correo no aparece o el enlace de activación ha caducado, solicite al administrador que envíe un nuevo correo de activación desde el panel de administración de CheckBiz360.
 

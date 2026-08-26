@@ -58,6 +58,6 @@ Los certificados de empresa o de situación de IT tienen una vigencia determinad
 - [Qué es el módulo documental](30-que-es-el-modulo-documental.md)
 - [Subir y organizar documentos](31-subir-y-organizar-documentos.md)
 - [Nóminas y contratos](32-nominas-y-contratos.md)
-- [Firma electrónica](35-firma-electronica.md)
+- [Acuse de recibo](35-firma-electronica.md)
 - [Permisos de acceso documental](37-permisos-de-acceso-documental.md)
 - [Exportar documentos](38-exportar-documentos.md)

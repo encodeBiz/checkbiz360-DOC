@@ -1,172 +1,165 @@
 # Códigos de error completos
 
-Este artículo es la referencia técnica de todos los códigos de error que puede generar CheckBiz360. Cuando la app móvil o el backoffice muestran un código de error, puede consultarlo aquí para conocer su causa más habitual y la acción correctiva recomendada. Los códigos están organizados por módulo del sistema.
+Este artículo es la referencia de los códigos de error que pueden aparecer en la app móvil o en el backoffice de CheckBiz360. Cuando el sistema muestra un mensaje de error, el código que lo acompaña permite identificar la causa exacta y la acción correctiva.
+
+Los códigos siguen siempre el formato `módulo/motivo`. A continuación se agrupan por módulo.
+
+> **Nota:** si en pantalla aparece un código que no figura en este artículo, significa que procede de un servicio que aún no tiene un mensaje traducido. Anote el código literal y ábralo como incidencia: es información suficiente para que soporte lo identifique.
 
 ---
 
-## Módulo de control horario (checklog)
+## Fichaje y jornada (`checklog`)
 
-Este módulo gestiona los registros de fichaje. Los errores de este módulo son los más frecuentes en el uso cotidiano de la app.
+Los errores más frecuentes en el uso diario. Salvo indicación contraria, los ve el **empleado en la app**.
 
-### `checklog/out_of_radius`
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `checklog/out_of_radius` | El empleado no está dentro del radio de fichaje de la sucursal seleccionada | Comprobar que está físicamente en el centro de trabajo y que el GPS tiene buena precisión. Si se repite, revisar coordenadas y radio de la sucursal |
+| `checklog/out_of_schedule` | El fichaje cae fuera del horario del turno asignado | Revisar el horario efectivo y la zona horaria de la sucursal, y el turno asignado al empleado |
+| `checklog/day_disabled` | El día está deshabilitado en el calendario efectivo (festivo o no laborable) | Si el día debía ser laborable, corregir el calendario. Si no, registrar las horas mediante jornada manual |
+| `checklog/calendar_not_resolved` | No hay calendario efectivo resuelto para esa fecha | Revisar el calendario de la entidad, la sucursal y el empleado para esa fecha. Mientras tanto, introducir las horas manualmente |
+| `checklog/branch_geo_required` | La sucursal no tiene ubicación configurada | El Owner o Manager debe añadir las coordenadas de la sucursal en el backoffice |
+| `checklog/two_type_followed` | Se ha intentado iniciar jornada dos veces seguidas | Cerrar la jornada abierta antes de iniciar una nueva |
+| `checklog/overlap_detected` | Ya existe una jornada válida que solapa con ese horario | Revisar el historial del empleado y corregir el registro solapado antes de reintentar |
+| `checklog/duplicate_pending` | Ya hay una solicitud pendiente para ese empleado en esa fecha | Esperar a que el responsable resuelva la solicitud existente en lugar de crear otra |
+| `checklog/checkin_not_found` | No se encuentra el checkin de referencia para la operación | Verificar que existe el fichaje de entrada al que se quiere asociar la salida |
+| `checklog/checkin_not_open` | El checkin no puede cerrarse manualmente por su estado actual | Revisar el estado del registro; si ya está cerrado o anulado, no admite cierre manual |
+| `checklog/checkout_already_exists` | Ya existe un cierre pendiente o válido para ese checkin | Revisar el registro: la jornada ya tiene salida |
+| `checklog/invalid_checki` | Fichaje de entrada no válido | Reintentar el fichaje. Si persiste, actualizar la app |
+| `checklog/invalid_checkout` | Fichaje de salida no válido | Comprobar que hay una entrada abierta que cerrar |
+| `checklog/invalid_restin` / `checklog/invalid_restout` | Inicio o fin de pausa no válido | Comprobar el orden de los registros: la pausa debe abrirse y cerrarse dentro de una jornada activa |
+| `checklog/unknown_type` | Tipo de registro desconocido | Actualizar la app a la última versión |
+| `checklog/invalid` | No se encuentra el registro relacionado | Refrescar la pantalla y reintentar |
+| `checklog/bad_request` | Los datos del fichaje no son correctos o están incompletos | Actualizar la app; si continúa, reinstalar e iniciar sesión de nuevo |
+| `checklog/internal_error` | Error interno del servidor al procesar el fichaje | Reintentar pasados unos minutos. Si dura más de 30 minutos, abrir incidencia con la hora exacta y el empleado afectado |
 
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | El empleado está intentando fichar desde una ubicación fuera del radio de geocerca configurado para la sucursal |
-| Quién lo ve | Empleado en la app |
-| Acción correctiva | Verificar que el empleado está físicamente en el lugar de trabajo y que el GPS de su dispositivo tiene buena precisión. Si el problema es recurrente, revisar las coordenadas y el radio de la sucursal en el backoffice |
-
-### `checklog/out_of_schedule`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | El empleado está intentando fichar fuera del horario de turno asignado. También se genera cuando se intenta hacer checkin después de la hora de fin del turno |
-| Quién lo ve | Empleado en la app |
-| Acción correctiva | Verificar el horario efectivo de la sucursal y el turno asignado al empleado. Comprobar la zona horaria configurada en la sucursal. Si el empleado está dentro de su turno y el error persiste, revisar la configuración de zona horaria |
-
-### `checklog/day_disabled`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | El empleado intenta fichar en un día que está marcado como festivo o no laborable en el calendario efectivo de la sucursal |
-| Quién lo ve | Empleado en la app |
-| Acción correctiva | Revisar el calendario efectivo de la sucursal en el backoffice. Si el día debería ser laborable, corregir la configuración del calendario |
-
-### `checklog/overlap_detected`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | El sistema ha detectado un fichaje que solapa con un registro ya existente para el mismo empleado en ese intervalo horario |
-| Quién lo ve | Empleado en la app; el manager puede verlo en el detalle del registro |
-| Acción correctiva | Revisar el historial de fichajes del empleado en el backoffice. Si hay un registro duplicado o incorrecto, eliminarlo mediante una jornada manual y registrar el fichaje correcto |
-
-### `checklog/internal_error`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | Error inesperado del servidor al procesar el fichaje. Puede deberse a un problema temporal de infraestructura |
-| Quién lo ve | Empleado en la app |
-| Acción correctiva | Esperar unos minutos y volver a intentar el fichaje. Si el error persiste durante más de 30 minutos, abrir una incidencia con la hora exacta del fallo y el ID del empleado |
-
-### `checklog/bad_request`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | Los datos enviados en la solicitud de fichaje son incorrectos o incompletos. Puede ocurrir si la app está desactualizada o si hay un problema de sincronización de datos |
-| Quién lo ve | Empleado en la app |
-| Acción correctiva | Actualizar la app a la última versión disponible. Si el problema persiste tras la actualización, reinstalar la app y volver a iniciar sesión |
+> `checklog/manual_request_created` no es un error: confirma que la solicitud de jornada manual se ha enviado correctamente y queda pendiente de aprobación.
 
 ---
 
-## Módulo de autenticación (auth)
+## Acceso y sesión (`auth`)
 
-Este módulo gestiona el acceso de los usuarios a la plataforma.
-
-### `auth/untrusted_device`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | El empleado está intentando iniciar sesión o fichar desde un dispositivo que no está registrado como de confianza para su cuenta |
-| Quién lo ve | Empleado en la app |
-| Acción correctiva | El Owner o Manager debe acceder al perfil del empleado en el backoffice, sección "Dispositivos de confianza", y autorizar el nuevo dispositivo |
-
-### `auth/unauthorized`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | El token de sesión del usuario ha caducado o es inválido. También puede ocurrir si la cuenta ha sido desactivada mientras el usuario tenía sesión abierta |
-| Quién lo ve | Empleado en la app o Manager en el backoffice |
-| Acción correctiva | Cerrar sesión completamente y volver a iniciar sesión con las credenciales correctas. Si la cuenta ha sido desactivada, contactar con el Owner de la entidad |
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `auth/invalid-credential` | Credenciales incorrectas | Revisar correo y contraseña; usar la recuperación de contraseña si es necesario |
+| `auth/invalid-email` | La dirección de correo no tiene un formato válido | Corregir el correo introducido |
+| `auth/missing-email` / `auth/missing-password` | Falta el correo o la contraseña | Completar el campo que falta |
+| `auth/email-already-exists` / `auth/email-already-in-use` | Ese correo ya está en uso | Iniciar sesión con esa cuenta o usar otro correo |
+| `auth/weak-password` | La contraseña no cumple los requisitos mínimos | Elegir una contraseña más segura |
+| `auth/too-many-requests` | Demasiados intentos en poco tiempo | Esperar unos minutos antes de reintentar |
+| `auth/user-disabled` | La cuenta está deshabilitada | Contactar con el Owner de la entidad o con soporte |
+| `auth/operation-not-allowed` | El acceso por correo y contraseña no está habilitado | Contactar con soporte |
+| `auth/network-request-failed` | Error de red | Comprobar la conexión a internet y reintentar |
+| `auth/unauthorized` | Acceso no autorizado al recurso, o sesión caducada | Cerrar sesión y volver a entrar. Si la cuenta fue desactivada, contactar con el Owner |
+| `auth/untrusted_device` | El dispositivo no está autorizado y requiere verificación adicional | El Owner o Manager debe autorizar el dispositivo desde el perfil del empleado |
 
 ---
 
-## Módulo de empleados (employee)
+## Verificación en dos pasos (`twofactor`)
 
-### `employee/invalid_payload`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | Se ha enviado una solicitud de creación o actualización de un empleado con datos incompletos o en formato incorrecto |
-| Quién lo ve | Manager o Owner en el backoffice |
-| Acción correctiva | Revisar todos los campos obligatorios del formulario del empleado. Asegurarse de que el correo electrónico tiene el formato correcto y que no hay campos en blanco donde se requiere un valor |
-
-### `employee/not_found`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | Se ha intentado realizar una operación sobre un empleado cuyo ID no existe en la entidad |
-| Quién lo ve | Manager o Owner en el backoffice |
-| Acción correctiva | Verificar que el empleado existe en la lista de empleados de la entidad. Si se ha eliminado por error, contactar con soporte para explorar opciones de recuperación |
-
-### `employee/not_resposibility`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | El empleado que está intentando realizar la acción no tiene las responsabilidades necesarias asignadas para completarla |
-| Quién lo ve | Empleado en la app o Manager en el backoffice |
-| Acción correctiva | Revisar las responsabilidades configuradas en el perfil del empleado. Si faltan responsabilidades necesarias para su rol, añadirlas desde el backoffice |
-
-### `employee/branchId_required`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | Se ha intentado crear o actualizar un empleado sin asignarle una sucursal, campo que es obligatorio |
-| Quién lo ve | Manager o Owner en el backoffice |
-| Acción correctiva | Asegurarse de que el empleado tiene al menos una sucursal asignada antes de guardar el perfil |
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `twofactor/invalid_code` | El código TOTP introducido no es válido | Comprobar que la hora del dispositivo es correcta y generar un código nuevo |
+| `twofactor/invalid_token` | La sesión ha expirado | Volver a iniciar sesión |
+| `twofactor/not_activated` | El empleado no tiene la verificación en dos pasos activada | Activarla desde el perfil del empleado |
+| `twofactor/user_not_activated` | La cuenta de usuario no tiene 2FA activado | Activar 2FA desde el perfil de usuario |
+| `twofactor/unauthorized` | La operación exige un token 2FA | Completar la verificación en dos pasos para continuar |
+| `twofactor/internal` | Error interno al procesar la verificación | Reintentar; si persiste, abrir incidencia |
 
 ---
 
-## Módulo de sucursales (branch)
+## Empleados (`employee`) y sucursales (`branch`)
 
-### `branch/not_found`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | Se ha referenciado una sucursal con un ID que no existe en la entidad, o la sucursal ha sido eliminada |
-| Quién lo ve | Manager u Owner en el backoffice al gestionar empleados, calendarios o configuraciones |
-| Acción correctiva | Verificar que la sucursal existe en la lista de sucursales de la entidad. Si el error aparece en el perfil de un empleado, reasignar la sucursal desde el backoffice |
-
-### `branch/inactive`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | Se ha intentado realizar una operación (como un fichaje) en una sucursal que está marcada como inactiva en el sistema |
-| Quién lo ve | Empleado en la app o Manager en el backoffice |
-| Acción correctiva | El Owner debe revisar el estado de la sucursal en el backoffice y reactivarla si corresponde |
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `employee/not_found` | El empleado indicado no existe en la entidad | Verificar que el empleado sigue dado de alta |
+| `employee/exist_employee` | Ya existe un empleado con ese correo o teléfono | Buscar el empleado existente en lugar de crear uno nuevo |
+| `employee/branchId_required` | Falta la sucursal, que es obligatoria | Asignar al menos una sucursal antes de guardar |
+| `employee/bad_request` | Falta el identificador del empleado en la operación | Repetir la acción desde la ficha del empleado |
+| `branch/not_found` | La sucursal indicada no existe | Verificar que la sucursal existe y no ha sido eliminada |
 
 ---
 
-## Módulo de calendario (calendar)
+## Documentos (`documents`)
 
-### `calendar/not_resolved`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | El sistema no ha podido determinar el calendario efectivo aplicable para el empleado en la fecha en que intenta fichar. Puede ocurrir si no hay un calendario asignado a la sucursal o si hay un conflicto en la configuración |
-| Quién lo ve | Empleado en la app |
-| Acción correctiva | Acceder al backoffice y verificar que la sucursal del empleado tiene un calendario efectivo activo y correctamente configurado para la fecha en cuestión. Si no hay calendario asignado, crear uno y asignarlo a la sucursal |
-
----
-
-## Módulo de suscripción (subscription)
-
-### `subscription/limit_off`
-
-| Campo | Detalle |
-|---|---|
-| Causa más habitual | Se ha alcanzado el límite de empleados activos, sucursales o cualquier otro recurso incluido en el plan de suscripción contratado |
-| Quién lo ve | Owner o Manager en el backoffice al intentar añadir nuevos empleados o sucursales |
-| Acción correctiva | Revisar los límites del plan actual en **Configuración > Suscripción**. Si es necesario ampliar la capacidad, actualizar el plan desde esa misma sección o contactar con soporte en hola@encodebiz.com |
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `documents/unauthorized` | Sin permisos para acceder al documento | Revisar la visibilidad por rol del documento |
+| `documents/not_found` | El documento no existe o no es visible para ese usuario | Comprobar que no está archivado y que el rol tiene visibilidad |
+| `documents/file_required` | No se ha adjuntado ningún archivo | Adjuntar el fichero antes de guardar |
+| `documents/file_too_large` | El archivo supera el máximo permitido de 10 MB | Comprimir el documento o dividirlo |
+| `documents/invalid_mime_type` | Formato de archivo no permitido | Convertir el documento a un formato admitido |
+| `documents/invalid_visibility_roles` | La configuración de visibilidad no es válida | Revisar los roles seleccionados |
+| `documents/invalid_acknowledgement_mode` | La configuración de acuse de recibo no es válida | Revisar el modo de acuse elegido frente al ámbito del documento |
+| `documents/acknowledgement_not_required` | El documento no requiere acuse de recibo | No es necesaria ninguna acción |
+| `documents/acknowledgement_not_allowed` | Ese usuario no puede acusar recibo del documento | Comprobar que el documento va dirigido a ese empleado |
+| `documents/restricted_document_type` | Sin permisos para ese tipo de documento | Revisar el rol necesario para ese tipo |
+| `documents/already_archived` | El documento ya está archivado | No es necesaria ninguna acción |
+| `documents/branch_not_found` | La sucursal o proyecto indicado no es válido | Seleccionar una sucursal existente |
+| `documents/employee_not_found` | El empleado indicado no es válido | Seleccionar un empleado existente |
+| `documents/employee_not_in_branch` | El empleado no pertenece a la sucursal seleccionada | Corregir la sucursal o la asignación del empleado |
+| `documents/bad_request` | Los datos del documento no son válidos | Revisar los campos obligatorios del formulario |
 
 ---
 
-> **Aviso:** Si encuentra un código de error que no aparece en esta tabla, o si el mismo código reaparece de forma sistemática después de aplicar las acciones correctivas indicadas, abra una incidencia en el backoffice incluyendo el código exacto, la hora del fallo y el ID del empleado afectado.
+## Tareas (`task`)
+
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `task/not_found` | La tarea no existe o fue eliminada | Refrescar el listado de tareas |
+| `task/evidence_required` | La tarea exige subir evidencia antes de completarla | Adjuntar al menos una foto o vídeo y volver a completar |
+| `task/forbidden` | Sin permisos para esa acción sobre la tarea | Revisar el nivel de responsabilidad requerido |
+| `task/unauthorized` | Sin permisos para realizar la acción | Solicitar la acción a un responsable con nivel suficiente |
+| `task/invalid_mime_type` | El formato del archivo adjunto no está permitido | Subir la evidencia como foto o vídeo en un formato estándar |
+| `task/file_too_large` | El archivo supera el tamaño máximo permitido | Reducir la resolución o la duración del archivo |
+| `task/bad_request` | La información de la tarea no es válida | Revisar los campos obligatorios: título, sucursal y fecha límite |
+
+---
+
+## Suscripción y facturación
+
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `subscription/limit_off` | El plan ha alcanzado el límite de operaciones permitidas | Revisar el estado de la suscripción o contactar con soporte |
+| `suscription/entity_not_configured` | La entidad no tiene la configuración necesaria para contratar | Completar los datos legales y el método de pago en **Entidad** |
+| `suscription_checkinbiz/entity_legal_not_configured` | Faltan los datos legales de la entidad para CheckBiz | Completar los datos de la empresa antes de contratar |
+| `suscription/already_subscribed_into_plan` | La entidad ya está suscrita a ese plan | No es necesaria ninguna acción |
+| `suscription/ko` | La suscripción no se ha podido completar | Revisar el método de pago y reintentar |
+| `subscribe/not_found` | El servicio indicado no existe | Reintentar desde la pantalla de planes |
+| `subscribe/invalid_entity_service` | La entidad o el servicio no son correctos | Verificar la entidad seleccionada |
+| `subscribe/internal` | Error interno del servicio de suscripciones | Reintentar más tarde; si persiste, abrir incidencia |
+| `sub/bad_request` | Los datos enviados no son válidos | Revisar el formulario y reintentar |
+| `sub/entity_not_found` | La entidad no existe | Verificar la entidad seleccionada |
+| `payment/pending` | Hay pagos pendientes en la cuenta | Regularizar el pago desde la sección de facturación |
+
+---
+
+## Otros módulos
+
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `entity/not_found` | La entidad no existe | Verificar la entidad seleccionada en el backoffice |
+| `user/not_found` | No hay ningún usuario con ese correo | Revisar el correo introducido |
+| `user/internal` | Error interno del servicio de usuarios | Reintentar; si persiste, abrir incidencia |
+| `report/internal_error` | Error interno al generar el informe | Reintentar con un rango de fechas menor; si persiste, abrir incidencia |
+| `stats/range_and_groupBy_tolong` | El rango de fechas o la agrupación producen demasiados datos para representar | Seleccionar un rango menor u otra agrupación |
+| `analyze/insufficient_data` | No hay datos suficientes para calcular los indicadores | Esperar a acumular más histórico de fichajes y tareas |
+| `media/not_found` | El archivo no existe | Volver a subir el archivo |
+| `media/invalid_meda_type` | Tipo de archivo no permitido | Usar un formato admitido |
+| `media/invalid_dimesions` | Las dimensiones de la imagen no son válidas | Ajustar el tamaño de la imagen |
+| `media/error` | Error interno de almacenamiento | Reintentar; si persiste, abrir incidencia |
+| `internal` | Error interno del servidor | Reintentar; si persiste, abrir incidencia con la hora exacta |
+| `unavailable` | Servicio temporalmente no disponible | Reintentar pasados unos minutos |
+
+---
+
+> **Aviso:** si un mismo código reaparece de forma sistemática después de aplicar la acción correctiva, abra una incidencia en el backoffice incluyendo el código exacto, la hora del fallo y el empleado afectado.
 
 ---
 
 ## Nota de rol
 
-Este artículo es de consulta para **Owner** y **Manager**, que son los responsables de diagnosticar y resolver errores operativos. Los empleados con rol Worker que vean un código de error en la app deben comunicárselo a su Manager con el código exacto que aparece en pantalla.
+Este artículo es de consulta para **Owner** y **Manager**, responsables de diagnosticar y resolver errores operativos. Los empleados con rol Worker que vean un código de error en la app deben comunicárselo a su responsable con el código exacto que aparece en pantalla.
 
 ---
 

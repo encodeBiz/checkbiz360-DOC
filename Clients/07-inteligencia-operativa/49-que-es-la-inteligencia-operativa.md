@@ -2,7 +2,15 @@
 
 La inteligencia operativa es el módulo más avanzado de CheckBiz360. Su función no es registrar cuándo llega y sale un empleado, sino convertir esos registros en información útil para tomar decisiones de negocio: detectar tendencias antes de que se conviertan en problemas, identificar a los empleados con mayor potencial, comparar el coste real entre sucursales y fundamentar las decisiones de RRHH con datos objetivos.
 
-Un sistema de control horario tradicional responde a la pregunta "¿estuvo el empleado?". La inteligencia operativa responde a preguntas más relevantes: "¿qué tan consistente ha sido este empleado en los últimos seis meses?", "¿qué sucursal tiene un coste por hora trabajada mayor que las demás?", "¿hay empleados cuyo patrón de fichajes sugiere irregularidades?".
+Un sistema de control horario tradicional responde a la pregunta "¿estuvo el empleado?". La inteligencia operativa responde a preguntas más relevantes: "¿este centro saca lo mejor de su gente o la degrada?", "¿de cuántas personas depende que esto siga funcionando?", "¿quién cubre este puesto si mañana falta quien lo ocupa?", "¿hay fichajes cuyo patrón sugiere irregularidades?".
+
+Esa diferencia se apoya en tres principios que conviene conocer antes de interpretar cualquier indicador:
+
+1. **La unidad de medida es la jornada, no la persona.** Nada se divide por plantilla, todo sale en proporción; así una sucursal de 5 personas y una de 40 se comparan de verdad.
+2. **Nada se compara contra una escala universal.** Cada dato se compara contra su propia historia, contra quienes ocupan el mismo puesto o contra los demás centros de la misma organización.
+3. **La ausencia de evidencia nunca es evidencia negativa.** Cuando faltan datos, el sistema dice "acumulando datos"; nunca concluye que algo va mal por no poder medirlo.
+
+Todo esto se consulta en el **panel de Operación**, descrito en [El panel de Operación](./56-paneles-de-mando.md), y se acompaña del relato del **asistente de IA**, que prioriza qué mirar primero sobre las mismas cifras que muestra la pantalla.
 
 ## Qué datos analiza el módulo
 
@@ -18,7 +26,7 @@ La inteligencia operativa cruza información de tres fuentes distintas que ya ex
 
 El motor de análisis construye para cada empleado un objeto denominado EmployeePattern: un perfil de comportamiento que se actualiza de forma continua a medida que se acumulan nuevos registros. Este perfil no es una foto del último mes; es un historial que capta tendencias, mejoras, deterioros y anomalías a lo largo del tiempo.
 
-El EmployeePattern es la base sobre la que se calculan todos los índices del módulo: el índice de fiabilidad, el índice de eficiencia, la puntuación de promoción y el flag de anomalía. Sin acumulación de datos no hay patrón; por eso el módulo gana valor con el paso del tiempo.
+El patrón del empleado es la base sobre la que se calculan todos los indicadores del módulo: fiabilidad, eficiencia operativa, coste, nivel de confianza y las señales de anomalía. Sin acumulación de datos no hay patrón; por eso el módulo gana valor con el paso del tiempo.
 
 ## Qué puede hacer la dirección con estos datos
 
@@ -34,7 +42,7 @@ Antes de contar con inteligencia operativa, los responsables de equipo dependía
 
 **Detección temprana.** Un deterioro en la asistencia o en la puntualidad rara vez ocurre de golpe. El sistema detecta la tendencia cuando todavía es corregible, no cuando ya ha impactado en la operación.
 
-**Base objetiva para promociones.** La puntuación de promoción combina fiabilidad, eficiencia y rendimiento en tareas, proporcionando un criterio uniforme para comparar empleados que trabajan en distintas sucursales o con distintos managers.
+**Base objetiva para decisiones de personal.** La evaluación operativa del empleado interpreta su patrón real y señala, cuando procede, a los candidatos a promoción. Y como el panel mide cuánto influye el centro en quien pasa por él, permite distinguir a la persona del sitio antes de decidir.
 
 **Reducción de costes ocultos.** El análisis de costes pone en evidencia desviaciones que en un sistema convencional pasan inadvertidas: horas extra no planificadas, turnos incompletos que se pagan completos, diferencias de productividad entre centros.
 
@@ -50,8 +58,8 @@ La inteligencia operativa ofrece indicadores, no veredictos. Los índices y los 
 
 - [El patrón de comportamiento del empleado](50-patron-de-comportamiento.md)
 - [Índice de fiabilidad](51-indice-de-fiabilidad.md)
-- [Índice de eficiencia](52-indice-de-eficiencia.md)
-- [Puntuación de promoción](53-puntuacion-de-promocion.md)
+- [Índice de eficiencia operativa](52-indice-de-eficiencia.md)
+- [Evaluación operativa del empleado](53-puntuacion-de-promocion.md)
 - [Análisis de costes](54-analisis-de-costes.md)
 - [Detección de anomalías](55-deteccion-de-anomalias.md)
-- [Paneles de mando](56-paneles-de-mando.md)
+- [El panel de Operación](56-paneles-de-mando.md)

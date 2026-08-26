@@ -23,7 +23,7 @@ Los roles Manager, Supervisor y Owner pueden consultar sus notificaciones pulsan
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-El historial persistente de notificaciones con estados de entrega (entregada/no entregada) y estados de lectura (leída/no leída), junto con la capacidad de filtrar por destinatario, tipo y periodo, está planificado para una versión futura de la plataforma. Cuando esté disponible, permitirá a los responsables verificar que un empleado recibió una comunicación concreta (por ejemplo, la notificación de un documento pendiente de firma) y actuar en consecuencia si no fue entregada o no fue abierta.
+El historial persistente de notificaciones con estados de entrega (entregada/no entregada) y estados de lectura (leída/no leída), junto con la capacidad de filtrar por destinatario, tipo y periodo, está planificado para una versión futura de la plataforma. Cuando esté disponible, permitirá a los responsables verificar que un empleado recibió una comunicación concreta (por ejemplo, la notificación de un documento pendiente de acuse de recibo) y actuar en consecuencia si no fue entregada o no fue abierta.
 
 ---
 

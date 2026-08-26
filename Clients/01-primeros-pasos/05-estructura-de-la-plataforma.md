@@ -14,12 +14,11 @@ La configuración a nivel de entidad establece los valores por defecto que se ap
 
 Qué se configura a nivel de entidad:
 
-- Datos fiscales y corporativos (nombre, NIF/CIF, dirección).
-- Zona horaria por defecto.
-- Calendario laboral global (festivos nacionales, días no laborables que afectan a toda la organización).
-- Horarios base que pueden ser heredados por las sucursales.
-- Políticas de seguridad (2FA obligatorio, tiempo máximo entre fichajes, etc.).
-- Configuración de notificaciones globales.
+- Datos fiscales y corporativos: nombre comercial, razón social, NIF/CIF y dirección.
+- Idioma principal e identidad visual.
+- Zona horaria por defecto, que sale de la dirección de la entidad.
+- Calendario laboral global: horario semanal base y festivos que afectan a toda la organización.
+- Facturación y suscripción.
 
 ### Nivel 2: Sucursal o proyecto
 
@@ -30,11 +29,11 @@ La sucursal hereda toda la configuración de la entidad, pero puede sobreescribi
 Qué se puede configurar a nivel de sucursal:
 
 - Nombre, dirección y coordenadas GPS.
-- Radio de geocerca (en metros).
+- Zona de chequeo y su radio en metros.
 - Zona horaria propia, si difiere de la entidad.
-- Horario base de la sucursal (puede diferir del horario base de la entidad).
+- Horario semanal y pausas, que pueden diferir de los de la entidad.
+- Modalidad de jornada y de descanso: estricta o flexible.
 - Calendario de festivos locales.
-- Tolerancias de fichaje específicas (margen de tardanza, tiempo mínimo entre entrada y salida, etc.).
 
 > **Nota:** Una sucursal no puede tener configuraciones más permisivas que las restricciones de seguridad definidas a nivel de entidad. Por ejemplo, si la entidad exige 2FA, ninguna sucursal puede desactivarlo para sus empleados.
 
@@ -109,12 +108,12 @@ Desde la app, el Worker puede:
 | Configuración de entidad | Completo | No | No | No |
 | Facturación y suscripción | Completo | No | No | No |
 
-> **Nota:** Los módulos disponibles en su cuenta dependen del plan de suscripción contratado. Consulte la sección de planes en encodebiz.com para ver el detalle de cada nivel.
+> **Nota:** ambos planes, Bronce y Empresarial, dan acceso a todos los módulos de la plataforma; lo que cambia entre ellos es el soporte y las integraciones. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
 
 ## Artículos relacionados
 
 - [Qué es CheckBiz360](01-que-es-checkbiz360.md)
 - [Crear cuenta y configurar la entidad](03-crear-cuenta-y-configurar-entidad.md)
-- [Gestión de sucursales y geocercas](../08-sucursales-y-entidad/)
-- [Roles y permisos de empleados](../02-empleados/)
-- [Configuración de horarios y calendarios](../04-calendario-y-horarios/)
+- [Crear y gestionar sucursales](../08-sucursales-y-entidad/57-crear-y-gestionar-sucursales.md)
+- [Roles y niveles de responsabilidad](../02-empleados/07-roles-y-niveles-de-responsabilidad.md)
+- [Horarios base y turnos](../04-calendario-y-horarios/23-horarios-base-y-turnos.md)

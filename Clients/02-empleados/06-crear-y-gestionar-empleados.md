@@ -2,7 +2,7 @@
 
 La gestión del equipo humano es el punto de partida de cualquier operación en CheckBiz360. Desde el backoffice, los responsables de la empresa pueden incorporar nuevos empleados, actualizar su información en cualquier momento y controlar su estado laboral a lo largo del tiempo.
 
-Este artículo explica cómo crear un empleado desde cero, qué campos son obligatorios y cuáles opcionales, y cómo gestionar correctamente los diferentes estados que puede atravesar una persona durante su relación laboral con la organización.
+Este artículo explica cómo crear un empleado desde cero, qué campos son obligatorios y cuáles opcionales, y cómo gestionar los estados que puede atravesar una persona durante su relación laboral con la organización.
 
 ---
 
@@ -10,70 +10,81 @@ Este artículo explica cómo crear un empleado desde cero, qué campos son oblig
 
 ### Campos obligatorios
 
-Para dar de alta a un empleado en la plataforma, es necesario completar los siguientes datos:
+- **Nombre completo** — Nombre y apellidos tal como deben aparecer en los registros.
+- **Correo electrónico** — Dirección única en la plataforma. Es el identificador del empleado y la dirección a la que se envía el acceso inicial. **No puede modificarse una vez creado el perfil.**
+- **Teléfono** — Número de contacto, con prefijo internacional.
+- **Tipo de relación** — *Interno* (plantilla) o *Colaborador* (externo, freelance o proveedor de servicios).
 
-- **Nombre completo** — Nombre y apellidos tal como deben aparecer en los registros oficiales.
-- **Correo electrónico** — Dirección de email única en la plataforma. Será el identificador principal del empleado y la dirección a la que se enviará el acceso inicial.
-- **Rol de sistema** — Nivel de acceso asignado al empleado (worker, supervisor, manager u owner). Consulte el artículo *Roles y niveles de responsabilidad* para una descripción detallada de cada nivel.
+> **Importante:** el nivel de responsabilidad —worker, supervisor, manager u owner— **no se asigna en el alta**. Se define al vincular al empleado con una sucursal, porque una misma persona puede tener responsabilidades distintas en cada centro. Consulte [Asignar empleados a sucursales](../08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md).
 
 ### Pasos para crear un empleado
 
-1. Acceda al backoffice de CheckBiz360 con sus credenciales de manager u owner.
-2. En el menú lateral, seleccione **Empleados** y pulse **Nuevo empleado**.
-3. Complete los campos obligatorios: nombre completo, email y rol.
-4. Si lo desea, rellene los campos opcionales descritos en la siguiente sección.
-5. Pulse **Guardar**. El sistema creará el perfil y enviará automáticamente un email de bienvenida al empleado.
+1. Acceda al backoffice con credenciales de manager u owner.
+2. En el menú lateral, seleccione **Empleados** y pulse el botón de nuevo empleado.
+3. Complete los datos personales obligatorios.
+4. Ajuste las opciones de seguridad y los datos adicionales que necesite.
+5. Configure el calendario del empleado si difiere del de su sucursal.
+6. Guarde. El sistema crea el perfil y envía el correo de bienvenida.
+7. Vincule al empleado con su sucursal y asígnele allí su responsabilidad y su puesto.
 
 ### Email de bienvenida automático
 
-Una vez guardado el perfil, CheckBiz360 envía de forma automática un correo al empleado con las instrucciones para activar su cuenta y acceder a la aplicación móvil. No es necesaria ninguna acción adicional por parte del administrador.
+Al guardar el perfil, CheckBiz360 envía automáticamente un correo al empleado con las instrucciones para activar su cuenta y acceder a la app móvil. No requiere ninguna acción adicional del administrador.
 
 ---
 
-## Campos opcionales
+## Opciones de seguridad y trabajo
 
-Aunque no son obligatorios para crear el perfil, completar estos campos mejora el seguimiento y la trazabilidad del equipo:
+Tres opciones se activan o desactivan por empleado:
 
-- **Teléfono** — Número de contacto directo.
-- **DNI / Número de identificación nacional** — Útil para auditorías y exportaciones de datos de RRHH.
-- **Puesto de trabajo** — Cargo o función dentro de la organización (por ejemplo, "Técnico de soporte", "Responsable comercial").
-- **Idioma preferido** — Configura el idioma de la interfaz para ese empleado.
-- **Sucursales asignadas** — Un empleado puede pertenecer a una o varias sucursales. Si se asigna a varias, puede tener roles distintos en cada una de ellas.
-- **Tipo de relación** — Indica si el empleado es interno (plantilla) o colaborador externo (freelance o proveedor de servicios).
-- **Trabajo remoto habilitado** — Activa la posibilidad de que el empleado fiche desde fuera de las instalaciones.
+| Opción | Qué hace |
+|---|---|
+| **Verificación en dos pasos (2FA)** | Exige un código temporal además de la contraseña |
+| **Biometría requerida** | El empleado debe autenticarse con huella o reconocimiento facial antes de que se acepte su fichaje |
+| **Trabajo remoto** | Permite fichar fuera de la geocerca de la sucursal. Al activarlo, **la dirección del empleado pasa a ser obligatoria**, porque es la referencia con la que se valida el fichaje remoto |
+
+---
+
+## Otros campos
+
+- **Documento de identidad** — Útil para auditorías y exportaciones de RRHH.
+- **Dirección** — Opcional, salvo que se active el trabajo remoto.
+- **Calendario del empleado** — Horario propio y excepciones, cuando difieren de los de su sucursal. Si no se configura, el empleado hereda el calendario de la sucursal.
+- **Datos adicionales** — Campos libres en formato clave/valor para información propia de su organización (número de empleado, convenio, centro de coste…).
+
+Al vincular al empleado con una sucursal se definen además su **responsabilidad** en ese centro, su **puesto** y su **tarifa horaria**, esta última es la que alimenta el análisis de costes.
 
 ---
 
 ## Estados del empleado
 
-Durante su ciclo de vida en la empresa, un empleado puede encontrarse en distintas situaciones laborales. CheckBiz360 contempla los siguientes estados:
+CheckBiz360 contempla siete estados laborales:
 
 | Estado | Descripción |
 |---|---|
 | **Activo** | El empleado trabaja con normalidad y tiene acceso a la plataforma. |
-| **Inactivo** | El empleado no está operativo temporalmente, pero el perfil se conserva. |
-| **Baja** | La relación laboral ha concluido. El empleado no puede acceder a la app. |
+| **Inactivo** | El empleado no está operativo. Es el estado que se usa al finalizar la relación laboral: el perfil y su historial se conservan. |
 | **Vacaciones** | El empleado se encuentra de vacaciones. |
-| **Baja por enfermedad** | El empleado está de baja médica. |
-| **Excedencia** | El empleado disfruta de una excedencia voluntaria o forzosa. |
-| **Baja de paternidad** | El empleado está en permiso de paternidad. |
-| **Baja de maternidad** | La empleada está en permiso de maternidad. |
+| **Baja médica** | El empleado está de baja por enfermedad. |
+| **Excedencia** | El empleado disfruta de una excedencia. |
+| **Permiso de paternidad** | El empleado está en permiso de paternidad. |
+| **Permiso de maternidad** | La empleada está en permiso de maternidad. |
 
-Para cambiar el estado de un empleado, acceda a su perfil en el backoffice, pulse **Editar** y seleccione el nuevo estado en el desplegable correspondiente.
+Para cambiar el estado, abra el perfil del empleado, pulse **Editar** y seleccione el nuevo estado.
+
+> **Nota:** los estados de ausencia (vacaciones, bajas, excedencia) también pueden gestionarse como **ausencias con fechas** desde el calendario, lo que permite planificarlas por adelantado en lugar de cambiar el estado a mano el día que empiezan.
 
 ---
 
 ## Editar los datos de un empleado
 
-Para modificar cualquier dato del perfil de un empleado:
-
 1. Acceda a **Empleados** en el menú lateral.
-2. Localice al empleado mediante el buscador o los filtros disponibles.
+2. Localice al empleado con el buscador o los filtros.
 3. Pulse sobre su nombre para abrir el perfil.
-4. Seleccione **Editar** y realice los cambios necesarios.
-5. Pulse **Guardar cambios**.
+4. Seleccione **Editar** y realice los cambios.
+5. Guarde.
 
-Los cambios surten efecto de forma inmediata.
+Los cambios surten efecto de forma inmediata. El correo electrónico es el único dato que no puede modificarse.
 
 ---
 
@@ -81,16 +92,16 @@ Los cambios surten efecto de forma inmediata.
 
 Estas dos acciones tienen consecuencias muy distintas:
 
-- **Desactivar**: El empleado pierde el acceso a la plataforma, pero todo su historial (fichajes, documentos, tareas, incidencias) se conserva íntegramente. Es la opción recomendada cuando la relación laboral finaliza o cuando se necesita suspender temporalmente el acceso.
-- **Eliminar**: Se borra el perfil del empleado de forma permanente. Esta acción es irreversible y puede implicar la pérdida de datos históricos asociados. Solo debe utilizarse en casos excepcionales, como la creación errónea de un perfil duplicado.
+- **Desactivar** (estado *Inactivo*): el empleado pierde el acceso a la plataforma, pero todo su historial —fichajes, documentos, tareas, incidencias— se conserva íntegramente. Es la opción correcta cuando finaliza la relación laboral o cuando hay que suspender el acceso temporalmente.
+- **Eliminar**: borra el perfil de forma permanente. Es irreversible. Reserve esta acción para casos excepcionales, como un perfil creado por error o duplicado.
 
-> **Nota:** CheckBiz360 recomienda desactivar en lugar de eliminar para mantener la trazabilidad y cumplir con las obligaciones de conservación de registros laborales.
+> **Importante:** el registro de jornada debe conservarse cuatro años conforme al RDL 8/2019. Desactivar, y no eliminar, es lo que permite cumplir esa obligación.
 
 ---
 
 ## Quién puede realizar estas acciones
 
-Esta funcionalidad está disponible para los roles **manager** (nivel 3) y **owner** (nivel 4). Los supervisores y workers no tienen acceso a la gestión de perfiles de otros empleados.
+La gestión de perfiles está disponible para **manager** (nivel 3) y **owner** (nivel 4). Supervisores y workers no tienen acceso a la gestión de perfiles de otros empleados.
 
 ---
 
@@ -99,4 +110,5 @@ Esta funcionalidad está disponible para los roles **manager** (nivel 3) y **own
 - [Roles y niveles de responsabilidad](07-roles-y-niveles-de-responsabilidad.md)
 - [Matriz de permisos por rol](08-matriz-de-permisos-por-rol.md)
 - [Autenticación en dos factores](09-autenticacion-dos-factores.md)
-- [Exportar empleados a CSV](12-exportar-empleados-csv.md)
+- [Asignar empleados a sucursales](../08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md)
+- [Exportar el listado de empleados](12-exportar-empleados-csv.md)

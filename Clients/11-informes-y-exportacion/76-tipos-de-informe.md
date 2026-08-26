@@ -1,6 +1,11 @@
 # Tipos de informe disponibles en CheckBiz360
 
-CheckBiz360 ofrece un módulo de informes que centraliza toda la información operativa de su empresa en documentos estructurados y exportables. Cada tipo de informe responde a una necesidad concreta: desde el cumplimiento legal hasta el análisis de costes o la detección de irregularidades. Esta guía describe los cinco tipos de informe disponibles y los roles que tienen acceso a cada uno.
+CheckBiz360 centraliza la información operativa de su empresa en dos formas distintas, y conviene no confundirlas:
+
+- **Informes descargables**, que se generan bajo demanda desde la sección **Informes**, quedan archivados en el histórico y se descargan como fichero. Hoy son dos: el **informe de asistencia** (PDF o Excel) y el **informe de tareas** (Excel).
+- **Análisis en pantalla**, que se consultan en el panel operativo y en las fichas de sucursal y empleado: puntualidad, costes y anomalías. No generan fichero descargable en la versión actual.
+
+Esta guía describe cada uno y los roles que tienen acceso.
 
 ---
 
@@ -17,7 +22,7 @@ El informe de asistencia es el documento base del módulo. Recoge los datos de p
 
 ### Para qué sirve
 
-Es el informe más utilizado para la supervisión operativa diaria y para el cálculo de variables salariales como horas extras o descuentos por ausencia. También es la base del informe de cumplimiento normativo descrito en el artículo 79.
+Es el informe más utilizado para la supervisión operativa diaria y para el cálculo de variables salariales como horas extras o descuentos por ausencia. También es la base del informe de cumplimiento normativo descrito en el artículo [79](./79-informe-de-cumplimiento-normativo.md).
 
 ### Acceso por rol
 
@@ -30,79 +35,39 @@ Es el informe más utilizado para la supervisión operativa diaria y para el cá
 
 ---
 
-## Informe de puntualidad
+## Análisis en pantalla: puntualidad, costes y anomalías
 
-El informe de puntualidad analiza las desviaciones entre el horario previsto de cada empleado y los fichajes reales registrados.
+Estas tres lecturas **no son informes descargables**: se consultan en el panel de Operación y en las fichas de sucursal y empleado. La exportación de sus datos está en el roadmap.
 
-### Qué incluye
+### Puntualidad y desviaciones de horario
 
-- Tardanzas: fichajes de entrada producidos después de la hora prevista, con el tiempo de retraso exacto.
-- Salidas anticipadas: fichajes de salida antes de que finalizara el turno asignado.
-- Desviaciones de horario: diferencia acumulada entre horas previstas y horas efectivamente trabajadas en el periodo.
-- Frecuencia de incidencias: número de veces que se ha producido cada tipo de desviación por empleado.
+Recoge las tardanzas, las salidas anticipadas y la desviación acumulada entre las horas previstas y las efectivamente trabajadas. Permite distinguir si la impuntualidad es puntual o un patrón, y si es de una persona o de un centro entero.
 
-### Para qué sirve
+### Costes
 
-Permite identificar patrones de impuntualidad individuales o sistémicos, distinguir si las tardanzas son puntuales o recurrentes y tomar decisiones de gestión con datos objetivos.
+Cruza la asistencia con la tarifa horaria configurada en la vinculación de cada empleado con su sucursal: coste por hora trabajada, por jornada, por rendimiento y acumulado del periodo.
 
-### Acceso por rol
+Contiene información sensible y solo es accesible para **Owner** y **Manager**. Requiere que las tarifas estén configuradas: sin ellas, los indicadores económicos aparecen vacíos.
 
-El acceso es equivalente al del informe de asistencia. El Worker puede consultar sus propios datos de puntualidad desde la app, pero no puede ver los de otros empleados.
+### Anomalías
 
----
+Reúne los registros que el sistema ha identificado como potencialmente irregulares —precisión temporal excesiva, geolocalización estática, dispositivos no autorizados— junto con las correcciones manuales realizadas sobre fichajes, con su autor, su momento y su motivo.
 
-## Informe de costes
-
-El informe de costes cruza los datos de asistencia con la información salarial configurada en la plataforma para calcular el coste real de las horas trabajadas.
-
-### Qué incluye
-
-- Coste por empleado en el periodo seleccionado.
-- Coste por sucursal y comparativa entre sucursales.
-- Coste de horas extra frente a horas ordinarias.
-- Evolución del coste mes a mes cuando se selecciona un rango de varios periodos.
-
-### Para qué sirve
-
-Facilita la toma de decisiones sobre dimensionamiento de plantilla, asignación de turnos y control presupuestario. Es especialmente útil para presentar a dirección o a una gestoría financiera.
-
-### Acceso por rol
-
-Este informe contiene datos salariales sensibles. Solo tienen acceso los roles de Owner y Manager. Los supervisores y workers no pueden acceder al informe de costes.
-
----
-
-## Informe de anomalías
-
-El informe de anomalías reúne los registros que el sistema ha identificado como potencialmente irregulares, basándose en los mecanismos de detección automática de la plataforma.
-
-### Qué incluye
-
-- Fichajes marcados como sospechosos por precisión temporal excesiva o geolocalización estática.
-- Registros procedentes de dispositivos no autorizados en la configuración de geocerca.
-- Empleados con el indicador de anomalía activo y resumen de los patrones detectados.
-- Correcciones manuales realizadas sobre fichajes: quién las realizó, cuándo y con qué justificación.
-
-### Para qué sirve
-
-Proporciona al responsable una vista consolidada de todas las señales de alerta operativa, sin necesidad de revisar empleado por empleado. Es la herramienta de partida para cualquier investigación de irregularidades.
-
-### Acceso por rol
-
-Exclusivo de Owner y Manager. Los supervisores no tienen acceso al informe de anomalías.
+Afloran en la pestaña de **Análisis** del panel, que ordena la lectura de menos a más señalable: primero el proceso y la configuración, al final las personas. Exclusivo de **Owner** y **Manager**.
 
 ---
 
 ## Informe de tareas
 
-El informe de tareas ofrece métricas de desempeño operativo basadas en las tareas asignadas y su nivel de completitud.
+El informe de tareas recoge las tareas del periodo con su estado y su cumplimiento de plazo. Es un **informe descargable en Excel (XLSX)**.
 
 ### Qué incluye
 
-- Porcentaje de tareas completadas frente a tareas asignadas por empleado y periodo.
-- Tiempo medio de resolución de tareas por empleado o por tipo de tarea.
-- Valoraciones registradas por el manager al validar cada tarea completada.
-- Tareas vencidas sin completar y tareas rechazadas.
+- Las tareas cuya **fecha límite** cae dentro del periodo seleccionado, con su estado y su cumplimiento temporal.
+- Filtros por sucursal y por estado de la tarea.
+- Los datos necesarios para calcular en la hoja de cálculo lo que se necesite: completadas frente a asignadas, vencidas, rechazadas.
+
+> **Nota:** las métricas agregadas ya calculadas —porcentaje de completitud, tiempo medio de resolución, valoración media— están en el roadmap. Hoy el informe entrega el detalle y el cálculo se hace en la hoja.
 
 ### Para qué sirve
 
@@ -119,7 +84,7 @@ Complementa el control de presencia con datos sobre la actividad real realizada 
 
 ---
 
-> **Nota:** Los informes de costes y anomalías contienen información especialmente sensible. Asegúrese de que solo los roles con acceso autorizado tienen credenciales activas en la plataforma. Revise periódicamente los usuarios con rol de Manager u Owner en la sección de gestión de equipo.
+> **Nota:** los análisis de costes y anomalías contienen información especialmente sensible. Asegúrese de que solo los roles con acceso autorizado tienen credenciales activas en la plataforma. Revise periódicamente los usuarios con rol de Manager u Owner en la sección de gestión de equipo.
 
 ---
 
@@ -128,7 +93,7 @@ Complementa el control de presencia con datos sobre la actividad real realizada 
 | Artículo | Descripción |
 |---|---|
 | [Generar y filtrar informes](./77-generar-y-filtrar-informes.md) | Pasos para generar un informe con filtros personalizados |
-| [Exportar a Excel y CSV](./78-exportar-a-excel-y-csv.md) | Formatos de exportación y consideraciones de uso |
+| [Exportar datos](./78-exportar-a-excel-y-csv.md) | Formatos de exportación y consideraciones de uso |
 | [Informe de cumplimiento normativo](./79-informe-de-cumplimiento-normativo.md) | El informe para el RDL 8/2019 y la Inspección de Trabajo |
-| [Informes automáticos](./80-informes-automaticos.md) | Configurar el envío periódico de informes por email |
+| [Informes automáticos](./80-informes-automaticos.md) | Envío periódico por email: planificado, no disponible |
 | [Detección de anomalías](../07-inteligencia-operativa/55-deteccion-de-anomalias.md) | Cómo funciona el mecanismo de detección automática |

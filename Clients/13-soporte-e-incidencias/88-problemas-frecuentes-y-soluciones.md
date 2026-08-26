@@ -71,7 +71,7 @@ Este artículo recoge las doce situaciones técnicas y operativas más habituale
 4. Pulse **Autorizar dispositivo** para marcarlo como de confianza.
 5. Informe al empleado de que puede volver a intentar iniciar sesión.
 
-> **Aviso:** Si la empresa tiene activada la restricción de dispositivos únicos por empleado, autorizar un nuevo dispositivo puede desautorizar el anterior automáticamente. Revise la configuración de seguridad de su entidad antes de autorizar el cambio.
+> **Aviso:** revise la lista de dispositivos de confianza del empleado y retire los que ya no use. Un dispositivo antiguo que sigue autorizado es una vía abierta para fichar en nombre de esa persona.
 
 ---
 
@@ -83,9 +83,9 @@ Este artículo recoge las doce situaciones técnicas y operativas más habituale
 
 1. Acceda al backoffice y vaya al módulo **Documentos**.
 2. Localice el documento en cuestión y compruebe su configuración de visibilidad.
-3. Verifique que la visibilidad del documento está configurada como `private` (visible solo para el empleado asignado) o `public` (visible para todos), según corresponda.
-4. Compruebe que el documento está asignado al empleado correcto: revise el campo de destinatario.
-5. Verifique que el documento no está en estado de borrador o pendiente de publicación.
+3. Revise la **visibilidad por rol** del documento: si no incluye el rol del empleado, este no lo verá.
+4. Compruebe el **ámbito** y el destinatario: si es de empleado, que sea el correcto; si es de sucursal, que el empleado pertenezca a ella —de lo contrario el sistema responde `documents/employee_not_in_branch`.
+5. Verifique que el documento no está **archivado**: los archivados dejan de mostrarse.
 6. Si la configuración es correcta, pida al empleado que cierre sesión en la app y vuelva a iniciarla para forzar la sincronización.
 
 ---
@@ -124,7 +124,7 @@ Este artículo recoge las doce situaciones técnicas y operativas más habituale
 
 **Pasos de resolución:**
 
-1. Compruebe si la sucursal o el empleado tienen activado el ajuste automático de horario. Esta función redondea o ajusta los fichajes según reglas configuradas y puede alterar las horas brutas.
+1. Compruebe la **modalidad de jornada** del calendario aplicable. Con jornada estricta, el tiempo trabajado fuera de la franja oficial no se contabiliza; con jornada flexible, sí se suma. Es la causa más frecuente de que las horas del informe no cuadren con las horas brutas de los fichajes.
 2. Revise si hay pausas registradas que se estén descontando del tiempo total.
 3. Verifique si alguna jornada está marcada como incompleta, lo que puede excluirla del cálculo total.
 4. Compruebe la zona horaria configurada en la sucursal y contrástela con la zona horaria del dispositivo del empleado.
@@ -155,7 +155,7 @@ Este artículo recoge las doce situaciones técnicas y operativas más habituale
 1. Acceda al perfil del empleado en el backoffice.
 2. Revise el campo **Estado del perfil**. Si está establecido como "Inactivo", pulse **Reactivar empleado**.
 3. Verifique que la cuenta no fue desactivada como consecuencia de una baja temporal o un proceso de offboarding iniciado por error.
-4. Compruebe que el empleado no superó el límite de empleados activos del plan de suscripción contratado. En ese caso, puede ser necesario desactivar otro empleado o actualizar el plan.
+4. Compruebe que la suscripción de la entidad está activa y sin pagos pendientes. No hay límite de empleados por plan —la facturación es por empleado y mes—, pero una suscripción con incidencias de cobro sí puede bloquear operaciones.
 
 ---
 
@@ -189,5 +189,5 @@ Este artículo está dirigido principalmente a **Owner** y **Manager**, que son 
 | [Crear una incidencia](./85-crear-una-incidencia.md) | Cómo abrir formalmente un caso de soporte |
 | [Contactar con soporte técnico](./87-contactar-con-soporte-tecnico.md) | Canales y tiempos de respuesta del equipo de soporte |
 | [Codigos de error completos](../14-referencia/90-codigos-de-error-completos.md) | Referencia completa de todos los códigos de error del sistema |
-| [Solicitar una jornada manual](../03-control-horario/27-solicitar-jornada-manual.md) | Cómo corregir un fichaje incorrecto o ausente |
-| [Gestión de dispositivos de confianza](../02-empleados/18-dispositivos-de-confianza.md) | Cómo autorizar nuevos dispositivos desde el backoffice |
+| [Solicitar una jornada manual](../03-control-horario/19-solicitar-jornada-manual.md) | Cómo corregir un fichaje incorrecto o ausente |
+| [Gestión de dispositivos de confianza](../02-empleados/10-biometria-y-dispositivos-de-confianza.md) | Cómo autorizar nuevos dispositivos desde el backoffice |

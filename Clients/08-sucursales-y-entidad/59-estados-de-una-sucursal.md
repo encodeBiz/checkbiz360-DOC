@@ -21,7 +21,7 @@ Toda sucursal recién creada queda en estado activo por defecto.
 
 Una sucursal inactiva está suspendida temporalmente. Sus efectos son los siguientes:
 
-- Los empleados que intenten fichar desde la app en esa sucursal recibirán un error con el código `branch/inactive`. La app mostrará un mensaje indicando que la sucursal no está disponible en este momento.
+- Los empleados que intenten fichar desde la app en esa sucursal recibirán un error indicando que la sucursal no está disponible.
 - No es posible crear nuevos registros de asistencia vinculados a esa sucursal desde la app.
 - Los responsables siguen pudiendo acceder a la sucursal desde el backoffice para consultar datos históricos y modificar la configuración.
 - Las asignaciones de empleados a la sucursal se conservan intactas.
@@ -46,7 +46,7 @@ En la práctica, la inmensa mayoría de los cierres de sucursal —ya sean tempo
 
 ### Inactivar una sucursal activa
 
-1. Acceda al backoffice web y navegue a **Organización** > **Sucursales**.
+1. Acceda al backoffice web y navegue a **Sucursales**.
 2. Localice la sucursal en el listado. Las sucursales activas se muestran con un indicador verde.
 3. Pulse el icono de edición o el nombre de la sucursal para abrir su ficha.
 4. En el campo **Estado**, seleccione **Inactiva**.
@@ -55,7 +55,7 @@ En la práctica, la inmensa mayoría de los cierres de sucursal —ya sean tempo
 
 ### Reactivar una sucursal inactiva
 
-1. Acceda a **Organización** > **Sucursales**.
+1. Acceda a **Sucursales**.
 2. En el listado, active el filtro para mostrar sucursales inactivas si no aparecen por defecto.
 3. Pulse el icono de edición de la sucursal que desea reactivar.
 4. En el campo **Estado**, seleccione **Activa**.

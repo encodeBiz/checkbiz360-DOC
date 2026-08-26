@@ -1,146 +1,162 @@
-# Planes y funcionalidades de CheckBiz360
+# Planes, precios y funcionalidades de CheckBiz360
 
-CheckBiz360 está organizado en módulos funcionales que se activan según el nivel de plan contratado. Esta estructura permite que cada empresa acceda únicamente a las herramientas que necesita, con la posibilidad de ampliar sus capacidades en cualquier momento desde el backoffice. Este artículo describe qué incluye cada módulo y en qué plan se encuentra disponible.
-
----
-
-## Estructura modular de la plataforma
-
-CheckBiz360 se organiza en dos niveles de plan:
-
-- **Plan Bronze**
-- **Plan Enterprise**
-
-El Plan Enterprise incluye todo lo del Plan Bronze más las funcionalidades avanzadas propias de ese nivel.
+CheckBiz360 se contrata como suscripción desde el backoffice. Este artículo describe los planes disponibles, el precio de cada uno, el periodo de prueba y qué funcionalidades incluye la plataforma en la versión actual.
 
 ---
 
-## Plan Bronze — Control horario, gestión operativa e inteligencia operativa básica
+## Planes disponibles
 
-El Plan Bronze cubre las necesidades fundamentales de cualquier empresa que deba cumplir con la obligación de registro horario establecida por el RDL 8/2019, e incorpora además herramientas de gestión operativa y acceso a índices de inteligencia operativa consultables desde el backoffice.
+CheckBiz360 se ofrece en dos planes:
+
+| Plan | Precio | Para quién |
+|---|---|---|
+| **Bronce** | **Desde 2 €/empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Es el plan completo de la plataforma. |
+| **Empresarial** | **Precio a medida** | Organizaciones grandes (orientativamente, a partir de 100 empleados) o que necesitan integraciones con sus propios sistemas y soporte preferente. |
+
+El precio del plan Bronce es **por empleado y mes**: se factura según los empleados dados de alta, sin cuota fija de entrada ni coste de implantación. El plan Empresarial se acuerda con el equipo comercial en función del volumen y de las integraciones necesarias.
+
+> **Periodo de prueba:** la primera suscripción incluye **45 días de prueba**. La prueba no se aplica en suscripciones posteriores de la misma entidad.
+
+Para condiciones concretas (volumen, facturación anual, integraciones a medida, permanencias asociadas a un desarrollo específico), escriba a **hola@encodebiz.com**.
+
+---
+
+## Qué incluye la suscripción
+
+Ambos planes dan acceso a la plataforma completa: los módulos que se describen a continuación están disponibles en el backoffice y en la app móvil desde el primer día.
 
 ### Control horario y fichajes
 
-- Registro de checkin y checkout desde la app móvil (iOS y Android).
-- Validación de fichajes por geolocalización: geocerca configurable por sucursal.
-- Configuración de horarios y turnos por sucursal.
-- Gestión de calendarios efectivos con soporte para festivos y excepciones.
-- Jornadas manuales para corrección retroactiva de registros.
-- Historial de fichajes con trazabilidad completa.
+- Fichaje de entrada y salida desde la app móvil (iOS y Android), con validación de geolocalización (geocerca configurable por sucursal), horario y dispositivo.
+- Verificación biométrica y dispositivos de confianza, configurables por empleado.
+- Descansos y pausas (`restin` / `restout`) con descuento automático configurable.
+- Fichaje en remoto para teletrabajo.
+- Validación del empleado mediante QR, configurable por sucursal.
+- Solicitud de jornada manual con aprobación del responsable, e historial de cambios inmutable.
 
 ### Gestión de empleados
 
-- Alta, baja y modificación de perfiles de empleado.
-- Asignación de roles: Owner, Manager, Supervisor, Worker.
-- Gestión de dispositivos de confianza.
-- Configuración de verificación biométrica requerida por empleado.
-- Asignación de sucursales y responsabilidades.
-- Envío de invitación de bienvenida y gestión de credenciales.
-- Exportación del listado de empleados a CSV.
+- Alta, edición y desactivación de empleados, con estados laborales: activo, inactivo, vacaciones, baja médica, excedencia, permiso de paternidad y permiso de maternidad.
+- Cuatro niveles de responsabilidad: Owner, Manager, Supervisor y Worker.
+- Empleados internos y colaboradores externos.
+- Verificación en dos pasos (2FA), biometría y gestión de dispositivos de confianza.
+- Empleados asignados a varias entidades, con selector de entidad al iniciar sesión.
+- Importación de empleados desde CSV en la puesta en marcha.
 
-### Gestión de sucursales
+### Sucursales y entidad
 
-- Creación y configuración de sucursales con coordenadas y radio de fichaje.
-- Herencia de configuración desde entidad a sucursal y de sucursal a empleado.
-- Gestión de la zona horaria por sucursal.
+- Creación y configuración de sucursales con coordenadas, radio de fichaje y zona horaria propia.
+- Configuración por sucursal: zona de chequeo, horario semanal, pausas y modalidad de jornada.
+- Herencia de configuración en cascada: entidad → sucursal → empleado.
+- Gestión de varias entidades desde una misma cuenta.
 
-### Módulo de tareas
+### Calendario y horarios
 
-- Creación, edición y eliminación de tareas (CRUD completo).
-- Asignación de tareas a empleados con fecha límite.
-- Seguimiento del estado de las tareas: pendiente, en curso, completada, rechazada.
-- Notas y recursos adjuntos por tarea: fotos y vídeos.
-- Validación de tareas por el manager con valoración opcional.
+- Horarios base con uno o varios turnos por día y descansos dentro del turno.
+- Calendario laboral con festivos, ausencias y excepciones, aplicables a entidad, sucursal o empleado.
+- Jornada estricta o flexible y descanso estricto o flexible, que deciden cómo se computan horas y pausas.
+- Presets de calendario para replicar un horario en varias sucursales.
 
-### Módulo de incidencias
+### Tareas
 
-- Apertura de incidencias desde el backoffice por Owner y Manager.
-- Categorización por tipo y prioridad.
-- Notificación al equipo de soporte de CheckBiz360 y al Owner de la entidad.
-- Seguimiento del estado de la incidencia.
+- Creación, asignación y seguimiento de tareas operativas, con sucursal, fecha límite y fecha prevista de inicio.
+- Descripción con formato: listas, listas de tareas (checklists), títulos y enlaces.
+- Cuatro prioridades: baja, media, alta y crítica.
+- Evidencias de foto y vídeo, notas tipificadas, validación y valoración por el responsable.
+- Aviso automático si una tarea no se ha iniciado a tiempo.
 
-### Notificaciones
+### Documentos
 
-- Notificaciones push a empleados por eventos de la plataforma: asignación de tareas, documentos pendientes, cambios de turno y otros eventos operativos.
+- Subida de documentos laborales (nóminas, contratos, comunicados, políticas, protocolos, prevención de riesgos y otros tipos).
+- Ámbito por entidad, sucursal o empleado, y visibilidad por rol.
+- Acuse de recibo del empleado, con control de versión del documento.
+- Archivado lógico: los documentos archivados dejan de mostrarse pero se conservan.
 
-### Informes de asistencia
+### Incidencias
 
-- Informe de asistencia en PDF: presencias, ausencias y horas trabajadas por empleado y periodo.
+- Apertura y seguimiento de incidencias desde el backoffice y desde la app.
+- Tipos: registro de jornada, registro de descansos, configuración y otros.
+- Estados: pendiente, en revisión y resuelta, con hilo de respuestas.
 
-### Inteligencia operativa básica
+### Informes
 
-- Índices consultables desde el backoffice:
-  - **Índice de fiabilidad**: consistencia del comportamiento de fichaje de cada empleado a lo largo del tiempo.
-  - **Índice de eficiencia**: combina horas trabajadas y tareas completadas.
-  - **Puntuación de promoción**: agrega fiabilidad, eficiencia, puntualidad y resolución de tareas.
+- Informe de asistencia en **PDF o Excel (XLSX)**, filtrable por sucursal, empleado y periodo.
+- Informe de tareas en **Excel (XLSX)**, filtrable por sucursal, estado y periodo de vencimiento.
+- Informe de cumplimiento del RDL 8/2019 para inspecciones.
+
+### Inteligencia operativa
+
+- Panel de Operación por periodo mensual, con tres vistas: sucursales, empleados y análisis.
+- Tres índices sobre el histórico: fiabilidad, efecto del centro y dependencia de la operación.
+- Evaluación operativa por empleado, con señal de candidato a promoción.
+- Análisis de costes a partir de la tarifa horaria configurada por empleado.
+- Detección de fichajes con patrones anómalos.
+
+### Asistente de IA (Merlin)
+
+CheckBiz360 incluye un asistente de inteligencia artificial que interpreta los datos operativos y los convierte en un relato accionable. Está disponible en el panel operativo, en el detalle de sucursal y en el detalle de empleado.
+
+El asistente **narra y prioriza sobre las cifras que ya muestra la pantalla**: no recalcula ni genera datos propios, de forma que su lectura nunca puede contradecir a los paneles.
 
 ---
 
-## Plan Enterprise — Todo lo de Bronze, más gestión documental, inteligencia avanzada y multi-entidad
+## Diferencias entre Bronce y Empresarial
 
-El Plan Enterprise incluye todas las funcionalidades del Plan Bronze y añade el módulo documental, capacidades de inteligencia operativa avanzada, soporte para estructuras multi-entidad y soporte prioritario.
+El plan Empresarial incluye todo lo del plan Bronce y añade:
 
-### Gestión documental
+| | Bronce | Empresarial |
+|---|---|---|
+| Módulos de la plataforma | Todos | Todos |
+| Soporte | Estándar, con tiempos de respuesta definidos | Preferente, por canales prioritarios |
+| Integraciones por webhook | — | Incluidas |
+| Integraciones con ERP/CRM y desarrollos a medida | — | Bajo acuerdo |
+| Precio | Desde 2 €/empleado al mes | A medida |
 
-- Subida y descarga de documentos laborales: contratos, nóminas, comunicados, políticas de empresa, formación y otros tipos.
-- Descarga individual de documentos desde el backoffice y desde la app móvil.
-- Acuse de recibo por parte del empleado al acceder al documento.
-- Control de visibilidad por rol: documentos accesibles según el perfil del empleado.
-- Notificaciones push a los empleados cuando hay documentos nuevos o pendientes de revisión.
-
-### Inteligencia operativa avanzada
-
-- Análisis de costes: cruce de datos de asistencia con información salarial por empleado, sucursal y periodo.
-- Indicador de anomalías: identificación de fichajes sospechosos por precisión temporal excesiva, geolocalización estática o procedencia de dispositivos no autorizados.
-
-### Multi-entidad
-
-- Gestión de múltiples empresas o entidades desde una sola cuenta de administración.
-- Configuración independiente por entidad: módulos, calendarios y permisos.
-
-### Soporte prioritario
-
-- Atención preferente a incidencias frente a cuentas del Plan Bronze.
+> **Nota:** las integraciones a medida se presupuestan aparte y pueden llevar asociada una permanencia por el trabajo de puesta en marcha. El equipo comercial lo detalla en cada caso.
 
 ---
 
 ## Funcionalidades en desarrollo (roadmap)
 
-Las siguientes funcionalidades forman parte del plan de desarrollo de CheckBiz360 y no están disponibles en la versión actual:
+Las siguientes funcionalidades están planificadas y **no** están disponibles en la versión actual:
 
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-- **Firma electrónica**: firma de documentos directamente desde la app móvil.
-- **Historial de versiones de documentos**: registro de cambios y versiones anteriores de cada documento.
-- **Exportación masiva de documentos**: descarga en bloque de múltiples documentos en un solo archivo.
-- **Informes automáticos por email**: envío programado de informes de asistencia y operativa a las direcciones configuradas.
-- **Exportación CSV/PDF de informes generales**: descarga de informes de costes, anomalías y tareas en formato CSV o PDF.
-- **Preferencias de notificación configurables**: personalización por empleado o por sucursal del tipo y frecuencia de notificaciones push recibidas.
-- **Estado "vencida" automático en tareas**: cambio automático al estado vencida cuando una tarea supera su fecha límite sin completarse.
-- **Modo offline con sincronización**: capacidad de registrar fichajes sin conexión a internet, con sincronización automática al recuperar conectividad.
-- **Alertas de coste configurables**: notificaciones cuando el coste operativo de una sucursal o empleado supera umbrales definidos por el administrador.
+- **Firma electrónica** de documentos desde la app móvil.
+- **Historial automático de versiones** de documentos.
+- **Descarga masiva de documentos** en un único archivo.
+- **Informes automáticos por email**: envío programado de los informes ya disponibles.
+- **Preferencias de notificación configurables** por empleado o sucursal.
+- **Estado "vencida" automático en tareas**: hoy el vencimiento se refleja en el indicador de cumplimiento temporal, no como cambio de estado de la tarea.
+- **Turnos rotativos con alternancia automática**: hoy se cubren con una sucursal por turno o con horario propio del empleado.
+- **Exportación del directorio de empleados**: la importación desde CSV sí está disponible.
+- **Modo offline con sincronización**: registrar fichajes sin conexión y sincronizarlos al recuperarla.
+- **Alertas de coste configurables** por umbral.
+- **Adjuntos de tipo documento en tareas** (PDF, Word, Excel): hoy las evidencias admiten foto y vídeo.
 
 ---
 
-## Cómo cambiar de plan
+## Cómo contratar o cambiar de plan
 
-Si necesita acceder a funcionalidades del Plan Enterprise, puede gestionar el cambio directamente desde el backoffice sin necesidad de contactar con soporte:
+Antes de contratar, la entidad debe tener completos los **datos legales** y un **método de pago**. El backoffice avisa si falta alguno de los dos y enlaza directamente a la pantalla correspondiente.
 
 1. Inicie sesión en el backoffice con su cuenta de Owner.
-2. Acceda a **Configuración** en el menú lateral izquierdo.
-3. Seleccione **Suscripción**.
-4. En la pantalla de suscripción verá su plan actual y las opciones disponibles para ampliar.
-5. Seleccione el Plan Enterprise y siga los pasos del proceso de actualización.
-6. Los nuevos módulos estarán disponibles de forma inmediata una vez completado el proceso.
+2. Acceda a **Entidad** en el menú lateral y complete los **Datos de la Empresa** y los **Métodos de pago**.
+3. Vaya a la pantalla de planes de CheckBiz.
+4. Revise el plan actual y las opciones disponibles.
+5. Seleccione el plan y complete el proceso de pago.
+6. Los módulos quedan disponibles de forma inmediata al completar el proceso.
 
-> **Aviso:** El cambio de plan a un nivel superior se aplica de forma inmediata. Si necesita reducir su plan al Plan Bronze, el cambio se aplica al inicio del siguiente periodo de facturación. Los datos generados con módulos del Plan Enterprise no se eliminan al bajar de plan, pero dejarán de ser accesibles hasta que se vuelva a activar el módulo correspondiente.
+Para **cancelar**, use la opción de cancelar suscripción en la tarjeta del plan activo. La suscripción permanece activa hasta la fecha de cancelación que muestra la propia tarjeta; no se interrumpe el servicio en el momento de solicitarla.
+
+> **Aviso:** el cambio a un plan superior se aplica de forma inmediata. Los datos generados no se eliminan al cambiar de plan.
 
 ---
 
 ## Nota de rol
 
-La gestión del plan de suscripción es exclusiva del **Owner** de la entidad. Los Managers y otros roles no tienen acceso a la sección de suscripción en el backoffice.
+La gestión de la suscripción es exclusiva del **Owner** de la entidad. Los Managers y el resto de roles no tienen acceso a la pantalla de suscripción.
 
 ---
 
@@ -151,5 +167,5 @@ La gestión del plan de suscripción es exclusiva del **Owner** de la entidad. L
 | [Preguntas frecuentes](./92-preguntas-frecuentes.md) | Respuestas a las dudas más habituales sobre CheckBiz360 |
 | [Glosario](./89-glosario.md) | Definición de los términos utilizados en la plataforma |
 | [Informe de cumplimiento normativo](../11-informes-y-exportacion/79-informe-de-cumplimiento-normativo.md) | El informe para el RDL 8/2019 y la Inspección de Trabajo |
-| [Gestión documental: introducción](../05-gestion-documental/40-introduccion-al-modulo-documental.md) | Primeros pasos en el módulo de documentos |
-| [Inteligencia operativa: introducción](../07-inteligencia-operativa/50-introduccion-a-la-inteligencia-operativa.md) | Cómo funciona el módulo de análisis avanzado |
+| [Qué es el módulo documental](../05-gestion-documental/30-que-es-el-modulo-documental.md) | Primeros pasos en el módulo de documentos |
+| [Qué es la inteligencia operativa](../07-inteligencia-operativa/49-que-es-la-inteligencia-operativa.md) | Cómo funciona el módulo de análisis |

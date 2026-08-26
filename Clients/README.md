@@ -53,7 +53,8 @@ Alta, configuración, roles y seguridad de los empleados en la plataforma.
 | Autenticación en dos factores (2FA) | **Disponible** | Compatible con apps TOTP (Google Authenticator, Authy). |
 | Verificación biométrica y dispositivos de confianza | **Disponible** | Configurable por empleado desde la app. |
 | Empleados asignados a múltiples entidades | **Disponible** | Selector de entidad en el inicio de sesión. |
-| Exportación de empleados a CSV | **Disponible** | Campos básicos exportables desde el backoffice. |
+| Importación de empleados desde CSV | **Disponible** | Carga inicial de plantilla con mapeo de columnas. |
+| Exportación del directorio de empleados | **Pendiente de desarrollo** | El listado se consulta y filtra en pantalla, sin fichero descargable. |
 
 | Artículo | Descripción |
 |---|---|
@@ -63,7 +64,7 @@ Alta, configuración, roles y seguridad de los empleados en la plataforma.
 | [Autenticación en dos factores (2FA)](02-empleados/09-autenticacion-dos-factores.md) | Configuración, apps compatibles y recuperación de acceso |
 | [Biometría y dispositivos de confianza](02-empleados/10-biometria-y-dispositivos-de-confianza.md) | Verificación biométrica y gestión de dispositivos autorizados |
 | [Empleados multi-entidad](02-empleados/11-empleados-multi-entidad.md) | Un empleado en varias organizaciones, selector de entidad |
-| [Exportar empleados a CSV](02-empleados/12-exportar-empleados-csv.md) | Campos exportados, proceso y consideraciones LOPD |
+| [Exportar el listado de empleados](02-empleados/12-exportar-empleados-csv.md) | Estado de la funcionalidad, alternativas disponibles y RGPD |
 
 ---
 
@@ -107,9 +108,11 @@ Configuración de turnos, horarios base, calendarios laborales y excepciones ind
 | Horarios base y turnos por sucursal | **Disponible** | Turno único o múltiples turnos por día. |
 | Calendario laboral (festivos nacionales y locales) | **Disponible** | Jerarquía de herencia: entidad → sucursal → empleado. |
 | Excepciones de horario individuales | **Disponible** | Excepciones puntuales y periódicas. |
-| Turnos rotativos (alternancia A/B) | **Disponible** | Anclaje de ciclo y compatibilidad con festivos. |
-| Horario flexible con tolerancia de entrada | **Disponible** | Ajuste automático de timestamp dentro del rango. |
+| Jornada estricta o flexible | **Disponible** | Decide si computa el horario oficial o el tiempo real trabajado. |
+| Descanso estricto o flexible | **Disponible** | Duración fija descontada, o pausas marcadas por el empleado. |
+| Presets de calendario | **Disponible** | Guardar un horario semanal y aplicarlo a otras sucursales. |
 | Herencia de configuración en cascada | **Disponible** | Algoritmo de prioridad para calcular el calendario efectivo. |
+| Turnos rotativos (alternancia A/B automática) | **Pendiente de desarrollo** | Hoy se cubre con una sucursal por turno o con horario propio del empleado. |
 
 | Artículo | Descripción |
 |---|---|
@@ -117,8 +120,8 @@ Configuración de turnos, horarios base, calendarios laborales y excepciones ind
 | [Calendario laboral](04-calendario-y-horarios/24-calendario-laboral.md) | Festivos nacionales, locales, jerarquía entity→branch→employee |
 | [Excepciones de horario](04-calendario-y-horarios/25-excepciones-de-horario.md) | Excepciones puntuales y periódicas, jornada reducida |
 | [Herencia de configuración](04-calendario-y-horarios/26-herencia-de-configuracion.md) | Algoritmo de cascada y depuración del calendario efectivo |
-| [Turnos rotativos](04-calendario-y-horarios/27-turnos-rotativos.md) | Alternancia semanal A/B, anclaje de ciclo, festivos con rotativos |
-| [Horario flexible](04-calendario-y-horarios/28-horario-flexible.md) | Tolerancia de entrada, ajuste automático de timestamp |
+| [Turnos rotativos](04-calendario-y-horarios/27-turnos-rotativos.md) | No disponible en V1: cómo cubrir la rotación con sucursales o con horario del empleado |
+| [Jornada estricta y jornada flexible](04-calendario-y-horarios/28-horario-flexible.md) | Cómo se computan las horas y las pausas según la modalidad elegida |
 | [Festivos y días no laborables](04-calendario-y-horarios/29-festivos-y-dias-no-laborables.md) | Tipos de festivo, bloqueo de fichajes, sectores que trabajan en festivo |
 
 ---
@@ -129,13 +132,13 @@ Subida, organización, acuse de recibo y control de acceso a los documentos labo
 
 | Funcionalidad | Estado | Comentario |
 |---|---|---|
-| Subida y organización de documentos | **Disponible** | Campos, categorías, destinatarios y visibilidad por rol. |
+| Subida y organización de documentos | **Disponible** | Doce tipos, ámbito entidad/sucursal/empleado y visibilidad por rol. Máx. 10 MB por archivo. |
 | Documentos privados con control de acceso por rol | **Disponible** | Tabla de permisos diferenciada por nivel de usuario. |
 | Notificaciones push al recibir documentos | **Disponible** | Navegación directa al documento desde la notificación. |
 | Acuse de recibo (confirmación de lectura) | **Disponible** | El empleado confirma la lectura; queda registrado en el sistema. |
 | Descarga individual de documentos | **Disponible** | Enlace firmado por documento con expiración. |
 | Archivo lógico de documentos (sin borrado permanente) | **Disponible** | Los documentos archivados dejan de ser visibles pero se conservan. |
-| Firma electrónica avanzada (eIDAS) | **Pendiente de desarrollo** | Planificada para una versión futura. |
+| Firma electrónica avanzada (eIDAS) | **Pendiente de desarrollo** | Lo disponible hoy es el acuse de recibo, que no es una firma. |
 | Historial automático de versiones | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Descarga masiva de documentos (ZIP) | **Pendiente de desarrollo** | Planificada para una versión futura. |
 
@@ -160,15 +163,19 @@ Creación, asignación, seguimiento y valoración de tareas operativas.
 | Funcionalidad | Estado | Comentario |
 |---|---|---|
 | Crear y asignar tareas a empleados | **Disponible** | Asignación individual y múltiple con notificación push. |
-| Adjuntos de foto y vídeo en tareas | **Disponible** | Formatos JPG, PNG y vídeo. |
-| Estados de tarea: pendiente, en curso, completada, rechazada | **Disponible** | Ciclo de vida completo con trazabilidad. |
-| Indicador de cumplimiento temporal | **Disponible** | Seguimiento del cumplimiento de plazos sin estado automático. |
-| Validación y valoración de tareas por el responsable | **Disponible** | Aceptación, rechazo con motivo y puntuación del empleado. |
-| Notificaciones push de tareas (asignación, validación, rechazo) | **Disponible** | Eventos principales cubiertos en V1. |
-| Adjuntos de tipo documento (PDF, Word, Excel) | **Pendiente de desarrollo** | Planificado para una versión futura. |
-| Estado "vencida" automático al superar la fecha límite | **Pendiente de desarrollo** | Planificado para una versión futura. |
-| Recordatorios programados de vencimiento | **Pendiente de desarrollo** | Planificado para una versión futura. |
-| Exportación de informes de tareas (CSV/PDF) | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Descripción con formato (listas, checklists, enlaces) | **Disponible** | Editor con barra de formato y vista previa. |
+| Evidencias de foto y vídeo | **Disponible** | Foto (JPG, PNG, WEBP) hasta 5 MB; vídeo hasta 25 MB desde la app. |
+| Estados de tarea: borrador, asignada, en progreso, completada, validada, rechazada, cancelada | **Disponible** | Siete estados con trazabilidad completa. |
+| Cuatro prioridades: baja, media, alta y crítica | **Disponible** | Con código de color en el listado. |
+| Indicador de cumplimiento temporal | **Disponible** | A tiempo, en riesgo, vencida, completada a tiempo o tarde. |
+| Fecha prevista de inicio y aviso de inicio tardío | **Disponible** | Notificación a los 15 minutos, configurable por tarea. |
+| Validación y valoración de tareas por el responsable | **Disponible** | Delegables al supervisor por tarea; rechazo con motivo obligatorio. |
+| Notificaciones push de tareas | **Disponible** | Asignación, validación, rechazo, inicio tardío y vencimiento. |
+| Informe de tareas exportable | **Disponible** | Excel (XLSX), filtrable por sucursal, estado y periodo de vencimiento. |
+| Adjuntos de tipo documento (PDF, Word, Excel) | **Pendiente de desarrollo** | Hoy las evidencias admiten foto y vídeo. |
+| Estado "vencida" automático al superar la fecha límite | **Pendiente de desarrollo** | Hoy el vencimiento se refleja en el cumplimiento temporal. |
+| Configurar la antelación de los avisos de vencimiento | **Pendiente de desarrollo** | Los avisos se emiten; su antelación no es configurable. |
+| Métricas agregadas de tareas (completitud, tiempo medio) | **Pendiente de desarrollo** | Calculables hoy a partir del informe en Excel. |
 
 | Artículo | Descripción |
 |---|---|
@@ -191,12 +198,16 @@ Análisis de patrones de comportamiento, índices de rendimiento, costes y detec
 
 | Funcionalidad | Estado | Comentario |
 |---|---|---|
-| Índice de fiabilidad del empleado | **Disponible** | Calculado automáticamente a partir del historial de fichajes. |
-| Índice de eficiencia (horas planificadas vs. reales) | **Disponible** | Disponible por empleado y por sucursal. |
-| Puntuación de promoción (score de mérito objetivo) | **Disponible** | Score de lectura en el perfil del empleado; sin workflow de promoción. |
-| Análisis de costes (varianza y tendencia) | **Disponible** | costVariance y costTrend calculados por turno. |
-| Detección de anomalías (fichajes sospechosos) | **Disponible** | Indicador automático visible en el backoffice. |
-| Paneles de mando (asistencia, eficiencia, costes, anomalías) | **Disponible** | Cuatro paneles operativos en el backoffice. |
+| Panel de Operación (vista única, por periodo mensual) | **Disponible** | Se lee de arriba abajo; tres pestañas: Sucursales, Empleados y Análisis. |
+| Índice de fiabilidad | **Disponible** | Calidad del comportamiento, separada del tiempo que se lleva midiendo. |
+| Efecto del centro | **Disponible** | Compara a cada persona consigo misma en distintos centros. |
+| Dependencia (concentración de la operación) | **Disponible** | Cuánta parte de la operación recae en pocas personas, con relevo por puesto. |
+| Estados de madurez del dato | **Disponible** | Acumulando datos / evidencia parcial / sin datos suficientes. |
+| Índice de eficiencia operativa y coste | **Disponible** | Coste real frente al histórico consolidado; requiere tarifa configurada. |
+| Evaluación operativa del empleado | **Disponible** | Diagnóstico automático del patrón, con señal de candidato a promoción. |
+| Detección de anomalías (fichajes sospechosos) | **Disponible** | Aflora en la pestaña de Análisis del panel. |
+| Relato del asistente de IA sobre el panel | **Disponible** | Narra y prioriza las cifras que ya muestra la pantalla. |
+| Puntuación de promoción como score único comparable | **Pendiente de desarrollo** | No existe un número único ni un ranking por ese valor. |
 | Workflow de revisión de anomalías (estados pendiente/revisado) | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Alertas de sobrecoste configurables | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Exportación de datos de paneles (CSV/PDF) | **Pendiente de desarrollo** | Planificado para una versión futura. |
@@ -206,11 +217,11 @@ Análisis de patrones de comportamiento, índices de rendimiento, costes y detec
 | [Qué es la inteligencia operativa](07-inteligencia-operativa/49-que-es-la-inteligencia-operativa.md) | El módulo diferenciador de CheckBiz360 y el concepto de patrón de comportamiento |
 | [Patrón de comportamiento](07-inteligencia-operativa/50-patron-de-comportamiento.md) | Cómo se construye el patrón y por qué supera al informe puntual |
 | [Índice de fiabilidad](07-inteligencia-operativa/51-indice-de-fiabilidad.md) | Qué mide, rangos y cómo mejorarlo |
-| [Índice de eficiencia](07-inteligencia-operativa/52-indice-de-eficiencia.md) | Horas planificadas vs. reales y uso en evaluaciones |
-| [Puntuación de promoción](07-inteligencia-operativa/53-puntuacion-de-promocion.md) | Score de mérito objetivo; workflow de promoción en roadmap |
-| [Análisis de costes](07-inteligencia-operativa/54-analisis-de-costes.md) | Coste por hora, varianza y tendencia; alertas configurables en roadmap |
+| [Índice de eficiencia operativa](07-inteligencia-operativa/52-indice-de-eficiencia.md) | Coste real frente al histórico y cómo interpretarlo |
+| [Evaluación operativa del empleado](07-inteligencia-operativa/53-puntuacion-de-promocion.md) | Diagnóstico del patrón y señal de candidato a promoción |
+| [Análisis de costes](07-inteligencia-operativa/54-analisis-de-costes.md) | Tarifa por sucursal, indicadores de coste y alertas en roadmap |
 | [Detección de anomalías](07-inteligencia-operativa/55-deteccion-de-anomalias.md) | Indicador automático en V1; workflow de revisión en roadmap |
-| [Paneles de mando](07-inteligencia-operativa/56-paneles-de-mando.md) | Los 4 paneles del backoffice; exportación en roadmap |
+| [El panel de Operación](07-inteligencia-operativa/56-paneles-de-mando.md) | Los tres índices, las tres pestañas y cómo se lee |
 
 ---
 
@@ -271,9 +282,9 @@ Descarga, instalación, navegación y uso de la aplicación CheckBiz360 para emp
 | Descarga e instalación en iOS y Android | **Disponible** | Disponible en App Store y Google Play. |
 | Fichaje desde la app con las tres validaciones | **Disponible** | Geocerca, horario y dispositivo validados en tiempo real. |
 | Consulta de historial de asistencia propio | **Disponible** | Filtros por período y detalle de cada registro. |
-| Acceso a documentos y tareas desde la app | **Disponible** | Navegación desde notificación push directamente al recurso. |
+| Acceso a documentos y tareas desde la app | **Disponible** | Navegación desde la notificación al recurso; la descripción de tarea se muestra con formato. |
 | Configuración de perfil, 2FA y biometría | **Disponible** | Gestionable desde la sección de perfil de la app. |
-| Consulta de datos en caché sin conexión | **Disponible parcialmente** | Solo lectura de datos previamente cargados; fichaje requiere conexión. |
+| Consulta de datos en caché sin conexión | **Disponible parcialmente** | Solo lectura de datos previamente cargados; fichar y actualizar tareas requiere conexión. |
 | Modo offline con cola de sincronización de fichajes | **Pendiente de desarrollo** | Planificado para una versión futura. |
 
 | Artículo | Descripción |
@@ -294,17 +305,18 @@ Generación, filtrado y exportación de informes de asistencia, costes y cumplim
 
 | Funcionalidad | Estado | Comentario |
 |---|---|---|
-| Informe de asistencia en PDF | **Disponible** | Descarga manual desde el backoffice. |
-| Exportación de empleados a CSV | **Disponible** | Datos básicos del directorio de empleados. |
+| Informe de asistencia en PDF o Excel (XLSX) | **Disponible** | Generación bajo demanda, con histórico de informes. |
+| Informe de tareas en Excel (XLSX) | **Disponible** | Filtrable por sucursal, estado y periodo de vencimiento. |
+| Exportación del directorio de empleados | **Pendiente de desarrollo** | El listado se consulta y filtra en pantalla, sin fichero descargable. |
 | Informe de cumplimiento RDL 8/2019 para inspecciones | **Disponible** | Generación desde el backoffice. |
-| Exportación a Excel/CSV de informes generales | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Exportación de los paneles de inteligencia operativa | **Pendiente de desarrollo** | Costes, anomalías y comparativas se consultan en pantalla. |
 | Informes automáticos periódicos enviados por email | **Pendiente de desarrollo** | Planificado para una versión futura. |
 
 | Artículo | Descripción |
 |---|---|
 | [Tipos de informe](11-informes-y-exportacion/76-tipos-de-informe.md) | Asistencia, puntualidad, costes, anomalías y tareas |
 | [Generar y filtrar informes](11-informes-y-exportacion/77-generar-y-filtrar-informes.md) | Filtros disponibles, previsualización y configuraciones guardadas |
-| [Exportar datos](11-informes-y-exportacion/78-exportar-a-excel-y-csv.md) | Empleados a CSV e informe de asistencia en PDF en V1; exportación general en roadmap |
+| [Exportar datos](11-informes-y-exportacion/78-exportar-a-excel-y-csv.md) | Asistencia en PDF o Excel y tareas en Excel |
 | [Informe de cumplimiento normativo](11-informes-y-exportacion/79-informe-de-cumplimiento-normativo.md) | Informe para auditorías e inspecciones según RDL 8/2019 |
 | [Informes automáticos](11-informes-y-exportacion/80-informes-automaticos.md) | Funcionalidad planificada en roadmap; no disponible en V1 |
 
@@ -335,15 +347,18 @@ Cómo crear y gestionar incidencias y cómo contactar con el equipo de soporte.
 
 | Funcionalidad | Estado | Comentario |
 |---|---|---|
-| Creación de incidencias desde el backoffice | **Disponible** | Formulario con categoría, prioridad y descripción. |
-| Seguimiento y resolución de incidencias | **Disponible** | Estados, comentarios y reapertura. |
-| Contacto con soporte técnico por email y formulario | **Disponible** | Tiempos de respuesta orientativos, no contractuales. |
-| Numeración automática de tickets | **No disponible** | Las incidencias no generan número de referencia automático en V1. |
+| Creación de incidencias desde el backoffice | **Disponible** | Canal interno de la organización: tipo, rol origen/destino, sucursal y comentario. |
+| Seguimiento mediante hilo de respuestas | **Disponible** | Tres estados (pendiente, en revisión, resuelto); el estado se cambia al responder. |
+| Contacto con soporte técnico por email | **Disponible** | Tiempos de respuesta orientativos, no contractuales. |
+| Numeración automática de tickets | **No disponible** | Las incidencias no generan número de referencia automático. |
+| Prioridad y adjuntos en una incidencia | **No disponible** | El formulario no contempla ni prioridad ni ficheros adjuntos. |
+| Reapertura de una incidencia resuelta | **No disponible** | Una incidencia resuelta no admite más respuestas; se crea una nueva. |
+| Exportación del histórico de incidencias | **No disponible** | Se consulta y filtra en pantalla. |
 
 | Artículo | Descripción |
 |---|---|
-| [Crear una incidencia](13-soporte-e-incidencias/85-crear-una-incidencia.md) | Qué es una incidencia, campos y notificaciones al equipo de soporte |
-| [Seguimiento y resolución de incidencias](13-soporte-e-incidencias/86-seguimiento-y-resolucion-de-incidencias.md) | Estados, comentarios, historial y reapertura |
+| [Crear una incidencia](13-soporte-e-incidencias/85-crear-una-incidencia.md) | Canal interno de la organización: tipos, campos y creación |
+| [Seguimiento y resolución de incidencias](13-soporte-e-incidencias/86-seguimiento-y-resolucion-de-incidencias.md) | Los tres estados, el hilo de respuestas y el historial |
 | [Contactar con soporte técnico](13-soporte-e-incidencias/87-contactar-con-soporte-tecnico.md) | Canales, tiempos orientativos y qué información incluir |
 | [Problemas frecuentes y soluciones](13-soporte-e-incidencias/88-problemas-frecuentes-y-soluciones.md) | Las 12 situaciones más habituales con pasos de diagnóstico |
 
@@ -355,17 +370,38 @@ Glosario, códigos de error, planes y preguntas frecuentes.
 
 | Funcionalidad | Estado | Comentario |
 |---|---|---|
-| Glosario de términos de la plataforma | **Disponible** | 33 términos principales definidos. |
-| Tabla completa de códigos de error | **Disponible** | Causa y solución para cada código. |
-| Comparativa de planes (Bronze y Enterprise) | **Disponible** | Funcionalidades incluidas en cada plan con sección de roadmap. |
+| Glosario de términos de la plataforma | **Disponible** | Términos principales definidos, incluidos los de tareas e IA. |
+| Tabla completa de códigos de error | **Disponible** | Todos los códigos del diccionario, por módulo, con causa y solución. |
+| Planes y precios (Bronce y Empresarial) | **Disponible** | Precio, periodo de prueba, módulos incluidos y roadmap. |
 | Preguntas frecuentes de evaluación | **Disponible** | 20 preguntas y respuestas para clientes que evalúan la plataforma. |
 
 | Artículo | Descripción |
 |---|---|
 | [Glosario](14-referencia/89-glosario.md) | Definiciones de los 33 términos principales de la plataforma |
 | [Códigos de error completos](14-referencia/90-codigos-de-error-completos.md) | Tabla de todos los códigos de error con causa y solución |
-| [Planes y funcionalidades](14-referencia/91-planes-y-funcionalidades.md) | Qué módulos incluye cada plan y funcionalidades en roadmap |
+| [Planes, precios y funcionalidades](14-referencia/91-planes-y-funcionalidades.md) | Precio de cada plan, periodo de prueba, módulos incluidos y roadmap |
 | [Preguntas frecuentes](14-referencia/92-preguntas-frecuentes.md) | 20 preguntas y respuestas para clientes que evalúan la plataforma |
+
+### 15. Integraciones
+
+Add-ons que conectan CheckBiz360 con otros programas que su empresa ya utiliza, para que la información viaje sola y nadie teclee lo mismo dos veces.
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Catálogo de integraciones | **Disponible** | Con su descripción, capacidades y estado |
+| RentmanBiz — envío de horas a Rentman | **Disponible** | Automático cada 15 minutos, o al momento |
+| RentmanBiz — importación de plantilla, centros y tareas | **Disponible** | Lo incompleto queda pendiente, nunca a medias |
+| RentmanBiz — aviso de horas modificadas en Rentman | **Disponible** | El fichaje nunca se sobrescribe |
+| Pantalla de configuración del add-on | **Pendiente de desarrollo** | Durante la beta la configura el equipo de Encodebiz |
+| Envío de tareas a Rentman | **Pendiente de desarrollo** | Prevista en una versión futura |
+
+| Artículo | Descripción |
+|---|---|
+| [Qué son las integraciones](15-integraciones/93-que-son-las-integraciones.md) | Qué es un add-on, cómo se activa y qué ocurre al desactivarlo |
+| [RentmanBiz](15-integraciones/94-integracion-rentman.md) | Qué aporta la integración con Rentman y qué no hace |
+| [Conectar RentmanBiz paso a paso](15-integraciones/95-conectar-rentman.md) | Del token de Rentman a la primera importación |
+| [Qué se importa y qué queda pendiente](15-integraciones/97-importacion-y-pendientes.md) | Personas, centros, responsabilidades y tareas; y qué hacer con lo pendiente |
+| [Horas imputadas y avisos](15-integraciones/96-horas-imputadas-y-avisos.md) | Cómo leer el panel, las divergencias y las preguntas frecuentes |
 
 ---
 
@@ -387,7 +423,8 @@ DOCS/Clients/
 ├── 11-informes-y-exportacion/         (5 artículos)
 ├── 12-cumplimiento-normativo/         (4 artículos)
 ├── 13-soporte-e-incidencias/          (4 artículos)
-└── 14-referencia/                     (4 artículos)
+├── 14-referencia/                     (4 artículos)
+└── 15-integraciones/                  (5 artículos)
 ```
 
-**Total: 92 artículos**
+**Total: 97 artículos**

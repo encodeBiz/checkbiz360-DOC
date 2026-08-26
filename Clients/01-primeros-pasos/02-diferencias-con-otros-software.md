@@ -28,14 +28,14 @@ Esto significa que cuando un supervisor abre el panel de su sucursal por la mañ
 |---|---|---|
 | Registro de entrada y salida | Si | Si |
 | Validación biométrica | No | Si |
-| Detección de anomalías con IA | No | Si |
+| Detección de fichajes con patrón anómalo | No | Si |
 | Análisis de costes por empleado | No | Si |
 | Comparativa entre sucursales | No | Si |
 | Trazabilidad de cambios (auditoría) | Parcial | Completa |
-| Cumplimiento RDL 8/2019 automático | Parcial | Si |
+| Informe de cumplimiento del RDL 8/2019 | Parcial | Si |
 | Gestión documental integrada | No | Si |
 | Gestión de tareas operativas | No | Si |
-| Notificaciones inteligentes por anomalía | No | Si |
+| Aviso automático de inicio tardío en tareas | No | Si |
 | App móvil nativa | Algunos | Si (iOS y Android) |
 
 ## El valor diferencial en la práctica
@@ -74,4 +74,4 @@ CheckBiz360 ofrece mayor retorno cuanto más compleja es la operativa de la empr
 - [Qué es CheckBiz360](01-que-es-checkbiz360.md)
 - [Crear cuenta y configurar la entidad](03-crear-cuenta-y-configurar-entidad.md)
 - [Estructura de la plataforma](05-estructura-de-la-plataforma.md)
-- [Cumplimiento del RDL 8/2019](../12-cumplimiento-normativo/)
+- [Cómo CheckBiz360 cumple el RDL 8/2019](../12-cumplimiento-normativo/82-como-checkbiz360-cumple-el-rdl-8-2019.md)

@@ -1,6 +1,6 @@
 # Notificaciones push en la app
 
-Las notificaciones push son el canal principal mediante el que CheckBiz360 comunica eventos relevantes a los empleados en tiempo real. Cuando ocurre un evento que requiere la atención del empleado —una tarea asignada, un documento pendiente de firma, una aprobación de jornada— el sistema envía una notificación directamente al dispositivo móvil, incluso si la app no está abierta en ese momento. Este artículo explica cómo funcionan estas notificaciones, qué información contienen y qué hacer si no llegan correctamente.
+Las notificaciones push son el canal principal mediante el que CheckBiz360 comunica eventos relevantes a los empleados en tiempo real. Cuando ocurre un evento que requiere la atención del empleado —una tarea asignada, un documento pendiente de acuse de recibo, una aprobación de jornada— el sistema envía una notificación directamente al dispositivo móvil, incluso si la app no está abierta en ese momento. Este artículo explica cómo funcionan estas notificaciones, qué información contienen y qué hacer si no llegan correctamente.
 
 ## Cómo llegan las notificaciones push al dispositivo
 
@@ -18,7 +18,7 @@ El contenido de cada notificación varía según su tipo, pero todas incluyen co
 
 Algunos tipos de notificación incluyen información adicional:
 
-- Las notificaciones de **documentos pendientes de firma** incluyen el nombre del documento y la fecha límite de firma si está configurada.
+- Las notificaciones de **documentos pendientes de acuse de recibo** incluyen el nombre del documento.
 - Las notificaciones de **tareas** incluyen el nombre de la tarea, la fecha de vencimiento y la sucursal o proyecto al que está vinculada.
 - Las notificaciones de **jornada** incluyen el resultado de la validación (aprobada o rechazada) y, en caso de rechazo, el motivo indicado por el responsable.
 
@@ -28,7 +28,7 @@ Pulsar sobre una notificación push abre la app CheckBiz360 y navega directament
 
 | Tipo de notificación | Destino en la app |
 |---|---|
-| Nuevo documento / Firma pendiente | Pantalla de detalle del documento con el botón de firma visible |
+| Nuevo documento / Acuse pendiente | Pantalla de detalle del documento con el botón de acuse de recibo visible |
 | Tarea asignada / Recordatorio de vencimiento | Pantalla de detalle de la tarea con las acciones disponibles |
 | Jornada aprobada / rechazada | Registro de jornada correspondiente |
 | Alerta de seguridad | Pantalla de seguridad de la cuenta |
