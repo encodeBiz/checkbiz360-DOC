@@ -96,8 +96,14 @@ la jornada es *el envoltorio de tiempo* y contiene varias tareas. Son capas dist
 - Jornada total → Rentman `timeregistration` (`crewmember`, `start`, `end`, `break_duration`;
   duración en **segundos**; refs como **rutas string**).
 - **Best-effort:** el fallo contra Rentman nunca bloquea el fichaje.
-- **Decisión abierta:** ¿encodeBiz es siempre autoridad de las horas, o una corrección
-  manual en Rentman debe volver y sobreescribir? → `03_decisiones-abiertas.md` (D2).
+- **D2 cerrada (2026-08-01): encodeBiz es siempre la autoridad de las horas**, por ser
+  quien garantiza el cumplimiento normativo. Una edición en Rentman no vuelve nunca al
+  fichaje: se detecta al re-leer el registro, se marca `diverged` y se avisa. Ver
+  `03_decisiones-abiertas.md` (D2).
+- **Implementado** en `services/rentman` (`syncHoursToRentman`): las jornadas salen de
+  `checklogs_raw`, el bruto/descanso/neto se calcula con la MISMA regla que el informe
+  legal, la idempotencia es por huella de las horas, y el tick tiene presupuesto de
+  llamadas porque el techo de rate limit de Rentman sigue sin medirse.
 
 **4.5 Desglose por tarea/función (opcional, costes)**
 - El tiempo imputado a cada tarea (que cuelga de una función de proyecto) puede empujarse

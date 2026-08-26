@@ -93,12 +93,59 @@ proyecto y cuándo". Mapea a nuestras asignaciones / turnos esperados.
 (`/timeregistration/{id}`) aunque su colección en plural dé 403. La escritura del
 `timeregistration` (POST) **aún no está probada** — ver decisiones abiertas.
 
-## 5. Lo que aún no se ha medido / probado
+## 5. Escritura y límites — VERIFICADO en sandbox (2026-08-01)
 
-- **Rate limit real.** Rentman corta con 403 pero no documenta el techo por endpoint.
-  Hay que medirlo (script de Fase 0 `ratelimit`) porque marca la cadencia del polling.
-- **Filtro por `modified`.** Si la API permite `modified > X` / ordenar por `modified`,
-  el polling trae solo el delta (barato). Si no, hay que diffear por `updateHash`.
-- **Escritura.** Ningún POST/PUT ejecutado todavía (no se escribe en la cuenta real
-  sin autorización). Falta validar la creación de `timeregistration`, `project`,
-  `projectcrew`.
+Cuenta sandbox `encodebiz`. Todo lo de abajo está ejecutado de verdad, no inferido.
+
+### La escritura de `timeregistration` funciona
+
+`POST /timeregistration` (singular; la plural sigue dando 403). Cuerpo que funciona:
+
+```json
+{
+  "crewmember": "/crew/226",
+  "start": "2026-08-01T08:00:00+02:00",
+  "end": "2026-08-01T16:00:00+02:00",
+  "duration": 27000,
+  "break_duration": 1800,
+  "leavetype": "/leavetypes/1",
+  "remark": "checkbiz:<checkinId>"
+}
+```
+
+Cuatro cosas que sólo se aprenden escribiendo:
+
+1. **`leavetype` es obligatorio.** Sin él la API responde **500** ("No se pudieron
+   guardar los ítems"), sin decir qué falta. Hay que mandar el tipo *trabajado* de la
+   cuenta (`is_labor: "worked"`, `type: "G"`); los ids no son universales, así que se
+   resuelve leyendo `/leavetypes`, no se cablea.
+2. **`duration` es NETO y lo recalcula Rentman.** Enviado 28800 (8 h bruto) con
+   `break_duration` 1800 → guardó **27000** (7,5 h). Mandar el bruto sólo consigue que
+   nuestra copia no cuadre con la suya y que la auditoría de D2 marque falsos positivos.
+3. **`remark` se guarda y se devuelve** → sirve de trazabilidad hacia el checklog origen.
+4. **Rechaza solapes**: mismo crew member con horas o ausencia en ese periodo →
+   **400** "Ya se ha registrado el horario o se ha solicitado una ausencia para este
+   periodo". Es un no definitivo: reintentarlo no cambia nada.
+
+`DELETE /timeregistration/{id}` → 200 (usado para limpiar las pruebas).
+`status` nace como `pending` (no `approved`) y es cosa de Rentman, no nos incumbe.
+
+### El 403 no era rate limit
+
+**120 GET seguidos en 16 s sin un solo corte.** Los 403 que veíamos son de colecciones
+que no existen (`/crewmembers`, `/functions`, `/timeregistrations`) y traen un mensaje
+de auth de AWS. O sea: el rate limit no es la restricción que asumíamos, y tratar el
+403 como throttling sólo hacía reintentar contra un endpoint que nunca responde.
+
+### No hay filtro por `modified`, pero sí orden
+
+`?modified=gt,…` y `?modified[gt]=…` no filtran (devuelven vacío o lo ignoran).
+`?sort=-modified` **sí** funciona, y `?fields=` recorta la respuesta. Con eso el delta
+del pull sale barato igual: se pagina por `modified` descendente y se corta al llegar a
+la marca de agua. Paginación por `limit`/`offset` verificada (también hay cursor en
+`next_page_url`, no hace falta).
+
+### Lo que sigue sin probarse
+
+- Creación de `project` y `projectcrew` (capa de catálogo, bloqueada por D3–D5).
+- Comportamiento en la cuenta REAL del cliente: esto es un sandbox.

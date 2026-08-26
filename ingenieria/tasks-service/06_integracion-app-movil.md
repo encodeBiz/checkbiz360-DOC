@@ -152,13 +152,22 @@ Ejemplo real de lo que puede venir en el campo:
 **Ojo:** avisar al supervisor si falta efectivo.
 ```
 
-En Flutter:
+### Implementación en la app (hecho)
 
-- **Mínimo viable:** pintarlo tal cual con un `Text`. Es legible sin más — por eso se eligió Markdown y no HTML.
-- **Recomendado:** `flutter_markdown` (`MarkdownBody(data: task.description ?? '')`) para títulos, listas, negritas y enlaces.
-- **Checklists:** el paquete `markdown` de Dart no convierte `- [ ]` en checkbox; lo pinta como viñeta con el texto `[ ]`. Si se quiere el checkbox real, hay que añadir un builder propio para los ítems de lista que empiecen por `[ ] ` / `[x] `.
-- **Solo lectura:** los checks son parte del texto de la descripción, no un estado persistido. Marcarlos en la app **no** cambia nada en el servidor; el avance de la tarea se sigue reportando con los cambios de estado y las notas/evidencias.
-- **Nunca renderizar como HTML:** el texto lo escribe un usuario; tratarlo como Markdown/plano evita inyección.
+Widget: `lib/features/task/presentation/widgets/task_description_markdown.dart` (`TaskDescriptionMarkdown`), usado en `task_detail_page.dart`. Notas de la integración real:
+
+- **Paquete:** `flutter_markdown_plus` — `flutter_markdown` está **descontinuado** en pub.dev (el equipo de Flutter dejó de mantenerlo). `flutter_markdown_plus` es el fork mantenido y conserva la misma API (`MarkdownBody`, `MarkdownStyleSheet`, `checkboxBuilder`, `onTapLink`).
+- **Sin impacto en SPM:** tanto `flutter_markdown_plus` como `markdown` son paquetes Dart puros (sin bloque `plugin:`, sin `ios/`/`android/`). No añaden dependencias nativas ni tocan la resolución de Swift Package Manager.
+- **Checklists:** corrección respecto a lo que decía antes este doc — el paquete `markdown` 7.x **sí** parsea `- [ ]` / `- [x]` cuando el `ExtensionSet` incluye `UnorderedListWithCheckboxSyntax` / `OrderedListWithCheckboxSyntax` (van dentro de `gitHubFlavored`, que es el set por defecto). El builder propio solo hace falta para el **aspecto** del checkbox, no para que aparezca.
+- **Nunca renderizar como HTML:** se usa un `ExtensionSet` propio que **excluye `InlineHtmlSyntax`**, así cualquier etiqueta que escriba el usuario (`<b>`, `<script>`…) se queda como texto literal en vez de interpretarse. Cubierto por test.
+- **Solo lectura:** los checks son parte del texto de la descripción, no un estado persistido. Se pintan no interactivos; marcarlos **no** cambiaría nada en el servidor. El avance de la tarea se sigue reportando con los cambios de estado y las notas/evidencias.
+- **Enlaces:** se abren con `url_launcher` en app externa y solo si el esquema es `http`, `https` o `mailto`; si no, snackbar de error (`taskDescriptionLinkOpenError`, en es/en/de/pt).
+- **Estilos:** el `MarkdownStyleSheet` se deriva del design system (`semanticColors`, tokens de spacing/radius), no de los valores por defecto del paquete.
+- **Edición desde móvil:** el formulario de crear/editar tarea sigue con un `TextField` plano. Es correcto y no destructivo — guarda el Markdown tal cual lo escribió el back office.
+
+Tests: `test/widget/task/task_description_markdown_test.dart` (ejemplo del contrato con checklists, listas/cita/separador/enlace, HTML literal, texto plano).
+
+> Alternativa mínima si otro cliente no quiere dependencia: pintar el campo tal cual con un `Text`. Es legible sin más — por eso se eligió Markdown y no HTML.
 
 ---
 

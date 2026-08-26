@@ -114,8 +114,8 @@ guarda su snapshot en `inviceData` (con el typo) y capturado antes de añadir
 
 ## Lo ya arreglado (no rehacer)
 
-Rama `fix/stripe-invoice-cero`, commit `069d39cc`. Desplegada **solo**
-`apiV100-firebaseFirestoreTriggers-processInvoices`.
+Commit `069d39cc`, ya mergeado a `main` (PR #5, merge `735bf6d0`). Desplegada
+**solo** `apiV100-firebaseFirestoreTriggers-processInvoices`.
 
 - `InvoicePaymentProcessor` decide qué es facturable antes de tocar Stripe; la
   invoice solo nace si va a llevar importe, y el camino de error borra la draft
@@ -128,6 +128,114 @@ Rama `fix/stripe-invoice-cero`, commit `069d39cc`. Desplegada **solo**
 Pendiente de limpieza manual: las 8 facturas ya emitidas. No se pueden borrar,
 hay que anularlas con `voidInvoice` filtrando por `metadata.invoiceRef` y
 `total === 0` para no tocar ninguna buena.
+
+## Roturas encontradas al verificar el as-is (10 ago 2026)
+
+Todas verificadas leyendo el código de `main` en `735bf6d0`. R1–R10 se
+confirman tal como estaban descritas, con dos matices y nueve roturas nuevas.
+
+**R11 — El único punto donde se calcula el importe falla en silencio.**
+`handleInvoiceUpcoming` (`StripeSuscriptionRepository.ts:130`) hace
+`await this.stripe.updateSubscription(...)` y **descarta el resultado**.
+`StripeService` no lanza nunca: todos sus métodos envuelven el error en un
+`Result` (`core/shared/utils/result.ts`) y lo devuelven. Si el ajuste de
+quantity falla, no hay excepción, ni log, ni reintento, y Stripe factura la
+quantity que ya tenía el ítem —que en el primer ciclo es `0`, la que pone
+`subscribe`—. Combinado con R4, esto es exactamente el punto único de fallo sin
+red: el módulo entero depende de una llamada que puede fallar sin dejar rastro.
+
+**R12 — El webhook rechaza las facturas que emite el propio cron.**
+`makeInvoice` guarda `metadata: {entityId, invoiceRef}`, **sin `serviceId`**
+(`InvoicePaymentProcessor.ts:69`). Cuando Stripe cobra esa factura y llega
+`invoice.paid`, la guarda del webhook pide `getMetaParent(...)?.serviceId`; en
+una factura suelta no hay `parent`, así que el `|| {}` deja `{}` y el bug del
+`??` (R6) impide caer a la metadata de línea, que **sí** lleva `serviceId`.
+Resultado: `UNHANDLED_EVENT` → 400 → la factura del cron nunca se marca `PAID`
+en Firestore y Stripe reintenta la entrega durante días. Arreglar el `??` de R6
+es lo que desbloquea esta conciliación.
+
+**R13 — Quedan escrituras sin `await` fuera del alcance de `069d39cc`.** El
+commit arregló las del processor, no las del repositorio:
+
+- `FirestoreSubscriptionRepository.updateInvoice` — `ref.set(...)` sin `await`
+  (línea 121). Los llamantes hacen `await updateInvoice(...)` y reciben una
+  promesa ya resuelta: **ningún** cambio de estado de factura está garantizado.
+- `FirestoreSubscriptionRepository.cancelSubscription` — `ref.set(...)` sin
+  `await` (línea 89), en la rama que persiste la cancelación.
+- `handleInvoicePaid` — `firestoreSubRepository.updateInvoice(...)` sin `await`
+  (`StripeSuscriptionRepository.ts:47`), y encima el handler devuelve antes.
+
+Es la misma clase de bug que causó R1: promesa suelta + Cloud Functions cortando
+la CPU al responder.
+
+**R14 — Descomentar los webhooks de suscripción rompería producción.** El
+remedio implícito de R2 no es viable como está. `handleSubscriptionUpsert`
+**no es un handler de evento**: destructura `{customer, items, metadata,
+trial_period_days}` y **crea** una suscripción en Stripe
+(`StripeSuscriptionRepository.ts:137`). La interfaz lo disfraza con una
+sobrecarga que acepta `Stripe.Event` (`StripeRepository.ts:9-10`), así que
+compila. Llamarlo con el evento da `createSubscription({customer: undefined,
+items: undefined})` → error de Stripe → 400 → tormenta de reintentos sobre el
+endpoint. La sincronización Firestore↔Stripe hay que escribirla de cero.
+
+**R15 — `deleteEntity` no puede borrar una entidad con consumo facturable.**
+`deleteEntity.controller.ts:55` llama a
+`InvoicePaymentProcessor.execute(entityId, "-", true)`. Con
+`havePendingPayment: true` el processor asume que `invoiceRef` es un id de
+invoice de Stripe (`invoiceStripe = {id: "-"}`) y adjunta los ítems a la factura
+`"-"`: Stripe falla, `makeInvoiceItems` lanza `Bad Invoice Item` y el
+controlador responde **500** en lugar del 400 `payment/pending` que pretendía.
+Hoy no se alcanza porque sin planes con `stripePrice` la lista de facturables
+sale vacía —o sea que **la guarda de impagos es código muerto y toda entidad se
+borra sin comprobar nada**—; el día que un plan tenga precio, pasa a 500.
+
+**R16 — Bucle latente de emisión: el doc que crea `invoice.paid` dispara el
+trigger de facturación.** El doc extra de R5 se crea en
+`entities/{eid}/invoices/`, que es justo el path que escucha
+`processInvoices` (`onDocumentCreated`) → `InvoicePaymentProcessor`. Hoy no
+explota por accidente: el payload de `handleInvoicePaid` no incluye `entityId`
+ni `id`, así que el processor muere en `Entity not found`. **Arreglar R5
+escribiendo el payload completo sin cortar antes el lazo convierte cada cobro en
+una nueva factura.** Cualquier diseño que reconcilie `invoice.paid` en Firestore
+tiene que hacer el trigger inmune a sus propias escrituras.
+
+**R17 — Un impago de passinbiz no se registra nunca.**
+`handleInvoicePaymentFailed` filtra por `serviceId.toLowerCase().includes("check")`
+(`StripeSuscriptionRepository.ts:66`). Es el gemelo de R4 en el camino de fallo:
+passinbiz no solo factura a 0, tampoco deja rastro cuando el cobro falla.
+
+**R18 — `finalizeInvoice` y `deleteInvoice` ignoran su `Result`.**
+`StripeSuscriptionRepository.ts:260-268` llaman al servicio y no comprueban
+`.success`. Una finalización fallida se reporta como éxito: la factura se queda
+en draft **con los ítems ya adjuntos** y el sistema la da por emitida. El
+`InvoicePaymentProcessor` marca su parte como correcta y nadie se enteraría.
+
+**R19 — Más estados y uniones fuera de tipo (familia de R9).**
+`InvoicePaymentProcessor.ts:57` escribe `"SKIPPED_TRIAL"`, que no está en
+`InvoiceStatus`. El compilador no lo ve porque `updateInvoice(data: any)` borra
+el tipado en la frontera. Y `Subscription.plan` es la unión cerrada
+`"freemium" | "bronze" | "enterprise"`: no admite el plan de un add-on, igual
+que `SERVICES` no admite su serviceId.
+
+### Matices sobre R1–R10
+
+- **R5 tiene rastro en el front.** `page.controller.tsx:114` lee
+  `row.paymentData?.paymentData?.number ?? row.paymentData?.number ?? …`: ese
+  doble anidado es un parche para convivir con los dos documentos por factura.
+- **R8, el segundo motor no está donde dice el as-is.** `InvoicePaymentProcessor`
+  solo lo invocan el cron (`processInvoices`) y `deleteEntity`;
+  `handleInvoiceUpcoming` **no** pasa por él. Los dos motores son de verdad
+  independientes —no comparten ni una línea de cálculo—, lo que hace el doble
+  cargo más probable, no menos, en cuanto un plan tenga `stripePrice`.
+
+### Qué no se ha podido verificar
+
+- **R7** (ajuste "Send finalized invoices…" del dashboard de Stripe) y la
+  numeración real de EBZSTRIPE: requieren la consola de Stripe de producción.
+- **R8** sigue *sin confirmar* en el Firestore de producción: los `stripePrice`
+  vacíos que se ven son los del fixture `passinbiz.plans.ts`, y los planes que
+  se facturan viven en `service/{id}/plan/{planId}` en Firestore, no en el repo.
+- Qué eventos tiene realmente suscritos el endpoint del webhook en Stripe.
 
 ## Lo que el módulo no cubre y va a tener que cubrir
 
