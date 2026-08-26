@@ -85,9 +85,17 @@ registerEvents([
 ]);
 ```
 
-Se sigue registrando por servicio y por efecto de import, como hoy: es el mecanismo que evita
-que el núcleo conozca eventos concretos. `publish()` sigue rechazando lo no registrado, ahora
-con el tipo declarado en un solo sitio.
+**Y aquí hay una desviación respecto al módulo del SaaS que conviene entender.** Allí el
+catálogo se poblaba por efecto de import: cada servicio importaba su `webhook-events.ts` y eso
+registraba sus tipos. Funcionaba porque todo corría en un único proceso de Functions.
+
+Aquí cada servicio es un proceso distinto, y `services/events` —el que sirve el catálogo al
+panel y valida las suscripciones— jamás importaría los casos de uso de `tasks` ni de
+`documents`. Con registro por import, cada proceso conocería solo su trozo del catálogo y el
+panel mostraría una lista distinta según quién respondiera.
+
+Por eso el catálogo es **dato declarado en `shared`**, que lo importan todos. Cada dominio
+mantiene su bloque dentro del fichero. `publish()` sigue rechazando lo no declarado.
 
 ## 4. `publish()`
 
@@ -106,8 +114,12 @@ export async function publish(
    (`attendance.*`) o por `*`.
 4. Inserta una fila de `webhook_delivery` por endpoint, **en la transacción del caso de uso** si
    se pasa `tx`.
-5. Tras el commit, dispara la entrega sin esperarla (ADR-003). Si el proceso muere antes de
-   intentarlo, la fila queda `pending` y la recoge el rescate.
+5. Dispara la entrega sin esperarla (ADR-003). Si el proceso muere antes de intentarlo, la
+   fila queda `pending` y la recoge el rescate.
+
+Con `tx` **no se intenta nada en el acto**: la fila todavía no es visible para otra conexión y
+el commit podría no llegar. Esas entregas las recoge el rescate unos minutos después. Es el
+precio de la garantía transaccional, y se paga solo donde el llamante la pide.
 
 `opts.eventId` permite que el llamante fije el identificador y consiga idempotencia de extremo a
 extremo cuando reintenta.
