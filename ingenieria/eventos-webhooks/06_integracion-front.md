@@ -11,10 +11,11 @@ El front **ya tiene** una pantalla de webhooks: `integration/tabs/tabWebHook`, c
 de alta y su servicio en `services/core/integration.service.ts`. No se parte de cero: se
 migra. Y hay tres cosas que dejan de funcionar solas, sin que nadie las rompa a propósito:
 
-**La lista se lee de Firestore.** `fetchWebHookByEntity` hace `searchFirestore` sobre
-`entities/{entityId}/webhooks`. Los endpoints ahora viven en PostgreSQL
-([ADR-004](./adr/ADR-004-outbox-en-postgres.md)), así que esa consulta devolverá vacío. No es
-un fallo que se vea: es una lista que se queda en blanco.
+**La lista de endpoints se queda como está, y es deliberado.** `fetchWebHookByEntity` lee
+`entities/{entityId}/webhook_endpoints` de Firestore, en vivo. Eso **no se toca**: los
+suscriptores son configuración de la entidad, se leen reactivos y siguen en Firestore
+([ADR-004](./adr/ADR-004-outbox-en-postgres.md)). Lo único que se mueve a PostgreSQL son las
+entregas, que crecen sin fin y no se miran en tiempo real.
 
 **El catálogo está cableado en el front.** `IWebHook.ts` declara
 `WebhookEventType = "attendance.clock_in" | "attendance.clock_out"` y el formulario construye
@@ -32,12 +33,16 @@ Todos responden `{ok: false, error, …}` en el error, con el código en `error`
 | Llamada | Devuelve | Errores propios |
 |---|---|---|
 | `GET /catalogue` | `{ok, version, events}` | — |
-| `GET /endpoints?entityId=` | `{ok, endpoints}` — secreto **enmascarado** | **400** `entityId_required` |
+| `GET /endpoints?entityId=` | `{ok, endpoints}` — secreto **enmascarado**. Existe para quien no tenga Firestore a mano; **el panel puede seguir leyendo la colección en vivo** | **400** `entityId_required` |
 | `POST /endpoints` `{entityId, url, subscribedEvents, enabled?, description?}` | **201** `{ok, endpoint, secretShownOnce}` — el secreto **en claro, una sola vez** | **400** `url_must_be_https` · **400** `unknown_events` + `detail[]` · **400** `too_many_endpoints` + `max` · **409** `url_already_registered` |
-| `PATCH /endpoints/{id}` `{url?, subscribedEvents?, enabled?, description?}` | `{ok, endpoint}` | **404** `endpoint_not_found` · las mismas de validación |
-| `DELETE /endpoints/{id}` | `{ok}` | **404** `endpoint_not_found` |
-| `POST /endpoints/{id}/test` | `{ok, eventId, status, lastStatus, lastError}` | **404** `endpoint_not_found` |
-| `POST /endpoints/{id}/rotate-secret` | `{ok, secret, secretShownOnce}` | **404** `endpoint_not_found` |
+| `PATCH /endpoints/{id}` `{entityId, url?, subscribedEvents?, enabled?, description?}` | `{ok, endpoint}` | **404** `endpoint_not_found` · las mismas de validación |
+| `DELETE /endpoints/{id}?entityId=` | `{ok}` | **404** `endpoint_not_found` · **400** `entityId_required` |
+| `POST /endpoints/{id}/test` `{entityId}` | `{ok, eventId, status, lastStatus, lastError}` | **404** `endpoint_not_found` |
+| `POST /endpoints/{id}/rotate-secret` `{entityId}` | `{ok, secret, secretShownOnce}` | **404** `endpoint_not_found` |
+
+> **`entityId` va en todas.** Los endpoints cuelgan de la entidad en Firestore, así que la
+> ruta lo necesita. Y de paso hace imposible tocar el endpoint de otro cliente conociendo
+> solo su id.
 | `GET /deliveries?entityId=&status=&eventType=&endpointId=&limit=` | `{ok, count, deliveries}` | **400** `entityId_required` |
 | `POST /deliveries/{id}/replay` | `{ok, status}` | **409** `delivery_not_replayable` |
 
@@ -124,8 +129,12 @@ obvio antes de hacerlo: las peticiones firmadas con el viejo dejan de validar en
 
 ### Lo que NO hace esta pantalla
 
-No lee Firestore. Los endpoints y las entregas están en PostgreSQL y solo se llega a ellos por
-la API. Si ves `searchFirestore` en el servicio de webhooks, eso es lo que hay que quitar.
+No cambia de dónde sale la lista. Los endpoints siguen leyéndose de Firestore, en vivo, con el
+`searchFirestore` que ya está escrito. Lo que sí cambia es que **escribir** ya no va contra las
+funciones de Firebase, sino contra la API del contenedor.
+
+No pide las entregas a Firestore. Esas están en PostgreSQL y solo se llega a ellas por
+`GET /deliveries`.
 
 No guarda el secreto. Ni en estado global, ni en almacenamiento local, ni en la URL, ni en
 logs. Se muestra y se olvida.

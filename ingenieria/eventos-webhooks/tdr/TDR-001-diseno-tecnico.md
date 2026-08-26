@@ -21,27 +21,25 @@ El núcleo va en `shared` porque **quien emite es cada servicio**: `checkinbiz`,
 uso. El servicio `events` no es un intermediario obligatorio: es el que gestiona, rescata y da
 la cara al panel.
 
-## 2. Esquema (migración `017_events.sql`)
+## 2. Esquema
+
+### Suscriptores — Firestore
+
+`entities/{entityId}/webhook_endpoints/{wh_id}`, donde ya estaban y donde el front los lee en
+vivo (ADR-004). Campos: `id`, `entityId`, `url`, `secret`, `enabled`, `subscribedEvents[]`,
+`version`, `description`, `consecutiveFailures`, `disabledReason`, `createdAt`, `updatedAt`.
+
+Al ser una ruta por entidad, **toda operación sobre un endpoint pide `entityId`**. Efecto
+secundario deseable: es imposible tocar el endpoint de otro cliente conociendo solo su id.
+
+### Entregas — PostgreSQL (migraciones `017` y `018`)
 
 ```sql
-CREATE TABLE webhook_endpoint (
-  id                   TEXT PRIMARY KEY,              -- wh_<hex>
-  entity_id            TEXT NOT NULL,
-  url                  TEXT NOT NULL,
-  secret               TEXT NOT NULL,                 -- whsec_<hex>
-  enabled              BOOLEAN NOT NULL DEFAULT TRUE,
-  subscribed_events    TEXT[] NOT NULL,               -- admite 'attendance.*' y '*'
-  version              TEXT NOT NULL DEFAULT '2025-08-01',
-  consecutive_failures INT NOT NULL DEFAULT 0,
-  disabled_reason      TEXT,
-  created_at           TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at           TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (entity_id, url)
-);
-
 CREATE TABLE webhook_delivery (
   id              TEXT PRIMARY KEY,                   -- dly_<hex>
-  endpoint_id     TEXT NOT NULL REFERENCES webhook_endpoint(id) ON DELETE CASCADE,
+  -- Referencia suelta: el endpoint vive en Firestore, así que no hay clave foránea.
+  -- Borrar un endpoint no borra su histórico; de eso se encarga la purga.
+  endpoint_id     TEXT NOT NULL,
   entity_id       TEXT NOT NULL,
   event_id        TEXT NOT NULL,                      -- evt_<hex>
   event_type      TEXT NOT NULL,
@@ -110,8 +108,9 @@ export async function publish(
 
 1. Valida `type` contra el registry. No registrado → lanza; es un error de programación.
 2. Compone el sobre: `id`, `type`, `version`, `occurred_at`, `entity_id`, `data`.
-3. Busca los endpoints habilitados de la entidad que casen por tipo exacto, por familia
-   (`attendance.*`) o por `*`.
+3. Busca en Firestore los endpoints habilitados de la entidad que casen por tipo exacto, por
+   familia (`attendance.*`) o por `*`. Esa lectura queda fuera de la transacción: son dos
+   almacenes distintos, y lo que importaba proteger era la entrega.
 4. Inserta una fila de `webhook_delivery` por endpoint, **en la transacción del caso de uso** si
    se pasa `tx`.
 5. Dispara la entrega sin esperarla (ADR-003). Si el proceso muere antes de intentarlo, la

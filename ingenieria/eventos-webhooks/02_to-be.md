@@ -13,8 +13,8 @@ packages/shared/src/events/          ← el núcleo, reutilizable por cualquier 
   deliver.ts                         firma HMAC, POST, clasifica el resultado
   backoff.ts                         política de reintentos
   domain/                            Event, Endpoint, Delivery
-  infrastructure/PgOutboxRepository.ts
-  infrastructure/PgEndpointRepository.ts
+  infrastructure/PgDeliveryRepository.ts        outbox — PostgreSQL
+  infrastructure/FirestoreEndpointRepository.ts  suscriptores — Firestore
 
 services/events/                     ← servicio propio (puerto libre siguiente)
   worker de rescate (node-cron)      reintentos vencidos y huérfanos
@@ -66,12 +66,19 @@ De ahí el diseño:
 Resultado: latencia de milisegundos en el caso normal, y las mismas garantías de durabilidad
 que hoy. Ver [ADR-003](./adr/ADR-003-entrega-inmediata-outbox-como-rescate.md).
 
-## 4. Almacenamiento: PostgreSQL
+## 4. Almacenamiento: cada cosa donde le corresponde
 
-La outbox y los endpoints pasan a PostgreSQL, que es donde ya vive lo transaccional del
-contenedor y donde se puede: escribir el evento en la misma transacción que el dato, mantener
-un índice compuesto sin ceremonia, purgar por antigüedad con una sentencia y consultar el
-histórico de entregas para el panel. Ver [ADR-004](./adr/ADR-004-outbox-en-postgres.md).
+**La outbox, a PostgreSQL.** Es lo que crece sin techo —una entrega por evento y por endpoint
+suscrito—, lo que hay que purgar por antigüedad, y lo que se consulta con varios filtros a la
+vez. Además permite escribir la entrega en la misma transacción que el dato que la origina.
+
+**Los endpoints se quedan en Firestore**, en `entities/{entityId}/webhook_endpoints`, que es
+donde ya estaban. Son configuración de la entidad: diez documentos por cliente, que no crecen,
+que viven junto al resto de su configuración y que el panel **lee en vivo**. Moverlos habría
+convertido una lista reactiva del front en una que hay que refrescar a mano.
+
+El alta y la edición las sigue sirviendo el contenedor por HTTP; lo que cambia es dónde
+escribe. Ver [ADR-004](./adr/ADR-004-outbox-en-postgres.md).
 
 ## 5. Lo que se arregla de paso
 
