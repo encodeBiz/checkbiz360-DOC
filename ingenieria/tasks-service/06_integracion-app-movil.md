@@ -82,12 +82,83 @@ await http.patch(
 ```
 Al completar, el servidor calcula el cumplimiento temporal (`completed_on_time` / `completed_late`) contra `dueAt`. Si `config.requireEvidenceOnCompletion` es `true`, sube la evidencia **antes** de completar.
 
+> **Cambio de contrato — mandar `geo`.** Ver §4.bis.
+
 ### Añadir nota
+
 ```
 POST /:taskId/notes
 body: { "content": "Faltaba material", "type": "operational_note" }
 → 201 TaskNote
 ```
+
+---
+
+## 4.bis Lugar de trabajo de la tarea (`workSite`) y geocerca
+
+Una tarea puede llevar **su propia dirección y su propia geocerca** — es el caso del trabajo a
+domicilio, donde el empleado nunca está en el centro. Ver [ADR-007](./adr/ADR-007-geocerca-en-la-tarea.md).
+
+```jsonc
+task.workSite = {            // opcional; puede no venir
+  "street": "Calle Mayor 3, 28013 Madrid, España",
+  "geo": { "lat": 40.4169, "lng": -3.7035 },
+  "radiusMeters": 150,
+  "timeZone": "Europe/Madrid",
+  "precision": "rooftop"
+}
+```
+
+### Qué tiene que hacer la app
+
+**Mandar `geo` al cambiar a `in_progress` y a `completed`.** El mismo punto que ya se manda al
+fichar.
+
+```dart
+await http.patch(
+  Uri.parse("$base/$taskId/status"),
+  headers: {"Authorization": "Bearer $staffJwt", "Content-Type": "application/json"},
+  body: jsonEncode({
+    "entityId": entityId,
+    "status": "in_progress",
+    "geo": {"lat": pos.latitude, "lng": pos.longitude},
+  }),
+);
+```
+
+Es obligatorio **solo** si `task.workSite != null`, pero lo más simple es mandarlo siempre que se
+tenga la posición. Si la tarea tiene `workSite` y no llega `geo` → `400 task/geo_required`; hay
+que pedir el permiso de ubicación **antes** de ofrecer el botón, igual que en el fichaje.
+
+**Enseñar la dirección y la distancia.** Con `workSite.geo` la app puede mostrar dónde es el
+trabajo y a qué distancia está el empleado antes de que pulse. Evita el rechazo en vez de
+explicarlo después.
+
+### Bloqueo al iniciar
+
+Fuera del radio, **iniciar** se rechaza:
+
+```jsonc
+400 {
+  "code": "task/out_of_worksite",
+  "error": "Outside task work site",
+  "details": { "distanceMeters": 480, "allowedRadiusMeters": 150 }
+}
+```
+
+Al **completar** no se bloquea: la distancia se registra y ya está. Quien cierra la tarea suele
+hacerlo ya montado en la furgoneta.
+
+### Jornada abierta
+
+La app **ya** impide iniciar y completar sin jornada abierta (`AttendanceStatus.working` u
+`onBreak`, en `task_detail_page.dart`). Eso no cambia. Lo que cambia es que **el servidor también
+lo comprueba**, con la misma semántica —el descanso cuenta como jornada abierta—, y responde
+`400 task/no_open_session`.
+
+En la práctica la app no debería ver nunca ese código; si aparece, es señal de que su estado de
+asistencia y el del servidor se han desincronizado, y lo correcto es refrescar el estado de
+fichaje antes de reintentar. Notas y evidencias **no** están sujetas a la regla.
 
 ---
 
@@ -121,6 +192,9 @@ Reglas:
 | 403 | `task/unauthorized` | Sin nivel suficiente para la acción |
 | 404 | `task/employee_not_found` | El `employeeId` del token no existe en la entidad |
 | 400 | (validación) | Fichero de tipo/tamaño no permitido |
+| 400 | `task/no_open_session` | Iniciar/completar sin jornada abierta |
+| 400 | `task/geo_required` | La tarea tiene `workSite` y no se mandó `geo` |
+| 400 | `task/out_of_worksite` | Iniciar fuera del radio del lugar de trabajo |
 
 ---
 

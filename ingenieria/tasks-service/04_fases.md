@@ -82,6 +82,33 @@ No hay migración de datos: Firestore permanece como fuente ([ADR-003](./adr/ADR
 
 ---
 
+## Fase 5: Lugar de trabajo y geocerca de tarea
+
+**Estado:** 🔜 En implementación.
+
+**Objetivo:** que una tarea pueda tener dirección y geocerca propias, para clientes que trabajan
+fuera del centro, sin dar de alta una sucursal por encargo.
+
+**Prerequisito:** Fase 1 (el servicio sirve las rutas de tareas).
+
+**Decisión:** [ADR-007](./adr/ADR-007-geocerca-en-la-tarea.md) · **Diseño:** [TDR-005](./tdr/TDR-005-worksite-y-geocerca-de-tarea.md)
+
+- `TaskWorkSite` opcional en la entidad `Task`; alta y edición vía `POST /` y `PATCH /:taskId`,
+  con geocodificación de `@encodebiz/shared` y rechazo de precisión `approximate`.
+- `findOpenWorkSession` en `@encodebiz/shared` (una lectura, sin índices nuevos).
+- `PATCH /:taskId/status` acepta `geo`; comprueba jornada abierta y, si hay `workSite`, geocerca
+  restrictiva al iniciar y medición sin bloqueo al completar.
+- Actividad `start_rejected` y metadatos geográficos congelados en `TaskActivity`.
+
+**Criterio de éxito:** typecheck del monorepo verde; una tarea sin `workSite` se comporta
+exactamente igual que antes salvo por la precondición de jornada; una tarea con `workSite`
+rechaza el inicio fuera de radio y lo deja registrado; `services/checkinbiz` sin tocar.
+
+**Rollback:** el campo es aditivo y opcional. Basta con revertir el despliegue de `tasks`: las
+tareas con `workSite` guardado quedan inertes, sin efecto sobre el fichaje.
+
+---
+
 ## Resumen
 
 ```
@@ -90,6 +117,7 @@ Fase 1: Port del módulo task     → 14 rutas con contrato idéntico, auth dual
 Fase 2: Cutover                  → el tráfico apunta al servidor; tasksHandler deprecated
 Fase 3: Doc de integración       → guías app móvil + front admin
 Fase 4 (futuro): retirada + unificación de dominio
+Fase 5: WorkSite + geocerca      → dirección propia por tarea, valla al iniciar, jornada abierta
 ```
 
 **Orden estricto:** no hacer cutover (Fase 2) sin los criterios de la Fase 1 cumplidos. El documento de integración (Fase 3) se escribe cuando el contrato real está congelado tras el cutover.

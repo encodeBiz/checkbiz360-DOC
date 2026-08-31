@@ -58,6 +58,7 @@ La API de tareas pasa a un microservicio dedicado (`tasks`, puerto 3006). Firest
 | [ADR-004](./adr/ADR-004-auth-dual-conservada.md) | Conservar la auth dual (Firebase ID token + staff JWT) | Aceptado |
 | [ADR-005](./adr/ADR-005-notificaciones-a-shared.md) | Extraer el framework de notificaciones a `@encodebiz/shared` | Aceptado (implementado) |
 | [ADR-006](./adr/ADR-006-informe-tareas-en-reports.md) | El informe de tareas (Excel) vive en el servicio `reports` | Aceptado (implementado) |
+| [ADR-007](./adr/ADR-007-geocerca-en-la-tarea.md) | La geocerca de un trabajo vive en la tarea, no en una sucursal por encargo | Aceptado |
 
 ## Technical Design Records (TDRs)
 
@@ -67,6 +68,7 @@ La API de tareas pasa a un microservicio dedicado (`tasks`, puerto 3006). Firest
 | [TDR-002](./tdr/TDR-002-resolucion-actor-y-permisos.md) | Resolución del actor y matriz de permisos | 1 | Diseño aprobado |
 | [TDR-003](./tdr/TDR-003-storage-evidencias-y-multipart.md) | Subida de evidencias: Storage y multipart | 1 | Diseño aprobado |
 | [TDR-004](./tdr/TDR-004-informe-tareas-xlsx.md) | Informe de tareas en Excel (servicio `reports`) | — | Implementado |
+| [TDR-005](./tdr/TDR-005-worksite-y-geocerca-de-tarea.md) | Lugar de trabajo de la tarea y geocerca al iniciarla | 5 | Diseño aprobado |
 
 ---
 
@@ -77,5 +79,10 @@ La API de tareas pasa a un microservicio dedicado (`tasks`, puerto 3006). Firest
 - [ ] **Fase 2** — Cutover del tráfico (app + front → servidor)
 - [x] **Fase 3** — Documento de integración (app móvil + front admin) ✔ [05](./05_integracion-front-admin.md) · [06](./06_integracion-app-movil.md)
 - [ ] **Fase 4** *(futuro)* — Retirada de `tasksHandler` + unificación de dominio
+
+**Fase 5 — Lugar de trabajo y geocerca de tarea:** `workSite` opcional en la tarea + geocerca
+restrictiva al iniciarla + precondición de jornada abierta comprobada en servidor. 🔜 en
+implementación. Ver [ADR-007](./adr/ADR-007-geocerca-en-la-tarea.md),
+[TDR-005](./tdr/TDR-005-worksite-y-geocerca-de-tarea.md).
 
 **Añadido — Informe de tareas (Excel):** `POST /api/reports/tasks` en el servicio `reports`. ✔ implementado y typecheck verde; pendiente prueba e2e en despliegue. Ver [ADR-006](./adr/ADR-006-informe-tareas-en-reports.md), [TDR-004](./tdr/TDR-004-informe-tareas-xlsx.md), [07](./07_integracion-informe-tareas.md).

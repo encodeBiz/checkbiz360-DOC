@@ -91,7 +91,9 @@ await fetch(BASE, {
       notifyIfNotStarted: true,
       maxPhotoSizeMB: 5,
       maxVideoSizeMB: 25
-    }
+    },
+    // Opcional — solo para trabajo fuera del centro (ver §7)
+    workSite: { placeId: "ChIJ...", radiusMeters: 150 }
   }),
 });
 → 201 TaskDetail   // { task, assignments, notes, resources, ratings, activity, validations }
@@ -105,8 +107,12 @@ GET /:taskId/activity?limit  → 200 TaskActivity[]
 
 ### Editar / estado
 ```
-PATCH /:taskId               body: { title?, description?, priority?, dueAt?, config? }  → 200 TaskDetail
-PATCH /:taskId/status        body: { status }                                            → 200 TaskDetail
+PATCH /:taskId               body: { title?, description?, priority?, dueAt?, config?, workSite? }  → 200 TaskDetail
+PATCH /:taskId/status        body: { status, geo? }                                              → 200 TaskDetail
+```
+`workSite: null` borra la geocerca de la tarea. Desde el panel, `PATCH /:taskId/status` no
+necesita `geo`: el actor de back office está exento de la geocerca y de la jornada abierta.
+```
 ```
 
 ### Asignaciones
@@ -139,6 +145,8 @@ POST /:taskId/ratings      body: { employeeId, rating (1-5), comment? }  → 200
 | 403 | `task/unauthorized` | Token válido pero sin nivel suficiente |
 | 404 | `task/branch_not_found` | Branch inexistente |
 | 400 | `task/branch_inactive` | Branch no activa |
+| 400 | `task/worksite_invalid` | `workSite` mal formado o dirección no resoluble |
+| 400 | `task/worksite_imprecise` | La dirección solo resolvió a nivel ciudad/región (§7) |
 
 Patrón recomendado en el front: si `401`, refrescar token y reintentar una vez; si `403`, ocultar/inhabilitar la acción en la UI según el nivel del usuario.
 
@@ -149,3 +157,47 @@ Patrón recomendado en el front: si `401`, refrescar token y reintentar una vez;
 - **Datos en tiempo real:** el servidor escribe en la misma Firestore (`entities/{entityId}/tasks/...`). Si el front ya escucha esos documentos en tiempo real, sigue funcionando sin cambios.
 - **Notificaciones:** el ciclo de vida (crear, asignar, validar…) sigue disparando push como hasta ahora — no requiere nada en el front.
 - **CORS:** el servicio responde a los orígenes del back office; si añades un dominio nuevo, hay que incluirlo en la config de CORS del servicio.
+
+---
+
+## 7. Lugar de trabajo de la tarea (`workSite`)
+
+Para clientes que trabajan **fuera del centro** —servicio a domicilio, instalaciones, talleres
+ajenos— la tarea puede llevar su propia dirección y su propia geocerca, sin necesidad de dar de
+alta un centro de trabajo por cada encargo. La decisión y sus motivos están en
+[ADR-007](./adr/ADR-007-geocerca-en-la-tarea.md); el detalle técnico en
+[TDR-005](./tdr/TDR-005-worksite-y-geocerca-de-tarea.md).
+
+### En el formulario
+
+Reutilizar **el mismo buscador de direcciones del alta de centros de trabajo**:
+`POST /api/v1/checkinbiz/geo` con `action: "autocomplete"` y luego `action: "placedetails"`. El
+front manda el `placeId` resultante y el servidor resuelve, normaliza y valida.
+
+```jsonc
+workSite: {
+  "placeId": "ChIJ...",        // camino normal
+  "radiusMeters": 150          // opcional: por defecto el ratioChecklog de la sucursal
+}
+```
+
+También se acepta `{ street, geo: {lat, lng}, radiusMeters? }` si el punto ya se tiene resuelto.
+
+### Dos avisos para la UI
+
+- **`task/worksite_imprecise`.** Ocurre cuando la dirección solo resuelve a nivel de ciudad o
+  región. No es un fallo del usuario: hay que pedirle que afine con número de portal. Un aviso
+  claro aquí evita una geocerca del tamaño de un municipio, que parece correcta y no lo es.
+- **El radio es la tolerancia real.** Por defecto se hereda el de la sucursal. Conviene
+  enseñarlo editable en el formulario: un garaje subterráneo o una nave industrial necesitan más
+  margen que un portal.
+
+### Qué pasa después
+
+Con `workSite`, el trabajador solo puede **iniciar** la tarea desde dentro del radio. Completar
+no se bloquea, pero la distancia queda registrada en la actividad de la tarea junto al punto y
+al radio vigentes en ese momento, así que el histórico no cambia aunque luego se corrija la
+dirección.
+
+Sin `workSite` no hay comprobación geográfica en la tarea: el trabajo se entiende en el centro,
+y de eso ya se encarga la geocerca del fichaje.

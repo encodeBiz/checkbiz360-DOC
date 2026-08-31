@@ -17,7 +17,7 @@ Scoping: un actor con `level < supervisor` (y no entityWriter) solo ve sus tarea
 
 ### `POST /` — crear tarea
 Permiso: `canManageTask`.
-Body: `entityId`, `branchId`, `title`, `description?`, `priority?`, `scheduledStartAt?`, `dueAt`, `assignedEmployeeIds?`, `config` (`TaskConfig`).
+Body: `entityId`, `branchId`, `title`, `description?`, `priority?`, `scheduledStartAt?`, `dueAt`, `assignedEmployeeIds?`, `config` (`TaskConfig`), `workSite?` (`TaskWorkSite`, ver [TDR-005](./tdr/TDR-005-worksite-y-geocerca-de-tarea.md) §2).
 Efectos: crea la tarea (`status: draft|assigned`), asignaciones iniciales, actividad `created`; si `config.notifyIfNotStarted` y hay `scheduledStartAt`, calcula `scheduledStartNotificationAt` (+15 min).
 `201` → `TaskDetail`. `400` config/prioridad inválida. `404` branch inexistente. `403` sin permiso.
 
@@ -32,14 +32,25 @@ Query: `limit?`.
 
 ### `PATCH /:taskId` — actualizar tarea
 Permiso: `canManageTask`.
-Body: campos editables (`title`, `description`, `priority`, `scheduledStartAt`, `dueAt`, `config`, …).
+Body: campos editables (`title`, `description`, `priority`, `scheduledStartAt`, `dueAt`, `config`, `workSite`, …).
+`workSite: null` borra la geocerca de la tarea.
 Efectos: `update` + actividad `updated`. `200` → `TaskDetail`.
 
 ### `PATCH /:taskId/status` — cambiar estado
 Permiso: `canOperateAssignedTask` (worker asignado puede iniciar/completar; supervisor+ según flujo).
-Body: `status` (`TaskStatus`) + campos de transición.
+Body: `status` (`TaskStatus`) + campos de transición + `geo?` (`{lat, lng}`).
 Efectos: aplica la transición (`started`/`completed`/…), sella `startedAt`/`completedAt`, recalcula `timeComplianceStatus` (`computeCompletionStatus`), actividad `status_changed`.
 `200` → `TaskDetail`. `400` transición inválida. `403` sin permiso.
+
+**Precondiciones para `in_progress` y `completed`** (ver [TDR-005](./tdr/TDR-005-worksite-y-geocerca-de-tarea.md)):
+
+1. **Jornada abierta.** El actor empleado necesita un check-in válido sin cerrar. Exento el actor de back office (`isEntityWriter`). Sin ella → `400 task/no_open_session`. La app ya lo impedía por su cuenta; ahora también el servidor.
+2. **Geocerca de la tarea**, solo si `task.workSite` existe:
+   - falta `geo` → `400 task/geo_required`
+   - al **iniciar**, fuera de radio → `400 task/out_of_worksite` con `{distanceMeters, allowedRadiusMeters}`; el estado no cambia y queda actividad `start_rejected`.
+   - al **completar**, la distancia se registra pero **no bloquea**.
+
+Una tarea sin `workSite` no tiene comprobación geográfica: la valla que le corresponde es la de su sucursal, ya aplicada en el check-in que la precondición 1 exige.
 
 ---
 
@@ -110,3 +121,8 @@ Body: `employeeId`, `rating` (1–5), `comment?`, `image?` (opcional, multipart)
 | `task/branch_not_found` | 404 | Branch inexistente |
 | `task/branch_inactive` | 400 | Branch no activa |
 | `task/employee_not_found` | 404 | Empleado del staff JWT inexistente |
+| `task/no_open_session` | 400 | El empleado no tiene jornada abierta |
+| `task/geo_required` | 400 | La tarea tiene `workSite` y el body no trae `geo` |
+| `task/out_of_worksite` | 400 | Fuera del radio del lugar de trabajo de la tarea |
+| `task/worksite_invalid` | 400 | `workSite` mal formado o dirección no resoluble |
+| `task/worksite_imprecise` | 400 | Geocodificación con precisión `approximate` (no vale para una valla) |
