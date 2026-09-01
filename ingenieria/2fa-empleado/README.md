@@ -44,9 +44,7 @@ El orden importa, y es el de siempre: contenedor verde primero, cliente después
 
 1. Desplegar a `staging` y comprobar que el contenedor responde con un `sessionToken` real:
    `/auth/validate` para conseguirlo, `2fa/enable` para el QR, `2fa/verify` con el código.
-2. Comprobar que `JWT_2FA_SECRET` es **el mismo valor** que en Firebase. Si no, los tokens
-   que la app ya tiene no valen y el 2FA falla con `auth/unauthorized`.
-3. Solo entonces, en `checkbiz360/lib/core/constants/app_constants.dart`:
+2. Solo entonces, en `checkbiz360/lib/core/constants/app_constants.dart`:
 
 ```dart
 static String get enable2FAEndpoint => '$_checkinbizBase/auth/2fa/enable';
@@ -63,6 +61,11 @@ static String get verify2FAEndpoint => '$_checkinbizBase/auth/2fa/verify';
 '$authEndpoint-enable2FA'
 '$authEndpoint-verify2FA'
 ```
+
+Sobre `JWT_2FA_SECRET` no hace falta preocuparse: hoy la app ya pide el `sessionToken` al
+contenedor y se lo presenta a las funciones de Firebase, y eso funciona. O sea que las dos
+casas firman con el mismo secreto desde antes de este port. Después del corte, además, ya no
+hay dos casas.
 
 Las funciones se quedan desplegadas hasta que el corte lleve un tiempo en pie: apagarlas es
 una decisión aparte y posterior.
