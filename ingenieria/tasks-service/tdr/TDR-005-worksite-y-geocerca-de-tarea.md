@@ -25,15 +25,17 @@ El fichaje (`services/checkinbiz`) **no se toca**.
 
 Campo nuevo y opcional en `services/tasks/src/domain/entities/Task.ts`:
 
+`TaskWorkSite` **extiende `Geofence`** de `@encodebiz/shared`: el punto y el margen son los
+mismos que los de una sucursal, y quien pregunta "¿está dentro?" no necesita saber si mira una
+tarea o un centro. Lo único propio de la tarea es de dónde salió la dirección.
+
 ```ts
 export type WorkSitePrecision = "rooftop" | "interpolated" | "center";
 
-export interface TaskWorkSite {
+export interface TaskWorkSite extends Geofence {
   /** Dirección normalizada por el geocodificador, para enseñar qué se entendió. */
   street: string;
-  geo: {lat: number; lng: number};
-  /** Radio de la valla. Lo rellena el servidor si el cliente lo omite (§2). */
-  radiusMeters: number;
+  // geo y radiusMeters llegan de Geofence. El servidor rellena el margen si se omite (§2).
   timeZone?: string;
   postalCode?: string;
   country?: string;
@@ -209,7 +211,7 @@ Orden exacto de comprobaciones para `in_progress`:
 3. **Jornada abierta** (§3) → `400 task/no_open_session`
 4. **Geocerca**, solo si `task.workSite` existe:
    - falta `geo` en el body → `400 task/geo_required`
-   - `getDistanceInMeters(geo, workSite.geo) > workSite.radiusMeters` →
+   - `evaluateGeofence(workSite, geo)` dice que está fuera →
      `400 task/out_of_worksite`, con `{distanceMeters, allowedRadiusMeters}` en la respuesta.
      **El estado no cambia**, y el intento queda registrado (§5).
 5. Transición, sellado de `startedAt` y actividad — exactamente como hoy.

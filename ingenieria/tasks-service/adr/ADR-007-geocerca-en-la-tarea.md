@@ -89,6 +89,14 @@ inservible cualquier informe de coste por trabajo.
 y en cada asignación (`updateTaskStatus.controller.ts`), y merlin y analytics ya consumen
 `taskSignals`. No hace falta que el fichaje aporte nada para saber cuánto duró un trabajo.
 
+**Una sola definición de valla, preguntada en dos momentos.** El punto y el margen viven en
+un único tipo de `@encodebiz/shared` —`Geofence`, con `evaluateGeofence` como única respuesta
+a "¿está dentro?"—, y `TaskWorkSite` lo extiende. La sucursal conserva su molde guardado
+(`address.geo` + `ratioChecklog`) porque es dato de clientes reales que no se renombra sin
+migrar, y un adaptador `branchGeofence` lo traduce. Lo que se duplicaba antes de esto no era
+el concepto sino la forma: dos moldes y dos comparaciones que habrían acabado divergiendo —una
+redondeando, la otra no; una aceptando el borde exacto, la otra rechazándolo—.
+
 **Son dos vallas en dos momentos, y ninguna sustituye a la otra.** La de la sucursal guarda la
 jornada; la de la tarea guarda la tarea. Así el respaldo que se pedía —"si la tarea no tiene
 geocerca, que valga la de la sucursal"— no hay que programarlo: se cumple solo, porque el
