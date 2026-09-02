@@ -122,6 +122,16 @@ adelantarse a la 2: cachear algo sin verificar convierte un bug en un bug persis
 (`encodebiz-front-saas`). **No se fusiona** hasta la Fase 3: la vista es la buena, la capa de
 datos no. Ver [05](./05_integracion-front.md).
 
+**Pendiente de verificar en dev:** el porte de la Fase 1 compila y su lógica se comparó línea a
+línea con la de la Cloud Function, pero no está ejercitado — hay que subirlo por `develop` →
+`staging` y probar alta y borrado de festivo en los tres scopes, ausencia con rango, preset, y
+que `GET /calendar` siga devolviendo lo mismo. Sólo después se mueve
+`NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER` en prod.
+
+La Fase 2 sí está verificada: `packages/shared/src/scripts/verificar-source-festivos.ts` corre
+sin credenciales, con los documentos reales de dev, y comprueba que nada cambia salvo el campo
+nuevo y que el crudo no se contamina.
+
 **Banco de pruebas:** entidad `Wl8ZCvpdmIXzEE0mhT7W` en dev, con festivo de entidad, festivo de
 sucursal, ocho días de vacaciones propias y overrides desactivados en dos niveles. Le faltan un
 segundo centro y alguien en los dos.
