@@ -8,19 +8,33 @@ responderla, repartido en tres sitios que nunca se han cruzado.
 
 ## Lo que ya existe
 
-### El módulo calendario (backend)
+### El módulo calendario (backend), que está partido en dos
 
-Cloud Function `apiV100-firebaseEntryHttp-checkinbiz-calendarHandler`. Es dueño de la regla de
-herencia y la tiene resuelta en un solo sitio:
+**Lectura, en el contenedor.** `services/checkinbiz` sirve
+`GET /api/v1/checkinbiz/calendar` desde `interfaces/http/calendar/`, y la regla de herencia vive
+en `@encodebiz/shared`:
 
 ```
-application/calendar/resolveEffectiveCalendar.usecase.ts   ← ResolveEffectiveCalendarUseCase
-domain/entities/Calendar.ts                                 ← WeeklySchedule, DaySchedule, Holiday
+packages/shared/src/calendar/resolveEffectiveCalendar.usecase.ts   ← la cascada
+packages/shared/src/calendar/resolveEffectiveDay.usecase.ts        ← ¿trabaja este día?
+packages/shared/src/calendar/Calendar.ts                            ← WeeklySchedule, Holiday, AbsenceRange
 ```
+
+De ahí la consumen también el fichaje, la edición de fichaje y `BuildPlannedHours` de analytics.
+Es núcleo compartido, no un rincón del panel.
+
+**Escritura, todavía en Firebase.** `calendarHandler` conserva `upsertEntity/Branch/Employee`,
+`delete` y `savePreset`, con **una copia entera del caso de uso** en
+`encodeBiz-SAAS/functions/src/services-saas/checkinbiz/application/calendar/`. El panel escribe
+contra esa Cloud Function.
 
 `GET` devuelve el calendario efectivo de un scope: horario semanal fusionado, festivos
-concatenados de los tres niveles, `sources`, `scheduleInheritance` y `overridesDisabled`.
-Detalle en [modulos/calendario.md](../../modulos/calendario.md).
+concatenados de los tres niveles, `sources` y `overridesDisabled`. Detalle en
+[modulos/calendario.md](../../modulos/calendario.md).
+
+**Y aplana el origen de los festivos**, que es la limitación que condiciona todo el diseño:
+`concatHolidays` mete los tres niveles en una lista y tira el nivel. Comprobado contra dev — ver
+[06_tareas.md](./06_tareas.md), TAREA 2.
 
 ### Los datos
 
@@ -98,10 +112,13 @@ pintado en el cliente aguantan de sobra; lo que no aguanta es la forma de traers
 
 No son culpa del tablero, pero lo condicionan y conviene tenerlas escritas:
 
-- **Las ausencias no tienen rango.** El tipo `Absence` (con `startDate`/`endDate`/`status`)
-  está definido en `ICalendar.ts` y no se usa: `HolidayModal` guarda N festivos de un día, uno
-  por `PATCH`. Para *calcular* da igual —cada fecha es una clave—, pero encarece la escritura y
-  hace imposible responder "¿por qué falta?" con una sola entrada.
+- **Las ausencias no tienen rango, en la práctica.** `AbsenceRange` (con
+  `startDate`/`endDate`/`status`) existe en `shared`, tiene API —`upsertEmployeeCalendar` acepta
+  `absence` y valida solapamientos— y `BuildPlannedHours` ya la consume. Pero el panel no la usa:
+  `EmployeeAbsencesModal` tipa sus ausencias como `Holiday` y guarda N festivos de un día, uno
+  por `PATCH`. Verificado en dev: ocho entradas para unas vacaciones del 11 al 18 de noviembre,
+  `absences` vacío. Encarece la escritura y, peor, deja dos modelos donde el resolutor sólo lee
+  uno.
 - **El estado del empleado no tiene fechas.** `status: vacation | sick_leave | …` es una
   bandera permanente en la ficha, sin desde–hasta. La disponibilidad sólo puede tratarla como
   "no disponible durante todo el periodo consultado".

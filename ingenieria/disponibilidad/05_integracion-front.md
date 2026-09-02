@@ -15,7 +15,7 @@ ejecutable de las reglas y como maqueta viva de la vista.
 | Fichero | Fase 3 |
 |---|---|
 | `components/AvailabilityTab.tsx` | **Se conserva.** Cambia de dónde salen los datos |
-| `components/AvailabilityDayDetail.tsx` | **Se conserva.** Pasa a pintar la respuesta del endpoint |
+| `components/AvailabilityDayDetail.tsx` | **Se conserva y crece.** Pinta la respuesta del endpoint y gana los gestos de escritura del ADR-003 |
 | `domain/features/checkinbiz/IAvailability.ts` | **Se conserva**, alineando nombres con el contrato |
 | `services/checkinbiz/availability.service.ts` | **Se vacía.** Una llamada donde había N+B+2 lecturas |
 | `lib/common/availability.ts` | **Se poda.** Se va la resolución; se queda la presentación |
@@ -61,8 +61,16 @@ export const fetchAvailabilityDay = async (params: {
 }): Promise<AvailabilityDayResponse> => { /* ídem */ };
 ```
 
-Por `/api/proxy/checkinbiz_calendar_handler`, que ya está registrado y ya acepta `GET`. Sin
-variable de entorno nueva y sin redeploy en Vercel.
+Por `/api/proxy/checkinbiz_calendar_availability[/day]`, que **hay que dar de alta**: las rutas
+viven en el contenedor, no en la Cloud Function a la que apunta `checkinbiz_calendar_handler`.
+
+Son dos cosas, y las dos son trabajo del front:
+
+1. Una entrada en `BACKEND_PROXY_TARGETS` de `src/lib/http/serverBackendProxy.ts`, con
+   `methods: ['GET']`, `requiresAuth: true` y un `subPathPattern` que sólo permita la raíz y
+   `/day` — la base es una raíz de API, así que sin patrón el navegador alcanzaría todo lo que
+   cuelgue de ella a través de un proxy que ya pone el token.
+2. `NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_AVAILABILITY` por entorno, y su despliegue en Vercel.
 
 ## Cuándo se llama
 
@@ -88,9 +96,14 @@ de cobertura que se equivoca callando es peor que uno que no carga.
 
 ## El desglose escribe: arrastre y botón
 
-Ver [ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md). Se implementa **antes**
-que el resto de fases, porque no depende del backend: reusa `upsertCalendar` y
-`deleteCalendarItem`, que ya existen.
+Ver [ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md). Se puede implementar
+**antes** que el resto de fases sobre el cruce local del prototipo: la escritura reusa
+`upsertCalendar` y `deleteCalendarItem`, que ya existen.
+
+Lo que sí depende del backend es la **lectura**: tras el cutover de la Fase 3, saber qué fila es
+reversible deja de calcularse en el navegador y pasa a venir en la respuesta —`reason`,
+`reasonSource`, `absenceId` y `paid`—. Y esos campos sólo se pueden rellenar con el `source` de
+la Fase 1.
 
 | Gesto | Qué abre | Qué escribe |
 |---|---|---|

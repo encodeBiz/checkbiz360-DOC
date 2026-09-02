@@ -1,7 +1,7 @@
 # ADR-002 — `entityId` dentro de los documentos de calendario
 
-**Fecha:** 2026-09-02
-**Estado:** Propuesto
+**Fecha:** 2026-09-02 · **Revisado:** 2026-09-02 (premisa confirmada con datos reales)
+**Estado:** Aceptado — aplazado, no bloquea
 **Decisionario:** Jose Acevedo
 
 ---
@@ -20,9 +20,13 @@ consulta: `collectionGroup('calendar')` alcanza todas las subcolecciones `calend
 base**, y para acotarla a una entidad hace falta un campo por el que filtrar.
 
 Los presets ya se leen así —`type == 'preset'` y `entityId == …`—, o sea que el patrón existe y
-funciona; lo que no está garantizado es que los documentos `config` lleven `entityId` dentro. El
-payload de `upsertCalendar` sí lo recibe, así que el dato está disponible en el momento de
-escribir: la duda es si se persiste.
+funciona; lo que no estaba garantizado es que los documentos `config` lleven `entityId` dentro.
+
+**Confirmado el 2026-09-02 contra dev:** no lo llevan. El `calendar/config` del empleado
+`2KQpYQK4SkAA4duRIHkL` tiene las claves `advance`, `timezone`, `holidays`, `overridesSchedule`
+y `overridesDisabled` — ningún `entityId`. El repositorio lo **inyecta al leer** desde la ruta
+(`return {entityId, ...snap.data()}`), nunca lo persiste. El payload de `upsertCalendar` sí lo
+recibe, así que el dato está disponible en el momento de escribir.
 
 Tres caminos.
 
@@ -93,3 +97,20 @@ documento — un calendario no cambia de entidad.
   motivo por el que la denormalización existe como patrón.
 - Mientras convivan documentos con y sin el campo, la query devuelve resultados incompletos. Por
   eso el corte es: **primero el backfill, después usar la query**; y hasta entonces, `getAll()`.
+
+---
+
+## Nota de prioridad (2026-09-02)
+
+Esta decisión **se aplaza**. Sigue siendo correcta, pero ha perdido casi toda su urgencia por
+dos motivos que aparecieron después de escribirla:
+
+1. `getAll()` resuelve el problema real —la latencia— en un solo round trip, y con el
+   contenedor en OVH y Firestore en GCP lo que se paga son round trips, no lecturas.
+2. Con el snapshot de [ADR-005](./ADR-005-snapshot-del-calendario-resuelto-en-postgres.md), esa
+   lectura deja de ocurrir en cada carga del tablero y pasa a ocurrir sólo al reconstruir una
+   fila. La query ahorraría entonces sobre un camino que ya casi no se recorre.
+
+Queda como limpieza pendiente —la incoherencia de que unos documentos de la subcolección
+`calendar` se puedan consultar por entidad y otros no sigue ahí—, pero **no bloquea ninguna
+fase** y no debe hacerse antes que el resto.

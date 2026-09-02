@@ -1,24 +1,27 @@
 # 03 — Contratos de API
 
-**Handler:** `apiV100-firebaseEntryHttp-checkinbiz-calendarHandler`
-**Vía el front:** `/api/proxy/checkinbiz_calendar_handler` — el proxy de Next reenvía la query
-string tal cual y pone el token. No hace falta registrar nada nuevo en la allowlist.
-**Auth:** `Authorization: Bearer <Firebase ID token>`. Sólo back office; el staff JWT de la app
-**no** se acepta en estas dos acciones.
-**Permisos:** por nivel de responsabilidad del actor — `owner`/`manager` ven toda la entidad,
-`supervisor` sólo sus sucursales, `worker` recibe `403`.
+**Servicio:** `services/checkinbiz` (contenedor), router `calendar`
+**Rutas:** `GET /api/v1/checkinbiz/calendar/availability` y `.../availability/day`
+**Vía el front:** `/api/proxy/checkinbiz_calendar_availability[/day]` — requiere **entrada nueva
+en la allowlist** del proxy (`methods: ['GET']`, `subPathPattern` limitado a la raíz y `/day`) y
+una variable de entorno por entorno. No basta con reusar `checkinbiz_calendar_handler`: ese
+apunta a la Cloud Function.
+**Auth:** `Authorization: Bearer <Firebase ID token>`. El staff JWT de la app **no** se acepta.
+**Permisos:** `owner`/`manager` ven toda la entidad, `supervisor` sólo sus sucursales, `worker`
+recibe `403`.
 
-Ambas acciones son de **solo lectura** y no escriben nada.
+Ambas rutas son de **solo lectura** y no escriben nada.
 
 > El desglose del día también da de alta y borra ausencias
-> ([ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md)), pero **no añade contrato**:
-> reusa `PATCH` (`upsertCalendar`) y `DELETE` (`deleteCalendarItem`) del mismo handler, ya
-> existentes. Lo único que el backend tiene que aceptar de nuevo es el campo `paid` dentro de
-> `holiday`, del [ADR-004](./adr/ADR-004-ausencias-retribuidas.md).
+> ([ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md)), pero **no añade contrato
+> aquí**: reusa las escrituras de calendario que ya existen. Lo único nuevo que el backend tiene
+> que aceptar es `paid` dentro de `holiday`
+> ([ADR-004](./adr/ADR-004-ausencias-retribuidas.md)). Esas escrituras viven hoy en la Cloud
+> Function y se portan al contenedor en la Fase 4.
 
 ---
 
-## `GET ?action=availability` — rejilla de cobertura
+## `GET /availability` — rejilla de cobertura
 
 Cuánta gente hay disponible cada día, agrupada por sucursal.
 
@@ -26,7 +29,6 @@ Cuánta gente hay disponible cada día, agrupada por sucursal.
 
 | Parámetro | Obligatorio | Descripción |
 |---|---|---|
-| `action` | sí | `availability` |
 | `entityId` | sí | Entidad |
 | `from` | sí | `YYYY-MM-DD`, inclusive |
 | `to` | sí | `YYYY-MM-DD`, inclusive. Máximo 62 días desde `from` |
@@ -54,28 +56,32 @@ Cuánta gente hay disponible cada día, agrupada por sucursal.
           { "date": "2026-09-05", "available": 0,  "closed": true }
         ]
       }
-    ]
+    ],
+    "warnings": { "discardedHolidays": 0 }
   }
 }
 ```
 
 - `cells` trae **un elemento por día del rango**, en orden, sin huecos.
 - `total` es la plantilla computable del grupo, y es el denominador de todas sus celdas.
-- `closed` significa *nadie trabaja y nadie debería* —fin de semana o festivo—, y es distinto
-  de `available: 0` con `closed: false`, que es un agujero de cobertura. La regla exacta, en el
-  [TDR-001](./tdr/TDR-001-calculo-de-disponibilidad.md) §3.
+- `closed` significa *nadie trabaja y nadie debería* —fin de semana o festivo del grupo—, y es
+  distinto de `available: 0` con `closed: false`, que es un agujero de cobertura. La regla exacta,
+  en el [TDR-001](./tdr/TDR-001-calculo-de-disponibilidad.md) §3.
 - `headcount` es la plantilla computable de **toda la entidad**, no la suma de los grupos: quien
-  pertenece a varias sucursales cuenta en cada una de ellas, así que la suma de `total` puede
-  ser mayor.
+  pertenece a varias sucursales cuenta en cada una, así que la suma de `total` puede ser mayor.
+  Es un sobreconteo conocido — TDR §2.2.
+- `warnings.discardedHolidays` cuenta los festivos con fecha ilegible que se descartaron. Va en
+  la respuesta y no sólo en un log: descartar en silencio y devolver un número entero es el mismo
+  fallo que este diseño rechaza, sólo que más pequeño.
 
 ### Errores
 
-| Código HTTP | `code` | Cuándo |
+| HTTP | `code` | Cuándo |
 |---|---|---|
 | `400` | `calendar/missing_params` | Falta `entityId`, `from` o `to` |
 | `400` | `calendar/invalid_range` | `to` anterior a `from`, o fechas mal formadas |
 | `400` | `calendar/range_too_long` | Más de 62 días. Devuelve `{ days, limit }` |
-| `400` | `calendar/headcount_too_large` | Plantilla por encima del tope sin `branchId`. Devuelve `{ headcount, limit }` para que el front pida elegir sucursal |
+| `400` | `calendar/headcount_too_large` | Plantilla por encima del tope sin `branchId`. Devuelve `{ headcount, limit }` |
 | `403` | `calendar/forbidden` | Nivel insuficiente, o `branchId` fuera del alcance del actor |
 | `404` | `calendar/entity_not_found` | La entidad no existe |
 
@@ -84,7 +90,7 @@ número de cobertura incompleto es peor que ninguno.
 
 ---
 
-## `GET ?action=availabilityDay` — desglose de un día
+## `GET /availability/day` — desglose de un día
 
 Quién está disponible ese día en ese grupo, y por qué no lo está el resto.
 
@@ -92,7 +98,6 @@ Quién está disponible ese día en ese grupo, y por qué no lo está el resto.
 
 | Parámetro | Obligatorio | Descripción |
 |---|---|---|
-| `action` | sí | `availabilityDay` |
 | `entityId` | sí | Entidad |
 | `date` | sí | `YYYY-MM-DD` |
 | `groupId` | sí | Id de sucursal, o `__unassigned__` |
@@ -114,7 +119,7 @@ Quién está disponible ese día en ese grupo, y por qué no lo está el resto.
       }
     ],
     "unavailable": [
-      { "employeeId": "emp_456", "fullName": "Luis Ruiz",  "reason": "holiday",        "reasonName": "Diada",     "reasonSource": "branch" },
+      { "employeeId": "emp_456", "fullName": "Luis Ruiz",  "reason": "holiday",        "reasonName": "Diada",      "reasonSource": "branch" },
       { "employeeId": "emp_789", "fullName": "Marta Cano", "reason": "absence",        "reasonName": "Vacaciones", "reasonSource": "employee", "absenceId": "vacaciones-2026-09-08", "paid": true },
       { "employeeId": "emp_012", "fullName": "Pablo Mora", "reason": "employeeStatus", "reasonName": "sick_leave" },
       { "employeeId": "emp_345", "fullName": "Nadia Sáez", "reason": "noShift" }
@@ -126,22 +131,41 @@ Quién está disponible ese día en ese grupo, y por qué no lo está el resto.
 - `available.length + unavailable.length === group.total`.
 - `shifts` va estructurado, no formateado: el formato de hora depende del locale y es del
   cliente.
-- `reason` ∈ `noShift | holiday | absence | employeeStatus`. Precedencia y significado en el
-  [TDR-001](./tdr/TDR-001-calculo-de-disponibilidad.md) §2.
+- `reason` ∈ `noShift | holiday | absence | employeeStatus`. Significado y orden en el
+  [TDR-001](./tdr/TDR-001-calculo-de-disponibilidad.md) §3.
 - `reasonName` es el nombre que escribió quien creó el festivo o la ausencia; para
   `employeeStatus` es la **clave** del estado (`vacation`, `sick_leave`, …), que el cliente
   traduce. Ausente para `noShift`.
-- `reasonSource` ∈ `entity | branch | employee`, sólo para `holiday` y `absence`.
+- `reasonSource` ∈ `entity | branch | employee`, sólo para `holiday` y `absence`. Sale del
+  `source` que la **TAREA 2** añade a los festivos resueltos; hoy el resolutor lo tira, y sin
+  él este campo no se puede rellenar.
 - `absenceId` y `paid` van **sólo** cuando `reason` es `absence` con `reasonSource: employee`:
   son lo que necesita el panel para poder borrarla y para decir si se cobra. `paid` ausente
   significa *no consta*, que no es lo mismo que `false` — ver
   [ADR-004](./adr/ADR-004-ausencias-retribuidas.md).
 
+### Por qué el motivo se queda
+
+Se valoró retirarlo y dejar dos listas de nombres: el tablero diría *si* alguien está
+disponible y no *por qué* no lo está. Habría simplificado el cálculo, el contrato y las
+pruebas.
+
+**No se puede**, porque el desglose no es solo lectura: da de alta y borra ausencias
+([ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md)). Y una superficie de
+escritura tiene que saber qué puede escribir — qué fila es reversible sale de
+`reason: absence` con `reasonSource: employee`, el borrado necesita `absenceId`, y los tres
+motivos irreversibles necesitan `reason` y `reasonName` para explicar por qué la flecha está
+apagada.
+
+El coste real es menor de lo que parecía: con el `source` dentro —que hace falta igual para
+`closed`— el reparto entre motivo colectivo y personal ya está hecho, y nombrar cuál es apenas
+un paso más.
+
 ### Errores
 
 Los mismos que la rejilla, más:
 
-| Código HTTP | `code` | Cuándo |
+| HTTP | `code` | Cuándo |
 |---|---|---|
 | `404` | `calendar/group_not_found` | El `groupId` no es una sucursal de la entidad |
 
@@ -150,8 +174,8 @@ Los mismos que la rejilla, más:
 ## Notas de contrato
 
 **Sin paginación.** Una suma no se pagina: para contar hay que mirarlo todo. El tamaño se acota
-por rango (62 días) y por plantilla (`headcount_too_large` obliga a elegir sucursal), no
-troceando la respuesta.
+por rango (62 días) y por plantilla (`headcount_too_large`), no troceando la respuesta.
 
-**Idempotente y cacheable.** Ambas acciones son puras respecto al estado del calendario.
-Cuando se materialice la rejilla (Fase 4) el contrato no cambia; sólo de dónde sale el número.
+**Idempotente y cacheable.** Ambas rutas son puras respecto al estado del calendario. Cuando
+entre el snapshot de [ADR-005](./adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md) el
+contrato no cambia; sólo de dónde sale el número.

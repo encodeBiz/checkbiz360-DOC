@@ -1,35 +1,54 @@
 # TDR-001 — Cálculo de disponibilidad: plan de lectura, reglas y límites
 
-**Fecha:** 2026-09-02
+**Fecha:** 2026-09-02 · **Revisado:** 2026-09-02 (verificado contra datos reales de dev)
 **Estado:** Diseño
-**Componente:** Firebase Functions — `checkinbiz` / módulo `calendar`
-**Decisiones de referencia:** [ADR-001](../adr/ADR-001-la-disponibilidad-la-agrega-el-modulo-calendario.md) · [ADR-002](../adr/ADR-002-entityid-en-los-documentos-de-calendario.md)
+**Componente:** `services/checkinbiz` (contenedor) + `@encodebiz/shared` — módulo `calendar`
+**Decisiones de referencia:** [ADR-001](../adr/ADR-001-la-disponibilidad-la-agrega-el-modulo-calendario.md) · [ADR-002](../adr/ADR-002-entityid-en-los-documentos-de-calendario.md) · [ADR-005](../adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md)
 
 ---
 
 ## Resumen
 
-Dos casos de uso nuevos, `ResolveAvailabilityUseCase` y `ResolveAvailabilityDayUseCase`, que
-comparten la misma resolución y se diferencian sólo en qué devuelven: la suma o los nombres.
+Dos casos de uso nuevos, `ResolveAvailabilityUseCase` y `ResolveAvailabilityDayUseCase`, en
+`@encodebiz/shared`, expuestos como dos rutas del `calendarRouter` del contenedor. Comparten la
+misma resolución y se diferencian en qué devuelven: la suma o los nombres.
 
-Las reglas de este documento no son nuevas: están implementadas y probadas contra la vista en
-`src/lib/common/availability.ts` del prototipo, y se recogen aquí para que el backend las
-reproduzca exactamente. Es la parte del prototipo que sobrevive, aunque el código no lo haga.
+**No traen reglas nuevas.** Reusan `ResolveEffectiveCalendarUseCase`, que ya resuelve la
+cascada para el fichaje, para la app y para las horas planificadas. Lo único que cambia es la
+**forma del bucle**, y hay un prerrequisito en el resolutor.
 
 ---
 
+## 0. Prerrequisito: el `source` de los festivos
+
+`ResolveEffectiveCalendarUseCase` fusiona los festivos de los tres niveles en una lista plana y
+**tira el nivel**. Verificado contra dev: para un empleado con vacaciones propias, `GET /calendar`
+devuelve diez festivos donde la Navidad de la entidad, el festivo de la sucursal y sus ocho días
+de vacaciones son indistinguibles.
+
+Sin el nivel no se puede calcular `closed` (§3), que es la mitad de lo que el tablero promete.
+El arreglo —cinco líneas en `concatHolidays`, aditivo y auditado consumidor a consumidor— es la
+**TAREA 2** de [06_tareas.md](../06_tareas.md) y **bloquea esta fase**.
+
 ## 1. Plan de lectura
 
-| Paso | Lectura | Coste |
-|---|---|---|
-| 1 | `entities/{e}/calendar/config` | 1 doc |
-| 2 | `entities/{e}/branches` con `status != 'inactive'` | 1 query, B docs |
-| 3 | `entities/{e}/employees` con estado computable (§2.1) | 1 query, N docs |
-| 4 | Configs de las B sucursales | 1 `getAll`, B docs |
-| 5 | Configs de los empleados | 1 query `collectionGroup` (ADR-002) o 1 `getAll` de N referencias |
+El contenedor corre en OVH y Firestore está en GCP: lo que se paga son **round trips**, no sólo
+lecturas facturadas. El plan minimiza los primeros.
 
-Todo se lee una vez por petición, antes de evaluar ningún día. El rango de fechas **no** afecta
-al plan de lectura: se leen los mismos documentos para un día que para un mes.
+| Paso | Lectura | Round trips |
+|---|---|---|
+| 1 | `entities/{e}/calendar/config` | 1 |
+| 2 | `entities/{e}/branches` con `status != 'inactive'` | 1 |
+| 3 | `entities/{e}/employees` con estado computable (§2.1) | 1 |
+| 4 | Configs de las B sucursales — `getAll` | 1 |
+| 5 | Configs de los empleados — `getAll` de N referencias, o `collectionGroup` ([ADR-002](../adr/ADR-002-entityid-en-los-documentos-de-calendario.md)) | 1 |
+
+Cinco idas y vueltas, independientemente del tamaño de la plantilla. Nunca `getDoc` en bucle:
+eso convierte N lecturas en N viajes entre nubes, que es exactamente lo que hacía el prototipo
+mal.
+
+Todo se lee una vez por petición, antes de evaluar ningún día. **El rango de fechas no afecta al
+plan de lectura**: se leen los mismos documentos para un día que para un mes.
 
 **Si cualquier lectura falla, la petición falla.** No hay degradación parcial: es la corrección
 central de lo que hacía mal el prototipo, donde una lectura fallida se interpretaba como
@@ -55,12 +74,24 @@ Un empleado pertenece a varias sucursales (`branchId: string[]`) y su horario ef
 empleado: es el par.
 
 Quien está en dos sucursales cuenta en las dos filas. La suma de `total` de los grupos puede
-superar `headcount`, y por eso ambos van en la respuesta.
+superar `headcount`, y por eso ambos van en la respuesta. **Es un sobreconteo conocido**: sin
+asignación de turno por día y sucursal (§9) no se puede saber en cuál de las dos está esa
+persona ese día, así que se la cuenta como disponible en ambas.
 
 Quien no tiene ninguna sucursal válida cae en el grupo `__unassigned__`, con el horario de la
 entidad y sus festivos.
 
-### 2.3 Horario efectivo
+### 2.3 Un bucle distinto, no reglas distintas
+
+`ResolveEffectiveDayUseCase` ya responde "¿trabaja esta persona este día?" —y acierta: se
+comprobó contra dev en festivo de entidad, festivo de sucursal, vacaciones propias, sábado y día
+normal—. Pero **resuelve el calendario entero en cada llamada**: por empleado y por día serían
+N × días resoluciones completas, inviable.
+
+La disponibilidad resuelve **una vez por par (empleado, sucursal)** y recorre los días del rango
+en memoria sobre ese resultado. Mismas reglas, una resolución en lugar de treinta.
+
+### 2.4 Horario efectivo y días libres
 
 La cascada de siempre, la de `ResolveEffectiveCalendarUseCase`:
 
@@ -70,78 +101,89 @@ entity.defaultSchedule
       └─ employee.overridesSchedule  si employee.overridesDisabled !== true
 ```
 
-Día a día, no en bloque: un nivel que define sólo el martes hereda el resto.
-`overridesDisabled` es `true` cuando el documento no existe.
+Día a día, no en bloque. `overridesDisabled` es `true` cuando el documento no existe.
 
-Un día se normaliza así, aplanando las tres formas históricas del dato: `disabled` manda sobre
-`enabled`; si hay `shifts` no vacío se usa; si no, se cae a `start`/`end` sueltos; si tampoco,
-9:00–17:00.
+**`overridesDisabled` corta el horario, no los festivos.** Los festivos de los tres niveles se
+concatenan siempre. Comprobado en dev: con `overridesDisabled: true` en sucursal y empleado, el
+horario sale de la entidad (`sources.schedule = "entity"`) y aun así llegan los festivos de los
+tres. Es coherente —un festivo es aditivo, no un override— pero no estaba escrito.
 
-### 2.4 Días libres
-
-Se indexan por fecha, con las capas heredadas primero y **sin pisarse**:
-
-1. Festivos de la entidad → `source: entity`
-2. Festivos de la sucursal → `source: branch`
-3. Festivos propios del empleado (las ausencias) → `source: employee`
-
-Que el heredado gane es deliberado: si alguien tiene una ausencia el mismo día que un festivo de
-la entidad, ese día es festivo. De esa precedencia depende que el día se lea como descanso y no
-como agujero de cobertura (§3).
+Los días libres se indexan por fecha conservando su `source` (§0), que es lo que permite
+distinguir *cierra la empresa* de *libro yo*.
 
 ## 3. Reglas de evaluación
 
-### Precedencia del motivo
+### Disponible
 
-Para cada par (empleado, sucursal) y cada día, en este orden y parando en el primero que se
-cumpla:
+```
+disponible = tiene turno ese día de la semana
+          && no hay día libre en esa fecha (de cualquier nivel)
+          && el estado de la ficha es 'active'
+```
 
-| # | Motivo | Cuándo |
+### El motivo: dos cubos, y luego una etiqueta
+
+Todo el cálculo se apoya en una sola distinción, y de ella salen tanto `closed` como el `reason`
+del contrato:
+
+- **Colectivo** — el horario no tiene turno ese día, o hay un día libre con `source` de entidad
+  o de sucursal. Le pasa a todo el grupo por igual.
+- **Personal** — día libre propio del empleado, o su ficha no está `active`.
+
+**Lo colectivo se mira primero.** Si alguien está de baja un día festivo de la empresa, ese día
+es festivo, no baja: sin esa precedencia, un festivo con una sola persona de baja dejaría de
+leerse como descanso y aparecería en rojo como si faltara gente. Es la única regla de orden que
+hay, y sustituye a la tabla de precedencias de cuatro niveles de la versión anterior.
+
+Etiquetar es entonces un paso más sobre el cubo ya elegido:
+
+| Cubo | `reason` | Cuándo |
 |---|---|---|
-| 1 | `noShift` | El horario efectivo no tiene turno ese día de la semana |
-| 2 | `holiday` | Hay festivo de entidad o de sucursal esa fecha |
-| 3 | `absence` | Hay ausencia propia del empleado esa fecha |
-| 4 | `employeeStatus` | El estado de la ficha no es `active` |
+| Colectivo | `noShift` | El horario efectivo no tiene turno ese día de la semana |
+| Colectivo | `holiday` | Día libre con `source` de entidad o de sucursal |
+| Personal | `absence` | Día libre propio del empleado (`source: employee`) |
+| Personal | `employeeStatus` | El estado de la ficha no es `active` |
 
-Si no se cumple ninguno, **disponible**, y sus turnos son los del horario efectivo.
+`absence` es el único reversible desde el panel, y por eso es el único que lleva `absenceId` y
+`paid` en la respuesta ([ADR-003](../adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md),
+[ADR-004](../adr/ADR-004-ausencias-retribuidas.md)). Los otros tres se explican y se bloquean.
 
-**El orden importa y no es arbitrario.** Quien está de baja un día festivo cae bajo `holiday`,
-no bajo `employeeStatus`. Sin eso, un festivo con una sola persona de baja dejaría de contar
-como descanso y aparecería en rojo como si faltara gente.
+**Todo esto depende del `source` (§0).** Sin él no se distingue `holiday` de `absence`, que es
+la línea que separa el gris del rojo y lo reversible de lo que no.
 
 ### Día cerrado
 
 ```
 closed = total > 0
       && available === 0
-      && todos los motivos ∈ { noShift, holiday }
+      && ningún ausente lo está por un motivo personal
 ```
 
-Es *nadie trabaja y nadie debería*: fin de semana, o festivo para todo el grupo. Basta una baja
-o una ausencia para que el día vuelva a ser cobertura y `closed` sea `false` — porque entonces
-sí hay gente que debería estar y no está.
+*Nadie trabaja y nadie debería*: fin de semana, o festivo para todo el grupo. Basta una ausencia
+personal para que el día vuelva a ser cobertura, porque entonces sí hay gente que debería estar
+y no está.
 
-`closed` es dato, no estilo: distingue el gris del rojo, y esa distinción no la puede tomar el
-cliente sin conocer los motivos de cada persona.
+`closed` es **dato, no estilo**: distingue el gris del rojo, y esa distinción no la puede tomar
+el cliente sin conocer los motivos. Sin él, cada sábado saldría 0 de N en rojo igual que una
+catástrofe de cobertura, y un tablero que grita ocho días de cada treinta por diseño enseña a no
+mirarlo.
 
 ## 4. Límites
 
-| Límite | Valor propuesto | Respuesta al superarlo |
-|---|---|---|
-| Rango de fechas | 62 días | `400 calendar/range_too_long` con `{ days, limit }` |
-| Plantilla sin `branchId` | 1000 empleados computables | `400 calendar/headcount_too_large` con `{ headcount, limit }` |
+Los dos límites no hacen el mismo trabajo, y conviene no confundirlos:
+
+| Límite | Valor | Qué protege | Respuesta |
+|---|---|---|---|
+| Rango de fechas | 62 días | El **tamaño de la respuesta** y las celdas a evaluar. No las lecturas: §1 no depende del rango | `400 calendar/range_too_long` con `{days, limit}` |
+| Plantilla sin `branchId` | 1000 computables | Las **lecturas**. Es el único que acota el coste real | `400 calendar/headcount_too_large` con `{headcount, limit}` |
 
 El tope de plantilla se comprueba **después del paso 3** y antes de leer configs: si hay que
-rechazar, que sea barato. Con `branchId` no aplica, porque el conteo ya está acotado a una
-sucursal.
+rechazar, que sea barato.
 
 Nada se trunca en silencio. Un tablero al que le faltan personas da un número plausible y
 equivocado, que es exactamente lo que hay que evitar.
 
 ## 5. Permisos
-
-Trabajo nuevo: el handler de calendario no discrimina hoy por nivel de responsabilidad, y estas
-dos acciones devuelven nombres de toda la plantilla.
 
 | Nivel | Alcance |
 |---|---|
@@ -152,47 +194,61 @@ dos acciones devuelven nombres de toda la plantilla.
 Sólo Firebase ID token. El staff JWT de la app móvil no se acepta: un empleado no tiene por qué
 saber quién está de baja.
 
+No es trabajo desde cero: `resolveActorByUid` de `services/tasks/src/interfaces/http/task/task.helpers.ts`
+ya hace exactamente esta resolución con `ResponsibilityLevel` y `findResponsibilities`, ambos en
+`shared`. Se sube el resolutor a `shared` y se llama.
+
+**Pendiente de decidir:** `headcount` es hoy la plantilla de toda la entidad, así que un
+`supervisor` vería el tamaño de la empresa. O se acota a su alcance, o se documenta y se acepta.
+Ídem con si el grupo `__unassigned__` le llega o no.
+
 ## 6. Casos borde
 
 | Caso | Comportamiento |
 |---|---|
 | Entidad sin sucursales | Un solo grupo, `__unassigned__`, con toda la plantilla |
 | Sucursal sin empleados | No sale en `rows`. Un grupo vacío no dice nada |
-| Empleado con `branchId` que apunta a una sucursal inactiva o borrada | Esa pertenencia se ignora; si no le queda ninguna, cae en `__unassigned__` |
-| Entidad sin `calendar/config` | Se aplica el horario por defecto L-V 9:00–17:00, el mismo que enseña la pestaña de entidad |
-| Festivo con fecha mal formada | Se descarta y se registra en log. No tumba la petición |
+| `branchId` que apunta a sucursal inactiva o borrada | Esa pertenencia se ignora; si no le queda ninguna, cae en `__unassigned__` |
+| Entidad sin `calendar/config` | Horario por defecto L-V 9:00–17:00, el mismo que enseña la pestaña de entidad |
+| Festivo con fecha mal formada | Se descarta, **se cuenta y se informa en la respuesta**. Descartar en un log y devolver un número entero es el mismo fallo que este diseño rechaza, sólo que más pequeño |
 | Empleado sin `fullName` | Se responde con el email; si tampoco, con el id |
-| Rango que cruza el cambio de hora | Irrelevante: se opera con fechas civiles `YYYY-MM-DD`, no con instantes |
+| Rango que cruza el cambio de hora | Irrelevante: se opera con fechas civiles `YYYY-MM-DD` |
 
 ## 7. Qué NO cambia
 
-- `GET /calendar` (calendario efectivo), `PATCH`, `DELETE` y `POST?action=savePreset` siguen
-  exactamente igual. Estas dos acciones son aditivas.
-- No hay colección nueva, ni escritura, ni migración de datos — salvo el backfill de `entityId`
-  del [ADR-002](../adr/ADR-002-entityid-en-los-documentos-de-calendario.md), que es un campo y
-  es idempotente.
-- `ResolveEffectiveCalendarUseCase` no se toca. Se reusa su lógica, no se modifica.
+- `GET /calendar` (calendario efectivo), y las escrituras de calendario, siguen igual salvo el
+  campo `source` añadido a `holidays[]`, que es aditivo y está auditado en
+  [06_tareas.md](../06_tareas.md).
+- No hay colección nueva en Firestore, ni escritura, ni migración de datos.
+- `ResolveEffectiveCalendarUseCase` no se reescribe. Se le añade el `source` y se reusa.
 
 ## 8. Verificación
 
 La prueba que importa no es que el número parezca razonable, sino que **la agregación y la
 resolución individual no se contradigan**: para una entidad de dev con festivos de entidad,
-festivos de sucursal y ausencias de empleado, la rejilla tiene que coincidir, empleado a
-empleado y día a día, con lo que devuelve `GET /calendar` preguntado uno por uno. Si divergen,
-hay dos verdades y el módulo ha vuelto al problema que este diseño venía a quitar.
+festivos de sucursal y ausencias de empleado, la rejilla tiene que coincidir, empleado a empleado
+y día a día, con lo que devuelve `GET /calendar` preguntado uno por uno. Si divergen, hay dos
+verdades y el módulo ha vuelto al problema que este diseño venía a quitar.
 
-Casos mínimos: día normal, fin de semana, festivo de entidad, festivo de sucursal, ausencia de
-empleado, baja de ficha, baja de ficha **en** festivo (que debe salir como `holiday` y dejar el
-día `closed`), y empleado en dos sucursales.
+Casos mínimos: día normal, fin de semana, festivo de entidad, festivo de sucursal, vacaciones de
+empleado, baja de ficha, baja de ficha **en** festivo (que debe dejar el día `closed`), y
+empleado en dos sucursales.
+
+Hay ya un banco de pruebas real en dev —entidad `Wl8ZCvpdmIXzEE0mhT7W`— con festivo de entidad,
+festivo de sucursal, ocho días de vacaciones propias y overrides desactivados en dos niveles. Le
+faltan un segundo centro y alguien en los dos.
 
 ## 9. Fuera de alcance (deuda registrada)
 
-- **`Absence` con rango real.** Hoy son N festivos de un día. Para calcular da igual; para
-  escribir y para explicar, no. Deuda §6.8 de [modulos/calendario.md](../../../modulos/calendario.md).
-- **Estados de ficha sin fechas.** `vacation`, `sick_leave` y compañía son banderas
-  permanentes: la disponibilidad sólo puede tratarlas como "no disponible en todo el rango".
-  Con `Absence` real, esto lo absorbería el calendario.
-- **Turno por día y sucursal.** No existe en el modelo, y sin él no se puede distinguir "libra"
-  de "hoy trabaja en otro centro". Es el motivo por el que "turno en otra sucursal" quedó fuera
-  del diseño de la vista.
-- **Materialización de la rejilla.** Fase 4, y sólo con una medida delante.
+- **`Absence` con rango real.** El tipo, la API y la validación de solapamiento existen; el panel
+  no los usa —`EmployeeAbsencesModal` tipa sus ausencias como `Holiday`— y el resolutor no lee
+  `absences[]`. Latente hoy (en dev está vacío), activo el día que alguien use esa vía: entonces
+  la app y el tablero dirían una cosa y `BuildPlannedHours` otra.
+- **Estados de ficha sin fechas.** `vacation`, `sick_leave` y compañía son banderas permanentes,
+  así que una ficha que nadie devolvió a `active` resta cobertura para siempre. Con `Absence`
+  real esto lo absorbería el calendario.
+- **Turno por día y sucursal.** No existe en el modelo, y sin él quien está en dos centros cuenta
+  en los dos (§2.2). Conviene medir cuánta plantilla real está en esa situación antes de decidir
+  si es nota al pie o problema.
+- **Materialización.** [ADR-005](../adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md),
+  después de la Fase 2.

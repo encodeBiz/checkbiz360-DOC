@@ -56,7 +56,7 @@ que **lo que no se ha preguntado no se contesta por su cuenta**.
 
 **Es cambio de contrato, no adorno del modal.** `Holiday` vive en `domain/entities/Calendar.ts`
 y en `ICalendar.ts`; `upsertCalendar` tiene que persistirlo, `ResolveEffectiveCalendarUseCase`
-devolverlo en `holidays[]` y `action=availabilityDay` traerlo para que el panel lo enseñe. Poco
+devolverlo en `holidays[]` y `GET /availability/day` traerlo para que el panel lo enseñe. Poco
 código, pero en cuatro sitios y en los dos repos.
 
 ---
