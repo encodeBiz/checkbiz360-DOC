@@ -1,5 +1,10 @@
 # Módulo Calendario — Horarios y Festivos
 
+> **Diseño en curso:** [ingenieria/disponibilidad/](../ingenieria/disponibilidad/README.md) —
+> la disponibilidad (cuánta gente hay cada día y quién falta) se agrega en este módulo, como dos
+> acciones de solo lectura sobre `calendarHandler`. Ver
+> [ADR-001](../ingenieria/disponibilidad/adr/ADR-001-la-disponibilidad-la-agrega-el-modulo-calendario.md).
+
 ---
 
 ## ADR-CAL-001 — GET calendario con cadena de herencia completa
