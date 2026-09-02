@@ -10,6 +10,12 @@ string tal cual y pone el token. No hace falta registrar nada nuevo en la allowl
 
 Ambas acciones son de **solo lectura** y no escriben nada.
 
+> El desglose del día también da de alta y borra ausencias
+> ([ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md)), pero **no añade contrato**:
+> reusa `PATCH` (`upsertCalendar`) y `DELETE` (`deleteCalendarItem`) del mismo handler, ya
+> existentes. Lo único que el backend tiene que aceptar de nuevo es el campo `paid` dentro de
+> `holiday`, del [ADR-004](./adr/ADR-004-ausencias-retribuidas.md).
+
 ---
 
 ## `GET ?action=availability` — rejilla de cobertura
@@ -109,7 +115,7 @@ Quién está disponible ese día en ese grupo, y por qué no lo está el resto.
     ],
     "unavailable": [
       { "employeeId": "emp_456", "fullName": "Luis Ruiz",  "reason": "holiday",        "reasonName": "Diada",     "reasonSource": "branch" },
-      { "employeeId": "emp_789", "fullName": "Marta Cano", "reason": "absence",        "reasonName": "Vacaciones", "reasonSource": "employee" },
+      { "employeeId": "emp_789", "fullName": "Marta Cano", "reason": "absence",        "reasonName": "Vacaciones", "reasonSource": "employee", "absenceId": "vacaciones-2026-09-08", "paid": true },
       { "employeeId": "emp_012", "fullName": "Pablo Mora", "reason": "employeeStatus", "reasonName": "sick_leave" },
       { "employeeId": "emp_345", "fullName": "Nadia Sáez", "reason": "noShift" }
     ]
@@ -126,6 +132,10 @@ Quién está disponible ese día en ese grupo, y por qué no lo está el resto.
   `employeeStatus` es la **clave** del estado (`vacation`, `sick_leave`, …), que el cliente
   traduce. Ausente para `noShift`.
 - `reasonSource` ∈ `entity | branch | employee`, sólo para `holiday` y `absence`.
+- `absenceId` y `paid` van **sólo** cuando `reason` es `absence` con `reasonSource: employee`:
+  son lo que necesita el panel para poder borrarla y para decir si se cobra. `paid` ausente
+  significa *no consta*, que no es lo mismo que `false` — ver
+  [ADR-004](./adr/ADR-004-ausencias-retribuidas.md).
 
 ### Errores
 

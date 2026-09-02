@@ -46,7 +46,11 @@ rejilla y la pinta.
 ## Alcance
 
 **Dentro:** la agregación por sucursal y día (`available` / `total`), el desglose de un día
-concreto (quién está y por qué no está el resto), y la retirada del cálculo del front.
+concreto (quién está y por qué no está el resto), la retirada del cálculo del front, y el alta y
+borrado de ausencias desde el propio desglose
+([ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md),
+[ADR-004](./adr/ADR-004-ausencias-retribuidas.md)) — que no necesita backend nuevo, porque
+reusa `PATCH` y `DELETE` del handler de calendario.
 
 **Fuera:** el modelo de `Absence` con rango real (hoy son N festivos de un día — ver
 [modulos/calendario.md](../../modulos/calendario.md) §6.8); la materialización o caché de la
@@ -71,6 +75,8 @@ se puede distinguir "libra" de "trabaja hoy en otro centro".
 |----|----------|--------|
 | [ADR-001](./adr/ADR-001-la-disponibilidad-la-agrega-el-modulo-calendario.md) | La disponibilidad la agrega el módulo `calendar`, no el front ni un servicio nuevo | Propuesto |
 | [ADR-002](./adr/ADR-002-entityid-en-los-documentos-de-calendario.md) | Denormalizar `entityId` en los documentos `calendar/config` para poder consultarlos en una sola query | Propuesto |
+| [ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md) | El desglose del día escribe ausencias: arrastre **y** botón, y sólo se revierte lo que es ausencia propia | Propuesto |
+| [ADR-004](./adr/ADR-004-ausencias-retribuidas.md) | La ausencia registra si es retribuida; "no consta" no es "no" | Propuesto |
 
 ## Technical Design Records (TDRs)
 

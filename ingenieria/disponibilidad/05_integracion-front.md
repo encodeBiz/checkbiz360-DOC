@@ -86,6 +86,36 @@ El último punto es la lección del prototipo: el cruce local trataba cualquier 
 como "sin ausencias", y eso convertía un permiso denegado en un empleado disponible. Un tablero
 de cobertura que se equivoca callando es peor que uno que no carga.
 
+## El desglose escribe: arrastre y botón
+
+Ver [ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md). Se implementa **antes**
+que el resto de fases, porque no depende del backend: reusa `upsertCalendar` y
+`deleteCalendarItem`, que ya existen.
+
+| Gesto | Qué abre | Qué escribe |
+|---|---|---|
+| *Disponible* → *No disponible* (arrastrar, o flecha →) | `HolidayModal` en scope empleado, con la fecha y la persona puestas | `PATCH` con `holiday` |
+| *No disponible* → *Disponible* (arrastrar, o flecha ←) | Modal con las **ausencias propias** de esa persona | `DELETE` con `kind: 'holiday'` |
+
+Reglas que la vista tiene que respetar:
+
+- **Sólo `reason: 'absence'` es reversible.** Festivo de entidad o sucursal, `noShift` y
+  `employeeStatus` no se arrastran y llevan la flecha deshabilitada, con tooltip explicando por
+  qué y enlace al sitio correcto cuando lo hay.
+- **Soltar no escribe:** siempre media un modal que hay que confirmar. Un arrastre accidental
+  cuesta un *Cancelar*.
+- **El botón no es el plan B.** En tablet es el camino principal; el arrastre es el atajo de
+  ratón. Ambos hacen exactamente lo mismo.
+- **Tras escribir se vuelve a pedir el dato**, no se parchea en memoria. Misma regla que el
+  resto del tablero: ningún número que el front se haya inventado.
+- **Retribuida** (`paid`) es una casilla del modal, sólo en scope empleado. Sin valor es *no
+  consta* y se pinta distinto de *no* — [ADR-004](./adr/ADR-004-ausencias-retribuidas.md).
+
+Sobre la librería de arrastre: el ADR-003 proponía `@dnd-kit/core` por su recorrido de teclado.
+Al llevar cada fila su propio botón, el teclado y el táctil ya están cubiertos por el botón, así
+que la implementación usa **arrastre HTML5 nativo y ninguna dependencia nueva**. El día que el
+arrastre tenga que hacer algo más fino que dos columnas, la librería sigue siendo la respuesta.
+
 ## Búsqueda de empleado
 
 El buscador es un `Autocomplete` local sobre los nombres que vienen en la respuesta: no llama a
