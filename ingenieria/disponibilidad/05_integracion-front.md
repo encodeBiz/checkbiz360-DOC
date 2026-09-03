@@ -6,6 +6,99 @@
 
 ---
 
+---
+
+## Qué hay que hacer, en concreto
+
+El backend está **desplegado y verificado en dev** (2026-09-02). Esta sección es autocontenida:
+con lo de aquí se puede hacer el cutover sin volver a leer el resto.
+
+### 1. Repuntar el calendario al contenedor
+
+Las escrituras de calendario ya no viven en la Cloud Function. Es **una variable**, sin tocar
+`serverBackendProxy.ts`: el router del contenedor replica el mismo despacho por `action` y
+`scope` en el cuerpo, así que ni una sola llamada del panel cambia.
+
+```
+NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER
+  dev  → http://141.95.47.135:8080/api/v1/checkinbiz/calendar
+  prod → https://api.checkbiz360.com/api/v1/checkinbiz/calendar
+```
+
+Verificado en dev de punta a punta: alta y borrado de festivo en los tres scopes, ausencia con
+rango, solapamiento rechazado, validaciones y 404 en borrado inexistente.
+
+**Prod no se mueve** hasta que el panel esté probado contra dev. El rollback es reponer la URL
+de la Cloud Function.
+
+### 2. Dar de alta el handler de disponibilidad
+
+Estas rutas son nuevas, así que sí necesitan entrada en la allowlist. En
+`src/lib/http/serverBackendProxy.ts`:
+
+```ts
+// ── CheckinBiz — Disponibilidad (path-forwarding handler) ─────────────────
+// La base es una raíz con subrutas, así que lleva `subPathPattern`: sin él, el
+// navegador alcanzaría todo lo que cuelgue de ella a través de un proxy que ya
+// pone el token.
+checkinbiz_calendar_availability: {
+  envKeys: [
+    'NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_AVAILABILITY',
+    'BACKEND_URI_CHECKINBIZ_CALENDAR_AVAILABILITY',
+    'NEXT_PUBLIC_BACKEND_URI_CHECKINBIZ_CALENDAR_AVAILABILITY',
+  ],
+  methods: ['GET'],
+  requiresAuth: true,
+  subPathPattern: /^(\/day)?$/,
+},
+```
+
+```
+NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_AVAILABILITY
+  dev  → http://141.95.47.135:8080/api/v1/checkinbiz/calendar/availability
+  prod → https://api.checkbiz360.com/api/v1/checkinbiz/calendar/availability
+```
+
+Queda `/api/proxy/checkinbiz_calendar_availability` y
+`/api/proxy/checkinbiz_calendar_availability/day`.
+
+### 3. Las dos llamadas
+
+```
+GET .../availability      ?entityId&from&to[&branchId][&includeUnassigned]
+GET .../availability/day  ?entityId&date&groupId
+```
+
+`from` y `to` en `YYYY-MM-DD`, inclusive, máximo 62 días. `groupId` es el id de sucursal o
+`__unassigned__`. Formas exactas de la respuesta en [03](./03_contratos-api.md) — está al día con
+lo desplegado, incluido `warnings.discardedHolidays` en la rejilla.
+
+### 4. Lo que se borra
+
+`services/checkinbiz/availability.service.ts` entero, y de `lib/common/availability.ts` la parte
+que decide: `mergeSchedule`, `normalizeDay`, `buildDefaultSchedule`, `evaluateMemberDay`,
+`buildBoard`, `buildDayDetail`. Sobrevive lo que es presentación (§Qué se queda).
+
+### 5. Cómo probarlo contra dev
+
+Entidad `Wl8ZCvpdmIXzEE0mhT7W`, sucursal `Dr1iEnNrbHS3HWXgXJiy`, un empleado.
+Owner: `rpTBdSC6YUhf7uEba26thWSYFM03` — **no** el uid admin habitual, que da `403` porque no es
+dueño de esa entidad.
+
+Casos que ya se sabe que responden bien, y que sirven de contraste al pintar:
+
+| Día | Qué debe verse |
+|---|---|
+| 2026-11-11 (mié) | **Rojo** — la plantilla de vacaciones, agujero de cobertura |
+| 2026-11-14 (sáb) | **Gris** — fin de semana, aunque además esté marcado como vacaciones |
+| 2026-11-17 (mar) | **Verde** |
+| 2026-09-16 (mié) | **Gris** — festivo de sucursal |
+| 2026-09-24 (jue) | **Gris** — festivo de entidad |
+
+Si el 11 sale gris, el `source` no está llegando y el tablero está mintiendo hacia arriba.
+
+---
+
 ## Estado del prototipo
 
 El tablero está implementado y funcionando, pero **contra el cruce local**. No se fusiona hasta

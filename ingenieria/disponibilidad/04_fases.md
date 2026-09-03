@@ -68,6 +68,12 @@ resolución individual no se contradigan.
 
 ## Fase 4 — Cutover del front
 
+> **Este trabajo es del repo `encodebiz-front-saas`, no de la API.** Todo lo que hace falta para
+> hacerlo sin reconstruir nada —las dos variables de entorno con sus valores, la entrada de la
+> allowlist lista para pegar, las dos llamadas, qué se borra y con qué datos de dev contrastar—
+> está en [05_integracion-front.md](./05_integracion-front.md) §*Qué hay que hacer, en concreto*.
+
+
 1. Sustituir el cuerpo de `fetchAvailabilityDataset` por la llamada a `/availability`.
 2. Registrar el handler nuevo en la allowlist del proxy y la variable de entorno.
 3. Borrar el cruce contra Firestore y la resolución duplicada de `lib/common/availability.ts`.
