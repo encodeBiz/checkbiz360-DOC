@@ -109,18 +109,18 @@ cuatro niveles se reduce a un reparto entre motivo colectivo y personal, del que
 ## Estado del roadmap
 
 - [x] **Fase 0** — Contrato y documentación
-- [ ] **Fase 1** — `source` en `concatHolidays` y `paid` en `Holiday` — *bloquean el resto*
-- [ ] **Fase 2** — Los dos casos de uso y sus rutas en el `calendarRouter`
-- [ ] **Fase 3** — Cutover del front → **tablero vivo**
-- [ ] **Fase 4** — Portar las escrituras del calendario al contenedor
-- [ ] **Fase 5** — Snapshot del calendario resuelto (ADR-003)
+- [x] **Fase 1** — Portar el módulo `calendar` al contenedor · *verificada en dev*
+- [x] **Fase 2** — `source` en `concatHolidays` y `paid` en `Holiday` · *verificada en dev*
+- [x] **Fase 3** — Los dos casos de uso y sus rutas en el `calendarRouter` · *verificada en dev*
+- [x] **Fase 4** — Cutover del front · *implementado, sin mirar en pantalla* (+ 4-bis: el desglose escribe)
+- [ ] **Fase 5** — Snapshot del calendario resuelto ([ADR-005](./adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md))
 
-Las fases 4 y 5 son rendimiento y van después de tener el tablero funcionando. La 5 **no** debe
-adelantarse a la 2: cachear algo sin verificar convierte un bug en un bug persistido.
+El porte va primero porque, mientras el panel escriba contra Firebase, cada cambio de tipo hay
+que hacerlo en dos repos; con él hecho, la Fase 2 se toca sólo en `shared`. La 5 **no** debe
+adelantarse a la 3: cachear algo sin verificar convierte un bug en un bug persistido.
 
-**Prototipo:** el tablero está implementado contra el cruce local en `feat/disponibilidad-horarios`
-(`encodebiz-front-saas`). **No se fusiona** hasta la Fase 3: la vista es la buena, la capa de
-datos no. Ver [05](./05_integracion-front.md).
+**Prototipo:** la rama `feat/disponibilidad-horarios` de `encodebiz-front-saas` ya no cruza nada
+—consume los dos endpoints— y está lista para fusionar cuando se compruebe en pantalla.
 
 **Verificado en dev el 2026-09-02**, contra la entidad de pruebas y por HTTP:
 
@@ -133,9 +133,14 @@ datos no. Ver [05](./05_integracion-front.md).
   vacaciones sale **rojo** y un festivo de empresa sale **gris**.
   `packages/shared/src/scripts/verificar-disponibilidad.ts` la deja repetible sin red.
 
-**Falta el cutover del front**, que es la Fase 4. Y mover
-`NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER` en producción, que no se toca hasta que el panel
-esté probado contra dev.
+**Lo único que falta por comprobar es la pantalla.** El front hizo el cutover y en dev las dos
+variables ya apuntan al contenedor, pero nadie ha mirado el tablero con los ojos: hace falta una
+sesión de navegador. Los cinco días con los que contrastar están en
+[05](./05_integracion-front.md) §*Cómo probarlo contra dev*, y el primero es el 11 de noviembre:
+si sale gris en vez de rojo, `reasonSource` no está llegando.
+
+Y mover `NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER` en **producción**, que no se toca hasta
+que eso esté visto.
 
 **Banco de pruebas:** entidad `Wl8ZCvpdmIXzEE0mhT7W` en dev, con festivo de entidad, festivo de
 sucursal, ocho días de vacaciones propias y overrides desactivados en dos niveles. Le faltan un

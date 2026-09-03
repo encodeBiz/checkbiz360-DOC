@@ -102,12 +102,12 @@ Si el 11 sale gris, el `source` no está llegando y el tablero está mintiendo h
 ## Estado del prototipo
 
 El tablero está implementado y funcionando, pero **contra el cruce local**. No se fusiona hasta
-la Fase 3: la vista es la buena, la capa de datos no. Sirve mientras tanto como especificación
+la Fase 4: la vista es la buena, la capa de datos no. Sirvió mientras tanto como especificación
 ejecutable de las reglas y como maqueta viva de la vista.
 
-| Fichero | Fase 3 |
+| Fichero | Fase 4 |
 |---|---|
-| `components/AvailabilityTab.tsx` | **Se conserva.** Cambia de dónde salen los datos |
+| `components/AvailabilityTab.tsx` | **Se conserva.** Cambia de dónde salen los datos. Pide el mes entero aunque se mire una semana, así moverse dentro del mes no cuesta llamada |
 | `components/AvailabilityDayDetail.tsx` | **Se conserva y crece.** Pinta la respuesta del endpoint y gana los gestos de escritura del ADR-003 |
 | `domain/features/checkinbiz/IAvailability.ts` | **Se conserva**, alineando nombres con el contrato |
 | `services/checkinbiz/availability.service.ts` | **Se vacía.** Una llamada donde había N+B+2 lecturas |
@@ -193,7 +193,7 @@ Ver [ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md). Se puede 
 **antes** que el resto de fases sobre el cruce local del prototipo: la escritura reusa
 `upsertCalendar` y `deleteCalendarItem`, que ya existen.
 
-Lo que sí depende del backend es la **lectura**: tras el cutover de la Fase 3, saber qué fila es
+Lo que sí depende del backend es la **lectura**: tras el cutover de la Fase 4, saber qué fila es
 reversible deja de calcularse en el navegador y pasa a venir en la respuesta —`reason`,
 `reasonSource`, `absenceId` y `paid`—. Y esos campos sólo se pueden rellenar con el `source` de
 la Fase 1.
@@ -222,14 +222,26 @@ Al llevar cada fila su propio botón, el teclado y el táctil ya están cubierto
 que la implementación usa **arrastre HTML5 nativo y ninguna dependencia nueva**. El día que el
 arrastre tenga que hacer algo más fino que dos columnas, la librería sigue siendo la respuesta.
 
-## Búsqueda de empleado
+## Búsqueda de empleado — se muda al desglose del día
 
-El buscador es un `Autocomplete` local sobre los nombres que vienen en la respuesta: no llama a
-`searchIndex` ni al backend. Compara con `normalizarString` —igual que el resto de buscadores
-del panel— para que funcione sin tildes, y por palabras sueltas, para que valga tanto
-"jose acevedo" como "acevedo jose".
+El diseño original ponía el buscador en la barra del tablero, filtrando la rejilla y
+recalculando el número contando sólo a quien coincidía. **Con el cálculo en el servidor eso ya
+no se puede hacer**, y no es un detalle de implementación: la rejilla son sumas por sucursal y
+día, sin nombres. El front no tiene con qué filtrar.
 
-Nota de alcance: el buscador **filtra la rejilla**, no busca una persona. Escribir un nombre
-deja las filas de sucursal y recalcula el número contando sólo a quien coincide. Si en algún
-momento se quiere lo otro —una fila por empleado—, es una decisión de vista y no toca el
-contrato.
+Así que el buscador vive ahora en el panel del día, que además es donde de verdad se busca a
+alguien: abres la celda y localizas a la persona entre los disponibles y los ausentes. Sigue
+siendo un `Autocomplete` local con `normalizarString`, sin tocar `searchIndex` ni el backend.
+
+Si alguna vez se quiere buscar desde la barra, hace falta ampliar el contrato —una fila por
+empleado, o un endpoint que devuelva nombres para la rejilla—. No es una decisión de vista: sin
+nombres arriba, no hay nada que filtrar.
+
+## El modal de ausencias pide el calendario efectivo
+
+Antes salían del dataset local, que ya no existe. Ahora el modal llama a `GET /calendar` en
+scope empleado y se queda con los festivos de `source === 'employee'`, que son sus ausencias.
+
+Es una llamada más, y sólo al abrir el modal. Y es la primera consumidora del `source` fuera del
+tablero: sin él habría que volver a leer el documento del empleado para saber cuáles de los
+festivos devueltos son suyos y cuáles de la empresa.
