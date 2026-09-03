@@ -112,7 +112,7 @@ cuatro niveles se reduce a un reparto entre motivo colectivo y personal, del que
 - [x] **Fase 1** — Portar el módulo `calendar` al contenedor · *verificada en dev*
 - [x] **Fase 2** — `source` en `concatHolidays` y `paid` en `Holiday` · *verificada en dev*
 - [x] **Fase 3** — Los dos casos de uso y sus rutas en el `calendarRouter` · *verificada en dev*
-- [x] **Fase 4** — Cutover del front · *implementado, sin mirar en pantalla* (+ 4-bis: el desglose escribe)
+- [x] **Fase 4** — Cutover del front · **validado en pantalla el 2026-09-03** (+ 4-bis: el desglose escribe, pendiente)
 - [~] **Fase 5** — Snapshot del calendario resuelto · **aplazada**: la rejilla tarda 437 ms con 21 empleados y una sola persona 258, así que el coste lo manda lo fijo y no la plantilla ([ADR-005](./adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md) §Medición)
 - [ ] **Suelto** — `dim_calendars` se sincroniza a mano y `BuildPlannedHours` depende de ella. Es problema de hoy y se arregla sin el snapshot
 
@@ -134,14 +134,19 @@ adelantarse a la 3: cachear algo sin verificar convierte un bug en un bug persis
   vacaciones sale **rojo** y un festivo de empresa sale **gris**.
   `packages/shared/src/scripts/verificar-disponibilidad.ts` la deja repetible sin red.
 
-**Lo único que falta por comprobar es la pantalla.** El front hizo el cutover y en dev las dos
-variables ya apuntan al contenedor, pero nadie ha mirado el tablero con los ojos: hace falta una
-sesión de navegador. Los cinco días con los que contrastar están en
-[05](./05_integracion-front.md) §*Cómo probarlo contra dev*, y el primero es el 11 de noviembre:
-si sale gris en vez de rojo, `reasonSource` no está llegando.
+**Validado en pantalla el 2026-09-03.** Los 30 días de septiembre coinciden uno a uno con lo que
+devuelve `GET /availability`, contrastados contra la entidad de pruebas con 21 de plantilla. Lo
+que prueba el contraste no es que los números salgan, sino que **el `source` llega hasta el
+pintado**: el 16 (festivo de sucursal) y el 24 (festivo de entidad) salen **grises**, y el 25
+—medio equipo de asuntos propios un viernes laborable— sale **rojo, 10 de 21**. Antes de la
+Fase 2 los tres eran indistinguibles y habrían salido iguales.
 
-Y mover `NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER` en **producción**, que no se toca hasta
-que eso esté visto.
+Pendiente de mirar, sin bloquear: el panel del desglose al pinchar un día. Sus datos sí están
+verificados contra la API (10 dentro, 11 fuera, diez reversibles y una por estado de ficha); lo
+que no se ha visto es cómo los pinta.
+
+Queda mover `NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER` en **producción**, y fusionar
+`feat/disponibilidad-horarios`.
 
 **Banco de pruebas:** entidad `Wl8ZCvpdmIXzEE0mhT7W` en dev, con festivo de entidad, festivo de
 sucursal, ocho días de vacaciones propias y overrides desactivados en dos niveles. Le faltan un
