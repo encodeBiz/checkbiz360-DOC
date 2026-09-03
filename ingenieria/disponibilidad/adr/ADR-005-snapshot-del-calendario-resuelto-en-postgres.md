@@ -1,8 +1,41 @@
 # ADR-005 — El calendario resuelto se cachea en Postgres, con fallo honesto
 
 **Fecha:** 2026-09-02
-**Estado:** Aceptado — se implementa **después** de la Fase 2
+**Estado:** **Aplazado por medición** (2026-09-03) — ver §Medición
+**Revisado:** 2026-09-03
 **Decisionario:** Jose Acevedo
+
+---
+
+## Medición del 2026-09-03 — por qué se aplaza
+
+Este ADR decía que la materialización sólo se haría «si la latencia lo pide, y con una medida
+delante». La medida ya está, contra dev con 21 empleados y una sucursal, seis pasadas cada uno:
+
+| Petición | Mediana |
+|---|---|
+| Rejilla, 1 mes | 437 ms |
+| Rejilla, 62 días | 323 ms |
+| Desglose de un día | 306 ms |
+| Calendario efectivo de **un** empleado | 258 ms |
+
+El par que decide es el primero contra el último: **la rejilla entera cuesta 437 ms y resolver a
+una sola persona cuesta 258**. Los otros veinte empleados suman 180 ms entre todos. El coste lo
+dominan las cinco idas y vueltas fijas a GCP, no la plantilla — que es exactamente lo que el
+plan de lectura del TDR §1 perseguía. Y 62 días salen igual que 30, confirmando que el rango no
+entra en el plan de lectura.
+
+Con esos números, cachear ahorraría unos 400 ms en un tablero de back office que se abre de
+vez en cuando, a cambio de dos tablas, un protocolo de marca sucia, un TTL y estado derivado que
+se puede desincronizar. **No sale a cuenta.** Se aplaza hasta que haya una entidad grande de
+verdad y una medida que lo pida.
+
+**Lo que sí sigue en pie es la otra mitad del argumento**, y conviene no perderla: `BuildPlannedHours`
+de `analytics` resuelve contra `dim_calendars`, que sólo se rellena cuando alguien hace
+`POST /api/analytics/dimensions/sync` a mano. Eso es un informe corriendo sobre un espejo que
+nadie refresca, y **es un problema hoy, sin relación con la latencia del tablero**. Se arregla
+mucho más barato: o se programa esa sincronización, o `BuildPlannedHours` resuelve contra
+Firestore como hacen los demás. No hace falta nada de lo que propone este documento.
 
 ---
 

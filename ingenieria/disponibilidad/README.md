@@ -96,7 +96,7 @@ cuatro niveles se reduce a un reparto entre motivo colectivo y personal, del que
 | [ADR-002](./adr/ADR-002-entityid-en-los-documentos-de-calendario.md) | Denormalizar `entityId` en los documentos `calendar/config` | Aceptado — aplazado |
 | [ADR-003](./adr/ADR-003-el-desglose-del-dia-escribe-ausencias.md) | El desglose del día escribe ausencias: arrastre **y** botón, y sólo se revierte lo que es ausencia propia | Propuesto |
 | [ADR-004](./adr/ADR-004-ausencias-retribuidas.md) | La ausencia registra si es retribuida; "no consta" no es "no" | Propuesto |
-| [ADR-005](./adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md) | El calendario resuelto se cachea en Postgres, con fallo honesto | Aceptado — tras la Fase 2 |
+| [ADR-005](./adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md) | El calendario resuelto se cachea en Postgres, con fallo honesto | **Aplazado por medición** |
 
 ## Technical Design Records (TDRs)
 
@@ -113,7 +113,8 @@ cuatro niveles se reduce a un reparto entre motivo colectivo y personal, del que
 - [x] **Fase 2** — `source` en `concatHolidays` y `paid` en `Holiday` · *verificada en dev*
 - [x] **Fase 3** — Los dos casos de uso y sus rutas en el `calendarRouter` · *verificada en dev*
 - [x] **Fase 4** — Cutover del front · *implementado, sin mirar en pantalla* (+ 4-bis: el desglose escribe)
-- [ ] **Fase 5** — Snapshot del calendario resuelto ([ADR-005](./adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md))
+- [~] **Fase 5** — Snapshot del calendario resuelto · **aplazada**: la rejilla tarda 437 ms con 21 empleados y una sola persona 258, así que el coste lo manda lo fijo y no la plantilla ([ADR-005](./adr/ADR-005-snapshot-del-calendario-resuelto-en-postgres.md) §Medición)
+- [ ] **Suelto** — `dim_calendars` se sincroniza a mano y `BuildPlannedHours` depende de ella. Es problema de hoy y se arregla sin el snapshot
 
 El porte va primero porque, mientras el panel escriba contra Firebase, cada cambio de tipo hay
 que hacerlo en dos repos; con él hecho, la Fase 2 se toca sólo en `shared`. La 5 **no** debe
