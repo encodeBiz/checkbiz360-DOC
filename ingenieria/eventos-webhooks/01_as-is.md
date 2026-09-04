@@ -3,6 +3,12 @@
 **Fecha de la foto:** 2026-08-26 · Verificado contra código (`encodeBiz-SAAS@main`) y contra
 producción (`firebase functions:list`).
 
+> **Sigue siendo el presente, no el pasado.** A 2026-09-04 este módulo continúa desplegado en
+> desarrollo —emisor, repartidor programado y endpoints de gestión— y lee **la misma colección
+> de endpoints** que el módulo nuevo. Lo que aquí se describe convive hoy con
+> [02](./02_to-be.md), y esa convivencia tiene una consecuencia concreta que hay que evitar:
+> ver [07 §3.1](./07_estado-verificado.md).
+
 ---
 
 ## 1. Dónde vive

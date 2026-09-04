@@ -118,34 +118,86 @@ valor tenga para el cliente.
 Esta es la parte trabajosa. La regla que la ordena: **emite donde vive la escritura, no donde
 vive el dato**.
 
-### Ya escriben en el contenedor — el lanzador va en el caso de uso
+**Revisado el 2026-09-04 contra el código y contra el tráfico real de desarrollo**, no deducido
+del diseño. Entre agosto y septiembre se portaron al contenedor los fichajes, el calendario, las
+tareas y los documentos, así que buena parte de la segunda tabla que llevaba este mapa ya no
+era cierta: lo que estaba «todavía en Firebase» hoy entra por nginx al contenedor.
 
-| Eventos | Dónde va la llamada |
-|---|---|
-| `attendance.clock_in/out`, `break_start/end`, `clock_rejected`, `clock_flagged` | `services/checkinbiz/src/interfaces/http/checklog/createChecklog.controller.ts` y su caso de uso `CreateChecklog.ts` — `isSuspect` se decide en `CreateChecklog.ts:74` |
-| `workday.closed` | El mismo controlador: un `checkout` cierra el ciclo marcando `closed: true` sobre el check-in (`createChecklog.controller.ts:419`) |
-| `attendance.correction_requested/accepted/rejected` | `services/checkinbiz/src/interfaces/http/checklog/updateChecklog.controller.ts` — los tres caminos ya están separados ahí: la transición a `pending-employee-validation`, la confirmación del empleado y el rechazo con `rejectionReason` |
-| `attendance.manual_requested` | `services/checkinbiz/src/interfaces/http/checklog/requestManualChecklog.controller.ts` |
-| `task.*` (los diez) | `services/tasks/src/interfaces/http/task/*.controller.ts` — hay un controlador por acción, la correspondencia es uno a uno |
-| `document.*` (los cuatro) | `services/documents/src/interfaces/http/document/*.controller.ts` — ídem |
-| `employee.created/updated/deleted/device_added` | `services/checkinbiz/src/interfaces/http/employee/employee.router.ts` (`POST /`, `PATCH /:employeeId`, `DELETE /:employeeId`, `POST /:employeeId/email`) |
-| `report.generated` | `services/reports` |
-| `invoice.*` | `services/billing` |
-| `addon.connected/disconnected` | `services/rentman/src/interfaces/http/rentman.router.ts` (`/connect`, `/disconnect`) |
-| `alert.raised` | `services/merlin` |
+Cómo se comprobó, para poder repetirlo: `firebase functions:list --project dev-encodebiz` dice
+qué sigue vivo del lado de Firebase; las rutas de escritura de cada servicio dicen qué existe en
+el contenedor; y el log de nginx de desarrollo de las últimas 72 h dice por dónde entra el
+tráfico de verdad — que es lo único que distingue una ruta escrita de una ruta usada.
 
-### Todavía escriben en Firebase — el lanzador va, de momento, en un trigger
+### 3.1 La escritura ya está en el contenedor — 32 eventos, **lanzador cableado**
+
+| Eventos | Dónde va la llamada | Tráfico en 72 h |
+|---|---|---|
+| `attendance.clock_in`, `clock_out`, `break_start`, `break_end`, `clock_rejected`, `clock_flagged` | `services/checkinbiz/src/interfaces/http/checklog/createChecklog.controller.ts`. El rechazo ya existe como registro: la valla escribe el fichaje con `status: "failed"` y `failedCode: "checklog/out_of_radius"` antes de devolver el 400. `isSuspect` se decide en `CreateChecklog.ts` | 20 fichajes |
+| `attendance.correction_requested`, `correction_accepted`, `correction_rejected` | `updateChecklog.controller.ts` — los tres caminos ya están separados ahí | — |
+| `attendance.manual_requested` | `requestManualChecklog.controller.ts` | — |
+| `workday.closed` | El mismo `createChecklog.controller.ts`: el checkout marca `closed: true` sobre la entrada asociada | 20 fichajes |
+| `task.*` — los diez | `services/tasks/src/interfaces/http/task/taskRouter.ts`, un controlador por acción, correspondencia uno a uno | 7 PATCH |
+| `document.created`, `updated`, `archived`, `acknowledged` | `services/documents/src/interfaces/http/document/documentRouter.ts` (`POST /`, `PATCH /:id`, `DELETE /:id`, `POST /:id/ack`) | 1 POST |
+| `calendar.preset_saved`, `calendar.holiday_changed` | `services/checkinbiz/src/interfaces/http/calendar/calendar.router.ts` | 36 escrituras |
+| `report.generated` | `services/reports/src/interfaces/report.router.ts` (`POST /generate`) | — |
+| `invoice.issued`, `invoice.payment_failed` | `services/billing/src/application/StripeWebhookHandler.ts` | 21 llamadas |
+| `addon.connected`, `addon.disconnected` | `services/rentman/src/interfaces/http/rentman.router.ts` (`/connect`, `/disconnect`) | — |
+
+Un guion en la última columna no significa que la ruta no se use: significa que en esas 72 h
+nadie generó un informe ni conectó un add-on en desarrollo. La ruta existe y es la única.
+
+**Los 32 están cableados** desde `feat/eventos-oleada-2` (2026-09-04). Cada servicio trae su
+mapeador en `src/events/`, y ninguna llamada se espera: `emit()` de `@encodebiz/shared`
+devuelve `void` justamente para que no se pueda poner un `await` delante. Falta desplegarlos y
+borrar `onChecklogWebhook` — ver [07 §3.1](./07_estado-verificado.md).
+
+### 3.2 Camino duplicado — 7 eventos, hay que decidir antes de cablear
+
+Existen las dos implementaciones a la vez: la ruta del contenedor y la función de Firebase, que
+sigue desplegada. Poner el lanzador en el lado que el panel no usa emite para la mitad del
+tráfico, o para nada — y es un fallo que no se ve, porque no rompe nada.
+
+| Eventos | Contenedor | Firebase, aún desplegado |
+|---|---|---|
+| `employee.created`, `updated`, `deleted`, `device_added` | `checkinbiz/.../employee/employee.router.ts` (`POST /`, `PATCH /:employeeId`, `DELETE /:employeeId`, `POST /:employeeId/email`) | `createEmployee`, `updateEmployee`, `deleteEmployee`, `addDeviceEmployee` |
+| `schedule.published`, `schedule.assigned`, `schedule.changed` | El horario semanal se edita por `calendar.router.ts` | `employeePlanifierWorker`, `planifierNotificationWorker` — `schedule.published` es suyo |
+
+En 72 h de desarrollo no pasó ni una escritura de empleado, así que el tráfico no desempata.
+Se resuelve mirando qué URL llama el panel, no eligiendo.
+
+### 3.3 La escritura sigue en Firebase — 12 eventos
+
+Van por `services/firebase_sdk` con la ruta S2S (`POST /api/v1/events/s2s/publish`, API key), o
+esperan a que se porte su CRUD. Ver [ADR-006](./adr/ADR-006-firebase-sdk-residuo-transitorio.md).
 
 | Eventos | Dónde |
 |---|---|
-| `branch.created/updated/deleted`, `branch.geofence_changed` | El CRUD sigue en `firebase-checkinbiz-http/create-branch.ts`, `update-branch.ts`, `delete-branch.ts`. El contenedor solo lee (`services/backoffice/.../branches.router.ts`) |
-| `schedule.*`, `calendar.*` | `firebase-checkinbiz-http/calendar.ts` (`savePreset`, borrado) y los workers del planificador. El contenedor solo sirve `getEffectiveCalendar` |
-| `workday.incomplete` e `issue.opened` | Los emite el **mismo sitio**: `interfaces/triggers/sanitizerChecklogs.controller.ts` (job horario `sanitizerChecklog`). Cuando un check-in vence sin checkout, fabrica un checkout con `status: "incomplete_workday"` y crea acto seguido la incidencia (`issueRepo.create`, línea 139) |
-| `issue.responded`, `issue.resolved`, `issue.rejected` | Escrituras sobre `/issues/{id}` desde el back office y la app. El trigger `onCreateIssues` solo cubre el alta |
+| `workday.incomplete`, `issue.opened` | `scheduleCheckbiz-sanitizerChecklog`. Cuando un check-in vence sin checkout, fabrica el checkout `incomplete_workday` y crea la incidencia acto seguido |
+| `issue.responded`, `issue.resolved`, `issue.rejected` | `onIssuesResponse` y escrituras directas sobre `/issues/{id}` desde el back office y la app |
 | `employee.responsibility_changed` | `responsibilitiesHandler` |
-| `service.activated/deactivated` | `onActivateCheckbiz` y el flujo de suscripciones |
+| `service.activated`, `service.deactivated` | `onActivateCheckbiz` y el flujo de suscripciones |
+| `branch.created`, `updated`, `deleted`, `geofence_changed` | `createBranch`, `updateBranch`, `deleteBranch` — el CRUD de centros sigue entero en Firebase; el contenedor solo lee |
 
-### `Issue.type` — resuelto el 2026-08-26
+### 3.4 Sin sitio donde emitir — 1 evento
+
+`alert.raised`. Merlin interpreta y cachea análisis; no tiene hoy ningún concepto de alerta en
+el código. No es un lanzador pendiente de cablear: es un evento declarado sin hecho de negocio
+detrás todavía. Mientras siga así, el panel lo ofrece como suscribible y nadie lo recibirá
+nunca — decidir si se implementa o se retira del catálogo.
+
+### 3.5 El recuento, para no perderlo de vista
+
+53 eventos diseñados: 32 cableados, 7 esperando a que se aclare el camino duplicado, 12
+esperando a su CRUD, 1 sin emisor posible, y `endpoint.test`, que ya funcionaba.
+
+**El catálogo solo declara los 33 que emiten.** Los otros veinte están comentados en su sitio
+dentro de `packages/shared/src/events/catalogue.ts`, cada uno con lo que hay que portar antes
+de descomentarlo. La razón es la del panel: un evento ofrecido que nunca llega no se distingue,
+desde fuera, de una integración rota — y `isValidSubscription` rechaza además suscribirse a una
+familia que no emite (`issue.*` da error, `attendance.*` no). Se descomenta cuando su lanzador
+exista, no antes.
+
+### 3.6 `Issue.type` — resuelto el 2026-08-26
 
 El sanitizador escribía `type: "journey_registration"` en snake_case, mientras que el
 contenedor y el front lo declaran y lo esperan en camelCase. Era el único sitio que lo
@@ -158,9 +210,11 @@ Lo que ese cambio no toca: las incidencias **ya creadas** conservan el valor vie
 publicar `issue.opened` hacia fuera hay que convertirlas, o el consumidor verá dos tipos para
 el mismo hecho.
 
-### Por qué el trigger encoge
+### 3.7 Por qué el trigger encoge
 
-Cada fila de la segunda tabla es temporal. Conforme el CRUD de centros, horarios y jornada se
+Cada fila de §3.3 es temporal, y la revisión del 2026-09-04 lo demuestra mejor que cualquier
+argumento: los fichajes, el calendario, las tareas y los documentos estaban ahí en agosto y hoy
+están en §3.1. Conforme el CRUD de centros, horarios y jornada se
 porte al contenedor, su lanzador se mueve al caso de uso y el trigger correspondiente se borra.
 `services/firebase_sdk` es el sitio donde esperan mientras tanto — ver
 [ADR-006](./adr/ADR-006-firebase-sdk-residuo-transitorio.md).
