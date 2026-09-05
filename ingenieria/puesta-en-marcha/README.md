@@ -92,7 +92,7 @@ código:
 | [02_caso-real-tapissat.md](./02_caso-real-tapissat.md) | El primer fichero real, y las ocho cosas que trae |
 | [03_to-be.md](./03_to-be.md) | La conversación por bloques, el borrador y el seed |
 | [04_el-relato.md](./04_el-relato.md) | Cómo se conduce: qué se dice, qué CSV se entrega y cuándo |
-| `05_contratos-api.md` | Rutas del asistente en backoffice — *pendiente* |
+| [05_contratos-api.md](./05_contratos-api.md) | Dónde vive, y qué rutas necesita |
 | `06_fases.md` | Orden de construcción — *pendiente* |
 
 **Decisiones:** en [`adr/`](./adr/) — ADR-001 a ADR-004. El diseño técnico
