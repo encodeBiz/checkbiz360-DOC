@@ -60,9 +60,10 @@ el borrador lleva nombres, DNIs y teléfonos de la plantilla de un cliente, y es
 ([ADR-001](./adr/ADR-001-merlin-edita-un-borrador.md)). Debe vivir en un solo sitio, el que
 tiene la sesión, y morir ahí.
 
-**Merlin pone el turno de lenguaje, y no guarda nada.** Recibe el borrador y lo que ha dicho
-o mandado el cliente; devuelve qué cambiar, qué preguntar y qué contestar. Sin estado y sin
-datos personales en reposo.
+**Merlin pone el turno de lenguaje, y ni guarda ni ve.** Recibe una proyección del borrador
+sin datos personales y devuelve qué cambiar, qué preguntar y qué contestar. Lo determinista
+—leer, cruzar, validar, expandir, geocodificar— es código del servidor y no pasa por ningún
+modelo ([ADR-005](./adr/ADR-005-los-datos-no-salen-del-servidor.md)).
 
 Backoffice llama a Merlin de servicio a servicio, con el patrón que ya existe para
 `/s2s/maintenance` (`requireApiKey`).
@@ -108,8 +109,11 @@ detrás de un parámetro de modo, porque devuelven cosas distintas: una edita un
 otra contesta una pregunta. Lo que comparten —el motor de turnos, la sesión, la voz— vive
 debajo de las dos, no en la ruta.
 
-**Entra:** el borrador tal y como está, el bloque en curso, y lo que llega del cliente —texto,
-o una tabla ya parseada; el fichero lo abre backoffice, no Merlin—.
+**Entra:** *no* el borrador. Su sombra sin datos personales
+([ADR-005](./adr/ADR-005-los-datos-no-salen-del-servidor.md)): el bloque en curso, el estado
+en agregado —cuántos elementos y qué campos faltan, no cuáles—, las cabeceras del fichero
+cuando hay que mapear columnas, y el texto del cliente con los nombres ya sustituidos por
+identificadores estables. El fichero lo abre backoffice y no sale de ahí.
 
 **Sale**, con `json_schema` estricto:
 

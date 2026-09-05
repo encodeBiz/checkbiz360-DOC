@@ -96,5 +96,5 @@ código:
 | [05_contratos-api.md](./05_contratos-api.md) | Dónde vive, y qué rutas necesita |
 | [06_fases.md](./06_fases.md) | Orden de construcción |
 
-**Decisiones:** en [`adr/`](./adr/) — ADR-001 a ADR-004. El diseño técnico
+**Decisiones:** en [`adr/`](./adr/) — ADR-001 a ADR-005. El diseño técnico
 (`tdr/`) se escribirá cuando el borrador esté cerrado.
