@@ -49,8 +49,13 @@ retoma diciendo qué falta.
 
 ## El borrador
 
-Un documento por entidad, versionado, que es lo único que el asistente toca
-([ADR-001](./adr/ADR-001-merlin-edita-un-borrador.md)). Tiene la misma forma que la plantilla
+Un **fichero de trabajo temporal**, uno por puesta en marcha, que es lo único que el
+asistente toca ([ADR-001](./adr/ADR-001-merlin-edita-un-borrador.md)). No es una colección de
+la plataforma: vive mientras dura el alta y se retira cuando el seed termina. En disco, para
+que la sesión pueda cortarse y retomarse; temporal, porque una vez sembrado la plataforma ya
+es el registro.
+
+Tiene la misma forma que la plantilla
 —empresa, sucursales, empleados, responsabilidades, los tres niveles de horario, festivos—
 porque así **se puede emitir de vuelta como el mismo libro de Excel** que el cliente ya
 entiende, y ese es el documento que firma antes de sembrar.

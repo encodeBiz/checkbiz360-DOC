@@ -52,5 +52,6 @@ puede arreglar después; un coste por hora que falta, no.
 **El seed lleva la lista de lo que añade por su cuenta**, escrita en el propio borrador
 (`al_sembrar`), para que lo que va a pasar esté a la vista antes de que pase.
 
-**Los datos personales no entran en el repositorio.** Un borrador real lleva nombres, DNIs,
-teléfonos y correos. La documentación describe la forma; los datos se quedan fuera.
+**Los datos personales no entran en el repositorio ni en una colección nueva.** El borrador
+es un fichero temporal ([ADR-001](./ADR-001-merlin-edita-un-borrador.md)): la documentación
+describe la forma y los datos mueren con la puesta en marcha.

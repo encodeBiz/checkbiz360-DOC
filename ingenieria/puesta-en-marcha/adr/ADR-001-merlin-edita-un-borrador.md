@@ -27,15 +27,30 @@ después. Si el asistente ya ha escrito, la validación llega tarde.
 ## Decisión
 
 **Merlin no tiene acceso de escritura a la plataforma.** Lo único que manipula es un
-documento de borrador por entidad, versionado. Toda la conversación —«esta sucursal está
+borrador de trabajo, uno por puesta en marcha. Toda la conversación —«esta sucursal está
 duplicada, fúndelas», «el horario de Tienda Centro es partido», «estos cuatro son
 encargados»— son ediciones de ese borrador.
+
+**El borrador es un fichero temporal, no una colección de la plataforma.** Vive en el
+directorio de trabajo del asistente mientras dura la puesta en marcha y se retira cuando el
+seed ha terminado. No es un objeto de dominio: no tiene colección, ni reglas, ni
+retención, ni migración.
+
+En disco y no en memoria del proceso, porque la sesión se corta y el cliente vuelve al día
+siguiente; pero temporal, porque una vez sembrado **la plataforma es el registro** y el
+borrador no aporta nada que no esté ya dentro.
 
 Cuando el borrador está validado, un **seed** lo ejecuta contra la plataforma en un solo
 paso, simulando por defecto y escribiendo sólo con `--apply`, como cualquier otro script del
 repo.
 
 ## Consecuencias
+
+**Los datos personales no se quedan en ningún sitio nuevo.** Un borrador real lleva
+nombres, DNIs, teléfonos y correos de la plantilla de un cliente. Que sea temporal por
+diseño evita crear una segunda copia permanente de todo eso fuera de la plataforma, con su
+propia pregunta de conservación. No es una precaución añadida: es consecuencia de dónde
+vive.
 
 **El borrador es la fuente de verdad de la conversación, no el hilo.** Cuando se corrige que
 «T. Centro» y «Tienda Centro» son lo mismo, esa corrección se escribe en el borrador. Si
