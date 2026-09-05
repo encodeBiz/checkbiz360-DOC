@@ -42,6 +42,12 @@ tiene que elegir.
 **6 · Festivos y ausencias.** Los del calendario laboral que le toque, más los cierres de
 empresa.
 
+**Ningún bloque se cierra sin releer el borrador entero.** Un bloque nuevo puede romper uno
+anterior —lo habitual es que en el CSV de la gente aparezca un centro que no estaba en el de
+centros—, así que la comprobación es del muñeco completo, no de lo que acaba de llegar. Lo
+que no cuadre se le dice al cliente en su idioma y con la solución al lado
+([04_el-relato](./04_el-relato.md)).
+
 En cualquier momento el cliente puede irse. El borrador guarda por dónde iba y el asistente
 retoma diciendo qué falta.
 

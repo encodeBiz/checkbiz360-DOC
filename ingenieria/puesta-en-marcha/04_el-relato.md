@@ -110,6 +110,65 @@ que sí. Ese documento es lo que se aprueba, y es también el entregable comerci
 
 ---
 
+## La puerta de cada bloque
+
+Un bloque no se cierra porque haya llegado el fichero. Se cierra cuando el asistente ha
+**releído el borrador entero** y cuadra.
+
+Entero, no sólo lo que acaba de entrar: cada bloque nuevo puede romper uno anterior, y el
+sitio donde eso se descubre casi siempre es el siguiente paso. El caso de manual es el CSV de
+la gente nombrando un centro que no estaba en el CSV de centros —porque el cliente se olvidó
+de uno, no porque se haya equivocado ahora—:
+
+> **Me dices que dos personas fichan en «Almacén», pero ese centro no me lo habías nombrado.
+> ¿Lo añadimos? Necesitaría su dirección.**
+
+Eso es corregir al cliente: decirle qué no cuadra, en su idioma, y con qué se arregla.
+
+### Qué se comprueba en cada paso
+
+**Tras la empresa.** Que el NIF tenga forma de NIF, que la zona horaria exista, y que del
+nombre comercial salga un `slug` utilizable.
+
+**Tras los centros.** Que no haya dos con el mismo nombre —es la clave natural con la que se
+relacionan todos los demás bloques y con la que el seed evita duplicar—, que cada dirección
+lleve número, y que el radio sea razonable.
+
+**Tras la gente.** El paso con más aristas, y el que más veces obliga a volver atrás:
+
+- Que ningún correo se repita: es la credencial de acceso.
+- Que ningún DNI se repita.
+- **Que todo centro nombrado aquí exista en el bloque anterior.** Aquí aparecen los centros
+  olvidados.
+- Que haya **exactamente un `owner`**. Ninguno, y nadie puede entrar al panel; dos, y hay que
+  preguntar cuál.
+- Que nadie se quede sin centro: una persona sin centro no puede fichar en ninguna parte.
+- Que ningún `coste_hora` coincida con el de la fila de ejemplo, y que ninguno esté vacío.
+
+**Tras los horarios.** Que los turnos de un mismo día no se solapen y que la hora de fin sea
+posterior a la de inicio. Que quede algún día abierto —si el cliente sólo nombró tres días,
+conviene confirmar que los otros dos son cierre y no un olvido—. Y que cualquier excepción
+apunte a un centro o a una persona que existan.
+
+**Tras los festivos.** Que las fechas se entiendan y que `hasta` no sea anterior a `desde`.
+Que un festivo de ámbito centro nombre un centro real. Y avisar de los periodos largos antes
+de que sorprendan: *«agosto son 21 días seguidos cerrados, ¿correcto?»*.
+
+**Antes de sembrar.** Que no quede ninguna pregunta abierta de las que bloquean, y que los
+seis bloques estén cerrados.
+
+### Cómo se corrige
+
+Nunca devolviendo un error de validación. El asistente dice **qué falta y qué hace falta para
+arreglarlo**, y si puede, propone:
+
+> **Me falta el coste por hora de los cuatro. Si me dices el salario bruto anual de cada uno y
+> las horas de convenio, lo calculo yo y lo revisas.**
+
+Y lo que no bloquea, no para la conversación: se anota y se pregunta al final, todo junto.
+
+---
+
 ## Guardar el estado
 
 Al cerrar cada bloque, el borrador se escribe en disco. Lleva además por dónde va:
