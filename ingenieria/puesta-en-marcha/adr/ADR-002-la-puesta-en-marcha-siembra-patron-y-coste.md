@@ -15,12 +15,25 @@ las dos da error**.
 ### El trigger no acumula si la sucursal no tiene patrón
 
 `onChecklogWrite` empieza comprobando `existsPatterns(branchId)` contra la colección
-`checkbiz_branch_patterns`. Si el documento no existe, la función retorna sin hacer nada.
+`checkbiz_branch_patterns`. Si el documento no existe, la función retorna sin hacer nada. Un
+cliente puede fichar con normalidad durante semanas y no acumular ni un dato: ni patrones, ni
+coste, ni fiabilidad. El panel enseña ceros y nada en los registros explica por qué.
 
-Una sucursal recién creada no tiene ese documento. El resultado es un cliente que ficha con
-normalidad durante semanas y no acumula ni un dato de comportamiento: ni patrones de
-sucursal, ni patrones de empleado, ni coste, ni fiabilidad. El panel enseña ceros y no hay
-nada en los registros que explique por qué.
+**Corrección del 2026-09-05.** Ese documento *sí* se crea solo: la Cloud Function
+`onCreateBranch` escucha `entities/{entityId}/branches/{branchId}`, construye el patrón con
+`buildInitialBranchPattern` y es idempotente. La primera versión de este ADR decía que crear
+la sucursal no bastaba, y no era cierto.
+
+Lo que queda en pie es el riesgo, que es otro y más fino:
+
+- **Es asíncrono.** Entre crear la sucursal y tener su patrón pasa un tiempo que nadie
+  controla, y el seed sigue adelante mientras tanto.
+- **Vive en el otro repositorio.** Esa ruta ya se rompió una vez en producción, cuando `main`
+  de `encodeBiz-SAAS` se quedó por detrás y dejó de crearse la sucursal automática. Cuando eso
+  pasa, no hay error: hay silencio.
+
+Así que la regla no es crear el patrón —eso competiría con el trigger por el mismo
+documento—, sino **comprobar que apareció, y parar si no**.
 
 ### El coste viaja congelado dentro del fichaje
 
@@ -37,8 +50,9 @@ fichado**, porque cada fichaje se llevó su copia.
 
 La puesta en marcha no termina cuando existen las sucursales y la plantilla. Termina cuando:
 
-1. **Cada sucursal tiene su documento en `checkbiz_branch_patterns`**, creado con
-   `buildInitialBranchPattern`.
+1. **Cada sucursal tiene su documento en `checkbiz_branch_patterns`.** Lo crea el trigger
+   `onCreateBranch`; el seed espera a que aparezca y **se detiene si no aparece**, porque sin
+   él todo lo que venga después será invisible para la analítica.
 2. **Cada responsabilidad tiene su coste por hora puesto**, antes de que se registre el
    primer fichaje.
 
@@ -55,5 +69,9 @@ se pueden arreglar poniendo el precio ahora; habría que reprocesarlos. Es una r
 que esto se haga en el alta.
 
 **`buildInitialBranchPattern` usa `Math.random()`** para el horario base cuando la sucursal
-no trae `advance.startTimeWorkingDay`. En una puesta en marcha conviene que la sucursal ya
-traiga ese dato, para que el patrón no arranque de un valor sorteado.
+no trae `advance.startTimeWorkingDay`. Como lo ejecuta el trigger y no el seed, la única forma
+de que el patrón no arranque de un valor sorteado es que la sucursal se cree ya con ese dato.
+
+**Y el seed depende de que las functions estén al día.** No es una dependencia que se pueda
+mirar hacia otro lado: si `onCreateBranch` no está desplegada, la puesta en marcha parece
+correcta y el cliente nace ciego.

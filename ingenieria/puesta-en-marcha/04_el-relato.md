@@ -36,10 +36,18 @@ Las tres son las que hacen que alguien empiece.
 
 ### 1 · Tu empresa
 
-El único que normalmente no necesita fichero: son ocho datos y se contestan hablando. Nombre
-comercial, razón social, NIF, dirección fiscal, correo de facturación e idioma.
+**La puesta en marcha no empieza en blanco.** Arranca desde el apartado privado del back
+office, donde el operador elige la entidad sobre la que va a trabajar. Lo primero que hace el
+asistente es **leer lo que esa entidad ya tiene** —razón social, NIF, dirección fiscal,
+idioma, y también las sucursales o la gente que hubiera— y enseñarlo.
 
-Si el cliente prefiere el CSV, se le pasa igual.
+Así que este bloque casi nunca es «cuéntame tu empresa», sino «confírmame esto»:
+
+> **Tengo a Tapissat de Carrosseries S.L., NIF B17576000, en Arbúcies. ¿Es correcto? Me falta
+> el correo de facturación.**
+
+Sólo se pregunta lo que no está. Y lo que ya existe manda: si la entidad tiene dos sucursales
+creadas, el bloque de centros empieza con esas dos dentro, no vacío.
 
 ### 2 · Tus centros de trabajo
 
@@ -147,7 +155,9 @@ Eso es corregir al cliente: decirle qué no cuadra, en su idioma, y con qué se 
 **Tras la empresa.** Que el NIF tenga forma de NIF, que la zona horaria exista, y que del
 nombre comercial salga un `slug` utilizable.
 
-**Tras los centros.** Que no haya dos con el mismo nombre —es la clave natural con la que se
+**Tras los centros.** Que ninguno choque con uno que la entidad ya tenía —el cliente puede
+haber empezado por su cuenta, y ahí es donde la clave natural evita duplicarle un centro—. Que
+no haya dos con el mismo nombre —es la clave natural con la que se
 relacionan todos los demás bloques y con la que el seed evita duplicar—, que cada dirección
 lleve número, y que el radio sea razonable.
 

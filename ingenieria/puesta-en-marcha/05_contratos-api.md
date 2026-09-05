@@ -75,7 +75,8 @@ Backoffice llama a Merlin de servicio a servicio, con el patrón que ya existe p
 Bajo `/api/v1/backoffice`, con la sesión del operador:
 
 ```
-POST   /puesta-en-marcha                   abre una sesión → { id }
+POST   /puesta-en-marcha                   abre sesión sobre una entidad existente
+                                           { entityId } → { id, borrador }
 GET    /puesta-en-marcha/:id               el borrador y el progreso por bloques
 GET    /puesta-en-marcha/:id/plantilla/:bloque
                                            el CSV de ese bloque, con su fila de ejemplo
@@ -85,6 +86,10 @@ GET    /puesta-en-marcha/:id/revision      la configuración en el idioma del cl
 POST   /puesta-en-marcha/:id/sembrar       simula por defecto; escribe con { apply: true }
 DELETE /puesta-en-marcha/:id               retira el borrador
 ```
+
+Abrir la sesión **carga lo que la entidad ya tiene** —datos fiscales, sucursales, plantilla—
+dentro del borrador. La puesta en marcha nunca parte de cero: parte de una entidad creada en
+el back office, y el asistente pregunta sólo por lo que falta.
 
 `POST /sembrar` sin `apply` devuelve exactamente lo que haría —cuántas sucursales, cuántas
 responsabilidades, cuántos festivos tras expandir, y las coordenadas con su precisión— y no
