@@ -21,7 +21,10 @@ ya habían dicho que sí.
 La propuesta no es un formulario más. Es que **el equipo de encodeBiz use a Merlin para
 modelar los datos desordenados que manda el cliente**, los corrija sobre la marcha en
 conversación, y cuando el resultado esté validado se levante todo de una vez desde un seed.
-El cliente no rellena nada nuestro: manda lo que ya tiene.
+
+El asistente **conduce**: va pidiendo los datos bloque a bloque, en el orden en que dependen
+unos de otros, y acepta lo que el cliente le dé en el formato que sea. El cliente no rellena
+nada nuestro; contesta, o manda lo que ya tiene.
 
 ---
 
@@ -87,7 +90,7 @@ código:
 |---|---|
 | [01_as-is.md](./01_as-is.md) | Cómo se monta hoy un cliente, y qué cuesta |
 | [02_caso-real-tapissat.md](./02_caso-real-tapissat.md) | El primer fichero real, y las ocho cosas que trae |
-| `03_to-be.md` | El borrador, la conversación y el seed — *pendiente* |
+| [03_to-be.md](./03_to-be.md) | La conversación por bloques, el borrador y el seed |
 | `04_contratos-api.md` | Rutas del asistente en backoffice — *pendiente* |
 | `05_fases.md` | Orden de construcción — *pendiente* |
 
