@@ -3,7 +3,7 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** Merlin — capa de soporte, pata de puesta en marcha · backoffice — alta de ecosistema
 **Fecha de inicio:** 2026-09-05
-**Estado:** Diseño abierto · sin implementar
+**Estado:** Diseño cerrado · sin implementar
 **Autor:** Jose Acevedo
 
 ---
@@ -94,7 +94,7 @@ código:
 | [03_to-be.md](./03_to-be.md) | La conversación por bloques, el borrador y el seed |
 | [04_el-relato.md](./04_el-relato.md) | Cómo se conduce: qué se dice, qué CSV se entrega y cuándo |
 | [05_contratos-api.md](./05_contratos-api.md) | Dónde vive, y qué rutas necesita |
-| `06_fases.md` | Orden de construcción — *pendiente* |
+| [06_fases.md](./06_fases.md) | Orden de construcción |
 
 **Decisiones:** en [`adr/`](./adr/) — ADR-001 a ADR-004. El diseño técnico
 (`tdr/`) se escribirá cuando el borrador esté cerrado.
