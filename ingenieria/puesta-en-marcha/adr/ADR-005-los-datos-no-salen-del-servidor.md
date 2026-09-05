@@ -22,7 +22,14 @@ Y no hace falta.
 
 ## La observación que lo resuelve
 
-**El modelo no interviene en nada que toque el dato.** Repasando lo que hace el asistente:
+**El modelo revisa los valores; lo que no sabe nunca es de quién son.**
+
+Esa distinción es todo. El modelo *tiene* que mirar los datos —revisarlos es justamente lo que
+aporta: darse cuenta de que una secretaria cobra más que una responsable de innovación, o de
+que una dirección está incompleta—. Lo que no necesita para eso es saber cómo se llama la
+secretaria.
+
+Repasando el trabajo del asistente:
 
 | Trabajo | Quién lo hace |
 |---|---|
@@ -33,10 +40,12 @@ Y no hace falta.
 | Geocodificar | Código |
 | Adivinar que la columna «Trabajador» es `nombre_completo` | Modelo |
 | Entender «de 9 a 2 y de 4 a 7, sábados alternos» | Modelo |
+| **Ver que un coste no encaja con su puesto, o que una dirección está coja** | Modelo |
 | Redactar la pregunta y explicar por qué hace falta | Modelo |
 
-Todo lo determinista es código y corre en el servidor. Lo que queda para el modelo es
-**forma y lenguaje**, y ninguna de esas tres cosas necesita saber cómo se llama nadie.
+Todo lo determinista es código y corre en el servidor. Al modelo le queda el juicio sobre los
+valores y el lenguaje — y para las dos cosas le basta con
+`PERSONA_1 · Responsable de operaciones · 22,50 €/h · CENTRO_1, CENTRO_2`.
 
 ## Decisión
 
