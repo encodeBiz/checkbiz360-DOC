@@ -1,14 +1,25 @@
 # 05 · Dónde vive y qué rutas necesita
 
-## Una capa nueva de Merlin, hermana de la de análisis
+## La capa de soporte, hermana de la de análisis
 
 Merlin es el asistente; no es lo que hoy hay dentro de él. Lo que existe en
 `services/merlin` —`/panel` e `/interpret`, montadas en `/api/v1/gpt`— es su **capa de
 análisis**: la que lee patrones ya calculados y los cuenta en lenguaje natural.
 
-La puesta en marcha es una **segunda capa, hermana de aquélla**, no un añadido encima. Tienen
-en común el servicio, el acceso al modelo y la voz; no comparten forma, porque hacen cosas
-distintas. Y conviene que quede así de separado, porque detrás vendrán más.
+Lo que se abre aquí es una **capa de soporte**, hermana de aquélla, con dos patas:
+
+- **La puesta en marcha**, que es lo que documenta este módulo.
+- **Merlin en modo soporte**, resolviendo dudas del cliente sobre la plataforma y sobre su
+  propia configuración. Fuera del alcance de este documento, pero no fuera de la capa.
+
+Las dos patas comparten lo que hace falta construir una vez: la conversación por turnos
+—síncrona, con estado de sesión—, la voz, y la salida con esquema estricto. Y comparten algo
+más de fondo: **el que monta la casa es quien mejor puede explicarla**. La configuración que
+deja la puesta en marcha es exactamente lo que necesita leer el modo soporte para contestar
+*«¿por qué me sale este empleado en riesgo?»* o *«¿por qué no me cuadran las horas de
+agosto?»*.
+
+Conviene que quede así de separado, porque detrás vendrán más capas.
 
 Lo que la capa de análisis hace, y que aquí no encaja:
 
@@ -36,8 +47,8 @@ Lo que las dos capas sí comparten:
 - **`repairMalformedUnicodeEscapes`**, que arregla un fallo real de `gpt-5-mini` con las
   tildes dentro de JSON. Mordería igual aquí.
 
-**Decisión: una capa nueva dentro de Merlin**, con su propia ruta síncrona por turnos. La de
-análisis se queda como está.
+**Decisión: la capa de soporte dentro de Merlin**, con su propia ruta síncrona por turnos. La
+de análisis se queda como está.
 
 ---
 
@@ -84,13 +95,18 @@ arregla después.
 
 ---
 
-## La ruta de la capa nueva
+## La ruta
 
-Una sola, bajo el montaje que Merlin ya tiene:
+Bajo el montaje que Merlin ya tiene, y dentro del espacio de la capa de soporte:
 
 ```
-POST /api/v1/gpt/puesta-en-marcha/turno
+POST /api/v1/gpt/soporte/puesta-en-marcha/turno
 ```
+
+La otra pata colgará de `/api/v1/gpt/soporte/dudas/turno` cuando le toque. Van separadas y no
+detrás de un parámetro de modo, porque devuelven cosas distintas: una edita un cuaderno y la
+otra contesta una pregunta. Lo que comparten —el motor de turnos, la sesión, la voz— vive
+debajo de las dos, no en la ruta.
 
 **Entra:** el borrador tal y como está, el bloque en curso, y lo que llega del cliente —texto,
 o una tabla ya parseada; el fichero lo abre backoffice, no Merlin—.

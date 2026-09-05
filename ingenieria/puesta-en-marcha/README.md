@@ -1,7 +1,7 @@
 # Puesta en marcha asistida — Documento de Ingeniería
 
 **Proyecto:** encodeBiz SaaS
-**Dominio:** Merlin — capa de puesta en marcha · backoffice — alta de ecosistema
+**Dominio:** Merlin — capa de soporte, pata de puesta en marcha · backoffice — alta de ecosistema
 **Fecha de inicio:** 2026-09-05
 **Estado:** Diseño abierto · sin implementar
 **Autor:** Jose Acevedo
@@ -46,8 +46,9 @@ conversación de modelado y corrección, el borrador versionado por entidad, el 
 validación que se le enseña al cliente, el seed idempotente que lo ejecuta, y el
 deshacer.
 
-**Fuera:** que el cliente lo use solo. Esto es una herramienta interna del equipo, y esa
-decisión cambia el diseño entero: el asistente puede ser mucho menos desconfiado, y la
+**Fuera:** la otra pata de la capa de soporte —Merlin resolviendo dudas—, que comparte motor
+de conversación con ésta y se documentará aparte. Y que el cliente lo use solo: esto es una
+herramienta interna del equipo, y esa decisión cambia el diseño entero: el asistente puede ser mucho menos desconfiado, y la
 validación con el cliente ocurre por fuera, sobre un documento.
 
 ---
