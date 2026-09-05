@@ -94,5 +94,5 @@ código:
 | `04_contratos-api.md` | Rutas del asistente en backoffice — *pendiente* |
 | `05_fases.md` | Orden de construcción — *pendiente* |
 
-**Decisiones:** en [`adr/`](./adr/) — ADR-001, ADR-002 y ADR-003. El diseño técnico
+**Decisiones:** en [`adr/`](./adr/) — ADR-001 a ADR-004. El diseño técnico
 (`tdr/`) se escribirá cuando el borrador esté cerrado.

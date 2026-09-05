@@ -8,8 +8,9 @@ en producción**, y nada de ello es hipotético.
 (Girona). Cuatro personas, cuatro ubicaciones de trabajo, jornada continua de 07:00 a 15:00
 de lunes a viernes.
 
-**Volumen:** 4 sucursales · 4 empleados · 4 responsabilidades · 1 horario semanal ·
-17 filas de festivos que **se expanden a 66 días**.
+**Volumen:** 4 sucursales · 4 empleados · **16 responsabilidades** (ver §2) · 1 horario
+semanal · 17 filas de festivos que **se expanden a 66 días**, de los que 50 caen en día
+laborable.
 
 ---
 
@@ -25,7 +26,7 @@ los dos funcionan:
   todas correctas: la Diada el 11/09, la Festa Nacional el 12/10, el Divendres Sant el
   26/03/2027. La trampa de formato está cerrada.
 
-Y el cliente ha usado `owner`, que era el hueco señalado: Josep Batallé es el propietario.
+Y el cliente ha usado `owner`, que era el hueco señalado: el cuarto es el propietario.
 
 ---
 
@@ -33,11 +34,11 @@ Y el cliente ha usado `owner`, que era el hueco señalado: Josep Batallé es el 
 
 ### 1. Los costes son los del ejemplo — y esto es lo grave
 
-| email | puesto | coste_mes | coste_hora |
+| persona | puesto | coste_mes | coste_hora |
 |---|---|---|---|
-| senglarferit@ | Responsable de operaciones | 3200 | 22,50 EUR |
-| agare34@ | Secretaria | 2600 | 18,00 EUR |
-| iriabatalle@ | Responsable de innovación | 1800 | 14,00 EUR |
+| 1 | Responsable de operaciones | 3200 | 22,50 EUR |
+| 2 | Secretaria | 2600 | 18,00 EUR |
+| 3 | Responsable de innovación | 1800 | 14,00 EUR |
 
 Son **exactamente los valores de muestra de la plantilla** (3200/22,5 · 2600/18 · 1800/14),
 en el mismo orden de filas. Se delata solo: la Secretaria cobraría más que la Responsable de
@@ -50,10 +51,36 @@ dentro de cada fichaje: corregirlo después no arregla lo ya registrado.
 **El asistente tiene que detectar que un valor coincide con el del ejemplo y preguntarlo, no
 importarlo.**
 
-### 2. El owner no tiene nada más que el rol
+### 2. Las responsabilidades son 16, no 4 — y si se hacen mal nadie ficha
 
-La fila de Josep es `pepbatalle@gmail.com | owner` y ahí se acaba: sin `job_nombre`, sin
-coste, sin `activo`. Si entra así, el dueño de la cuenta ficha a 0 €/h.
+La hoja 04 trae cuatro filas con `nombre_sucursal` **vacío**. Leído literalmente, eso es
+ámbito entidad. Y ámbito entidad **no sirve para fichar**:
+
+`createChecklog` resuelve la responsabilidad con
+`findResponsibilities({entityId, branchId}, employeeId)`, y esa consulta añade
+`where("scope.branchId", "==", branchId)`. Una responsabilidad sin `scope.branchId` no
+aparece en el resultado, y el controlador corta con **404 `employee/not_resposibility`**.
+Las cuatro personas de Tapissat no podrían fichar en ninguna parte.
+
+Lo que quiere decir la hoja lo dice la hoja 03: los cuatro tienen
+`sucursales_asignadas = Taller, Ayats, Indcar, Beulas`. Es decir, **`nombre_sucursal` vacío
+significa «lo mismo en todas sus sucursales»**, no «en ninguna». Son cuatro personas por
+cuatro centros: **16 responsabilidades**.
+
+Y hay una confirmación en el código: `createResponsibility` hace
+`arrayUnion(scope.branchId)` sobre la ficha del empleado. `Employee.branchId[]` no se
+rellena por separado — se rellena al crear cada responsabilidad. Son la misma operación, y
+por eso el cliente puso las sucursales en la hoja de empleados y las dejó vacías en la de
+responsabilidades.
+
+**Es el ejemplo de manual de un dato que hay que cruzar entre hojas, no leer en una.**
+
+### 2b. La fila del owner se apoya en la hoja anterior
+
+La fila del propietario es `<su correo> | owner` y ahí se acaba: sin `job_nombre`, sin coste, sin `activo`.
+Pero el puesto **sí está**, en la hoja 03: el puesto del propietario es «Propietario». El `job.job` se
+arrastra de ahí, igual que se arrastran las sucursales. Lo que de verdad le falta es el
+coste por hora, como a los otros tres.
 
 ### 3. `coste_hora` no es un número
 
@@ -63,7 +90,7 @@ hora—, mientras `coste_mes`, que el cliente sí rellenó, no existe en el mode
 
 ### 4. Media plantilla se queda fuera de la geocerca
 
-Ricard y Josep traen `trabaja_fuera_de_oficina = si`, que mapea a `enableRemoteWork`. Y eso
+El responsable de operaciones y el propietario traen `trabaja_fuera_de_oficina = si`, que mapea a `enableRemoteWork`. Y eso
 no significa «se mueve entre sedes»: en `createChecklog`, `enableRemoteWork === true`
 **exime del control de ubicación por completo**. Dos de cuatro personas ficharían desde
 cualquier sitio.
@@ -87,9 +114,16 @@ periodos:
 - Pont de la puríssima: 07/12 → 08/12 (2 días)
 - Vacances Nadal 2027: 23/12 → 06/01 (15 días)
 
-De 17 filas salen **66 documentos de festivo**. La expansión incluye sábados y domingos que
-ya están cerrados por horario: hay que decidir si se guardan igual (y no molestan) o se
-podan.
+De 17 filas salen **66 documentos de festivo**, de los cuales 50 caen en día laborable y 16
+en sábado o domingo, ya cerrados por el horario.
+
+Se guardan los 66. Podar los de fin de semana ahorra dieciséis entradas de un array —nada— y
+a cambio pierde información: el día que abran los sábados, el 26 de diciembre debería seguir
+siendo festivo y ya no lo sería.
+
+Aparte, «Vacances Nadal» y «Vacances agost» no son festivos sino **cierres de empresa**. El
+modelo no distingue las dos cosas y `holiday` es lo que hay, así que funciona; pero el
+cliente verá veintiún «festivos» en agosto y conviene decírselo.
 
 ### 7. Residuos del ejemplo y ruido de normalización
 
@@ -112,12 +146,24 @@ la diferencia entre poner la valla en la nave o en mitad del polígono.
 
 ---
 
+## Sobre los datos
+
+Este documento describe un fichero con datos personales reales —nombres, DNIs, teléfonos y
+correos de cuatro personas—. **El fichero relleno y el borrador que sale de él no se guardan
+en este repositorio.** Aquí queda el análisis y la forma; los datos viven donde los dejó el
+cliente.
+
+---
+
 ## Qué prueba este caso
 
-Que el trabajo del asistente **no es leer el fichero**. El fichero se lee bien. El trabajo es
-todo lo demás: darse cuenta de que unos números son los del ejemplo, de que una fila se
-quedó a medias, de que un «sí» significa algo distinto de lo que el cliente cree, y de que
-17 filas son 66 documentos.
+Que el trabajo del asistente **no es leer el fichero, es cruzarlo**. El fichero se lee bien.
+Lo que hay que hacer es todo lo demás: sacar el puesto del owner de la hoja de empleados,
+entender que una casilla vacía significa «en todas» y no «en ninguna», darse cuenta de que
+unos números son los del ejemplo, de que un «sí» significa algo distinto de lo que el cliente
+cree, y de que 17 filas son 66 documentos.
+
+Ninguna hoja, leída sola, dice la verdad.
 
 Ninguna de las ocho cosas de arriba daría un error de importación. Las ocho producirían un
 cliente que parece montado.
