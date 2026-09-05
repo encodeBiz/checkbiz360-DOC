@@ -38,3 +38,15 @@ ninguna función HTTP.
   contenedor.
 - **El módulo se considera terminado cuando `services/firebase_sdk` está vacío.** Ese es el
   indicador de que `encodeBiz-SAAS` ya no participa en la emisión.
+
+## Matiz posterior (2026-09-04)
+
+El directorio ya no se va a quedar vacío. `services/firebase_sdk` aloja desde hoy
+`ghostUsersMaintenance`, un `onSchedule` que recorre la lista de cuentas de Firebase Auth
+—cosa que solo se puede hacer desde dentro de Firebase— y que **no es transitorio**: no hay
+contenedor al que mudarlo.
+
+Lo que esta decisión decía sigue en pie para lo que decía: el módulo de eventos termina
+cuando no queda aquí **ningún trigger de emisión**. Deja de valer el atajo de mirar si la
+carpeta está vacía. Ver
+[mantenimiento-plataforma/ADR-001](../../mantenimiento-plataforma/adr/ADR-001-constancia-en-postgres-barrido-en-firebase.md).
