@@ -1,9 +1,16 @@
 # 05 · Dónde vive y qué rutas necesita
 
-## Merlin sirve, su pipeline no
+## Una capa nueva de Merlin, hermana de la de análisis
 
-Merlin (`services/merlin`, montado en `/api/v1/gpt`) tiene hoy dos rutas, `/panel` y
-`/interpret`, y **ninguna de las dos vale para esto**:
+Merlin es el asistente; no es lo que hoy hay dentro de él. Lo que existe en
+`services/merlin` —`/panel` e `/interpret`, montadas en `/api/v1/gpt`— es su **capa de
+análisis**: la que lee patrones ya calculados y los cuenta en lenguaje natural.
+
+La puesta en marcha es una **segunda capa, hermana de aquélla**, no un añadido encima. Tienen
+en común el servicio, el acceso al modelo y la voz; no comparten forma, porque hacen cosas
+distintas. Y conviene que quede así de separado, porque detrás vendrán más.
+
+Lo que la capa de análisis hace, y que aquí no encaja:
 
 - **Son asíncronas con caché.** Devuelven `202` cuando no hay nada cacheado y el front sondea
   hasta que aparece. Está pensado para «nárrame el panel de este mes», que se pide una vez y
@@ -14,7 +21,10 @@ Merlin (`services/merlin`, montado en `/api/v1/gpt`) tiene hoy dos rutas, `/pane
 - **No entran ficheros.** El cuerpo de `/panel` son las claves estables que el panel ya
   calculó, a propósito, para que el relato no pueda contradecir a la pantalla.
 
-Lo que sí se reutiliza, y es lo importante:
+Nada de eso es un defecto: es lo correcto para narrar un panel. Sencillamente, conducir una
+conversación con un cuaderno delante es otro trabajo.
+
+Lo que las dos capas sí comparten:
 
 - **`CustomGptService`** (`packages/shared/src/openai.ts`) es un paso directo al Responses
   API: `ResponsesCreateParams` es el tipo completo, así que herramientas, varios turnos y
@@ -26,8 +36,8 @@ Lo que sí se reutiliza, y es lo importante:
 - **`repairMalformedUnicodeEscapes`**, que arregla un fallo real de `gpt-5-mini` con las
   tildes dentro de JSON. Mordería igual aquí.
 
-**Decisión: un módulo nuevo dentro de Merlin**, con su propia ruta síncrona por turnos, sin
-tocar `/panel` ni `/interpret`.
+**Decisión: una capa nueva dentro de Merlin**, con su propia ruta síncrona por turnos. La de
+análisis se queda como está.
 
 ---
 
@@ -74,9 +84,9 @@ arregla después.
 
 ---
 
-## La ruta de Merlin
+## La ruta de la capa nueva
 
-Una sola, bajo su montaje actual:
+Una sola, bajo el montaje que Merlin ya tiene:
 
 ```
 POST /api/v1/gpt/puesta-en-marcha/turno

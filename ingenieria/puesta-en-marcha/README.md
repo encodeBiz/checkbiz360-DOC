@@ -1,7 +1,7 @@
 # Puesta en marcha asistida — Documento de Ingeniería
 
 **Proyecto:** encodeBiz SaaS
-**Dominio:** backoffice — Alta de ecosistema (entidad, sucursales, plantilla, calendario)
+**Dominio:** Merlin — capa de puesta en marcha · backoffice — alta de ecosistema
 **Fecha de inicio:** 2026-09-05
 **Estado:** Diseño abierto · sin implementar
 **Autor:** Jose Acevedo
