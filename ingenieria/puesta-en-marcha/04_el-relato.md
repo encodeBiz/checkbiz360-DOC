@@ -1,0 +1,150 @@
+# 04 · El relato — cómo se conduce la puesta en marcha
+
+Este es el documento que importa. El seed es mecánico y el borrador es un fichero; lo que
+decide si esto funciona es **cómo se pide**.
+
+## La forma: un CSV pequeño por bloque, no un libro de nueve hojas
+
+Un libro con nueve pestañas paraliza. El cliente lo abre, ve ocho cosas que no entiende y lo
+deja para el lunes. El asistente hace lo contrario: **pide un bloque, entrega el CSV de ese
+bloque, lo cierra, y sólo entonces pasa al siguiente.**
+
+Cada CSV va con **una fila de ejemplo** y con las columnas justas. Nada de columnas
+opcionales «por si acaso»: si un dato no lo va a usar el seed, no se pide.
+
+---
+
+## El arranque
+
+> **Hola. Voy a montar tu empresa en checkbiz360, y lo vamos a hacer por partes para que no
+> se te haga bola. Son seis: tu empresa, tus centros de trabajo, tu gente, sus horarios y los
+> festivos. Nada más.**
+>
+> **Puedes contestarme aquí mismo, o rellenar la plantilla que te paso en cada paso, lo que
+> te resulte más cómodo. Si tienes ya un listado en Excel de la gestoría, mándamelo tal cual
+> y lo miro yo.**
+>
+> **Puedes parar cuando quieras: guardo por dónde vamos y seguimos otro día.**
+
+Tres cosas y ninguna de adorno: **cuánto va a durar** (seis pasos, enumerados), **que hay
+salida fácil** (contesta hablando, o manda lo que ya tienes) y **que se puede interrumpir**.
+Las tres son las que hacen que alguien empiece.
+
+---
+
+## Los seis bloques
+
+### 1 · Tu empresa
+
+El único que normalmente no necesita fichero: son ocho datos y se contestan hablando. Nombre
+comercial, razón social, NIF, dirección fiscal, correo de facturación e idioma.
+
+Si el cliente prefiere el CSV, se le pasa igual.
+
+### 2 · Tus centros de trabajo
+
+Antes de pedir nada, **explicar qué es un centro**, porque no significa lo que parece:
+
+> **Un centro es cualquier sitio donde tu gente ficha. Puede ser tu nave, una oficina, una
+> obra, o incluso la fábrica de un cliente al que vais a trabajar. Si tenéis gente fichando
+> en cuatro sitios distintos, son cuatro centros aunque tres no sean vuestros.**
+
+Sin esa frase, un cliente como [Tapissat](./02_caso-real-tapissat.md) —que trabaja dentro de
+las fábricas de sus clientes— no sabría qué poner.
+
+`nombre_centro, direccion_completa, radio_metros`
+
+Y una advertencia al entregarlo: **la dirección tiene que llevar número**, porque de ahí sale
+el punto desde el que se mide el radio de fichaje.
+
+### 3 · Tu gente
+
+Aquí van juntos el empleado **y su responsabilidad**, en la misma fila. No se separan.
+
+`nombre, email, dni, telefono, puesto, centros, rol, coste_hora`
+
+Que vayan juntos no es comodidad: es lo que impide el error de leer una tabla sin la otra.
+`centros` dice dónde trabaja **y** dónde tiene el rol; el seed crea una responsabilidad por
+centro ([ADR-004](./adr/ADR-004-el-borrador-guarda-intencion.md)). En Tapissat, esa
+separación en dos hojas fue exactamente lo que hizo que las cuatro personas quedaran sin
+poder fichar.
+
+Dos cosas que el asistente dice al entregar este CSV, porque no se pueden deducir después:
+
+- **`coste_hora` no es opcional**, aunque lo parezca. Sin él, todo el análisis económico que
+  ha comprado sale en cero, y el precio se congela dentro de cada fichaje: ponerlo el mes que
+  viene no arregla el mes pasado.
+- **`rol`**: quién manda. Tiene que haber exactamente un `owner`, que es quien entrará al
+  panel.
+
+### 4 · Los horarios
+
+El bloque donde más hay que explicar. Primero **una pregunta, no un fichero**:
+
+> **¿Todos trabajáis el mismo horario, o cambia según el centro o según la persona?**
+
+Y según conteste, se abre uno de tres caminos —empresa, centro o persona—, que son los tres
+niveles que el calendario ya hereda. El cliente no tiene por qué saber que existen; sí tiene
+que elegir.
+
+`dia, turno, hora_inicio, hora_fin`
+
+Con dos avisos: **un día que no aparezca es un día cerrado**, y **si hay jornada partida se
+repite el día con turno 1 y turno 2**.
+
+### 5 · Festivos y cierres
+
+> **Necesito dos cosas: los festivos que os toquen por convenio y comunidad, y los días que
+> cerráis vosotros —Navidad, agosto, el puente que sea—.**
+
+`nombre, desde, hasta, retribuido`
+
+Los periodos se piden **como periodos**. El cliente escribe «Navidad, del 23/12 al 6/1» una
+vez; expandir eso a quince días es cosa del seed.
+
+### 6 · Revisión
+
+No se pide nada. Se **devuelve**: la configuración entera en el idioma del cliente —cuántos
+centros, quién trabaja dónde, con qué horario, quién responde de qué—, para que la lea y diga
+que sí. Ese documento es lo que se aprueba, y es también el entregable comercial.
+
+---
+
+## Guardar el estado
+
+Al cerrar cada bloque, el borrador se escribe en disco. Lleva además por dónde va:
+
+```
+progreso:
+  empresa      → cerrado
+  centros      → cerrado
+  gente        → abierto · faltan 4 costes por hora
+  horarios     → sin empezar
+  festivos     → sin empezar
+  revision     → sin empezar
+```
+
+Así el asistente puede retomar diciendo **qué falta**, no *«¿por dónde íbamos?»*:
+
+> **Nos quedamos en tu gente. Tengo a los cuatro con sus centros y sus roles; me falta saber
+> cuánto cuesta la hora de cada uno. ¿Seguimos por ahí?**
+
+---
+
+## Sobre entregar ejemplos
+
+Cada CSV lleva una fila de muestra para que se vea el formato. **Y eso tiene un coste
+conocido:** el cliente de Tapissat devolvió la plantilla con los costes del ejemplo intactos
+—3200, 2600 y 1800—, en el mismo orden en que venían. No los rellenó: los dejó.
+
+Por eso la fila de ejemplo va marcada como tal, y el asistente **compara cada valor recibido
+contra el del ejemplo**. Si coincide, no lo importa: pregunta. Es barato de comprobar y es la
+diferencia entre montar un cliente y montarle unas nóminas inventadas.
+
+---
+
+## Cuando termina
+
+El seed se ejecuta, se comprueba que lo sembrado está donde tiene que estar, y **el borrador
+se borra**. A partir de ahí el registro es la plataforma
+([ADR-001](./adr/ADR-001-merlin-edita-un-borrador.md)).
