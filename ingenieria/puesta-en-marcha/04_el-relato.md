@@ -43,14 +43,31 @@ Si el cliente prefiere el CSV, se le pasa igual.
 
 ### 2 · Tus centros de trabajo
 
-Antes de pedir nada, **explicar qué es un centro**, porque no significa lo que parece:
+Antes de pedir nada hay que resolver una decisión de modelado, y **no se resuelve
+preguntando de quién es el sitio**. Hay dos formas válidas de montar a alguien que trabaja
+fuera:
 
-> **Un centro es cualquier sitio donde tu gente ficha. Puede ser tu nave, una oficina, una
-> obra, o incluso la fábrica de un cliente al que vais a trabajar. Si tenéis gente fichando
-> en cuatro sitios distintos, son cuatro centros aunque tres no sean vuestros.**
+**Un centro por sitio.** Cada fichaje queda atribuido a su centro —`CheckLog.branchId`—, así
+que se sabe cuántas horas se han hecho en cada uno, con su coste, y cada uno tiene su propia
+valla y su propio patrón de comportamiento. A cambio hay que conseguir la dirección de cada
+sitio.
 
-Sin esa frase, un cliente como [Tapissat](./02_caso-real-tapissat.md) —que trabaja dentro de
-las fábricas de sus clientes— no sabría qué poner.
+**Un solo centro, y la gente marcada como que trabaja fuera.** Más simple y no hay
+direcciones que perseguir. Pero todas las horas caen en el mismo centro —se pierde el reparto
+por sitio— y `enableRemoteWork` **quita el control de ubicación a esa persona en todas
+partes**, incluida la sede propia.
+
+La pregunta que decide es ésta:
+
+> **¿Necesitas saber cuántas horas se han hecho en cada sitio, o te vale con el total?**
+
+Si la respuesta es lo primero —y en cuanto esas horas se facturan a un tercero, lo es—,
+entonces cada sitio es un centro, aunque no sea suyo. Es el caso de
+[Tapissat](./02_caso-real-tapissat.md), que trabaja dentro de las fábricas de sus clientes.
+
+Y si el problema es que en un sitio ajeno no se puede garantizar la ubicación, **la palanca
+es el centro, no la persona**: `disableRatioChecklog` en ese centro concreto conserva la
+atribución y la valla de los demás. Marcar a la persona apaga las dos cosas en todas partes.
 
 `nombre_centro, direccion_completa, radio_metros`
 

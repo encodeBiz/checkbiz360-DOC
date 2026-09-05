@@ -95,14 +95,24 @@ no significa «se mueve entre sedes»: en `createChecklog`, `enableRemoteWork ==
 **exime del control de ubicación por completo**. Dos de cuatro personas ficharían desde
 cualquier sitio.
 
-Es casi seguro que el cliente quiso decir lo primero. Hay que preguntarlo.
+Es casi seguro que el cliente quiso decir lo primero. Hay que preguntarlo — y si lo que le
+preocupa es no poder garantizar la ubicación dentro de una fábrica ajena, la palanca correcta
+es otra: `disableRatioChecklog` **en ese centro**, que conserva la valla del taller propio y
+la de los demás. `enableRemoteWork` apaga el control de esa persona en todas partes,
+incluida su propia nave.
 
 ### 5. Las «sucursales» no son suyas
 
 Ayats, Indcar y Beulas son fabricantes de carrocerías: son **clientes** de Tapissat, no sedes
-propias. Solo «Taller» lleva su NIF; las otras tres lo tienen vacío. Es un uso legítimo de
-sucursal como lugar de trabajo —y explica el radio de 500 m—, pero conviene que quede
-escrito, porque cambia cómo se lee el panel: ahí «sucursal» significa «obra».
+propias. Solo «Taller» lleva su NIF; las otras tres lo tienen vacío.
+
+Y es la decisión correcta, aunque no por ser sedes: como `CheckLog` se atribuye siempre a un
+`branchId`, montarlas como centros es lo único que permite saber cuántas horas se han hecho
+dentro de cada fábrica. Para una empresa que factura ese trabajo a un tercero, ese reparto no
+es un extra. La alternativa —un solo centro y la gente marcada como que trabaja fuera— habría
+sido más fácil de rellenar y habría perdido justo el dato que da de comer.
+
+Lo que sí cambia es cómo se lee el panel: ahí «sucursal» significa «obra».
 
 ### 6. Los festivos vienen en rangos, y el modelo no los tiene
 
