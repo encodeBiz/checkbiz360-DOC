@@ -95,6 +95,7 @@ código:
 | [04_el-relato.md](./04_el-relato.md) | Cómo se conduce: qué se dice, qué CSV se entrega y cuándo |
 | [05_contratos-api.md](./05_contratos-api.md) | Dónde vive, y qué rutas necesita |
 | [06_fases.md](./06_fases.md) | Orden de construcción |
+| [07_el-seed.md](./07_el-seed.md) | Del borrador a la plataforma, y lo que hay que resolver antes |
 
 **Decisiones:** en [`adr/`](./adr/) — ADR-001 a ADR-005. El diseño técnico
 (`tdr/`) se escribirá cuando el borrador esté cerrado.
