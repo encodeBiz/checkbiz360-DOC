@@ -66,7 +66,7 @@ Antes de contratar, el sistema comprueba dos requisitos y avisa si falta alguno,
 - **Datos de la empresa** completos.
 - **Método de pago** configurado.
 
-Recuerde que la primera suscripción incluye **45 días de prueba**. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
+Recuerde que la primera suscripción incluye **15 días de prueba**. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
 
 ---
 
@@ -131,4 +131,4 @@ Desde aquí puede replicar los pasos 4 y 5 para el resto de centros y de persona
 | [Estructura de la plataforma](05-estructura-de-la-plataforma.md) | Entidad, sucursal y empleado |
 | [Crear y gestionar sucursales](../08-sucursales-y-entidad/57-crear-y-gestionar-sucursales.md) | Campos, geocodificación y estados |
 | [Crear y gestionar empleados](../02-empleados/06-crear-y-gestionar-empleados.md) | Alta, estados laborales y opciones de seguridad |
-| [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md) | Precio, prueba de 45 días y cómo contratar |
+| [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md) | Precio, prueba de 15 días y cómo contratar |

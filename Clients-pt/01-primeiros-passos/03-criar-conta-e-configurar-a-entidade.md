@@ -66,7 +66,7 @@ Antes de contratar, o sistema verifica dois requisitos e avisa se faltar algum, 
 - **Dados da empresa** completos.
 - **Método de pagamento** configurado.
 
-Recorde que a primeira subscrição inclui **45 dias de experiência**. Consulte [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md).
+Recorde que a primeira subscrição inclui **15 dias de experiência**. Consulte [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md).
 
 ---
 
@@ -131,4 +131,4 @@ A partir daqui pode repetir os passos 4 e 5 para os restantes locais e pessoas, 
 | [Estrutura da plataforma](05-estrutura-da-plataforma.md) | Entidade, sucursal e funcionário |
 | [Criar e gerir sucursais](../08-sucursais-e-entidade/57-criar-e-gerir-sucursais.md) | Campos, geocodificação e estados |
 | [Criar e gerir funcionários](../02-funcionarios/06-criar-e-gerir-funcionarios.md) | Criação, estados laborais e opções de segurança |
-| [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md) | Preço, experiência de 45 dias e como contratar |
+| [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md) | Preço, experiência de 15 dias e como contratar |

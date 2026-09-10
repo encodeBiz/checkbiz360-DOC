@@ -146,7 +146,7 @@ Registro del inicio (`restin`) y fin (`restout`) de una pausa dentro de la jorna
 Pantalla del backoffice que consolida la actividad del periodo en tres vistas: la comparativa entre sucursales, el detalle por empleado y el análisis del periodo. Es el punto de entrada a la inteligencia operativa y donde aparece el relato del asistente de IA.
 
 ### Plan de suscripción
-Modalidad de contratación de CheckBiz360. Hay dos: **Bronce**, desde 2 €/empleado al mes, y **Empresarial**, con precio a medida, que añade soporte preferente e integraciones. Ambos dan acceso a todos los módulos de la plataforma. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md).
+Modalidad de contratación de CheckBiz360. Hay dos: **Bronce**, 5 €/empleado al mes (tarifa 2026 de 2 € contratando hasta el 31 de diciembre de 2026 incluido), y **Empresarial**, con precio a medida, que añade soporte preferente e integraciones. Ambos dan acceso a todos los módulos de la plataforma. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md).
 
 ### Puntuación de promoción
 Índice único que combinaría fiabilidad, eficiencia y valoraciones en una sola cifra comparable entre empleados. **No existe en la versión actual**: lo que sí hay es la *evaluación operativa del empleado*, un diagnóstico de su patrón que incluye la señal de candidato a promoción. Véase [Evaluación operativa del empleado](../07-inteligencia-operativa/53-puntuacion-de-promocion.md).

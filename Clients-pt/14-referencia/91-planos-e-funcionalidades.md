@@ -10,12 +10,14 @@ O CheckBiz360 é oferecido em dois planos:
 
 | Plano | Preço | Para quem |
 |---|---|---|
-| **Bronze** | **Desde 2 €/funcionário por mês** | Empresas que precisam de cumprir o registo de horários e gerir a sua operação diária. É o plano completo da plataforma. |
+| **Bronze** | **5 €/funcionário por mês** | Empresas que precisam de cumprir o registo de horários e gerir a sua operação diária. É o plano completo da plataforma. |
 | **Empresarial** | **Preço à medida** | Organizações grandes (indicativamente, a partir de 100 funcionários) ou que precisam de integrações com os seus próprios sistemas e de apoio preferencial. |
 
 O preço do plano Bronze é **por funcionário e mês**: é faturado consoante os funcionários registados, sem quota fixa de entrada nem custo de implementação. O plano Empresarial é acordado com a equipa comercial em função do volume e das integrações necessárias.
 
-> **Período experimental:** a primeira subscrição inclui **45 dias de experiência**. A experiência não se aplica a subscrições posteriores da mesma entidade.
+> **Tarifa 2026:** o plano Bronze pode ser subscrito por **2 €/funcionário por mês** até **31 de dezembro de 2026 inclusive**. A partir de 01/01/2027 a tarifa geral volta a ser de 5 € e aplica-se apenas a novas adesões: quem subscreveu antes mantém a sua, e qualquer revisão futura de preços será comunicada com bastante antecedência.
+
+> **Período experimental:** a primeira subscrição inclui **15 dias de experiência**. A experiência não se aplica a subscrições posteriores da mesma entidade.
 
 Para condições concretas (volume, faturação anual, integrações à medida, períodos de fidelização associados a um desenvolvimento específico), escreva para **hola@encodebiz.com**.
 
@@ -110,7 +112,7 @@ O plano Empresarial inclui tudo o do plano Bronze e acrescenta:
 | Apoio | Padrão, com tempos de resposta definidos | Preferencial, por canais prioritários |
 | Integrações por webhook | — | Incluídas |
 | Integrações com ERP/CRM e desenvolvimentos à medida | — | Sob acordo |
-| Preço | Desde 2 €/funcionário por mês | À medida |
+| Preço | 5 €/funcionário por mês | À medida |
 
 > **Nota:** as integrações à medida são orçamentadas à parte e podem ter associado um período de fidelização pelo trabalho de arranque. A equipa comercial detalha-o em cada caso.
 

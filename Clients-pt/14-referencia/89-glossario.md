@@ -139,7 +139,7 @@ Registo do início (`restin`) e fim (`restout`) de uma pausa dentro da jornada d
 Nível de acesso e permissões de um utilizador dentro do CheckBiz360. Os perfis disponíveis são: Owner, Manager, Supervisor e Worker. Cada perfil tem um conjunto definido de ações que pode realizar no backoffice e na aplicação móvel.
 
 ### Plano de subscrição
-Modalidade de contratação do CheckBiz360. Há duas: **Bronze**, desde 2 €/funcionário por mês, e **Empresarial**, com preço à medida, que acrescenta apoio preferencial e integrações. Ambas dão acesso a todos os módulos da plataforma. Veja [Planos, preços e funcionalidades](./91-planos-e-funcionalidades.md).
+Modalidade de contratação do CheckBiz360. Há duas: **Bronze**, 5 €/funcionário por mês (tarifa 2026 de 2 € subscrevendo até 31 de dezembro de 2026 inclusive), e **Empresarial**, com preço à medida, que acrescenta apoio preferencial e integrações. Ambas dão acesso a todos os módulos da plataforma. Veja [Planos, preços e funcionalidades](./91-planos-e-funcionalidades.md).
 
 ### Pontuação de promoção
 Índice único que combinaria fiabilidade, eficiência e avaliações num só valor comparável entre funcionários. **Não existe na versão atual**: o que existe é a *avaliação operacional do funcionário*, um diagnóstico do seu padrão que inclui o sinal de candidato a promoção. Veja [Avaliação operacional do funcionário](../07-inteligencia-operacional/53-pontuacao-de-promocao.md).

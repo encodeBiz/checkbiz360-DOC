@@ -10,12 +10,14 @@ CheckBiz360 se ofrece en dos planes:
 
 | Plan | Precio | Para quién |
 |---|---|---|
-| **Bronce** | **Desde 2 €/empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Es el plan completo de la plataforma. |
+| **Bronce** | **5 €/empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Es el plan completo de la plataforma. |
 | **Empresarial** | **Precio a medida** | Organizaciones grandes (orientativamente, a partir de 100 empleados) o que necesitan integraciones con sus propios sistemas y soporte preferente. |
 
 El precio del plan Bronce es **por empleado y mes**: se factura según los empleados dados de alta, sin cuota fija de entrada ni coste de implantación. El plan Empresarial se acuerda con el equipo comercial en función del volumen y de las integraciones necesarias.
 
-> **Periodo de prueba:** la primera suscripción incluye **45 días de prueba**. La prueba no se aplica en suscripciones posteriores de la misma entidad.
+> **Tarifa 2026:** el plan Bronce puede contratarse por **2 €/empleado al mes** hasta el **31 de diciembre de 2026 incluido**. Desde el 01/01/2027 la tarifa general vuelve a ser de 5 € y se aplica solo a las altas nuevas: quien haya contratado antes conserva la suya, y cualquier revisión futura de precios se comunicará con amplia antelación.
+
+> **Periodo de prueba:** la primera suscripción incluye **15 días de prueba**. La prueba no se aplica en suscripciones posteriores de la misma entidad.
 
 Para condiciones concretas (volumen, facturación anual, integraciones a medida, permanencias asociadas a un desarrollo específico), escriba a **hola@encodebiz.com**.
 
@@ -110,7 +112,7 @@ El plan Empresarial incluye todo lo del plan Bronce y añade:
 | Soporte | Estándar, con tiempos de respuesta definidos | Preferente, por canales prioritarios |
 | Integraciones por webhook | — | Incluidas |
 | Integraciones con ERP/CRM y desarrollos a medida | — | Bajo acuerdo |
-| Precio | Desde 2 €/empleado al mes | A medida |
+| Precio | 5 €/empleado al mes | A medida |
 
 > **Nota:** las integraciones a medida se presupuestan aparte y pueden llevar asociada una permanencia por el trabajo de puesta en marcha. El equipo comercial lo detalla en cada caso.
 

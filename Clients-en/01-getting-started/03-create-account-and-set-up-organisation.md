@@ -66,7 +66,7 @@ Before subscribing, the system checks two requirements and warns you if either i
 - **Company details** complete.
 - **Payment method** configured.
 
-Remember that the first subscription includes a **45-day trial**. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
+Remember that the first subscription includes a **15-day trial**. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
 
 ---
 
@@ -131,4 +131,4 @@ From here you can repeat steps 4 and 5 for the rest of the sites and people, or 
 | [Platform structure](05-platform-structure.md) | Organisation, branch and employee |
 | [Create and manage branches](../08-branches-and-organisation/57-create-and-manage-branches.md) | Fields, geocoding and statuses |
 | [Create and manage employees](../02-employees/06-create-and-manage-employees.md) | Creation, employment statuses and security options |
-| [Plans, prices and features](../14-reference/91-plans-and-features.md) | Price, 45-day trial and how to subscribe |
+| [Plans, prices and features](../14-reference/91-plans-and-features.md) | Price, 15-day trial and how to subscribe |

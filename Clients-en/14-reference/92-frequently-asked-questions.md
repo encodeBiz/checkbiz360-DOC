@@ -88,7 +88,7 @@ Yes. CheckBiz360 allows schedules and shifts to be configured at branch level, a
 
 ### 13. How many employees can I manage and how much does it cost?
 
-There is no employee limit per plan. The Bronze plan is billed **per employee and month, from €2**: the cost follows the real size of the headcount, with no fixed entry fee and no implementation cost. For large organisations —indicatively from 100 employees— or those with integration needs, the Enterprise plan is agreed bespoke with the sales team. See [Plans, prices and features](./91-plans-and-features.md) for the detail.
+There is no employee limit per plan. The Bronze plan is billed **per employee and month, €5**, with a 2026 rate of €2 for anyone subscribing up to and including 31 December 2026: the cost follows the real size of the headcount, with no fixed entry fee and no implementation cost. For large organisations —indicatively from 100 employees— or those with integration needs, the Enterprise plan is agreed bespoke with the sales team. See [Plans, prices and features](./91-plans-and-features.md) for the detail.
 
 ---
 
@@ -137,7 +137,7 @@ Yes. The platform handles part-time employees correctly. You can configure shift
 
 ### 19. Is there a free trial version?
 
-Yes. Each organisation's first subscription includes a **45-day trial**, with the complete platform and no reduced employee limit. The trial does not apply again to subsequent subscriptions by the same organisation. To start a trial or ask about specific terms, write to hola@encodebiz.com.
+Yes. Each organisation's first subscription includes a **15-day trial**, with the complete platform and no reduced employee limit. The trial does not apply again to subsequent subscriptions by the same organisation. To start a trial or ask about specific terms, write to hola@encodebiz.com.
 
 ---
 
@@ -147,7 +147,7 @@ All plans include access to this documentation (knowledge base), email support a
 
 ---
 
-> **Warning:** commercial terms may be updated. The reference prices in this documentation are *from €2 per employee per month* for the Bronze plan and *bespoke* for the Enterprise plan, with a 45-day trial on the first subscription. For a firm quote, contact the sales team at hola@encodebiz.com.
+> **Warning:** commercial terms may be updated. The reference prices in this documentation are *€5 per employee per month* for the Bronze plan — with a 2026 rate of *€2 per employee per month* for anyone subscribing up to and including 31 December 2026, kept thereafter — and *bespoke* for the Enterprise plan, with a 15-day trial on the first subscription. For a firm quote, contact the sales team at hola@encodebiz.com.
 
 ---
 

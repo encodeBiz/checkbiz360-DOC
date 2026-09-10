@@ -10,12 +10,14 @@ CheckBiz360 is offered in two plans:
 
 | Plan | Price | Who it is for |
 |---|---|---|
-| **Bronze** | **From €2 per employee per month** | Companies that need to comply with working-time recording and manage their day-to-day operations. It is the platform's complete plan. |
+| **Bronze** | **€5 per employee per month** | Companies that need to comply with working-time recording and manage their day-to-day operations. It is the platform's complete plan. |
 | **Enterprise** | **Bespoke pricing** | Large organisations (indicatively, from 100 employees) or those needing integrations with their own systems and priority support. |
 
 The Bronze plan's price is **per employee and month**: it is billed according to the employees registered, with no fixed entry fee and no implementation cost. The Enterprise plan is agreed with the sales team depending on volume and the integrations required.
 
-> **Trial period:** the first subscription includes a **45-day trial**. The trial does not apply to subsequent subscriptions by the same organisation.
+> **2026 rate:** the Bronze plan can be subscribed at **€2 per employee per month** up to and including **31 December 2026**. From 01/01/2027 the standard rate goes back to €5 and applies only to new sign-ups: anyone who subscribed earlier keeps theirs, and any future price review will be announced well in advance.
+
+> **Trial period:** the first subscription includes a **15-day trial**. The trial does not apply to subsequent subscriptions by the same organisation.
 
 For specific terms (volume, annual billing, bespoke integrations, minimum terms associated with a specific development), write to **hola@encodebiz.com**.
 
@@ -110,7 +112,7 @@ The Enterprise plan includes everything in the Bronze plan and adds:
 | Support | Standard, with defined response times | Priority, through priority channels |
 | Webhook integrations | — | Included |
 | ERP/CRM integrations and bespoke development | — | By agreement |
-| Price | From €2 per employee per month | Bespoke |
+| Price | €5 per employee per month | Bespoke |
 
 > **Note:** bespoke integrations are quoted separately and may carry a minimum term for the set-up work. The sales team details this in each case.
 

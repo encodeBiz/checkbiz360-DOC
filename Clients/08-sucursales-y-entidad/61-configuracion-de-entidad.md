@@ -114,4 +114,4 @@ La regla es sencilla: lo que afecta a la empresa como conjunto se configura en l
 | [Crear y gestionar sucursales](./57-crear-y-gestionar-sucursales.md) | Campos, geocodificación y estados |
 | [Configuración avanzada de sucursal](./58-configuracion-avanzada-de-sucursal.md) | Zona de chequeo, horario y modalidad de jornada |
 | [Herencia de configuración](../04-calendario-y-horarios/26-herencia-de-configuracion.md) | Cómo se resuelve el calendario efectivo |
-| [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md) | Precio, prueba de 45 días y cómo contratar |
+| [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md) | Precio, prueba de 15 días y cómo contratar |

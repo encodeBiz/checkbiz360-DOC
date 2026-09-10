@@ -114,4 +114,4 @@ The rule is simple: what affects the company as a whole is configured at the org
 | [Create and manage branches](./57-create-and-manage-branches.md) | Fields, geocoding and statuses |
 | [Advanced branch configuration](./58-advanced-branch-settings.md) | Check zone, schedule and workday mode |
 | [Configuration inheritance](../04-calendar-and-schedules/26-configuration-inheritance.md) | How the effective calendar is resolved |
-| [Plans, prices and features](../14-reference/91-plans-and-features.md) | Price, 45-day trial and how to subscribe |
+| [Plans, prices and features](../14-reference/91-plans-and-features.md) | Price, 15-day trial and how to subscribe |
