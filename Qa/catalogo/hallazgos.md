@@ -254,6 +254,27 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-18 · Desarrollo se quedó sordo a Stripe tras la mudanza de servidor
+
+- **Observado.** En Stripe, modo prueba, hay **dos** webhooks dados de alta y los dos
+  `ENABLED`. El del contenedor apunta a `http://141.95.47.135:8080/api/v1/billing/webhook`, que
+  es el servidor de **producción** por un puerto que quedó **cerrado** el 2026-09-12 al retirar
+  de allí el stack de desarrollo. La ruta es correcta; el host ya no existe.
+- **Dónde.** Configuración de Stripe (modo prueba), no en el repositorio. La dirección buena
+  es `https://api-staging.checkbiz360.com/api/v1/billing/webhook`
+  (`services/billing/src/app.ts:20`, servida por `nginx.staging.conf:180`).
+- **Comprobado.** Listando los webhooks con la API de Stripe en modo prueba, 2026-09-12.
+- **Efecto.** Nada de lo que Stripe cuenta llega al contenedor de desarrollo: ni facturas
+  emitidas, ni cobros, ni fallos de cobro, ni bajas, ni altas de método de pago. En la práctica
+  **no se puede probar el fin del periodo de prueba ni el cobro** hasta arreglarlo, y cualquier
+  factura que Stripe genere en desarrollo no se registra ni se envía.
+- **El segundo webhook sigue vivo.** Apunta a la Cloud Function `stripeWebhook` de
+  `dev-encodebiz` y cubre casi los mismos eventos. Es un hecho observado: **no está establecido**
+  si se conserva a propósito como camino de vuelta o si quedó olvidado al migrar. Mientras los
+  dos estén activos, los eventos que ambos declaran se procesan por dos sitios.
+- **Casos.** Bloquea el bloque 1 en su último paso; sin esto, FAC-07 no se puede probar de
+  extremo a extremo.
+
 ## HAL-17 · Apagar la semana entera abre el fichaje en vez de cerrarlo
 
 - **Observado.** Un horario con los **siete días** deshabilitados no impide fichar: el fichaje
