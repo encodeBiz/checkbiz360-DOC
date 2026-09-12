@@ -263,6 +263,33 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-29 · Quien está de vacaciones ficha igual: el fichaje no lee las ausencias
+
+- **Observado.** Un empleado con una ausencia registrada para hoy
+  (`PATCH /api/v1/checkinbiz/calendar`, `scope:"employee"`, `absence:{startDate, endDate,
+  status:"vacation"}`) ficha con `201`. En la **misma ejecución y contra el mismo dato**, el
+  tablero de disponibilidad lo devuelve en `unavailable` con `reason:"absence"`,
+  `reasonSource:"employee"` y el `absenceId` correcto. Medido en desarrollo el 2026-09-12.
+- **Dónde.** `createChecklog.controller.ts:290-294` consulta `holidays?.some(h => h.date ===
+  todayISO)` y no consulta `absences` en ningún punto. El tablero sí:
+  `packages/shared/src/calendar/resolveAvailability.usecase.ts:193-197` expande el rango de
+  cada ausencia a días sueltos y marca el día como no disponible.
+- **No es «todavía no está implementado».** El dato existe, tiene su endpoint de alta, su
+  validación —incluido el control de solapamiento entre ausencias— y su borrado; el tablero lo
+  pinta. Solo el fichaje lo ignora. Un comentario del propio código lo dice:
+  *«`absences` con rango son el modelo bueno, que existe y todavía no usa nadie»*.
+- **Efecto.** Las vacaciones, las bajas y los permisos no cierran el fichaje. Alguien de baja
+  puede marcar jornada —desde la app, con su sesión— y esa jornada cuenta como trabajada: entra
+  en el informe, en las horas del mes y en lo que ve la gestoría. Y lo hace **contradiciendo al
+  panel**, que a esa misma persona la está dando por ausente ese día. Si además se factura o se
+  paga por horas registradas, el descuadre no se ve hasta el cierre.
+- **Lo que sí cierra el día** es un festivo (`holidays`), que es del centro o de la empresa, no
+  de la persona. No hay forma de cerrar el día de **una** persona por la vía que el producto
+  ofrece para eso.
+- **Casos.** CHK-08-28, cubierto en la suite como fallo esperado, con CHK-17-03 al lado en
+  verde como contraste. Relacionado con la divergencia ya anotada en CHK-11 sobre el día sin
+  clave, que el tablero y el fichaje también interpretan al revés.
+
 ## HAL-28 · Un descanso se engancha a la jornada de otro día y le cambia las horas
 
 - **Observado.** Un empleado con responsabilidad en dos sucursales, B y B2. Se deja una jornada
