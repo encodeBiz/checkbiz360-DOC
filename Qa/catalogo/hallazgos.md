@@ -263,6 +263,30 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-24 · Editar un centro le reactiva la geocerca, y borrarlo deja gente apuntando a él
+
+Tres comportamientos del mantenimiento de centros de trabajo, medidos contra desarrollo el
+2026-09-12.
+
+- **Editar cualquier cosa reactiva la geocerca.** `POST /api/v1/branches/update` escribe
+  `disableRatioChecklog: false` cuando el campo **no viene en el cuerpo**
+  (`branch.validation.ts:264`). Un centro que tenía la geocerca quitada y al que solo se le
+  cambia el nombre sale con la geocerca puesta. Nadie lo pidió y nada lo avisa.
+  - **Por qué duele.** La gente de ese centro pasa de poder fichar desde cualquier sitio a no
+    poder fichar fuera del radio, de un día para otro, porque alguien le corrigió una letra al
+    nombre. Y se junta con HAL-03, que ya hace que el formulario del panel mande ese campo
+    invertido.
+- **Borrar un centro deja a su gente apuntando a él.** El borrado retira las responsabilidades
+  del centro —eso sí lo hace— pero no limpia la lista `branchId` de cada ficha
+  (`FirestoreBranchRepository.ts:86-94`, `:123-129`). Comprobado leyendo la ficha: después del
+  borrado sigue conteniendo el identificador de un centro que ya no existe.
+- **Borrar un centro que no existe responde `200`.** No hay comprobación previa de existencia,
+  así que un identificador equivocado se salda con «borrado correctamente».
+- **Casos.** SUC-02-04, SUC-04-03 y SUC-04-05, cubiertos en la suite como fallos esperados.
+  Al lado van en verde SUC-04-01 —el borrado sí retira la entrada del buscador— y SUC-02-01 —el
+  cambio de nombre sí se reindexa—, que es lo que sitúa los tres anteriores como huecos y no
+  como «esto no está hecho».
+
 ## HAL-23 · Modificar una responsabilidad la inventa, y un puesto sin precio guarda NaN
 
 - **Observado.** `PATCH /api/v1/employees/responsibilities` tiene dos comportamientos que no
