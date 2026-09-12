@@ -364,7 +364,7 @@ Análisis estático del 2026-09-11 sobre `encodebiz-api` (rama develop), `encode
 - Efectos: lee de Firestore `entities/{e}/tasks` con `dueAt` entre `start` 00:00Z y `end` 23:59:59.999Z, `branchId` opcional y `limit(1000)`, más las subcolecciones `ratings` y `resources` de cada tarea (FirestoreTaskReportClient.ts:40-81); `status` se filtra en memoria (:84). Escribe Storage `checkbiz/reports/entities/{e}/tasks_{start}-{end}_{ts}.xlsx` (GenerateTaskReport.ts:115-116) y el doc en `reports` (:133). No emite evento.
 - Criticidad: media — informe operativo, sin valor legal
 - Casos:
-  - INF-02-01 · PROP · tareas con `dueAt` en el rango → 201 `type:"task"`, `.xlsx`
+  - INF-02-01 · PROP · tareas con `dueAt` en el rango → 201 `type:"task"`, `.xlsx`. **Corregido al ejecutar** el 2026-09-12: `reporData.start` y `reporData.end` no vuelven como `YYYY-MM-DD`, vuelven como los extremos del día en UTC (`2026-09-12T00:00:00.000Z` / `…T23:59:59.999Z`). El de asistencia devuelve las fechas tal cual se enviaron: dos informes del mismo formulario con dos formatos en el mismo campo.
   - INF-02-02 · ADMIN · ídem → 201
   - INF-02-03 · PROP · con `branchId` → 201; `branch` = nombre de esa sucursal
   - INF-02-04 · PROP · `status:"completed"` → 201 solo con completadas; 204 si no hay ninguna
@@ -395,7 +395,8 @@ Análisis estático del 2026-09-11 sobre `encodebiz-api` (rama develop), `encode
 - Efectos: para cada par (entidad, sucursal) activo en esa fecha, upsert en `employee_daily_reports` de Postgres (DailyReportCron.ts:19-54), con lecturas de centro, empleado y entidad en Firestore
 - Criticidad: media — alimenta INF-01
 - Casos:
-  - INF-03-01 · S2S · `date` con fichajes sincronizados → 200, `processed` ≥ 1
+  - INF-03-01 · S2S · `date` con fichajes sincronizados → 200, `processed` ≥ 1. **Con una trampa medida el 2026-09-12**: una jornada de segundos cuenta como `skipped`, no como `processed`. El constructor recorta los segundos antes de medir (`setSeconds(0,0)`, portado de producción) y descarta lo que dura cero (`BuildEmployeeDailyReports.ts:116-117`), así que una entrada y una salida seguidas encuentran el centro pero no escriben ninguna fila. Para probarlo hace falta una jornada de duración creíble: se ficha y se **corrige** la entrada a unas horas antes, que de paso comprueba que las correcciones también llegan al espejo.
+  - INF-03-01b · S2S · el disparo manual **no lleva los filtros del cron**: `runDailyReportBuild` construye todos los centros con fichajes de esa fecha, sin mirar si allí son las 02:xx locales ni cuándo se sincronizaron (`DailyReportCron.ts:58-77` frente a `:81-119`). Es lo que hace automatizable el bloque entero. Comprobado el 2026-09-12.
   - INF-03-02 · S2S · sin cuerpo → 200, `date` = ayer en UTC
   - INF-03-03 · S2S · fecha sin actividad → 200, `processed:0`
   - INF-03-04 · S2S · `date:"11/09/2026"` → 400 `validation_error`

@@ -263,6 +263,80 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-33 · ~~El espejo de Postgres llevaba semanas vacío y nadie se enteró~~ · CORREGIDO en desarrollo
+
+**Es el hallazgo que justifica la forma de toda la suite**, así que va con su historia entera.
+
+- **Observado.** Las ocho tablas de la tubería de analítica en desarrollo, a cero:
+  `checklogs_raw`, `sync_log`, `employee_daily_reports`, `pattern_snapshots`, `task_ratings_raw`,
+  `dim_branches`, `dim_employees` y `dim_calendars`. Ni una fila. La suite llevaba el día entero
+  creando fichajes —cientos— y ninguno había llegado. Medido el 2026-09-12.
+- **Por qué.** El fichaje lo escribe el contenedor en Firestore; de ahí lo copia a Postgres el
+  trigger `onChecklogSync` (repo del SAAS), que hace un POST a `ANALYTICS_SERVER_URL`. Esa
+  variable seguía valiendo `http://141.95.47.135:8080` — **la máquina de producción, en el
+  puerto que se cerró con la mudanza de servidor del 12 de septiembre**. Cada fichaje lo
+  intentaba y fallaba:
+  ```
+  [SyncChecklog] analytics sync failed { checklogId: '…', error: 'connect EHOSTUNREACH 141.95.47.135:8080' }
+  ```
+- **Lo que lo hizo invisible**, que es lo importante:
+  1. El fichaje respondía **201**, y con razón: el fichaje se guardó. Lo que no ocurrió fue la
+     consecuencia.
+  2. El error se traga en un `console.error` dentro del trigger (`onChecklogSync.ts:14-22`).
+     **No hay reintentos**: lo que no entra en el momento no entra nunca, ni cuando el servidor
+     vuelve.
+  3. Todo lo que lee de esas tablas —el registro de jornada legal, el panel operativo, las
+     horas planificadas, el geocumplimiento, las series de Merlin— seguía respondiendo 200 con
+     cuerpos bien formados. Sobre nada.
+  4. La variable vive en `functions/.env.dev-encodebiz`, que **está en `.gitignore`**. No se ve
+     en ninguna revisión de código y puede ser distinta en cada máquina.
+- **Corregido** el 2026-09-12: se apuntó la variable a `https://api-staging.checkbiz360.com` y
+  se redesplegaron a `dev-encodebiz` las cuatro funciones que la usan (`onChecklogSync`,
+  `onTaskRatingSync`, `onBranchPatternSync`, `onEmpPatternSync`). Comprobado con un fichaje
+  nuevo: la fila aparece en `checklogs_raw` en segundos. **Producción no estaba afectada** —su
+  endpoint apunta a su propia máquina—, confirmado por producto.
+- **Lo que no se recupera.** Los fichajes de las semanas anteriores no van a llegar solos: el
+  trigger solo se redispara si alguien vuelve a escribir el documento. Para el histórico hace
+  falta una reinyección deliberada.
+- **Cubierto en la suite** por INF-03-01 (`45-espejo-y-programadas.spec.ts`), que cierra una
+  jornada, fuerza el constructor diario y exige que aparezca **la jornada de esta empresa** —no
+  un recuento global, que saldría verde con la cadena rota para nosotros—. El mensaje del rojo
+  nombra el trigger, el fichero de la variable y el comando de los registros.
+- **La lección, que vale para el resto de la tubería.** Un efecto que nadie mira es un efecto
+  que no ocurre. Donde el fallo no puede verse desde la respuesta —un listener, un trigger, una
+  cola, un correo— hace falta una prueba cuyo único trabajo sea decir «esto sigue llegando».
+- **Y una pregunta de diseño que queda abierta:** el fichaje lo escribe el contenedor, que ya
+  tiene la conexión a Postgres a mano; el rodeo por Firestore y Cloud Functions para volver al
+  mismo contenedor es herencia de cuando todo vivía en funciones. Lo único que hoy lo justifica
+  es que `sanitizerChecklog` —la programada que cierra jornadas incompletas— sigue escribiendo
+  en Firestore desde fuera del contenedor. Alternativa mejor que las dos: el contenedor ya
+  publica eventos por una cola **con reintentos y rescate**; el espejo podría ser un consumidor
+  más de esa cola.
+
+## HAL-32 · Cualquier cuenta genera el informe de otra empresa, y se lo deja en su histórico
+
+- **Observado.** Con el token de un usuario de **otra** empresa, `POST /api/reports/tasks` sobre
+  el `entityId` ajeno responde `201`, genera el fichero y **deja el documento en el histórico de
+  la empresa víctima** (`entities/{ajena}/reports/{id}`), a nombre de su entidad. Medido el
+  2026-09-12 contra desarrollo, comprobando el histórico antes y después.
+- **Dónde.** `services/reports/src/interfaces/report.router.ts:50` — `requireFirebaseAuth` y
+  nada más. Lo mismo en `:24` para `POST /api/reports/generate`, el de asistencia.
+- **La asimetría es lo que lo convierte en defecto y no en decisión.** En el **mismo fichero**,
+  cincuenta líneas más abajo, la descarga sí comprueba la pertenencia:
+  `reportRouter.get("/:reportId/download", requireFirebaseAuth, …)` con `canWrite(uid, entityId)`
+  (`:115`), y responde `403 report/unauthorized`. Las dos cosas se miden en pruebas contiguas:
+  la descarga en verde, la generación en rojo.
+- **Efecto.** Con solo el `entityId` —que viaja en URLs del panel— cualquier cuenta autenticada
+  obtiene la respuesta con el **nombre de la empresa, de sus centros y de sus empleados**, y le
+  ensucia el histórico de informes con ficheros que su dueño no pidió. En el de asistencia, que
+  es el registro de jornada con valor legal, se suma que **se emite `report.generated` hacia los
+  webhooks salientes de la víctima** (`report.router.ts:29`): un tercero puede provocar
+  notificaciones en los sistemas de otro.
+- **Lo barato.** Es la misma llamada a `canWrite` que ya está escrita unas líneas más abajo.
+- **Casos.** INF-02-11, cubierto en la suite como fallo esperado, con INF-05-08 al lado en verde
+  como contraste. Su gemelo INF-01-14 (el de asistencia) necesita datos precalculados para
+  demostrarse y queda pendiente.
+
 ## HAL-31 · ~~La función vieja y el contenedor procesaban los mismos eventos de Stripe~~ · CORREGIDO en desarrollo
 
 **Estado.** En **producción no llegó a ocurrir**: el endpoint de la función (`Event Handler
