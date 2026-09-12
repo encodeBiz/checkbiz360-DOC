@@ -263,6 +263,28 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-25 · La edición de una ficha acepta cualquier campo, incluida la lista de dispositivos
+
+- **Observado.** `POST /api/v1/employees/update` no tiene lista de campos permitidos: hace
+  `set(merge)` con lo que llegue, excluyendo solo `uid` y `createdAt`. Enviando
+  `trustedDevicesId:{ids:["dispositivo-metido-a-mano"]}` responde `201` y **queda escrito**.
+  Comprobado leyendo la ficha, 2026-09-12.
+- **Dónde.** `services/employees/src/interfaces/http/employee.router.ts` (rama `update`) y
+  `packages/shared/.../FirestoreEmployeeRepository.ts:194-197`.
+- **Por qué ese campo y no otro.** `trustedDevicesId` no es un dato de la ficha, es una
+  **credencial**: el fichaje comprueba que `base64(User-Agent)` esté en esa lista antes de
+  aceptar la marca de quien tiene el segundo factor puesto. Escribirla a mano equivale a dar de
+  alta un dispositivo de confianza sin pasar por el segundo factor.
+- **Qué habilita, con precisión.** No es por sí solo una escalada: quien puede llamar a esta
+  ruta ya es propietario o administrador de la empresa, y esos ya pueden fichar por otro con
+  `isAdmin` —dejando su uid escrito en el fichaje—. Lo que añade es **quitar el rastro**:
+  registrado el dispositivo, se puede fichar por la vía del trabajador. Y desactiva el control
+  que compensa parcialmente HAL-07, donde la sesión de trabajador se fabrica sin firma.
+- **El problema de fondo es la ausencia de lista blanca**, no ese campo concreto: cualquier
+  campo interno que el sistema use para decidir algo es escribible desde fuera mientras no se
+  acote.
+- **Casos.** EMP-04-12, cubierto en la suite como fallo esperado.
+
 ## HAL-24 · Editar un centro le reactiva la geocerca, y borrarlo deja gente apuntando a él
 
 Tres comportamientos del mantenimiento de centros de trabajo, medidos contra desarrollo el
