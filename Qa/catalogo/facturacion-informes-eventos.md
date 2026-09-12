@@ -115,6 +115,7 @@ Análisis estático del 2026-09-11 sobre `encodebiz-api` (rama develop), `encode
   - FAC-03-14 · PROP · ya suscrita al mismo plan con `status:"pending"` → 201; el doc se sobrescribe con `set` (FirestoreSubscriptionRepository.ts:51) y se crea otra suscripción en Stripe
   - FAC-03-15 · PROP · entidad borrada que conserva su `user_entity_roles` → 404 `entity_not_found`
   - FAC-03-16 · OP_MANAGER · sin `user_entity_roles` → 403 `forbidden`
+  - FAC-03-17 · PROP · checkinbiz con datos legales y `stripeCustomerId` pero **sin método de pago** → hoy `201`; **debería rechazarse** con `400 entity_not_configured`, como ya hace passinbiz. Regla de producto confirmada el 2026-09-12: la tarjeta se exige al activar, y es lo que distingue a una empresa real. Ver HAL-20.
   - FAC-03-17 · AJENO · entityId ajeno → 403 `forbidden`
   - FAC-03-18 · AJENO · entityId ajeno y `serviceId:"foo"` → 400 `unknown_service` (la validación va antes que el permiso)
   - FAC-03-19 · ANON → 401 `unauthenticated`

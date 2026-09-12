@@ -254,6 +254,30 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-20 · checkinbiz se activa sin método de pago
+
+- **Regla de producto, confirmada el 2026-09-12.** Para activar checkinbiz hace falta **método
+  de pago**. No es una cuestión de cobro: la tarjeta es lo que distingue a una empresa real de
+  alguien probando, y por eso el requisito va en la activación y no después.
+- **Observado.** Hoy no se cumple. Una empresa con sus datos legales y su cliente de
+  facturación, **sin ninguna tarjeta asociada**, activa el servicio y recibe `201`. Comprobado
+  contra desarrollo con peticiones reales, 2026-09-12: es justo lo que hace el alta de cada
+  ejecución de la suite.
+- **Dónde.** `packages/shared/src/platform/FirestoreEntityRepository.ts:51-70`. `isConfigured`
+  tiene dos caminos: en modo `checkbiz` comprueba solo `name` y los datos legales; para los
+  demás servicios exige además `billingConfig.payment_method` no vacío, `slug`, `billingEmail`,
+  `branding.logo` y `active`. La llamada desde `billing.router.ts:44-47` entra por el primero.
+- **No es un descuido, es una regla que cambia.** El comentario del propio código lo dice:
+  «`checkbiz` pide solo lo legal (lo que exige una nómina); el resto de servicios piden además
+  cobro y marca». Era deliberado; la decisión de producto de hoy lo cambia.
+- **Efecto.** Cualquiera con una cuenta puede activar el servicio de pago sin dar medio de
+  cobro, y el sistema lo da por cliente durante todo el periodo de prueba. Al terminarlo, no hay
+  con qué cobrar.
+- **Lo que arrastra.** Cuando se implemente, **el alta de la suite dejará de funcionar tal como
+  está**: `crearMundo` activa sin tarjeta. Habrá que engancharle un método de pago de prueba
+  antes de activar, cosa que además hace el mundo más fiel a un cliente de verdad.
+- **Casos.** FAC-03-17, cubierto en la suite como fallo esperado.
+
 ## HAL-19 · El importe a cobrar depende de un aviso previo, y nadie comprueba que llegara
 
 - **Observado.** La cantidad facturable —cuántos empleados se cobran— **no se calcula al emitir
