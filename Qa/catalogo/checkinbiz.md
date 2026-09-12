@@ -252,7 +252,7 @@ Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene 
   - CHK-08-20 · EMP_JWT · responsabilidad que apunta a una sucursal borrada → `404 {error:"Branch not found", code:"branch/not_found"}`.
   - CHK-08-21 · EMP_JWT · sucursal con `status:"inactive"` → `400 {error:"Branch inactive", code:"branch/inactive"}`.
   - CHK-08-22 · EMP_JWT · sucursal sin campo `status` → se trata como activa → `201`.
-  - CHK-08-23 · EMP_INACTIVO (`status` `fired`, `inactive`, `vacation` o `pending`) · resto del escenario base → `201` (el estado del empleado no se comprueba).
+  - CHK-08-23 · EMP_INACTIVO · **corregido al ejecutar**: un empleado dado de baja por la API responde `404 code:"employee/not_resposibility"`, no `201`. El estado sigue sin comprobarse —eso era cierto—, pero la baja le **retira las responsabilidades y le vacía `branchId`**, así que deja de trabajar en ningún centro y la puerta se cierra por ahí. La protección es **indirecta**: una ficha que llegue a `inactive` o `vacation` por otra vía (edición, importación) conserva sus responsabilidades y sí ficharía. Medido el 2026-09-12.
 
   - CHK-08-24 · EMP_JWT · el día de la semana tiene `disabled:true` en el horario efectivo **y el resto de la semana conserva turnos** → `400 {error:"Day disabled in effective schedule", code:"checklog/day_disabled"}`; sin registro; evento `attendance.clock_rejected` con `reason:"no_shift_scheduled"`. La coletilla no es un detalle: con los siete días apagados el resultado es el contrario (CHK-08-31, HAL-17).
   - CHK-08-25 · EMP_JWT · el día no aparece en el horario (clave ausente) pero otros días tienen turnos → `400 code:"checklog/day_disabled"`.

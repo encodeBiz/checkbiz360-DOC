@@ -494,6 +494,14 @@ Las pruebas también corrigen el inventario. Se anotan aquí para no repetir el 
   `requestUpdates`») es inalcanzable —lo que se prueba es un `updateId` que no está en la lista—,
   y el `id` de la entrada de creación es un `updateId` válido que un empleado puede resolver
   (CHK-09-21).
+- **CHK-08-23 · el despedido sí está tapado, pero de rebote.** El catálogo concluía que un
+  empleado dado de baja seguiría fichando porque el fichaje no mira su `status`. Lo primero es
+  cierto y lo segundo no: medido el 2026-09-12, responde `404 employee/not_resposibility`,
+  porque la baja **le retira las responsabilidades y le vacía `branchId`**. La puerta está
+  cerrada, pero por un camino distinto del que se suponía — y eso importa, porque una ficha que
+  llegue a `inactive` o `vacation` **por otra vía** (una edición, una importación) conserva sus
+  responsabilidades y sí ficharía. La prueba afirma las dos cosas, el resultado y el mecanismo,
+  para que un cambio en la baja se note antes de reabrir la puerta.
 - **TSK-09-01.** El catálogo decía que asignar «sin `employeeIds`» devuelve `400
   task/bad_request`. No es cierto: el controlador desestructura con `employeeIds = []`, y una
   lista vacía sí es un array, así que la comprobación pasa y la petición sigue hasta el
