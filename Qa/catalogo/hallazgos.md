@@ -263,6 +263,28 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-23 · Modificar una responsabilidad la inventa, y un puesto sin precio guarda NaN
+
+- **Observado.** `PATCH /api/v1/employees/responsibilities` tiene dos comportamientos que no
+  deberían ser:
+  - Con un `id` de una responsabilidad **que no existe** → `200`, y **la crea**. Medido: quedó un
+    documento con `responsibility:"owner"` y `level:4` —el máximo—, tomados del cuerpo.
+  - Con `job:{job:"X"}` **sin `price`** → `200`, y el precio queda guardado como **`NaN`**.
+    Comprobado leyendo el documento: `typeof price === "number"` y `Number.isNaN(price)`.
+- **Dónde.** `services/employees/src/interfaces/http/employee.router.ts` (rama PATCH) y
+  `packages/shared/.../FirestoreEmployeeRepository.ts:71-73`, que hace `set(payload, {merge:true})`
+  sin comprobar antes que el documento exista, y sin `await`.
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12.
+- **Lo que NO es, y conviene decirlo.** El documento inventado **no da poder**: `canWrite`
+  filtra por `active == 1` (`packages/shared/src/checkbiz/auth/canWrite.ts:42`) y el documento
+  nace sin ese campo. Tampoco es una vía de escalada, porque el `PATCH` ya exige ser propietario
+  o administrador de la empresa, que es quien puede asignar de todas formas. Es suciedad en la
+  colección que decide quién manda en cada centro, no un agujero de permisos.
+- **Efecto.** Un identificador mal tecleado crea un permiso que nadie pidió, con nivel máximo, y
+  queda ahí hasta que alguien lo mire. Y el `NaN` viaja al coste del puesto, que es dato de
+  informes: cualquier suma que lo toque da `NaN` y arrastra el total entero.
+- **Casos.** EMP-10-06 y EMP-10-04, cubiertos en la suite como fallos esperados.
+
 ## HAL-22 · Sin horario configurado, la app se rompe pero el fichaje funciona
 
 - **Observado.** Una empresa recién dada de alta no tiene `calendar/config` —alguien tiene que
