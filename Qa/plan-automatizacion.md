@@ -204,17 +204,23 @@ cubre lleva ese identificador al principio del título. El informe se lee así c
 catálogo sin traducir nada, y la cobertura es una cuenta simple: casos con prueba entre
 casos del catálogo.
 
-**Dónde va la cobertura hoy** (2026-09-12, medida sobre la lista real de pruebas, no estimada):
-127 casos del catálogo cubiertos de ~1.741 —un 7,3 %—, más 18 comprobaciones de entorno que no
-salen del catálogo. Por módulo: fichaje y calendario 86, tareas 20, documentos 10, empleados 5,
-colaboradores 4, facturación 2, y cero en sucursales, empresas, informes, analítica y webhooks.
+**Dónde va la cobertura hoy** (2026-09-12 por la tarde, contada sobre los títulos de la
+ejecución completa, no estimada): **234 casos** del catálogo de ~1.741 —un 13,4 %—, más 18
+comprobaciones de entorno que no salen del catálogo. Por módulo: checkinbiz 134, empleados 36,
+tareas 20, sucursales 16, colaboradores 12, documentos 10, facturación 5, empresas 1, y cero en
+informes, analítica y webhooks. 254 pruebas en verde y **20 fallos conocidos**.
 
-Dentro de fichaje, el endpoint de crear fichaje (CHK-08) va por **46 de sus 83 casos**:
-cubiertos la jornada normal, el orden de los fichajes, la vía del panel, lo básico de la
-geocerca y el bloque de horarios —día sin jornada, festivo, tolerancia, jornada partida y rango
-estricto—. Lo que queda son casos que piden un empleado o una sucursal en un **estado**
-concreto: dispositivo de confianza, responsabilidad retirada, sucursal inactiva, empleado dado
-de baja y trabajo remoto.
+Dentro de fichaje, el endpoint de crear fichaje (CHK-08) va por **75 de sus 83 casos**, y los
+ocho que faltan no son trabajo pendiente: cinco son **inalcanzables por la API** —la validación
+no deja guardar el estado que pedían: un centro sin coordenadas, un radio cero o negativo, un
+día sin turnos que no se declare deshabilitado— y los otros tres necesitan algo que no se hace
+contra un entorno compartido: tumbar Firestore, montar una empresa sin calendario, o hablar con
+el proxy del panel en vez de con la API. Cada uno queda anotado en el catálogo con el motivo y
+con el camino equivalente que sí se prueba.
+
+Lo que eso significa es que el bloque del fichaje **está cerrado**: la jornada, el orden de los
+fichajes, el horario con sus zonas horarias, la jornada partida, la geocerca hasta el borde, el
+dispositivo de confianza, la vía del panel y la marca de sospecha.
 
 Cubrir los 1.741 **no es el objetivo** y nadie lo hace. El orden lo marca la criticidad: lo que
 más se usa y lo que más duele si se rompe.
@@ -244,6 +250,29 @@ El efecto es útil: mientras el fallo exista, la suite sigue en verde y el infor
 como conocido. El día que alguien lo arregle, la prueba empieza a pasar, Playwright lo
 señala como *pasa cuando se esperaba que fallara*, y eso obliga a quitar la marca. Ningún
 fallo se queda escondido y ningún arreglo pasa desapercibido.
+
+**Y tiene un agujero, que se tapa con una guarda.** «Esta prueba tiene que fallar» no dice
+*por qué*: si el caso empieza a fallar por otro motivo —una secuencia imposible, un empleado
+sin responsabilidad, una preparación que no cuajó— sigue saliendo verde y ya no prueba nada.
+Ocurrió: un fallo conocido del fichaje pasó a responder `400 two_type_followed` en vez del
+`201` que denuncia, y nadie se enteró hasta que se leyó el informe con lupa.
+
+Por eso el defecto se afirma explícitamente **antes** de poner el indulto:
+
+```ts
+const r = await request.post(RUTA, …);
+
+// Guarda del defecto, fuera del indulto a propósito.
+expect(r.status(), `HAL-27 se manifiesta con un 201 y ha llegado ${r.status()}`).toBe(201);
+
+falloConocido("Hoy responde 201: `canWrite` mira el rol y nunca el estado. Ver HAL-27.");
+expect(r.status(), "un asiento desactivado no debería poder fichar por nadie").toBe(403);
+```
+
+Con eso hay tres resultados distintos y ninguno silencioso: mientras el defecto siga igual,
+verde con su línea en el informe; si el caso falla por otro motivo, **rojo de verdad**
+diciendo qué llegó en lugar de qué; y si alguien lo arregla, rojo también, diciendo que el
+defecto ya no se manifiesta. La marca sola no distingue los dos últimos del primero.
 
 ---
 
@@ -275,6 +304,29 @@ a 150 s en los ficheros que crean gente.
 Es el fallo barato y merece la pena señalarlo: una suite que solo se ha ejecutado en la
 máquina de quien la escribió tiene los plazos calibrados para esa máquina, y eso no se
 descubre hasta que corre en otra.
+
+### La regla más cara de la suite: lo del mundo se usa, no se cambia
+
+Cada ejecución monta un **mundo** —una empresa, dos sucursales, ocho personas y un horario de
+empresa abierto las 24 horas— y todos los ficheros trabajan encima. Un caso que necesite un
+estado raro se crea el suyo: su sucursal, su gente, su horario. Lo del mundo se lee.
+
+Cuesta repetirlo porque los incumplimientos **no fallan donde se cometen**. Dos ejemplos
+reales, los dos descubiertos ejecutando la suite entera y ninguno visible ejecutando el
+fichero solo:
+
+- Un caso de calendario cambiaba el horario del **sábado** de la empresa a 08:00–16:00 y no lo
+  devolvía. Llevaba semanas así. El sábado que la suite se ejecutó por la tarde, la
+  preparación de otro fichero —tres ficheros más allá— empezó a recibir `out_of_schedule`, y
+  el rojo hablaba de fichajes cruzados entre sucursales.
+- Dos casos del mismo fichero compartían empleado. El primero le dejaba una entrada abierta y
+  el segundo, que es un **fallo conocido**, pasó a fallar por «dos fichajes seguidos» en vez
+  de por lo que denuncia. Como un fallo conocido sale verde de todas formas, el caso dejó de
+  probar nada sin que nada avisara.
+
+De ahí dos costumbres: **quien cambia algo del mundo lo devuelve en el mismo caso** —no en un
+`afterAll`, que se lo salta un fallo intermedio—, y **un fallo conocido lleva la respuesta
+entera en el mensaje**, no solo el número, para que se note cuando falla por otro motivo.
 
 ### Por qué el entorno nuevo tarda más por operación
 

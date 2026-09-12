@@ -263,6 +263,33 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-30 · A quien trabaja en otro huso se le busca el turno del día equivocado
+
+- **Observado.** Un empleado con `enableRemoteWork` y zona propia a trece horas de su centro.
+  El calendario tiene abierto **su** día, con un turno alrededor de **su** hora, y cerrado el
+  del centro. El fichaje responde `400 checklog/day_disabled`. Medido en desarrollo el
+  2026-09-12: en su casa era `sunday 2026-09-13` y en el calendario `saturday 2026-09-12`.
+- **Y a la vez**, en la misma configuración, las **horas** sí se comparan en su zona: un turno
+  puesto a su hora local le deja fichar aunque en el centro sea una hora completamente
+  distinta, y el fichaje queda con `metadata.tz` igual a su zona. Las dos cosas se miden en
+  pruebas contiguas, una en verde y otra en rojo.
+- **Dónde.** `createChecklog.controller.ts` llama a `resolveDay.execute({entityId, branchId,
+  employeeId})` **sin `tzHint`**, así que el día, la fecha local y los festivos se resuelven
+  con la zona del calendario (`resolveEffectiveDay.usecase.ts:77-88`). Unas líneas después el
+  mismo controlador calcula `tz` con la zona del empleado remoto y compara las horas del turno
+  contra `DateTime.now().setZone(tz)`. Dos zonas para una sola decisión.
+- **Por qué no es un caso de laboratorio.** No hace falta cruzar la línea de cambio de fecha:
+  basta con cualquier diferencia horaria que ponga a las dos partes en días distintos —el
+  fichaje de madrugada de alguien en América con la empresa en España, o el de última hora de
+  alguien en Asia—. Con turnos de lunes a viernes, el lunes de uno es el domingo del otro.
+- **Efecto.** La persona no puede fichar el día que le toca, y sí puede el día que no. El
+  rechazo dice «día deshabilitado», que es cierto para el calendario y falso para quien está
+  delante del móvil: no hay forma de deducir la causa desde la app. Y el arreglo no es
+  evidente —hay que decidir si el día de un trabajador remoto es el suyo o el de su empresa—,
+  lo que lo hace más importante de anotar, no menos.
+- **Casos.** CHK-08-70, cubierto en la suite en dos pruebas: las horas en verde, el día como
+  fallo esperado. Ya estaba anotado como sospecha en la ficha de CHK-08.
+
 ## HAL-29 · Quien está de vacaciones ficha igual: el fichaje no lee las ausencias
 
 - **Observado.** Un empleado con una ausencia registrada para hoy
