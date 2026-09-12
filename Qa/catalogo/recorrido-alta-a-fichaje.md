@@ -52,11 +52,11 @@ proxy responde 401 `auth/2fa_required`. Solo actúa si existe `NEXT_2FA_SESSION_
 `verifyIdToken(token, true)` (`API:packages/shared/src/middleware/firebaseAuth.ts:4-21`). El segundo factor del
 panel lo impone únicamente ese middleware de Next: una prueba que llame directa al contenedor no pasa por él.
 
-**nginx de desarrollo** (`API:nginx/nginx.staging.conf`): `141.95.47.135:8080`, sin TLS. Solo reescribe `Host`
+**nginx de desarrollo** (`API:nginx/nginx.staging.conf`): `api-staging.checkbiz360.com`, sin TLS. Solo reescribe `Host`
 y `X-Forwarded-*` (`:50-53`), así que el `User-Agent` llega intacto. Raíces exactas sin barra
 (`:67-80`) y prefijos (`:98-191`).
 
-**App.** Base de desarrollo `http://141.95.47.135:8080` si se compila con `ENVIRONMENT=development`
+**App.** Base de desarrollo `https://api-staging.checkbiz360.com` si se compila con `ENVIRONMENT=development`
 (`APP:core/constants/app_constants.dart:33-38`, `APP:core/config/app_config.dart:7-10,38`). Dio manda
 `Content-Type` y `Accept: application/json` (`APP:core/network/dio_client.dart:21-24`) y un interceptor pone
 **`User-Agent: <deviceId persistente>`** en cada petición (`:37-46`; `APP:main_development.dart:57-59`;
@@ -80,7 +80,7 @@ ese ID token** (`APP:infrastructure/network/auth_retry_interceptor.dart:26-93`).
 - Valida el correo con una expresión regular, la contraseña (8 caracteres como mínimo) y el nombre (`:77-84`).
 - **Crea la cuenta con el Admin SDK**: `createUser({ email, password, displayName: fullName })` (`:95-104`). No hay ningún `accounts:signUp` desde el navegador.
 - Canjea un custom token por un ID token en `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=<API key web de dev>` (`:124-137`).
-- **Crea la ficha, de servidor a servidor**: `POST http://141.95.47.135:8080/api/v1/users` (`NEXT_BACKEND_URI_CREATE_USER`, `.env.development:33`) con `Content-Type`, `Authorization: Bearer <idToken>` y `locale`, y cuerpo `{ fullName, phoneNumber, uid, email }` (`:142-153`).
+- **Crea la ficha, de servidor a servidor**: `POST https://api-staging.checkbiz360.com/api/v1/users` (`NEXT_BACKEND_URI_CREATE_USER`, `.env.development:33`) con `Content-Type`, `Authorization: Bearer <idToken>` y `locale`, y cuerpo `{ fullName, phoneNumber, uid, email }` (`:142-153`).
 - Si algo falla después de crear la cuenta, borra el usuario de Auth (`:109-115`, `:167-170`).
 - Responde 201 `{ customToken, uid }`, con un custom token nuevo (`:163-166`).
 
@@ -98,7 +98,7 @@ Después navega a `/main/core/entity/create` (`page.controller.tsx:86`).
 **Verificación de correo:** no existe. No hay `sendEmailVerification` ni comprobación de `email_verified` en el panel, la app ni la API (búsqueda sin resultados).
 
 **1e. Segundo factor del panel (obligatorio con el middleware activo).** Al entrar en `/main/core/entity/create` sin cookie, el middleware redirige a `/auth/2fa?redirect=/main/core/entity/create`.
-- **Estado.** `GET /api/proxy/status2fa_user` con `Authorization: Bearer <idToken>` (`PANEL:app/auth/2fa/page.controller.tsx:57-58`; `account.service.ts:167-175`) → `GET http://141.95.47.135:8080/api/v1/checkinbiz/auth/2fa/user/status` (`.env.development:131`; `API:services/checkinbiz/src/interfaces/http/auth/auth.router.ts:83`; `…/user2FA.controller.ts:36-54`). Responde `{ enabled: false }` y el panel lleva a `/auth/2fa/setup?redirect=…` (`2fa/page.controller.tsx:49,59-61`).
+- **Estado.** `GET /api/proxy/status2fa_user` con `Authorization: Bearer <idToken>` (`PANEL:app/auth/2fa/page.controller.tsx:57-58`; `account.service.ts:167-175`) → `GET https://api-staging.checkbiz360.com/api/v1/checkinbiz/auth/2fa/user/status` (`.env.development:131`; `API:services/checkinbiz/src/interfaces/http/auth/auth.router.ts:83`; `…/user2FA.controller.ts:36-54`). Responde `{ enabled: false }` y el panel lleva a `/auth/2fa/setup?redirect=…` (`2fa/page.controller.tsx:49,59-61`).
 - **Activación.** `POST /api/proxy/enable2fa_user`, sin cuerpo (`2fa/setup/page.controller.tsx:59-63`; `account.service.ts:181-189`) → `POST …/api/v1/checkinbiz/auth/2fa/user/enable` (`.env.development:129`; `user2FA.controller.ts:57-95`). Guarda `users/{uid}/security/twoFA` = `{ secret, otpauthUrl, verifiedAt: null, createdAt }`; si ya había un alta a medias, reutiliza ese secreto (`:73-86`). Responde `{ secret, otpauthUrl, qrImage }`.
 - **Verificación.** `POST /api/proxy/verify2fa_user` con `{ code }` (`setup/page.controller.tsx:89-91`; `account.service.ts:195-203`) → `POST …/auth/2fa/user/verify` (`user2FA.controller.ts:98-139`). Errores: 400 `twofactor/not_activated`, 401 `twofactor/invalid_code`. Si el código es bueno, pone `verifiedAt`, borra `otpauthUrl` y **fija las claims `admin: true, twoFA: true`** (`:127-137`).
 - **Cookie de sesión.** El panel refresca el token con `getIdToken(true)` (`setup:94`) y llama a `POST /api/auth/2fa-session` con `{ idToken }`, que devuelve `Set-Cookie: 2fa_session` (`setup:98-102`; `PANEL:app/api/auth/2fa-session/route.ts:24-45`). Después sigue el `redirect` o consulta `user_entity_roles` en Firestore (`setup:119-132`; `PANEL:services/core/entity.service.ts:26-62`).
@@ -113,7 +113,7 @@ Después navega a `/main/core/entity/create` (`page.controller.tsx:86`).
 
 **Quién.** `PANEL:app/main/core/entity/create/page.controller.tsx:63-98` → `createEntity` (`PANEL:services/core/entity.service.ts:107-130`).
 
-**Llamada.** `POST /api/proxy/create_entity` → `POST http://141.95.47.135:8080/api/v1/entities` (`.env.development:38`; nginx `= /api/v1/entities`, `:79`).
+**Llamada.** `POST /api/proxy/create_entity` → `POST https://api-staging.checkbiz360.com/api/v1/entities` (`.env.development:38`; nginx `= /api/v1/entities`, `:79`).
 - Cabeceras: `authorization: Bearer <ID token>` (el token lo guarda `authContext.tsx:77`) y `locale`. Por el proxy, además, la cookie `2fa_session`.
 
 **Cuerpo** (`page.controller.tsx:67-79`):
@@ -152,7 +152,7 @@ Los planes se leen directamente de Firestore, en `service/{service}/plan` (`PANE
 - Si el plan es `freemium`, suscribe directamente (`:85-86`).
 - En cualquier otro plan exige `billingEmail`, `legal.legalName`, `legal.taxId` y `billingConfig.payment_method` no vacío; si falta algo, abre el modal de facturación (`:88-89`). Los planes conocidos en el código son `freemium | bronze | enterprise` (`PANEL:domain/core/IService.tsx:37`).
 
-**Llamada.** `POST /api/proxy/subcribe` → `POST http://141.95.47.135:8080/api/v1/billing/subscriptions` (`.env.development:44`).
+**Llamada.** `POST /api/proxy/subcribe` → `POST https://api-staging.checkbiz360.com/api/v1/billing/subscriptions` (`.env.development:44`).
 - Cabeceras: `authorization: Bearer`, `locale`.
 - Cuerpo: `{ entityId, serviceId: "checkinbiz", planId }` (`PricingCard.controller.tsx:28-35`; `subscription.service.ts:43-61`).
 
@@ -187,7 +187,7 @@ La tarjeta llega a `billingConfig.payment_method` por el webhook `payment_method
 - Lee `entities/{id}/calendar/config` directamente de Firestore (`:88`).
 - Guarda con `CalendarSection.handleSave` (`…/CalendarSection.tsx:391-440`).
 
-**Horario.** `PATCH /api/proxy/checkinbiz_calendar_handler` (`PANEL:services/checkinbiz/calendar.service.ts:11,24-39`) → `PATCH http://141.95.47.135:8080/api/v1/checkinbiz/calendar` (`.env.development:96`).
+**Horario.** `PATCH /api/proxy/checkinbiz_calendar_handler` (`PANEL:services/checkinbiz/calendar.service.ts:11,24-39`) → `PATCH https://api-staging.checkbiz360.com/api/v1/checkinbiz/calendar` (`.env.development:96`).
 - Cuerpo (`CalendarSection.tsx:408-422`; tipos en `PANEL:domain/features/checkinbiz/ICalendar.ts:14-79`):
 ```
 { scope: "entity", entityId,
@@ -219,14 +219,14 @@ La tarjeta llega a `billingConfig.payment_method` por el webhook `payment_method
 
 ## REC-05 · Alta de sucursal
 
-**Geocodificación.** `AddressComplexInput` → `POST /api/proxy/checkinbiz_geo` → `POST http://141.95.47.135:8080/api/v1/checkinbiz/geo` (`.env.development:126`; `PANEL:services/core/helper.service.ts:63-84`).
+**Geocodificación.** `AddressComplexInput` → `POST /api/proxy/checkinbiz_geo` → `POST https://api-staging.checkbiz360.com/api/v1/checkinbiz/geo` (`.env.development:126`; `PANEL:services/core/helper.service.ts:63-84`).
 - Cabeceras: `authorization: Bearer`, `locale`.
 - **Autocompletar:** `{ address: <texto en minúsculas>, country: <ISO-2 o "">, sessionToken: <uuid>, action: "autocomplete" }` (`AddressComplexInput.tsx:54,80`). Responde `[{ addressQuery, country, lat: null, lng: null, placeId, provider, resolvedText, sessionToken, timeZone }]` (`helper.service.ts:31-41`), o 404 `{ predictions: [] }` si no hay nada.
 - **Detalle:** `{ placeId, provider, sessionToken, action: "placedetails" }` (`AddressComplexInput.tsx:131`). Responde `{ formattedAddress, lat, lng, provider, timeZone, country?, countryCode?, region?, city?, postalCode? }` (`helper.service.ts:43-62`), o 204 si no hay detalle.
 - Contenedor: `API:services/checkinbiz/src/interfaces/http/geo/geo.router.ts:23-54`, con Firebase Auth (`API:services/checkinbiz/src/app.ts:48`).
 - El formulario guarda `address = { street: resolvedText, geo: { lat, lng }, timeZone, country, postalCode }` (`AddressComplexInput.tsx:141-148`).
 
-**Alta.** `PANEL:app/main/[entityId]/checkinbiz/branch/form/form.controller.tsx:164-241` → `POST /api/proxy/checkinbiz_create_sucursal` (`PANEL:services/checkinbiz/sucursal.service.ts:42-66`) → `POST http://141.95.47.135:8080/api/v1/branches` (`.env.development:66`; nginx `:78`).
+**Alta.** `PANEL:app/main/[entityId]/checkinbiz/branch/form/form.controller.tsx:164-241` → `POST /api/proxy/checkinbiz_create_sucursal` (`PANEL:services/checkinbiz/sucursal.service.ts:42-66`) → `POST https://api-staging.checkbiz360.com/api/v1/branches` (`.env.development:66`; nginx `:78`).
 - Cuerpo (`form.controller.tsx:167-185`):
 ```
 { name, ratioChecklog /* 201 por defecto (:63) */, disableRatioChecklog: !<toggle>,
@@ -250,7 +250,7 @@ La tarjeta llega a `billingConfig.payment_method` por el webhook `payment_method
 
 ## REC-06 · Alta de empleado
 
-**Quién.** `PANEL:app/main/[entityId]/checkinbiz/employee/form/form.controller.tsx:173-277` → `POST /api/proxy/checkinbiz_create_employee` (`PANEL:services/checkinbiz/employee.service.ts:182-206`) → `POST http://141.95.47.135:8080/api/v1/employees` (`.env.development:56`; nginx `:77`).
+**Quién.** `PANEL:app/main/[entityId]/checkinbiz/employee/form/form.controller.tsx:173-277` → `POST /api/proxy/checkinbiz_create_employee` (`PANEL:services/checkinbiz/employee.service.ts:182-206`) → `POST https://api-staging.checkbiz360.com/api/v1/employees` (`.env.development:56`; nginx `:77`).
 
 **Cuerpo** (`form.controller.tsx:199-213`, tras quitar los campos de calendario en `:179-197`):
 ```
@@ -290,7 +290,7 @@ La tarjeta llega a `billingConfig.payment_method` por el webhook `payment_method
 - Desde el empleado: `PANEL:app/main/[entityId]/checkinbiz/employee/[id]/detail/FormLink/FormLink.controller.tsx:72-111`. Antes comprueba en Firestore que no exista ya (`:76`).
 - Desde la sucursal: `PANEL:app/main/[entityId]/checkinbiz/branch/[id]/detail/components/FormLink.controller.tsx:57-82`.
 
-**Llamada.** `POST /api/proxy/checkinbiz_responsability_handler` (`employee.service.ts:234-258`) → `POST http://141.95.47.135:8080/api/v1/employees/responsibilities` (`.env.development:62`).
+**Llamada.** `POST /api/proxy/checkinbiz_responsability_handler` (`employee.service.ts:234-258`) → `POST https://api-staging.checkbiz360.com/api/v1/employees/responsibilities` (`.env.development:62`).
 
 **Cuerpo** (`FormLink.controller.tsx:83-101`, lado empleado):
 ```
@@ -321,7 +321,7 @@ Después **escribe directamente en Firestore** `entities/{eid}/jobs` (`addJobs`,
 
 **8a. Firebase Auth.** `signInWithEmailAndPassword(email en minúsculas, contraseña de 6 dígitos del correo)` y después `getIdToken` (`auth_provider.dart:890-924`), con el SDK y el proyecto de `firebase_options_dev.dart` (no leído).
 
-**8b. Login.** `POST http://141.95.47.135:8080/api/v1/checkinbiz/auth/login` (`app_constants.dart:44,50`), sin cuerpo.
+**8b. Login.** `POST https://api-staging.checkbiz360.com/api/v1/checkinbiz/auth/login` (`app_constants.dart:44,50`), sin cuerpo.
 - Cabeceras: `Authorization: Bearer <ID token de Firebase>`, `User-Agent: <deviceId>` (`APP:features/auth/data/datasources/auth_remote_datasource.dart:34-44`).
 - Contenedor (`auth.router.ts:67-71`; `API:services/checkinbiz/src/interfaces/http/auth/loginEmployee.controller.ts:10-50`):
   - Busca fichas por `uid`. Si no hay ninguna, responde 204 y la app lanza `NoEmployeeAccessException` (`auth_remote_datasource.dart:46-52`).
@@ -329,7 +329,7 @@ Después **escribe directamente en Firestore** `entities/{eid}/jobs` (`addJobs`,
   - Responde `[{ employeeId, uid, email, entity: { entityId, name }, fullName, tokenValidateEmployee: base64(JSON { employeeId, entityId }) }]` (`:26-45`).
 - Si hay más de una empresa, la app pide elegir (`auth_provider.dart:616-630`).
 
-**8c. Validación.** `POST http://141.95.47.135:8080/api/v1/checkinbiz/auth/validate`, sin `Authorization`, con cuerpo `{ token: tokenValidateEmployee }` (`auth_remote_datasource.dart:77-94`).
+**8c. Validación.** `POST https://api-staging.checkbiz360.com/api/v1/checkinbiz/auth/validate`, sin `Authorization`, con cuerpo `{ token: tokenValidateEmployee }` (`auth_remote_datasource.dart:77-94`).
 - Contenedor, ruta pública (`API:services/checkinbiz/src/app.ts:29`; `…/auth/validateEmployee.controller.ts:7-87`):
   - Decodifica el base64 y busca la ficha.
   - `sessionToken = jwt.sign({ employeeId, entityId }, JWT_2FA_SECRET)`, **sin caducidad** (`:59-63`).
@@ -355,7 +355,7 @@ Después **escribe directamente en Firestore** `entities/{eid}/jobs` (`addJobs`,
 **Solo ocurre si el empleado tiene `enableA2F: true`.** Con los valores por defecto del panel, `twoFa` llega a `true` y este paso no ocurre; tampoco se exige dispositivo de confianza al fichar (`createChecklog.controller.ts:174`).
 
 **9a. Activación.** Al abrir la pantalla (`APP:features/auth/presentation/pages/configure_security_page.dart:46-68`) se llama a `enable2FA` (`auth_provider.dart:1117-1148`).
-- `POST http://141.95.47.135:8080/api/v1/checkinbiz/auth/2fa/enable` (`app_constants.dart:61`).
+- `POST https://api-staging.checkbiz360.com/api/v1/checkinbiz/auth/2fa/enable` (`app_constants.dart:61`).
 - Cabeceras: `Authorization: Bearer <sessionToken>`, `User-Agent`. Cuerpo: `{ employeeId, entityId }` (`auth_remote_datasource.dart:97-117`).
 - El contenedor valida el JWT con `JWT_2FA_SECRET` y **sobrescribe el cuerpo con el contenido del token** (`auth.router.ts:43-59`; `API:packages/shared/src/checkbiz/auth/validateTokenStaff.ts:29-50`).
 - Guarda `twoFA` = `{ secret, verifiedAt: null }` (`…/Generate2FASecret.ts:13-26`) y responde `{ otpauthUrl, secret, qrImage }`, o 204 si la ficha no existe (`…/enable2FA.controller.ts:16-47`).
@@ -381,7 +381,7 @@ Después **escribe directamente en Firestore** `entities/{eid}/jobs` (`addJobs`,
 
 **Quién.** `todayScheduleProvider` (`APP:features/attendance/presentation/providers/schedule_provider.dart:47-64`) → `getResolvedSchedule` (`APP:features/attendance/data/repositories/attendance_repository_impl.dart:56-78`).
 
-**Llamada.** `GET http://141.95.47.135:8080/api/v1/checkinbiz/calendar?entityId=…&employeeId=…&branchId=…&scope=employee&dateLocal=YYYY-MM-DD` (`APP:features/attendance/data/datasources/attendance_remote_datasource.dart:66-90`; `app_constants.dart:82`).
+**Llamada.** `GET https://api-staging.checkbiz360.com/api/v1/checkinbiz/calendar?entityId=…&employeeId=…&branchId=…&scope=employee&dateLocal=YYYY-MM-DD` (`APP:features/attendance/data/datasources/attendance_remote_datasource.dart:66-90`; `app_constants.dart:82`).
 - Cabecera `Authorization: Bearer <ID token de Firebase>`: el parámetro se llama `sessionToken` pero lo que se lee de preferencias es `access_token` (`attendance_repository_impl.dart:62-74`). También va `User-Agent`.
 
 **Contenedor.** `requireFirebaseAuth` (`API:services/checkinbiz/src/app.ts:46`) → `…/getEffectiveCalendar.controller.ts:9-52`.
@@ -399,7 +399,7 @@ Después **escribe directamente en Firestore** `entities/{eid}/jobs` (`addJobs`,
 - Primero se decide la seguridad: con `biometricRequired` (por defecto `true`) exige biometría del móvil; sin hardware y con segundo factor, pide el código (`attendance_page.dart:476-534`).
 - La ubicación sale de caché reciente, de un fijo nuevo o de un respaldo, con `source` = `fresh | last_known | fallback | cached_warmup` (`attendance_provider.dart:296-325`, `:114`, `:314`, `:460`).
 
-**Llamada.** `POST http://141.95.47.135:8080/api/v1/checkinbiz/checklogs` (`app_constants.dart:77`).
+**Llamada.** `POST https://api-staging.checkbiz360.com/api/v1/checkinbiz/checklogs` (`app_constants.dart:77`).
 - Cabeceras: `Authorization: Bearer <sessionToken JWT>`, `User-Agent: <deviceId>`, `Content-Type: application/json` (`attendance_remote_datasource.dart:28-45`).
 - Cuerpo (`attendance_provider.dart:328-346`; `auth_models.dart:53-103`):
 ```
@@ -477,6 +477,6 @@ Después **escribe directamente en Firestore** `entities/{eid}/jobs` (`addJobs`,
 
 2. **Dar de alta una tarjeta como lo hace un cliente** (planes de pago). Ocurre en el portal alojado por Stripe. Solo el plan `freemium` evita ese paso, y depende de que ese plan exista en `dev-encodebiz` (sin confirmar).
 
-3. **Hacer «la misma llamada» del alta y del segundo factor del panel sin ejecutar el panel.** `/api/auth/register`, `/api/auth/2fa-session` y el guardián de la cookie son rutas y middleware de Next, no del contenedor. Una prueba que solo hable con `141.95.47.135:8080` los reproduce, pero no los ejercita. Para ejercitarlos necesita un panel en marcha: local con `.env.development` o el despliegue de desarrollo en Vercel, cuyas variables pueden diferir.
+3. **Hacer «la misma llamada» del alta y del segundo factor del panel sin ejecutar el panel.** `/api/auth/register`, `/api/auth/2fa-session` y el guardián de la cookie son rutas y middleware de Next, no del contenedor. Una prueba que solo hable con `api-staging.checkbiz360.com` los reproduce, pero no los ejercita. Para ejercitarlos necesita un panel en marcha: local con `.env.development` o el despliegue de desarrollo en Vercel, cuyas variables pueden diferir.
 
 No bloquean nada, pero conviene saberlo: la biometría real del móvil no es automatizable y el contenedor tampoco la valida; el token del correo de bienvenida no lo consume la app; y `addDeviceEmployee` no se llama.

@@ -8,7 +8,7 @@
 > como tales y se comprobarán al escribir su prueba. El resultado esperado de cada caso es lo
 > que hace el código HOY, no lo que debería hacer.
 
-Análisis estático del 2026-09-11 sobre `encodebiz-api` (rama develop), `encodeBiz-SAAS/functions`, `encodebiz-front-saas` y `checkbiz360`. Las rutas son las que sirve el nginx de desarrollo (`http://141.95.47.135:8080`, `nginx/nginx.staging.conf`).
+Análisis estático del 2026-09-11 sobre `encodebiz-api` (rama develop), `encodeBiz-SAAS/functions`, `encodebiz-front-saas` y `checkbiz360`. Las rutas son las que sirve el nginx de desarrollo (`https://api-staging.checkbiz360.com`, `nginx/nginx.staging.conf`).
 
 ## Actores adicionales
 

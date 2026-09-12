@@ -8,7 +8,7 @@
 > como tales y se comprobarán al escribir su prueba. El resultado esperado de cada caso es lo
 > que hace el código HOY, no lo que debería hacer.
 
-Inventario estático (sin red, sin ejecutar nada) del servicio `services/checkinbiz` tal como lo sirve el nginx de desarrollo (`http://141.95.47.135:8080`, `nginx/nginx.staging.conf:98-100`, `location /api/v1/checkinbiz/` → `checkinbiz:3002`), más las dos Cloud Functions que la app todavía llama. El resultado esperado es lo que hace el código HOY; lo que parece incorrecto va en «Sospechas».
+Inventario estático (sin red, sin ejecutar nada) del servicio `services/checkinbiz` tal como lo sirve el nginx de desarrollo (`https://api-staging.checkbiz360.com`, `nginx/nginx.staging.conf:98-100`, `location /api/v1/checkinbiz/` → `checkinbiz:3002`), más las dos Cloud Functions que la app todavía llama. El resultado esperado es lo que hace el código HOY; lo que parece incorrecto va en «Sospechas».
 
 Rutas de código citadas:
 - Contenedor: `encodebiz-api/services/checkinbiz/src/...` (abreviado `ck/`), `encodebiz-api/packages/shared/src/...` (abreviado `shared/`).
@@ -882,7 +882,7 @@ Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene 
   - Panel `/tools/checking` · manda el JWT de `/validate` a CHK-03, CHK-04 y CHK-08 a través del proxy, que exige un ID token de Firebase y responde 403. No puede funcionar ni contra el contenedor ni contra la CF.
   - CHK-17 · la disponibilidad trata un día sin configurar como 09:00-17:00, y el fichaje como día deshabilitado.
 - Notas para automatizar:
-  - Todo contra `http://141.95.47.135:8080` salvo CHK-25 y CHK-26, que van contra sus URL `run.app` de desarrollo.
+  - Todo contra `https://api-staging.checkbiz360.com` salvo CHK-25 y CHK-26, que van contra sus URL `run.app` de desarrollo.
   - Los casos de horario de CHK-08 exigen preparar el calendario relativo a la hora de ejecución.
   - CHK-18 consume cuota de Google.
   - CHK-09 y CHK-10 envían notificaciones push e in-app reales a los empleados de prueba.

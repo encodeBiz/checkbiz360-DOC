@@ -37,7 +37,7 @@ Todo esto vive en **el entorno de desarrollo**, nunca en producción. Los dos en
 comparten servidor y sus nombres se parecen mucho, así que conviene tener delante los de
 desarrollo:
 
-- Borde de staging: `http://141.95.47.135:8080` (sin TLS, es el entorno de pruebas).
+- Borde de staging: `https://api-staging.checkbiz360.com` (sin TLS, es el entorno de pruebas).
 - Proyecto Firebase: **`dev-encodebiz`**.
 - Base de datos: **`encodebiz_staging`**.
 - Rutas relevantes: `/api/v1/tasks`, `/api/v1/checkinbiz/checklogs`,

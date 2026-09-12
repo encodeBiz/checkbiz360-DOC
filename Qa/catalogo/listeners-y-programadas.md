@@ -52,7 +52,7 @@ Fecha del análisis: 2026-09-11. Análisis estático; no se ha ejecutado nada ni
 **Cómo se observa desde una prueba.** La suite `API/qa` ya tiene service account de `dev-encodebiz` (`API/qa/README.md`, sección «Credenciales»), así que puede leer Firestore con el SDK de administración.
 
 - **Postgres** (`encodebiz_staging`) solo se ve dentro de la red `encodebiz-dev`.
-- **Endpoints S2S** (`X-Encodebiz-Key`): algunas tablas se ven desde fuera por endpoints S2S que pasan por el nginx de dev (`http://141.95.47.135:8080`). Esa clave **no** está entre las credenciales que lista `qa/README.md`; habría que añadir la `ENCODEBIZ_API_KEY` de dev.
+- **Endpoints S2S** (`X-Encodebiz-Key`): algunas tablas se ven desde fuera por endpoints S2S que pasan por el nginx de dev (`https://api-staging.checkbiz360.com`). Esa clave **no** está entre las credenciales que lista `qa/README.md`; habría que añadir la `ENCODEBIZ_API_KEY` de dev.
 - **Endpoints de usuario** (token de Firebase): otras tablas se ven por endpoints de usuario.
 
 **Aviso de entorno.** Los triggers que llaman a los contenedores (LIS-02, LIS-09, LIS-10, LIS-13) atrapan el error y solo lo escriben en el log. Si el nginx de dev no se reinicia tras un `up -d` (gotcha de `API/CLAUDE.md`), esas llamadas dan 502 y el efecto no llega, sin que nadie lo vea salvo en Cloud Logging.

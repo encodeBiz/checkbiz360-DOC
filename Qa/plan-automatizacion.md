@@ -154,11 +154,15 @@ pruebas de interfaz.
 
 ## 6. Los cerrojos contra producción
 
-Producción y desarrollo viven en la misma máquina, y **la misma IP sirve producción por el 80
-y el 443 y desarrollo por el 8080**. Por eso el cerrojo no es una lista negra de dominios
-—`http://141.95.47.135`, sin puerto, es producción y no contiene ningún nombre prohibido—,
-sino una lista blanca por origen, puerto incluido: o es el borde de desarrollo, o es un
-entorno local, o no se ejecuta nada.
+Desde el 2026-09-12 cada entorno tiene su máquina y su nombre:
+`api-staging.checkbiz360.com` contra `api.checkbiz360.com`. El cerrojo sigue siendo una
+**lista blanca por origen**, no una lista negra de dominios, y se queda así a propósito.
+
+Se escribió como lista blanca porque entonces no cabía otra cosa —los dos entornos
+compartían IP, y `http://141.95.47.135` sin puerto ERA producción sin contener ningún
+nombre prohibido—. Ahora una lista negra sí sería posible, y sigue siendo peor idea: deja
+pasar todo lo que a nadie se le ocurrió prohibir. Con la lista blanca, un borde que nadie
+haya dado de alta simplemente no se prueba, que es el fallo barato.
 
 El segundo cerrojo está en las credenciales: si el service account no es del proyecto
 `dev-encodebiz`, la suite se para antes de inicializar nada. Hacen falta los dos porque son

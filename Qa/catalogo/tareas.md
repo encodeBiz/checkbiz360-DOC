@@ -31,11 +31,11 @@ Inventario estático (2026-09-11) del servicio `services/tasks` del monorepo `en
 
 ## Convenciones para las pruebas
 
-- **Base de desarrollo**: `http://141.95.47.135:8080`. nginx de desarrollo sirve tanto `location = /api/v1/tasks` como `location /api/v1/tasks/` hacia `tasks:3006` (`nginx/nginx.staging.conf:82-85` y `:118-121`), las dos con `client_max_body_size 30m`. Por encima de 30 MB, nginx responde 413 antes de llegar al servicio.
+- **Base de desarrollo**: `https://api-staging.checkbiz360.com`. nginx de desarrollo sirve tanto `location = /api/v1/tasks` como `location /api/v1/tasks/` hacia `tasks:3006` (`nginx/nginx.staging.conf:82-85` y `:118-121`), las dos con `client_max_body_size 30m`. Por encima de 30 MB, nginx responde 413 antes de llegar al servicio.
 - **Error estándar** del servicio: `{code, error}`. `error` es un **array** en los errores de configuración (`CT/createTask.controller.ts:30`, `CT/updateTask.controller.ts:56`, `CT/duplicateTask.controller.ts:49`).
 - **Jornada abierta** del empleado. El último `checklog` con `type == "checkin"` debe cumplir tres cosas: `status == "valid"`, `closed !== true`, y `deadline` ausente o futuro (`packages/shared/src/checkbiz/repositories/FirestoreWorkSessionRepository.ts:43-75`).
 - **Orden de comprobaciones**. Casi todas las rutas validan el body y **cargan la tarea antes de autenticar**. Por eso ANON puede recibir 400 o 404 antes que 401; los casos lo reflejan.
-- **Panel**. El navegador llama a `/api/proxy/checkinbiz_tasks_handler/...` (`PSVC:22`). El proxy de Next exige y verifica el ID token de Firebase: sin él, o si no es válido, responde **403 `auth/forbidden`** sin llegar al contenedor (`encodebiz-front-saas/src/lib/http/serverBackendProxy.ts:462-463` y `:570-581`). Después reenvía `Authorization`, añade la barra final a `/api/v1/tasks` (`:513-516`) y no sigue redirecciones (`:613`). La URL de desarrollo es `NEXT_BACKEND_URI_CHECKINBIZ_TASKS_HANDLER=http://141.95.47.135:8080/api/v1/tasks` (`encodebiz-front-saas/.env.development:101`). Los casos de este catálogo se lanzan contra nginx directamente.
+- **Panel**. El navegador llama a `/api/proxy/checkinbiz_tasks_handler/...` (`PSVC:22`). El proxy de Next exige y verifica el ID token de Firebase: sin él, o si no es válido, responde **403 `auth/forbidden`** sin llegar al contenedor (`encodebiz-front-saas/src/lib/http/serverBackendProxy.ts:462-463` y `:570-581`). Después reenvía `Authorization`, añade la barra final a `/api/v1/tasks` (`:513-516`) y no sigue redirecciones (`:613`). La URL de desarrollo es `NEXT_BACKEND_URI_CHECKINBIZ_TASKS_HANDLER=https://api-staging.checkbiz360.com/api/v1/tasks` (`encodebiz-front-saas/.env.development:101`). Los casos de este catálogo se lanzan contra nginx directamente.
 - **Lecturas de los clientes**. El panel lee tareas y subcolecciones **directamente de Firestore** (`PSVC:60-151`), y la app también (`AREPO:29,73`). Ningún cliente consume por HTTP las rutas GET del servicio.
 - **`workSite` sin llamar a Google**. Mandar solo `{geo:{lat,lng}, radiusMeters}` no pasa por `placeDetails` ni `geocodeAddress` (`H:398-436`), así que no genera llamadas facturadas. Con `placeId` o `street` sin `geo` sí se llama a Google.
 
@@ -988,7 +988,7 @@ Estados: `draft`, `assigned`, `in_progress`, `completed`, `validated`, `rejected
 - Criticidad: baja.
 - Casos:
   - TSK-19-01 · ANON · `GET http://tasks:3006/health` desde la red de contenedores → 200 `{ok:true, service:"tasks"}`
-  - TSK-19-02 · ANON · `GET http://141.95.47.135:8080/health` → 200 `{"ok":true,"service":"nginx","env":"staging"}`: responde nginx, no el servicio, así que no sirve como sonda de `tasks`
+  - TSK-19-02 · ANON · `GET https://api-staging.checkbiz360.com/health` → 200 `{"ok":true,"service":"nginx","env":"staging"}`: responde nginx, no el servicio, así que no sirve como sonda de `tasks`
 - Sospechas: ninguna.
 
 ## * /api/v1/tasks/* (transversal: rutas desconocidas y errores)  ·  TSK-20

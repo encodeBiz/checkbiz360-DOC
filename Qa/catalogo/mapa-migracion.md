@@ -12,7 +12,7 @@ Análisis estático, 2026-09-11. Repos leídos: `encodebiz-api` (rama develop), 
 `encodebiz-front-saas`, `checkbiz360`. Sin peticiones de red ni ejecución.
 
 Convenciones:
-- **C** = contenedor tras el nginx de desarrollo (`141.95.47.135:8080`, `nginx/nginx.staging.conf`).
+- **C** = contenedor tras el nginx de desarrollo (`api-staging.checkbiz360.com`, `nginx/nginx.staging.conf`).
 - **CF** = Cloud Function del proyecto `dev-encodebiz` (nombre desplegado `apiV100-firebaseEntryHttp-<grupo>-<nombre>`,
   compuesto en `functions/src/index.ts:20-31` y `functions/src/firebase-entry-http/index.ts:37-86`).
 - Rutas de ficheros del panel relativas a `encodebiz-front-saas/`, de la app a `checkbiz360/lib/`, del contenedor a
@@ -246,7 +246,7 @@ eventos, add-ons, estadísticas y el estado de 2FA.
 
 Todas las llamadas usan un único `Dio` (`core/network/dio_client.dart:15-17`) cuya `baseUrl` es
 `AppConfig.apiBaseUrl`, es decir, Cloud Functions (`app_config.dart:12-16`). Como todos los endpoints vivos son URLs
-absolutas, esa `baseUrl` no se usa. Base privada en desarrollo: `http://141.95.47.135:8080` (`app_constants.dart:34`).
+absolutas, esa `baseUrl` no se usa. Base privada en desarrollo: `https://api-staging.checkbiz360.com` (`app_constants.dart:34`).
 No hay otros clientes HTTP en `lib/` (ni `package:http` ni `HttpClient`).
 
 «Rollback posible» = existe una Cloud Function equivalente **desplegada en dev-encodebiz**, según

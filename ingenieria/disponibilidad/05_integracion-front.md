@@ -21,7 +21,7 @@ Las escrituras de calendario ya no viven en la Cloud Function. Es **una variable
 
 ```
 NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER
-  dev  → http://141.95.47.135:8080/api/v1/checkinbiz/calendar
+  dev  → https://api-staging.checkbiz360.com/api/v1/checkinbiz/calendar
   prod → https://api.checkbiz360.com/api/v1/checkinbiz/calendar
 ```
 
@@ -55,7 +55,7 @@ checkinbiz_calendar_availability: {
 
 ```
 NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_AVAILABILITY
-  dev  → http://141.95.47.135:8080/api/v1/checkinbiz/calendar/availability
+  dev  → https://api-staging.checkbiz360.com/api/v1/checkinbiz/calendar/availability
   prod → https://api.checkbiz360.com/api/v1/checkinbiz/calendar/availability
 ```
 
