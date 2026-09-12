@@ -1,0 +1,888 @@
+# Catálogo de casos de uso — servicio `checkinbiz` (prefijo CHK)
+
+> **Verificación (2026-09-11).** Catálogo obtenido por análisis estático del código de los
+> servicios, del panel y de la app, cruzado con lo desplegado de verdad en `dev-encodebiz`.
+> **Salvo lo que abajo se marque como confirmado, el resto es lectura del código, no
+> comprobación contra el entorno.** Los hallazgos de este catálogo que ya se han verificado
+> uno a uno están en [hallazgos.md](./hallazgos.md); las sospechas sin verificar se quedan
+> como tales y se comprobarán al escribir su prueba. El resultado esperado de cada caso es lo
+> que hace el código HOY, no lo que debería hacer.
+
+Inventario estático (sin red, sin ejecutar nada) del servicio `services/checkinbiz` tal como lo sirve el nginx de desarrollo (`http://141.95.47.135:8080`, `nginx/nginx.staging.conf:98-100`, `location /api/v1/checkinbiz/` → `checkinbiz:3002`), más las dos Cloud Functions que la app todavía llama. El resultado esperado es lo que hace el código HOY; lo que parece incorrecto va en «Sospechas».
+
+Rutas de código citadas:
+- Contenedor: `encodebiz-api/services/checkinbiz/src/...` (abreviado `ck/`), `encodebiz-api/packages/shared/src/...` (abreviado `shared/`).
+- Cloud Functions: `encodeBiz-SAAS/functions/src/...` (abreviado `cf/`).
+- Panel: `encodebiz-front-saas/src/...` (abreviado `panel/`), variables en `encodebiz-front-saas/.env.development`.
+- App: `checkbiz360/lib/...` (abreviado `app/`), constantes en `app/core/constants/app_constants.dart`.
+
+## Actores adicionales (además del vocabulario común)
+
+- EMP_FB: ID token de Firebase del usuario de Auth de un empleado de la app (el `uid` que figura en `employees.uid`). La app lo guarda en `access_token` (`app/features/auth/presentation/providers/auth_provider.dart:352,694`) y lo usa para `/auth/login`, `/calendar` y `/checklogs/update` (`app/features/attendance/data/repositories/attendance_repository_impl.dart:48-52,62-74`).
+- USR_FB: cualquier cuenta autenticada de Firebase, sin asiento en `user_entity_roles` ni ficha de empleado en la entidad.
+- S2S_MALA: cabecera `x-encodebiz-key` presente pero con un valor distinto de `ENCODEBIZ_API_KEY`.
+- Cuando un caso depende del estado del asiento de un usuario del panel se indica en la precondición (p. ej. «ADMIN con asiento `status: disabled`»).
+
+## Escenario base de los fichajes (CHK-08)
+
+Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene `enableA2F` distinto de `false`; su dispositivo está en `entities/{e}/employees/{E}/security/trustedDevicesId.ids` como `base64(User-Agent)`; tiene responsabilidad activa (`active: 1`) de nivel 1 en la sucursal B; B está `active`, con `address.geo` G, `ratioChecklog: 100`, `disableRatioChecklog: false` y `address.timeZone: Europe/Madrid`; el calendario de la entidad (`entities/{e}/calendar/config`) tiene zona y un turno 09:00-17:00 el día de la prueba, `advance.notifyBeforeMinutes: 15` y `enableDayTimeRange: false`; el último fichaje `valid` de E es un `checkout` (o no hay ninguno). La app manda `User-Agent` = id persistente del dispositivo (`app/core/network/dio_client.dart:38-44`), así que la huella es `base64(<ese id>)`.
+
+**Los casos de horario dependen de la hora de ejecución**: hay que preparar el turno del calendario relativo al reloj del servidor (Luxon `DateTime.now()` en la zona efectiva).
+
+## Comportamientos transversales
+
+- Rutas no casadas: `app.use` final → `404 {ok:false, error:"not_found"}` (`ck/app.ts:53`). Pero toda ruta bajo `/api/v1/checkinbiz/...` que no case con un router público cae antes en `app.use("/api/v1/checkinbiz", requireFirebaseAuth, …)` (`ck/app.ts:51`): sin token da `401 {error:"unauthenticated", …}` y con token `404`. Ejemplos: `GET /checklogs`, `PUT /calendar`, `GET /auth/validate`.
+- `requireFirebaseAuth` (`shared/middleware/firebaseAuth.ts:4-21`): sin cabecera → `401 {error:"unauthenticated", message:"Missing Authorization header"}`; formato distinto de `Bearer <t>` → `401 … "Invalid Authorization format"`; token inválido, caducado o **revocado** (`verifyIdToken(token, true)`) → `401 {error:"unauthenticated", message:<mensaje de Firebase>}`.
+- `validateToken` (usado por fichajes y colaboradores, `shared/checkbiz/auth/validateToken.ts:5-21`) + `authErrorToResponse` (`shared/checkbiz/auth/authError.ts:15-22`): sin `Bearer ` → `401 {message:"Invalid token", code:"auth/unauthorized"}`; token no verificable → `401 {message:"Invalid token", code:"auth/invalid_token"}`. No comprueba revocación.
+- `validateTokenJWT` (JWT de empleado, `shared/checkbiz/auth/validateTokenStaff.ts:29-50`): sin `Bearer ` → `401 {error:"Token required", code:"auth/unauthorized"}`; firma, emisor o caducidad inválidos → `401 {error:"Invalid or expired token", code:"auth/unauthorized"}`.
+- JSON mal formado en el cuerpo: `express.json` lanza y no hay manejador de errores propio (`ck/app.ts:22`; `express-async-errors` solo reenvía) → responde el manejador por defecto de Express con `400` en HTML, sin `code`. Una excepción no capturada en un controlador sin `try/catch` (calendario, disponibilidad, colaboradores, geo) sale como `500` en HTML.
+- CORS: el contenedor usa `cors()` abierto (`ck/app.ts:21`); las CF usan `ALLOWED_WEB_ORIGINS`. No afecta a la app ni al panel, que llama desde su servidor Next.
+- El panel no llama al contenedor directamente: pasa por `panel/app/api/proxy/[...handler]/route.ts` → `proxyBackendRequest` (`panel/lib/http/serverBackendProxy.ts:518-654`), que **verifica el Bearer como ID token de Firebase** (`verifyToken` → `verifyIdToken`, `panel/lib/firebase/authentication/auth_utils.ts:3-4`) en los handlers con `requiresAuth: true` y responde `403 {code:"auth/forbidden"}` sin reenviar si falla (`serverBackendProxy.ts:570-581`).
+- `/health` del contenedor (`ck/app.ts:24`) no se publica por nginx: el `/health` de nginx responde el propio nginx (`nginx.staging.conf:55-58`).
+
+---
+
+## POST /api/v1/checkinbiz/auth/validate  ·  CHK-01
+- Servicio: checkinbiz, `ck/interfaces/http/auth/auth.router.ts:32-34` → `ck/interfaces/http/auth/validateEmployee.controller.ts:7-87`; montado público en `ck/app.ts:29`.
+- Consumidores: app (`AppConstants.validateEmployeeEndpoint`, `app/features/auth/data/datasources/auth_remote_datasource.dart:77-94`, llamado desde `auth_provider.dart:340-356`). Panel: ninguno (su `NEXT_BACKEND_URI_CHECKINBIZ_VALIDATE_EMPLOYEE` apunta a `/api/v1/employees/validate`, otro servicio).
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/validate-employee.ts` (controlador `cf/services-saas/checkinbiz/interfaces/http/validateEmployee.controller.ts`) y de la ruta `/auth/validate` de `cf/firebase-entry-http/critical-handler.ts:47-50`.
+- Diferencias con la CF: ninguna visible en estado, códigos ni cuerpo (controlador idéntico). El `criticalHandler` además lanzaba un ping de calentamiento a `createChecklog`; el contenedor no. Límite de cuerpo 1 MB frente a 100 KB del `criticalHandler`.
+- Autenticación: ninguna. La credencial es `token` en el cuerpo: `base64(JSON {employeeId, entityId})`, **sin firma** (lo emite `/auth/login`, `ck/interfaces/http/auth/loginEmployee.controller.ts:38`).
+- Autorización: ninguna; basta con que exista `entities/{entityId}/employees/{employeeId}` (`validateEmployee.controller.ts:47-55`).
+- Entrada: `token` (string base64 obligatorio). Su JSON debe traer `employeeId` y `entityId`.
+- Respuesta correcta: `200 {message:"Employee validated successfully", payload:{name, twoFa, entityId, employeeId, biometricRequired}, sessionToken, expiresAt:null, branchId:[…]}`. `twoFa` = `true` si `enableA2F === false`; si no, `!!security/twoFA.verifiedAt` (`:64-69`). `biometricRequired` por defecto `true`. `branchId` = sucursales de las responsabilidades activas en la entidad (`:76`). `sessionToken` = JWT HS firmado con `JWT_2FA_SECRET`, payload `{employeeId, entityId}`, **sin caducidad** (`:59-63`).
+- Efectos: ninguno (solo lecturas).
+- Criticidad: alta — es el arranque de la app y la única puerta al JWT con el que se ficha.
+- Casos:
+  - CHK-01-01 · ANON · `token` de un empleado activo con 2FA verificado → `200`, `payload.twoFa: true`, `sessionToken` presente, `expiresAt: null`.
+  - CHK-01-02 · ANON · empleado con `enableA2F` distinto de `false` y `security/twoFA` sin `verifiedAt` (o sin documento) → `200`, `payload.twoFa: false`.
+  - CHK-01-03 · ANON · empleado con `enableA2F: false` → `200`, `payload.twoFa: true` aunque no tenga secreto.
+  - CHK-01-04 · ANON · empleado sin `biometricRequired` → `200`, `payload.biometricRequired: true`.
+  - CHK-01-05 · ANON · empleado con responsabilidades activas en 2 sucursales y una inactiva → `200`, `branchId` con las 2 activas.
+  - CHK-01-06 · EMP_INACTIVO (`status: fired`, también `inactive`/`vacation`) · token válido → `200` con `sessionToken` (el estado no se mira).
+  - CHK-01-07 · ANON · sin `token` en el cuerpo → `400`, cuerpo `{"message":"Invalid payload","code":"employee/invalid_payload","errors":["Token is required"]}` enviado con `res.send(string)`, es decir `Content-Type: text/html`.
+  - CHK-01-08 · ANON · `token` que no decodifica a JSON (p. ej. `"abc"`) o no es string → `400 code:"staff/invalid_payload"` (texto HTML con JSON dentro).
+  - CHK-01-09 · ANON · JSON sin `employeeId` o sin `entityId` → `400 code:"employee/invalid_payload"`, `errors:["Token is incomplete or malformed"]`.
+  - CHK-01-10 · ANON · `employeeId` inexistente o de otra entidad → `404 code:"employee/not_found"` (texto HTML con JSON).
+  - CHK-01-11 · ANON · cabecera `Authorization` de cualquier tipo (incluido TOKEN_INVALIDO) → se ignora; mismo resultado que sin ella.
+  - CHK-01-12 · ANON · `JWT_2FA_SECRET` sin definir en el contenedor → `500 code:"staff/internal_error"` (no provocable desde fuera; solo configuración).
+- Sospechas:
+  - Emisión de sesión sin autenticar: el `token` es `base64` de dos ids, sin firma, y cualquiera que conozca `employeeId` + `entityId` obtiene un `sessionToken` válido para ese empleado (`validateEmployee.controller.ts:27-63`). Con él puede llamar a `/auth/2fa/enable` (que **resetea** el secreto, CHK-03) y a `/auth/2fa/verify` (que **registra su User-Agent como dispositivo de confianza**, CHK-04), y a partir de ahí fichar como ese empleado. Heredado idéntico de la CF.
+  - El `sessionToken` no caduca (`signOptions = {}`, `:60-63`) y sigue siendo válido aunque el empleado pase a `fired`: ni aquí ni en el fichaje se mira `status`.
+  - Los errores se envían como texto (`res.send(JSON.stringify(...))`) y llegan con `Content-Type: text/html`; Dio no los decodifica y el `ErrorParser` de la app (`app/core/errors/error_parser.dart`) no puede leer `code` (acaba en `LoginFailedException` por el `catch` genérico de `auth_remote_datasource.dart:90-93`). Heredado.
+
+## POST /api/v1/checkinbiz/auth/login  ·  CHK-02
+- Servicio: checkinbiz, `ck/interfaces/http/auth/auth.router.ts:67-71` → `ck/interfaces/http/auth/loginEmployee.controller.ts:10-50`; montado tras `requireFirebaseAuth` en `ck/app.ts:45`.
+- Consumidores: app (`AppConstants.loginEmployeeEndpoint`, `app/features/auth/data/datasources/auth_remote_datasource.dart:34-74`, con el ID token de Firebase del empleado).
+- Origen: portado desde la CF `cf/firebase-entry-http/auth/login-employee.ts` (controlador `cf/core/auth/interfaces/http/loginEmployeeController.ts`) y de `/auth/login` del `criticalHandler` (`cf/firebase-entry-http/critical-handler.ts:36-44`, que es el rollback anotado en `app_constants.dart:47-49`).
+- Diferencias con la CF: (1) error de auth: CF `401 {message:"Invalid token", code:"auth/unauthorized"|"auth/invalid_token"}`; contenedor `401 {error:"unauthenticated", message}` sin `code`. En la app las dos acaban en `LoginFailedException` por ser 401 sin código mapeado. (2) El contenedor rechaza tokens revocados (`checkRevoked`); la CF no. (3) La CF `login-employee` limitaba a 20 intentos por IP y 15 min con `429 {error:"Too many login attempts"}` (`login-employee.ts:9-66`); el contenedor no tiene límite. (4) Texto del 500: CF «Error al generar el secreto 2FA», contenedor «Error al iniciar sesión del empleado».
+- Autenticación: ID token de Firebase (`requireFirebaseAuth`); el `uid` sale del token (`auth.router.ts:69`).
+- Autorización: ninguna; se devuelven todas las fichas de empleado cuyo `uid` coincide, en cualquier entidad (`collectionGroup("employees").where("uid","==",uid)`, `shared/checkbiz/repositories/FirestoreEmployeeRepository.ts:182-187`).
+- Entrada: sin cuerpo.
+- Respuesta correcta: `200 [ {employeeId, uid, email, entity:{entityId, name}, fullName, tokenValidateEmployee} ]`, una entrada por ficha; `tokenValidateEmployee = base64({employeeId, entityId})`.
+- Efectos: si la cuenta no tiene el claim `employee`, se añade `employee: true` conservando los demás (`loginEmployee.controller.ts:21-24`).
+- Criticidad: alta — primer paso del arranque de la app.
+- Casos:
+  - CHK-02-01 · EMP_FB · empleado con una ficha → `200` array de 1 elemento con `entity.name` de la entidad.
+  - CHK-02-02 · EMP_FB · mismo `uid` con fichas en 2 entidades → `200` array de 2.
+  - CHK-02-03 · EMP_FB · cuenta sin claim `employee` → `200` y el claim `employee: true` queda puesto; los claims previos se conservan.
+  - CHK-02-04 · USR_FB (o PROP que no es empleado) → `204` sin cuerpo (el `json` del controlador se pierde con el 204). La app lo traduce a `NoEmployeeAccessException` (`auth_remote_datasource.dart:47-52`).
+  - CHK-02-05 · EMP_INACTIVO (`status: fired`) → `200` e incluye la ficha (no se filtra por estado).
+  - CHK-02-06 · ANON → `401 {error:"unauthenticated", message:"Missing Authorization header"}`.
+  - CHK-02-07 · TOKEN_INVALIDO (mal formado, caducado u otro proyecto) → `401 {error:"unauthenticated", message:<Firebase>}`.
+  - CHK-02-08 · TOKEN_INVALIDO (ID token revocado con `revokeRefreshTokens`) → `401 unauthenticated` (en la CF daba 200).
+  - CHK-02-09 · EMP_JWT enviado como Bearer → `401 unauthenticated`.
+  - CHK-02-10 · EMP_FB · ficha cuya entidad ya no existe → `200` con `entity.name` ausente (`undefined`, se omite en JSON).
+  - CHK-02-11 · EMP_FB · 25 peticiones seguidas desde la misma IP → todas `200` (sin límite; en la CF la 21ª daba 429).
+- Sospechas:
+  - Devuelve fichas `fired` y de cualquier estado, con su `tokenValidateEmployee`, que abre `/auth/validate` (CHK-01) sin más control.
+
+## POST /api/v1/checkinbiz/auth/2fa/enable  ·  CHK-03
+- Servicio: checkinbiz, `ck/interfaces/http/auth/auth.router.ts:59` (envoltorio `withEmployeeSession`, `:43-56`) → `ck/interfaces/http/auth/enable2FA.controller.ts:16-47` → `ck/application/use-cases/auth/Generate2FASecret.ts:13-26`.
+- Consumidores: app (`AppConstants.enable2FAEndpoint`, `app/features/auth/data/datasources/auth_remote_datasource.dart:97-117`, desde `auth_provider.dart:1127`). Panel: `NEXT_BACKEND_URI_CHECKINBIZ_ENABLE2AF_EMPLOYEE` (`.env.development:60`) → `panel/services/checkinbiz/employee.service.ts:382-400` (`enable2AF`), usado por `panel/app/tools/checking/ConfigTwoFA/ConfigTwoFA.tsx:56` con el `sessionToken` de la validación.
+- Origen: portado desde la CF `cf/firebase-entry-http/auth/enable2FA.ts` (controlador `cf/core/auth/interfaces/http/enable2FAController.ts`).
+- Diferencias con la CF: ninguna visible (mismo orden de volcado `{...body, ...payload}`, mismos estados y cuerpos).
+- Autenticación: JWT de empleado (`validateTokenJWT`, `JWT_2FA_SECRET`); `employeeId` y `entityId` salen del token y pisan los del cuerpo (`auth.router.ts:50`).
+- Autorización: ninguna adicional; el sujeto es siempre el empleado del token.
+- Entrada: nada obligatorio en el cuerpo (lo que mande se ignora si choca con el token).
+- Respuesta correcta: `200 {otpauthUrl, secret, qrImage}` (`qrImage` = data URL PNG).
+- Efectos: escribe `entities/{e}/employees/{E}/security/twoFA` con `{secret, verifiedAt: null}` en `merge` (`Generate2FASecret.ts:20-23`): **invalida un 2FA ya verificado**. `updateSecurity` traga los errores de escritura (`FirestoreEmployeeRepository.ts:199-203`).
+- Criticidad: alta — sin él la app no completa el alta de seguridad.
+- Casos:
+  - CHK-03-01 · EMP_JWT · empleado sin 2FA → `200 {otpauthUrl, secret, qrImage}`; `twoFA.secret` escrito y `verifiedAt: null`.
+  - CHK-03-02 · EMP_JWT · empleado con 2FA ya verificado → `200` con secreto nuevo; `verifiedAt` vuelve a `null` y `/auth/validate` pasa a devolver `twoFa: false`.
+  - CHK-03-03 · EMP_JWT · cuerpo con `employeeId`/`entityId` de otro empleado → `200` con el QR del empleado del token; el otro no cambia.
+  - CHK-03-04 · EMP_INACTIVO (`fired`) · token emitido antes de la baja → `200` (no se mira estado).
+  - CHK-03-05 · EMP_JWT · ficha borrada después de emitir el token → `204` sin cuerpo.
+  - CHK-03-06 · ANON → `401 {error:"Token required", code:"auth/unauthorized"}`.
+  - CHK-03-07 · TOKEN_INVALIDO (firma ajena o `exp` vencido) → `401 {error:"Invalid or expired token", code:"auth/unauthorized"}`.
+  - CHK-03-08 · EMP_FB (ID token de Firebase en vez del JWT) → `401 {error:"Invalid or expired token", code:"auth/unauthorized"}`.
+  - CHK-03-09 · Panel `/tools/checking` · `sessionToken` a través del proxy → `403 {code:"auth/forbidden"}` del propio proxy, que lo verifica como ID token de Firebase (`serverBackendProxy.ts:228-232,570-581`); no llega al contenedor.
+- Sospechas:
+  - Resetea un 2FA verificado a cualquiera que tenga un `sessionToken`, que a su vez se obtiene sin autenticar (ver CHK-01).
+  - La pantalla web `/tools/checking` del panel no puede usar este endpoint: el proxy exige un ID token de Firebase y ella manda el JWT de `/validate`. Pasa igual contra la CF (el proxy va delante en los dos casos).
+  - El `400` por falta de `employeeId`/`entityId` (`enable2FA.controller.ts:19-27`) solo es alcanzable con un JWT firmado con el secreto y sin esos campos: no se puede probar desde fuera.
+
+## POST /api/v1/checkinbiz/auth/2fa/verify  ·  CHK-04
+- Servicio: checkinbiz, `ck/interfaces/http/auth/auth.router.ts:62` → `ck/interfaces/http/auth/verify2FA.controller.ts:16-46` → `ck/application/use-cases/auth/Verify2FACode.ts:14-27` y `UpdateDevicesEmployee.ts:20-31`.
+- Consumidores: app (`AppConstants.verify2FAEndpoint`, `auth_remote_datasource.dart:120-145`, desde `auth_provider.dart:1161`). Panel: `NEXT_BACKEND_URI_CHECKINBIZ_VERIFY2AF_EMPLOYEE` (`.env.development:61`) → `panel/services/checkinbiz/employee.service.ts:406-425` (`verify2AF`), usado en `panel/app/tools/checking/ConfigTwoFA/ConfigTwoFA.tsx:70` y `VerifyTwoFA/VerifyTwoFA.tsx:43`.
+- Origen: portado desde la CF `cf/firebase-entry-http/auth/verify2FA.ts` (controlador `cf/core/auth/interfaces/http/verify2FAController.ts`, caso de uso `cf/core/auth/application/use-cases/Verify2FAAndIssueToken.ts`).
+- Diferencias con la CF: (1) la CF aceptaba un **código maestro escrito en su código fuente** para cualquier empleado, tuviera secreto o no (`Verify2FAAndIssueToken.ts:13,19`); el contenedor solo lo acepta si `TWOFA_MASTER_CODE` está definida (`Verify2FACode.ts:35-38`; sin confirmar su valor en desarrollo). Quien use el código de rescate de la CF recibe 401. (2) Empleado sin documento `security/twoFA`: la CF daba `401 {error:"Cannot destructure property 'secret' …"}`; el contenedor `401 {error:"{\"message\":…,\"code\":\"twofactor/not_activated\"}"}`. (3) El contenedor espera la escritura de `verifiedAt`; la CF no.
+- Autenticación: JWT de empleado, como CHK-03.
+- Autorización: la del token.
+- Entrada: `code` (obligatorio, string TOTP). La huella del dispositivo es `base64(User-Agent)` (`verify2FA.controller.ts:33-34`).
+- Respuesta correcta: `200 {message:"Código 2FA verificado correctamente", expiresIn:300}`.
+- Efectos: `security/twoFA.verifiedAt = now`; añade `base64(User-Agent)` a `security/trustedDevicesId.ids` si no estaba.
+- Criticidad: alta — sin ella la app no puede fichar (`auth/untrusted_device`).
+- Casos:
+  - CHK-04-01 · EMP_JWT · tras CHK-03, código TOTP vigente → `200`; `verifiedAt` escrito; UA añadido a `trustedDevicesId.ids`.
+  - CHK-04-02 · EMP_JWT · código de hasta ±2 periodos (±60 s) → `200` (`shared/checkbiz/auth/totp.ts:21-30`).
+  - CHK-04-03 · EMP_JWT · mismo UA ya registrado → `200`; la lista no se duplica.
+  - CHK-04-04 · EMP_JWT · otro `User-Agent` → `200`; se registra un segundo dispositivo.
+  - CHK-04-05 · EMP_JWT · código incorrecto → `401 {error:"{\"message\":\"Código TOTP inválido\",\"code\":\"twofactor/invalid_code\"}"}` (el `code` va dentro del string, no en la raíz).
+  - CHK-04-06 · EMP_JWT · empleado que nunca llamó a enable → `401 {error:"{…\"code\":\"twofactor/not_activated\"}"}`.
+  - CHK-04-07 · EMP_JWT · con `TWOFA_MASTER_CODE` definida y `code` igual → `200` aunque no haya secreto (sin confirmar si en dev está definida).
+  - CHK-04-08 · EMP_JWT · sin `code` → `400 {error:"Faltan campos obligatorios", details:["code es requerido"]}`.
+  - CHK-04-09 · ANON → `401 {error:"Token required", code:"auth/unauthorized"}`.
+  - CHK-04-10 · TOKEN_INVALIDO / EMP_FB → `401 {error:"Invalid or expired token", code:"auth/unauthorized"}`.
+  - CHK-04-11 · Panel `/tools/checking` a través del proxy → `403 {code:"auth/forbidden"}` del proxy (mismo motivo que CHK-03-09).
+- Sospechas:
+  - El `code` del error va serializado dentro de `error` (`verify2FA.controller.ts:44`), así que el `ErrorParser` de la app nunca produce `InvalidTotpCodeException`; cae en `LoginFailedException` por ser 401 sin código. Heredado.
+  - Junto con CHK-01 y CHK-03, cualquiera que conozca los dos ids de un empleado puede dar de alta su propio dispositivo como de confianza.
+
+## GET /api/v1/checkinbiz/auth/2fa/user/status  ·  CHK-05
+- Servicio: checkinbiz, `ck/interfaces/http/auth/auth.router.ts:83` → `ck/interfaces/http/auth/user2FA.controller.ts:36-54`; tras `requireFirebaseAuth` (`ck/app.ts:45`).
+- Consumidores: panel (`NEXT_BACKEND_URI_STATUS2FA_USER`, `.env.development:131`) → `panel/services/core/account.service.ts:167-176`, llamado en login, `authContext.tsx:192`, cuenta y `TwoFAGateModal.tsx:106`.
+- Origen: portado desde la CF `cf/firebase-entry-http/auth/get2FAUserStatus.ts` (controlador `cf/core/auth/interfaces/http/get2FAUserStatusController.ts`).
+- Diferencias con la CF: solo la autenticación (cuerpo de 401 sin `code`; rechazo de tokens revocados). El proxy del panel valida el token antes, así que el panel no debería ver ese 401.
+- Autenticación: ID token de Firebase; `uid` del token.
+- Autorización: ninguna (cualquier cuenta consulta la suya).
+- Entrada: ninguna.
+- Respuesta correcta: `200 {enabled: boolean}`; `true` solo si `users/{uid}/security/twoFA` tiene `secret` y `verifiedAt`.
+- Efectos: ninguno.
+- Criticidad: alta — decide la puerta del 2FA en cada login del panel.
+- Casos:
+  - CHK-05-01 · PROP · 2FA verificado → `200 {enabled:true}`.
+  - CHK-05-02 · ADMIN · sin documento `twoFA` → `200 {enabled:false}`.
+  - CHK-05-03 · USR_FB · secreto sin `verifiedAt` (alta a medias) → `200 {enabled:false}`.
+  - CHK-05-04 · ANON → `401 {error:"unauthenticated", …}`.
+  - CHK-05-05 · TOKEN_INVALIDO → `401 {error:"unauthenticated", …}`.
+
+## POST /api/v1/checkinbiz/auth/2fa/user/enable  ·  CHK-06
+- Servicio: checkinbiz, `ck/interfaces/http/auth/auth.router.ts:86` → `ck/interfaces/http/auth/user2FA.controller.ts:57-95`.
+- Consumidores: panel (`NEXT_BACKEND_URI_ENABLE2FA_USER`, `.env.development:129`) → `panel/services/core/account.service.ts:181-190`, desde `/auth/2fa/setup`, cuenta y `TwoFAGateModal.tsx:110`.
+- Origen: portado desde la CF `cf/firebase-entry-http/auth/enable2FAUser.ts` (controlador `cf/core/auth/interfaces/http/enable2FAUserController.ts`).
+- Diferencias con la CF: solo la autenticación (como CHK-05). Lógica idéntica.
+- Autenticación: ID token de Firebase.
+- Autorización: ninguna.
+- Entrada: ninguna.
+- Respuesta correcta: `200 {secret, otpauthUrl, qrImage}`.
+- Efectos: si hay un secreto pendiente (con `otpauthUrl` y sin `verifiedAt`) se reutiliza; si no, o si ya estaba verificado, se genera otro y se escribe `{secret, otpauthUrl, verifiedAt:null, createdAt}` en `users/{uid}/security/twoFA` (`:73-87`).
+- Criticidad: alta — alta de 2FA del panel.
+- Casos:
+  - CHK-06-01 · PROP · sin 2FA → `200`; documento creado con `verifiedAt:null`.
+  - CHK-06-02 · PROP · dos llamadas seguidas sin verificar → `200` las dos con el **mismo** `secret`.
+  - CHK-06-03 · ADMIN · 2FA ya verificado → `200` con secreto nuevo; `status` pasa a `{enabled:false}` hasta verificar de nuevo.
+  - CHK-06-04 · USR_FB / EMP_FB → `200` (no se exige asiento).
+  - CHK-06-05 · ANON / TOKEN_INVALIDO → `401 {error:"unauthenticated", …}`.
+- Sospechas:
+  - Resetear el 2FA no retira los claims `admin`/`twoFA` ya puestos (solo los escribe `verify`, CHK-07).
+
+## POST /api/v1/checkinbiz/auth/2fa/user/verify  ·  CHK-07
+- Servicio: checkinbiz, `ck/interfaces/http/auth/auth.router.ts:89` → `ck/interfaces/http/auth/user2FA.controller.ts:98-144`.
+- Consumidores: panel (`NEXT_BACKEND_URI_VERIFY2FA_USER`, `.env.development:130`) → `panel/services/core/account.service.ts:195-205`, desde `/auth/2fa`, `/auth/2fa/setup`, cuenta y `TwoFAGateModal.tsx:138`.
+- Origen: portado desde la CF `cf/firebase-entry-http/auth/verify2FAUser.ts` (controlador `cf/core/auth/interfaces/http/verify2FAUserController.ts`).
+- Diferencias con la CF: solo la autenticación. Lógica y cuerpos idénticos.
+- Autenticación: ID token de Firebase.
+- Autorización: ninguna.
+- Entrada: `code` (obligatorio).
+- Respuesta correcta: `200 {message:"2FA code verified successfully"}`.
+- Efectos: `verifiedAt = now` y borra `otpauthUrl` en `users/{uid}/security/twoFA`; claims de Auth `{...previos, admin:true, twoFA:true}` (`:136-137`).
+- Criticidad: alta — cierra el login del panel.
+- Casos:
+  - CHK-07-01 · PROP · tras CHK-06, código válido → `200`; `verifiedAt` escrito, `otpauthUrl` borrado; claims `admin:true, twoFA:true` conservando los previos.
+  - CHK-07-02 · ADMIN · código inválido → `401 {error:"Invalid TOTP code", code:"twofactor/invalid_code"}`.
+  - CHK-07-03 · PROP · sin documento o sin `secret` → `400 {error:"2FA is not enabled for this user", code:"twofactor/not_activated"}`.
+  - CHK-07-04 · PROP · sin `code` → `400 {error:"Missing required fields", details:["code is required"]}`.
+  - CHK-07-05 · USR_FB / EMP_FB · alta y código válidos → `200` y recibe el claim `admin:true`.
+  - CHK-07-06 · ANON / TOKEN_INVALIDO → `401 {error:"unauthenticated", …}`.
+- Sospechas:
+  - Pone `admin: true` en los claims de cualquier cuenta autenticada que complete su TOTP, sin mirar si tiene asiento en alguna entidad (`user2FA.controller.ts:137`). Heredado de la CF. Qué consumidores leen ese claim no está confirmado en este análisis.
+
+## POST /api/v1/checkinbiz/checklogs  ·  CHK-08
+- Servicio: checkinbiz, `ck/interfaces/http/checklog/checklog.router.ts:22-45` → `ck/interfaces/http/checklog/createChecklog.controller.ts:120-547` → `ck/application/use-cases/checklog/CreateChecklog.ts:11-85`; montado sin middleware global en `ck/app.ts:34`.
+- Consumidores: app (`AppConstants.createChecklogEndpoint`, `app/features/attendance/data/datasources/attendance_remote_datasource.dart:28-45`; cuerpo `CreateLogRequest {branchId, type, geo{lat,lng,accuracy,capturedAt,source}, biometric?, metadata?}` en `attendance_provider.dart:328-352`; ante `AuthUnauthorizedException`/`InvalidTokenException` revalida y reintenta una vez, `:356-375`). Panel: `NEXT_BACKEND_URI_CHECKINBIZ_CREATE_LOG` (`.env.development:71`) → `panel/services/checkinbiz/employee.service.ts:294-318` (`createLog`), desde `panel/app/main/[entityId]/checkinbiz/attendance/AttendanceFormModal/AttendanceFormModal.controller.tsx:59-75` con `isAdmin:true`, `geo` = coordenadas de la sucursal, `timestamp`, `status`, `updateId`, `failedCode`; y desde `panel/app/tools/checking/page.context.tsx:188` con el `sessionToken`.
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/create-checklog.ts` (controlador `cf/services-saas/checkinbiz/interfaces/http/checklog/createChecklogController.ts`).
+- Diferencias con la CF:
+  - Sin calendario configurado (sin `calendar/config`, sin zona, o sin un solo turno en la semana): CF `400 code:"calendar/not_resolved"`; contenedor registra el fichaje con día abierto 00:00-23:59 y `scheduleApplied.source: "default"` (`createChecklog.controller.ts:214-230`).
+  - Selección de turno en `checkout`/`restin`/`restout`: la CF tomaba siempre el primer turno del día (`createChecklogController.ts:252-259`); el contenedor el que contiene la hora, si no el último empezado, si no el primero (`:334-343`). Con `enableDayTimeRange` una salida tardía en jornada partida se reescribía en la CF al fin del **primer** turno; en el contenedor al del turno trabajado. Cambia el `timestamp` guardado.
+  - `metadata.enableDayTimeRange` guarda la bandera efectiva del calendario (CF: la de la sucursal) y se añade `metadata.branchEnableDayTimeRange` (`:379-384`).
+  - Geocerca: margen negativo → CF rechaza siempre (`distance > radius`); contenedor no aplica valla (`shared/checkbiz/geo/geofence.ts:39-48`).
+  - Respuesta `201`: `checkLog` incluye ahora `id` (`ck/infrastructure/FirestoreChecklogRepository.ts:20-24`). Aditivo.
+  - Emite eventos `attendance.*` y `workday.closed` (`ck/events/attendance.ts`); la CF no.
+  - Mismos códigos de error y misma autenticación.
+- Autenticación (decidida por el cuerpo, `checklog.router.ts:28-39`): `_warmup === true` → `200 {ok:true}` sin autenticar; `isAdmin === true` (booleano estricto) → ID token de Firebase (`validateToken`), `uid` del token; en otro caso → JWT de empleado (`validateTokenJWT`), y su payload `{employeeId, entityId}` pisa el cuerpo.
+- Autorización: si `req.body.isAdmin` es verdadero (comprobación laxa, `createChecklog.controller.ts:132`) → `canWrite(req.body.uid, entityId)`: solo `user_entity_roles/{uid}_{entityId}` con rol `owner` o `admin` (`shared/checkbiz/auth/canWrite.ts:17-23`). Siempre: el empleado debe tener responsabilidad activa en la sucursal pedida (`:147,156-161`); con `enableA2F` distinto de `false` y sin `isAdmin`, `base64(User-Agent)` debe estar en `trustedDevicesId.ids` (`:170-180`).
+- Entrada: `type` ∈ {`checkin`,`checkout`,`restin`,`restout`}; `geo.lat` número finito en [-90,90]; `geo.lng` número finito en [-180,180]; `branchId` (se valida después, `:182-187`); en la vía admin además `entityId` y `employeeId` (strings no vacíos). `timestamp`, `status`, `biometric`, `metadata` del cuerpo se ignoran.
+- Orden de comprobaciones (importa para los casos): warmup → auth → payload (400) → permiso admin (403) → empleado (404) → responsabilidad (404) → dispositivo (401) → `branchId` (400) → sucursal existe (404) → sucursal activa (400) → calendario → día deshabilitado/sin turnos/festivo (400) → turno (400) → rango estricto (400) → geocerca (400, deja registro `failed`) → secuencia del caso de uso (400) → 201.
+- Zona horaria efectiva (`:264-266`): `enableRemoteWork` → `employee.address.timeZone` → zona del calendario → `UTC`; si no → `branch.address.timeZone` → zona del calendario → `UTC`. **El día de la semana, la fecha local y los festivos se resuelven en la zona del calendario** (`resolveDay.execute` sin `tzHint`, `:205-209`; `shared/calendar/resolveEffectiveDay.usecase.ts:79-92`), y las horas de turno en la zona efectiva.
+- Respuesta correcta: `201 {message:"Checklog created", code:"checklog/created", checkLog:{id, entityId, employeeId, branchId, type, geo, timestamp, status:"valid", isSuspect, closed, userAgent, checkin, deadline?, metadata:{tz, ratioChecklog, realDateMarket, enableDayTimeRange, branchEnableDayTimeRange, enableRemoteWork, disableRatioChecklog, employeeResponsibility, etz, distance?, scheduleApplied:{start,end,toleranceMinutes,source,shifts,scheduleDay:{date,weekday,isWorkingDay,isHoliday,disabled,shifts,plannedMinutes,breakMinutes,weekPlan,weekPlannedMinutes}}, adjustedTimestamp, requestUpdates:[{id,createdAt,action:"created",updateBy,data:{}}], updated:{updatedAt,uid}}}}`. Rechazo del caso de uso: `400 {message, code}` (sin `error`).
+- Efectos: crea `entities/{e}/checklogs/{id}` (`checkin` apunta a sí mismo en un `checkin`; en los demás tipos, al último `checkin` de esa sucursal); en `checkin`, `deadline = fin del turno + 6 h`; en `checkout`, `closed:true` y además marca `closed:true` el `checkin` enlazado (`:519-521`); fuera de radio guarda un fichaje `status:"failed"`, `failedCode:"checklog/out_of_radius"` (`:498`). Eventos sin esperar: `attendance.clock_in|clock_out|break_start|break_end`, `attendance.clock_flagged` si `isSuspect`, `workday.closed` en `checkout`, `attendance.clock_rejected` en rechazos de negocio (`ck/events/attendance.ts:34-44`; no se publica en errores de auth, dispositivo, sucursal o validación).
+- Criticidad: alta — es el registro legal de jornada y el endpoint más usado de la app.
+- Casos:
+  - CHK-08-01 · ANON · cuerpo `{_warmup:true}` → `200 {ok:true}`; no lee ni escribe nada.
+  - CHK-08-02 · EMP_JWT · base, `checkin` dentro del turno y a menos de 100 m → `201 code:"checklog/created"`, `checkLog.status:"valid"`, `checkLog.checkin == checkLog.id`, `closed:false`, `deadline` = 17:00+6 h en UTC; evento `attendance.clock_in`.
+  - CHK-08-03 · ANON · sin `Authorization`, sin `isAdmin` → `401 {error:"Token required", code:"auth/unauthorized"}`.
+  - CHK-08-04 · TOKEN_INVALIDO · JWT con otra firma o un ID token de Firebase, sin `isAdmin` → `401 {error:"Invalid or expired token", code:"auth/unauthorized"}`.
+  - CHK-08-05 · ANON · `isAdmin:true` sin `Authorization` → `401 {message:"Invalid token", code:"auth/unauthorized"}`.
+  - CHK-08-06 · TOKEN_INVALIDO · `isAdmin:true` con token no verificable (o con EMP_JWT) → `401 {message:"Invalid token", code:"auth/invalid_token"}`.
+  - CHK-08-07 · EMP_JWT · cuerpo con `employeeId`/`entityId` de otro empleado → `201` a nombre del empleado del token; el otro no recibe nada.
+  - CHK-08-08 · EMP_JWT · `type` ausente o `"in"` → `400 {error:"Invalid payload", details:[…], code:"checklog/bad_request"}`.
+  - CHK-08-09 · EMP_JWT · sin `geo` → `400 code:"checklog/bad_request"` (`details` con "geo is required…").
+  - CHK-08-10 · EMP_JWT · `geo.lat` como string `"40.4"` → `400 code:"checklog/bad_request"` ("geo.lat must be a number").
+  - CHK-08-11 · EMP_JWT · `lat: 91` o `lng: -181` → `400 code:"checklog/bad_request"`.
+  - CHK-08-12 · EMP_JWT · sin `branchId`, con alguna responsabilidad activa en la entidad → `400 {error:"branchId is required", code:"employee/branchId_required"}` (antes pasa el control de dispositivo: con UA no registrado sale 401).
+  - CHK-08-13 · EMP_JWT · sin `branchId` y sin ninguna responsabilidad activa → `404 code:"employee/not_resposibility"`.
+  - CHK-08-14 · EMP_JWT · ficha borrada tras emitir el token → `404 {error:"Employee not found", code:"employee/not_found"}`.
+  - CHK-08-15 · OP_OTRA_SUCURSAL (con su EMP_JWT) · `branchId` de una sucursal donde no tiene responsabilidad → `404 {error:"Employee not Resposibility into branch", code:"employee/not_resposibility"}`.
+  - CHK-08-16 · EMP_JWT · responsabilidad en B con `active: 0` → `404 code:"employee/not_resposibility"`.
+  - CHK-08-17 · EMP_JWT · `enableA2F` distinto de `false` y UA no registrado → `401 {error:"Untrusted device", code:"auth/untrusted_device"}`; sin registro ni evento.
+  - CHK-08-18 · EMP_JWT · sin cabecera `User-Agent` (huella `""`) → `401 code:"auth/untrusted_device"`.
+  - CHK-08-19 · EMP_JWT · `enableA2F:false` y UA no registrado → `201`.
+  - CHK-08-20 · EMP_JWT · responsabilidad que apunta a una sucursal borrada → `404 {error:"Branch not found", code:"branch/not_found"}`.
+  - CHK-08-21 · EMP_JWT · sucursal con `status:"inactive"` → `400 {error:"Branch inactive", code:"branch/inactive"}`.
+  - CHK-08-22 · EMP_JWT · sucursal sin campo `status` → se trata como activa → `201`.
+  - CHK-08-23 · EMP_INACTIVO (`status` `fired`, `inactive`, `vacation` o `pending`) · resto del escenario base → `201` (el estado del empleado no se comprueba).
+
+  - CHK-08-24 · EMP_JWT · el día de la semana tiene `disabled:true` en el horario efectivo → `400 {error:"Day disabled in effective schedule", code:"checklog/day_disabled"}`; sin registro; evento `attendance.clock_rejected` con `reason:"no_shift_scheduled"`.
+  - CHK-08-25 · EMP_JWT · el día no aparece en el horario (clave ausente) pero otros días tienen turnos → `400 code:"checklog/day_disabled"`.
+  - CHK-08-26 · EMP_JWT · el día existe con `shifts: []` y otros días tienen turnos → `400 code:"checklog/day_disabled"`.
+  - CHK-08-27 · EMP_JWT · festivo de entidad, sucursal o empleado con `date` = fecha local de hoy → `400 {error:"Holiday", code:"checklog/day_disabled"}`.
+  - CHK-08-28 · EMP_JWT · ausencia (`absences[]`, rango) que cubre hoy, sin festivo → `201` (las ausencias no se miran; solo `holidays`, `:290-294`).
+  - CHK-08-29 · EMP_JWT · la entidad no tiene `calendar/config` → `201`; `scheduleApplied.source:"default"`, turno 00:00-23:59, `scheduleDay.weekPlannedMinutes` = 7×1439.
+  - CHK-08-30 · EMP_JWT · calendario sin `timezone` en ningún nivel → `201` con día abierto; zona = `branch.address.timeZone` o `UTC`.
+  - CHK-08-31 · EMP_JWT · calendario con zona pero sin ningún turno en la semana → `201` con día abierto.
+  - CHK-08-32 · EMP_JWT · override de sucursal con `overridesDisabled:true` → se ignora el horario de la sucursal y rige el de la entidad (`sources.schedule:"entity"`).
+  - CHK-08-33 · EMP_JWT · `checkin` antes de inicio − tolerancia (08:40 con turno 09:00 y 15 min) → `400 {error:"Check out of schedule", code:"checklog/out_of_schedule"}`; evento rechazado `out_of_schedule`.
+  - CHK-08-34 · EMP_JWT · `checkin` dentro de la tolerancia (08:50), `enableDayTimeRange:false` → `201`; `timestamp` = hora real, `adjustedTimestamp:null`.
+  - CHK-08-35 · EMP_JWT · `checkin` a las 08:50 con `enableDayTimeRange:true` → `201`; `timestamp` = 09:00 local (UTC), `metadata.adjustedTimestamp` = hora real, `metadata.enableDayTimeRange:true`.
+  - CHK-08-36 · EMP_JWT · `checkin` después del fin del turno (17:05) → `400 code:"checklog/out_of_schedule"`.
+  - CHK-08-37 · EMP_JWT · sin `advance.notifyBeforeMinutes` → tolerancia 15 min; con `notifyBeforeMinutes:0`, `checkin` 1 min antes del inicio → `400 code:"checklog/out_of_schedule"`.
+  - CHK-08-38 · EMP_JWT · jornada partida 09-11 y 16-20, `checkin` a las 15:50 → `201`; `scheduleApplied.start` 16:00, `end` 20:00; `deadline` = 02:00 del día siguiente (20:00+6 h); `scheduleDay.plannedMinutes: 360`.
+  - CHK-08-39 · EMP_JWT · jornada partida, `checkin` a las 13:00 → `400 code:"checklog/out_of_schedule"`.
+  - CHK-08-40 · EMP_JWT · jornada partida con ventanas que se solapan por la tolerancia → gana el primer turno **en el orden del array**, no el más cercano (`shiftsDt.find(fits)`, `:343`).
+  - CHK-08-41 · EMP_JWT · jornada partida + `enableDayTimeRange:true`, `checkin` 16:00 y `checkout` a las 21:02 → `201`; `timestamp` del checkout = 20:00 local y `adjustedTimestamp` = 21:02 (en la CF se reescribía a 11:00).
+  - CHK-08-42 · EMP_JWT · `checkout` fuera de todo turno (23:00) sin rango estricto → `201` con la hora real (un `checkout` nunca da `out_of_schedule`).
+  - CHK-08-43 · EMP_JWT · `checkout` antes del primer turno (07:00) → `201`; `scheduleApplied` del primer turno.
+  - CHK-08-44 · EMP_JWT · `checkout` antes del fin del turno con `enableDayTimeRange:true` → `201` con la hora real (solo se reescribe si es posterior al fin).
+
+  - CHK-08-45 · EMP_JWT · `restin` tras un `checkin` válido → `201`, `type:"restin"`, `checkin` = id del último `checkin` de esa sucursal, `closed:false`; evento `attendance.break_start`.
+  - CHK-08-46 · EMP_JWT · `restout` tras `restin` → `201`; evento `attendance.break_end`.
+  - CHK-08-47 · EMP_JWT · `restin` tras `restout` (segundo descanso) → `201`.
+  - CHK-08-48 · EMP_JWT · `checkout` tras `restout` → `201`, `closed:true`; el `checkin` enlazado pasa a `closed:true`; eventos `attendance.clock_out` y `workday.closed`.
+  - CHK-08-49 · EMP_JWT · `checkout` entre 3 y 10 h después del `checkin` → `201`, `isSuspect:false`.
+  - CHK-08-50 · EMP_JWT · `checkout` a menos de 3 h o más de 10 h del `checkin` → `201`, `checkLog.isSuspect:true`; eventos `clock_out`, `clock_flagged` (`reason:"worked_hours_out_of_range"`) y `workday.closed`.
+  - CHK-08-51 · EMP_JWT · dos `checkin` seguidos → `400 {message:"No puedes hacer dos check seguidos de tipo checkin", code:"checklog/two_type_followed"}`; sin registro; evento rechazado `duplicate_type`.
+  - CHK-08-52 · EMP_JWT · `checkout` sin ningún fichaje válido previo → `400 {message:"Invalid checkout", code:"checklog/invalid_checkout"}`.
+  - CHK-08-53 · EMP_JWT · `checkout` con el último válido `restin` → `400 code:"checklog/invalid_checkout"`.
+  - CHK-08-54 · EMP_JWT · `checkin` con el último válido `restin` o `restout` → `400 {message:"Invalid checkin", code:"checklog/invalid_checkin"}`.
+  - CHK-08-55 · EMP_JWT · `restout` con el último válido `checkin` → `400 {message:"Invalid restout", code:"checklog/invalid_restout"}`.
+  - CHK-08-56 · EMP_JWT · `restin` sin historial o con el último `checkout` → `400 {message:"Invalid restin", code:"checklog/invalid_restin"}`.
+  - CHK-08-57 · EMP_JWT · responsabilidad en B y B2; `checkin` en B y `checkout` en B2 → `400 {message:"Las Sucursales/Proyectos en la jornada no son las mismas.", code:"checklog/different_branches"}`.
+  - CHK-08-58 · EMP_JWT · `checkin` en B y `restin` en B2 sin ningún `checkin` histórico en B2 → `400 {message:"Chrckin related is not found", code:"checklog/invalid"}`.
+  - CHK-08-59 · EMP_JWT · como el anterior pero con un `checkin` antiguo en B2 → `201` enlazado a ese `checkin` antiguo de B2.
+  - CHK-08-60 · EMP_JWT · a 60 m de G con radio 100 → `201`, `metadata.distance` ≈ 60.
+  - CHK-08-61 · EMP_JWT · distancia exactamente igual al radio (borde) → `201` (dentro incluye el borde, `geofence.ts:56`; haversine sin redondeo, `shared/checkbiz/utils/getDistanceInMeters.ts`).
+  - CHK-08-62 · EMP_JWT · a 250 m con radio 100, secuencia válida → `400 {error:"Outside allowed radius", code:"checklog/out_of_radius", details:{distanceMeters:250, allowedRadiusMeters:100, branchId}}`; queda un fichaje `status:"failed"`, `failedCode:"checklog/out_of_radius"`; evento rechazado `out_of_geofence` con `distance_meters` y `allowed_radius_meters`.
+  - CHK-08-63 · EMP_JWT · fuera de radio y además secuencia inválida (segundo `checkin`) → `400 code:"checklog/out_of_radius"` y **sin** registro `failed` (el caso de uso lo rechaza sin escribir).
+  - CHK-08-64 · EMP_JWT · sucursal con `disableRatioChecklog:true`, a 5 km → `201`, sin `metadata.distance`.
+  - CHK-08-65 · EMP_JWT · empleado con `enableRemoteWork:true`, a 5 km → `201`; `metadata.tz` = `employee.address.timeZone`.
+  - CHK-08-66 · EMP_JWT · sucursal sin `ratioChecklog` (o no numérico, p. ej. `"100"`) → sin valla → `201`.
+  - CHK-08-67 · EMP_JWT · `ratioChecklog: 0`, en el punto exacto → `201`; a 1 m → `400 code:"checklog/out_of_radius"`.
+  - CHK-08-68 · EMP_JWT · sucursal sin `address.geo` → sin valla → `201`.
+  - CHK-08-69 · EMP_JWT · `ratioChecklog` negativo → sin valla → `201` (en la CF, siempre `out_of_radius`).
+  - CHK-08-70 · EMP_JWT · empleado remoto en `America/Mexico_City`, calendario en `Europe/Madrid`, turno 09:00-17:00 → las horas del turno se evalúan en hora de México, pero el día de la semana, la fecha local y los festivos en hora de Madrid; entre las 00:00 y las 07:00 de Madrid el `checkin` se evalúa con el día siguiente al de México.
+  - CHK-08-71 · EMP_JWT · empleado no remoto, sucursal sin `address.timeZone` → `metadata.tz` = zona del calendario; sin ninguna → `UTC`.
+  - CHK-08-72 · PROP · `isAdmin:true` con ID token, `employeeId`/`entityId` de su entidad, `geo` = G → `201`; no exige dispositivo; `metadata.updated.uid` y `requestUpdates[0].updateBy` = uid del PROP.
+  - CHK-08-73 · ADMIN · igual → `201`.
+  - CHK-08-74 · PROP · `isAdmin:true` y `timestamp` pasado en el cuerpo (como manda el panel) → el `timestamp` se ignora: el fichaje sale con la hora actual y el horario se evalúa ahora; fuera del turno de hoy → `400 code:"checklog/out_of_schedule"` o `checklog/day_disabled`.
+  - CHK-08-75 · PROP · `isAdmin:true` para un empleado sin responsabilidad en esa sucursal → `404 code:"employee/not_resposibility"`.
+  - CHK-08-76 · OP_MANAGER (ID token, sin asiento) · `isAdmin:true` → `403 {error:"No tienes permisos para esta operación en la entidad.", code:"auth/unauthorized"}`.
+  - CHK-08-77 · ADMIN con asiento `status:"disabled"` · `isAdmin:true` → `201` (`canWrite` mira el rol, no el estado del asiento).
+  - CHK-08-78 · AJENO · `isAdmin:true` con `entityId` de otra entidad → `403 code:"auth/unauthorized"`.
+  - CHK-08-79 · EMP_JWT · `isAdmin:"true"` (string) y `uid` de un PROP de su entidad en el cuerpo, UA no registrado → `201`: el router toma la vía JWT (`=== true` falso), pero el controlador trata `isAdmin` como verdadero, comprueba `canWrite` con el `uid` del cuerpo y se salta el control de dispositivo; `metadata.updated.uid` = uid suplantado.
+  - CHK-08-80 · EMP_JWT · `isAdmin:"true"` sin `uid` → `403 code:"auth/unauthorized"`.
+  - CHK-08-81 · Panel `/tools/checking` · `sessionToken` a través del proxy → `403 {code:"auth/forbidden"}` del proxy (no llega al contenedor).
+  - CHK-08-82 · EMP_JWT · cuerpo JSON mal formado → `400` HTML del manejador por defecto de Express.
+  - CHK-08-83 · EMP_JWT · fallo de Firestore durante el alta → `500 {error:<mensaje>, code:"checklog/internal_error"}`.
+- Sospechas:
+  - **Salto del dispositivo de confianza**: `isAdmin` no booleano (`"true"`, `1`) lleva a la vía del JWT de empleado, pero el controlador lo trata como admin y confía en `req.body.uid` (`checklog.router.ts:32` frente a `createChecklog.controller.ts:132-138,175`). Con el `uid` de un propietario o administrador, un empleado ficha sin dispositivo de confianza y firma el fichaje con ese `uid`. Heredado idéntico de la CF.
+  - No se comprueba el `status` del empleado: un `fired`, `inactive` o `pending` con un `sessionToken` antiguo sigue fichando (CHK-08-23).
+  - La zona del día (calendario) y la de las horas (sucursal o empleado) pueden diferir (CHK-08-70): `resolveDay` se llama sin `tzHint` (`:205-209`).
+  - Las ausencias con rango (`absences`) no bloquean el fichaje; solo los `holidays` (CHK-08-28).
+  - La búsqueda del `checkin` enlazado filtra por tipo y sucursal pero no por `status` ni por jornada (`CreateChecklog.ts:57-63`): un descanso o una salida pueden enlazarse a un `checkin` antiguo o `failed` de esa sucursal (CHK-08-59).
+  - La vía admin ignora el `timestamp` que manda el panel (`AttendanceFormModal.controller.tsx:59-72`) y evalúa horario y valla ahora, con la `geo` de la sucursal; un alta retroactiva desde el panel no puede registrar la hora que se eligió. Heredado.
+  - `canWrite` acepta un asiento `disabled` o `invited` (CHK-08-77).
+  - `calendar/not_resolved` (`:219-221`) no es alcanzable desde HTTP: con `entityId` presente, los únicos errores de `resolveDay` son los que ya se tratan como «sin configuración».
+  - La huella del dispositivo es `base64` del `User-Agent`, una cabecera que el cliente elige: quien conozca el id del dispositivo de otro puede reproducirla.
+
+## POST /api/v1/checkinbiz/checklogs/update  ·  CHK-09
+- Servicio: checkinbiz, `ck/interfaces/http/checklog/checklog.router.ts:50-60` → `ck/interfaces/http/checklog/updateChecklog.controller.ts:87-348`; tiempo en `ck/domain/checklogTime.ts`.
+- Consumidores: app (`AppConstants.updateChecklogEndpoint`, `attendance_remote_datasource.dart:48-63`, con el ID token de Firebase guardado en `access_token`; cuerpo `{entityId, employeeId, branchId, id, status, timestamp: DateTime.now().toIso8601String(), updateId}` en `app/features/notifications/presentation/pages/update_checklog_notification_page.dart:264-270`). Panel: `NEXT_BACKEND_URI_CHECKINBIZ_UPDATE_LOG` (`.env.development:72`) → `panel/services/checkinbiz/report.service.ts:226-249`, desde `AttendanceFormModal.controller.tsx:76-88` con `{entityId, employeeId, branchId, type, id, timestamp, status, failedCode, reason}`.
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/update-checklog.ts` (controlador `cf/services-saas/checkinbiz/interfaces/http/checklog/updateChecklogController.ts`).
+- Diferencias con la CF:
+  - Fecha de la propuesta (camino A): CF `new Date(timestamp)` en la zona del proceso; contenedor interpreta la cadena **sin zona** en la zona del empleado remoto, si no la de la sucursal, si no la del calendario, si no UTC (`:180-194`; `checklogTime.ts:42-75,101-109`). Una cadena con `Z` u offset se respeta igual.
+  - Nuevos rechazos: `400 checklog_update/invalid_timestamp` (en la CF una fecha inválida acababa en 500) y `400 checklog_update/future_not_allowed` (holgura 5 min). El `ErrorParser` de la app no conoce ninguno de los dos.
+  - Eventos `attendance.correction_requested|accepted|rejected`.
+  - Autenticación, autorización y resto de códigos iguales.
+- Autenticación: ID token de Firebase (`validateToken`); `uid` del token.
+- Autorización (`:99-141`): `authorized = canWrite(uid, entityId)` (propietario o administrador). Si el `uid` no es el de la ficha `employeeId` y no está autorizado → 403. Tres papeles: autorizado ajeno a la ficha → propone (camino A, exige `reason`); el propio empleado → resuelve una propuesta (camino B, exige `updateId`); empleado que además es propietario/administrador → cualquiera de los dos.
+- Entrada: `entityId`, `employeeId`, `branchId`, `id` (strings no vacíos); `status` ∈ {`valid`,`failed`} (opcional, **por defecto `failed`**); `timestamp` (camino A; Date, epoch ms, ISO con o sin zona; si falta, ahora); `reason` (camino A); `updateId` (camino B); `rejectionReason` (camino B con `failed`).
+- Respuesta correcta: `200 {message:"Checklog created", code:"checklog/updated"}`.
+- Efectos: camino A → `status:"pending-employee-validation"`, `metadata.requestUpdates` += `{id:updateId, createdAt, action:"edited", reason, updateBy, previousStatus, previousDate, data:{entityId, timestamp, employeeId, status, id}}`, `metadata.updated`; push + notificación in-app `update_checklog_pending` al empleado (`:325-335`); evento `attendance.correction_requested`. Camino B → escribe `update.data` de la propuesta con `status` del cuerpo, `requestUpdate`, `metadata.updated`; con `failed` borra `closed` y guarda `metadata.rejectionReason`; evento `correction_accepted` o `correction_rejected`.
+- Criticidad: alta — corrección de un registro legal, con doble validación empleado/empresa.
+- Casos:
+  - CHK-09-01 · PROP · camino A con `reason` y `timestamp` pasado con `Z` → `200 code:"checklog/updated"`; fichaje en `pending-employee-validation`; nueva entrada `edited`; notificación al empleado; evento `correction_requested`.
+  - CHK-09-02 · ADMIN · igual → `200`.
+  - CHK-09-03 · PROP · sin `reason` → `400 {error:"reason is required", code:"checklog_update/reason_required"}`.
+  - CHK-09-04 · PROP · `timestamp` más de 5 min en el futuro → `400 code:"checklog_update/future_not_allowed"`.
+  - CHK-09-05 · PROP · `timestamp` 3 min en el futuro → `200`.
+  - CHK-09-06 · PROP · `timestamp: "abc"` o `""` → `400 {error:"timestamp is not a valid date", code:"checklog_update/invalid_timestamp"}`.
+  - CHK-09-07 · PROP · sin `timestamp` → `200` con la hora actual como propuesta.
+  - CHK-09-08 · PROP · `timestamp` sin zona `"2026-09-10T16:45:00"`, sucursal en `Europe/Madrid` → `200`; la propuesta queda en 14:45 UTC (en la CF, 16:45 UTC).
+  - CHK-09-09 · PROP · `status:"foo"` → `400 code:"checklog/bad_request"`; sin `status` → `200` con propuesta `status:"failed"`.
+  - CHK-09-10 · PROP · falta `id`, `branchId`, `employeeId` o `entityId` → `400 {error:"Invalid payload", details:[…], code:"checklog/bad_request"}`.
+  - CHK-09-11 · PROP · `id` inexistente → `404 {error:"Checklog not found", code:"checklog/not_found"}`.
+  - CHK-09-12 · PROP · `employeeId` inexistente → `404 code:"employee/not_found"`.
+  - CHK-09-13 · PROP · `branchId` inexistente → `404 code:"branch/not_found"`.
+  - CHK-09-14 · PROP · `employeeId` del empleado X e `id` de un fichaje del empleado Y → `200`; el fichaje de Y queda con `employeeId: X` y la notificación va a X.
+  - CHK-09-15 · EMP_FB · propuesta pendiente, `updateId` correcto, `status:"valid"` → `200`; se aplica el `timestamp` de la propuesta (el del cuerpo se ignora); `status:"valid"`; evento `correction_accepted`.
+  - CHK-09-16 · EMP_FB · `status:"failed"` y `rejectionReason` → `200`; el fichaje queda `status:"failed"`, sin `closed`, con `metadata.rejectionReason` y con el `timestamp` de la propuesta; evento `correction_rejected`.
+  - CHK-09-17 · EMP_FB · sin `updateId` → `400 {error:"updateId is required", code:"checklog_update/updateId_required"}`.
+  - CHK-09-18 · EMP_FB · `updateId` que no está en `requestUpdates` → `400 {error:"updateId is required", code:"checklog_update/not_found"}`.
+  - CHK-09-19 · EMP_FB · fichaje sin `requestUpdates` → `400 code:"checklog_update/not_found"`.
+  - CHK-09-20 · EMP_FB · propuesta guardada con fecha futura y `status:"valid"` → `400 code:"checklog_update/future_not_allowed"`; con `status:"failed"` → `200` conservando la fecha original.
+  - CHK-09-21 · EMP_FB · la misma `updateId` confirmada dos veces, o la entrada `created` original → `200` las dos veces (no se mira el estado actual del fichaje).
+  - CHK-09-22 · EMP_FB · jornada manual (CHK-10) pendiente, `updateId` de `manual_request_created` y `status:"valid"` → `200`; el fichaje pasa a `valid`.
+  - CHK-09-23 · EMP_FB que además es PROP/ADMIN · sin `updateId` ni `reason` → `400 {error:"Bad Request", code:"checklog_update/bad_request"}`.
+  - CHK-09-24 · EMP_FB que además es PROP/ADMIN · con `reason` y sin `updateId` → `200` por el camino A (propuesta a sí mismo).
+  - CHK-09-25 · OP_MANAGER / OP_SUPERVISOR (ID token, sin asiento, fichaje de otro) → `403 {error:"No tienes permisos para esta operación en la entidad.", code:"auth/unauthorized"}`.
+  - CHK-09-26 · AJENO → `403 code:"auth/unauthorized"` (también si el empleado no existe: el 403 va antes del 404).
+  - CHK-09-27 · ANON → `401 {message:"Invalid token", code:"auth/unauthorized"}`.
+  - CHK-09-28 · TOKEN_INVALIDO / EMP_JWT → `401 {message:"Invalid token", code:"auth/invalid_token"}`.
+  - CHK-09-29 · PROP · fallo de Firestore → `500 {error, code:"checklog/internal_error"}`.
+- Sospechas:
+  - No se comprueba que el fichaje `id` pertenezca a `employeeId` (`checkData.employeeId` no se compara), y el camino A escribe el `employeeId` del cuerpo sobre el fichaje (`:261-270`): una corrección con ids cruzados reasigna el fichaje a otro empleado (CHK-09-14). En el camino B, un empleado que conozca el `id` y un `updateId` del fichaje de un compañero lo modifica.
+  - Rechazar una propuesta deja el fichaje en `failed` y con la fecha propuesta (`:271-293`), salvo si la propuesta es futura: el registro original se pierde en vez de conservarse. Heredado.
+  - `status` ausente equivale a `failed` (`:69`): una confirmación sin `status` es un rechazo.
+  - El camino B no mira si hay propuesta pendiente (`status` del fichaje) ni si ya se resolvió (CHK-09-21).
+  - Un responsable de sucursal (nivel ≥2) no puede corregir por esta vía, aunque sí puede crear jornadas manuales (CHK-10). Hecho observado; si es intencionado, sin confirmar.
+  - `employee/branchId_required` (`:160-165`) es inalcanzable: `branchId` ya es obligatorio en la validación.
+
+## POST /api/v1/checkinbiz/checklogs/manual-request  ·  CHK-10
+- Servicio: checkinbiz, `ck/interfaces/http/checklog/checklog.router.ts:65-75` → `ck/interfaces/http/checklog/requestManualChecklog.controller.ts:88-146` → `ck/application/use-cases/checklog/RequestManualChecklogCreation.ts:71-215`.
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_REQUEST_MANUAL_CHECKLOG`, `.env.development:73`) → `panel/services/checkinbiz/manualChecklog.service.ts:23-45`; su tipo `IManualChecklogRequest` no lleva `checkinId`, así que el modo cierre no lo usa el panel (otro llamante: ninguno detectado).
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/request-manual-checklog.ts` (controlador `cf/services-saas/checkinbiz/interfaces/http/checklog/requestManualChecklogController.ts`).
+- Diferencias con la CF: nuevo rechazo `400 checklog/future_not_allowed` cuando la salida queda más de 5 min por delante de ahora, en los dos modos (`RequestManualChecklogCreation.ts:104-105,192-193`); evento `attendance.manual_requested`. El `ErrorParser` de la app no conoce `future_not_allowed` (el panel sí traduce por su cuenta, sin confirmar). Resto idéntico.
+- Autenticación: ID token de Firebase (`validateToken`); el router pisa `uid` con el del token (`checklog.router.ts:69`).
+- Autorización: `canWrite(uid, entityId, {branchId, includeBranchResponsibility:true, minResponsibilityLevel:2})` (`requestManualChecklog.controller.ts:97-105`): propietario/administrador de la entidad, o empleado de esa entidad (buscado por `uid`) con responsabilidad **activa de nivel ≥2 en esa sucursal** (`shared/checkbiz/auth/canWrite.ts:23-48`).
+- Entrada: `entityId`, `employeeId`, `branchId`, `reason` (strings no vacíos); `date` `YYYY-MM-DD` obligatorio si no hay `checkinId`; `checkinAt`/`checkoutAt` opcionales, formato `^\d{2}:\d{2}$`; `checkinId` opcional (modo cierre: solo crea la salida).
+- Zona: empleado remoto con zona → la suya; si no, `branch.address.timeZone` o `UTC` (`:250-252`; aquí **no** cae a la zona del calendario).
+- Respuesta correcta: `201 {message:"Manual checklog request created", code:"checklog/manual_request_created", checkinId, checkoutId, autofilledFields}`.
+- Efectos: modo jornada → lote con dos fichajes (`checkin` y `checkout`) `status:"pending-employee-validation"`, `userAgent:"manual-request"`, `geo` = la de la sucursal, `metadata.manualRequest:true`, `requestedByUid`, `reason`, `geoSource:"branch_autofill"`, `timeSource`, `autofilledFields`, y `requestUpdates[0]` `manual_request_created` con `data.status:"valid"`; dos notificaciones push + in-app al empleado. Modo cierre → un solo `checkout` pendiente enlazado al `checkin`, una notificación. Evento `attendance.manual_requested` (con `date:null` en modo cierre).
+- Criticidad: media — back office, pero crea jornadas legales a nombre de otro.
+- Casos:
+  - CHK-10-01 · PROP · `date` pasada con turno 09-17, sin horas → `201`; `autofilledFields:["geo","checkinAt","checkoutAt"]`; dos fichajes pendientes 09:00 y 17:00 en la zona de la sucursal; `metadata.timeSource:"effective_calendar"`; dos notificaciones.
+  - CHK-10-02 · ADMIN · igual → `201`.
+  - CHK-10-03 · OP_SUPERVISOR (nivel 2 activo en esa sucursal) → `201`.
+  - CHK-10-04 · OP_MANAGER / OP_OWNER (nivel 3/4 en esa sucursal) → `201`.
+  - CHK-10-05 · OP_WORKER (nivel 1 en esa sucursal) → `403 {error:"Insufficient permissions for this branch", code:"auth/unauthorized"}`.
+  - CHK-10-06 · OP_OTRA_SUCURSAL (supervisor de otra sucursal) → `403 code:"auth/unauthorized"`.
+  - CHK-10-07 · OP_SUPERVISOR con la responsabilidad `active:0` → `403`.
+  - CHK-10-08 · AJENO → `403 code:"auth/unauthorized"`.
+  - CHK-10-09 · ANON → `401 {message:"Invalid token", code:"auth/unauthorized"}`; TOKEN_INVALIDO → `401 code:"auth/invalid_token"`.
+  - CHK-10-10 · PROP · `checkinAt:"08:00"`, `checkoutAt:"15:00"` → `201`, `autofilledFields:["geo"]`, `timeSource:"explicit"`.
+  - CHK-10-11 · PROP · solo `checkinAt` → `201`; `checkoutAt` se rellena con el fin del primer turno.
+  - CHK-10-12 · PROP · `checkoutAt` ≤ `checkinAt` → `400 {error:"checkoutAt must be after checkinAt", code:"checklog/invalid_range"}`.
+  - CHK-10-13 · PROP · `checkinAt:"9:00"` → `400 code:"checklog/bad_request"`; `checkinAt:"99:99"` pasa el patrón → `400 code:"checklog/invalid_range"`.
+  - CHK-10-14 · PROP · sin `date` ni `checkinId`, o `date:"2026/09/01"` → `400 code:"checklog/bad_request"`.
+  - CHK-10-15 · PROP · `reason` vacío o solo espacios → `400 code:"checklog/bad_request"`.
+  - CHK-10-16 · PROP · `date` de hoy con salida autorrellenada aún no alcanzada → `400 code:"checklog/future_not_allowed"`.
+  - CHK-10-17 · PROP · `date` futura → `400 code:"checklog/future_not_allowed"`.
+  - CHK-10-18 · PROP · `employeeId` inexistente → `404 code:"checklog/employee_not_found"`.
+  - CHK-10-19 · PROP · `branchId` inexistente → `404 code:"checklog/branch_not_found"`.
+  - CHK-10-20 · PROP · sucursal sin `address.geo` numérica → `400 code:"checklog/branch_geo_required"`.
+  - CHK-10-21 · PROP · entidad sin `calendar/config` o sin zona → `400 code:"checklog/calendar_not_resolved"` (a diferencia del fichaje, aquí no hay día abierto por defecto).
+  - CHK-10-22 · PROP · día deshabilitado o sin turnos, sin horas → `400 code:"checklog/day_disabled"`.
+  - CHK-10-23 · PROP · día deshabilitado con `checkinAt` y `checkoutAt` explícitos → `201`, `scheduleApplied:null`.
+  - CHK-10-24 · PROP · `date` festiva con turno → `201` (los festivos no se miran).
+  - CHK-10-25 · PROP · jornada partida 09-11 y 16-20, sin horas → `201` con 09:00-11:00 (solo el primer turno) y `scheduleDay.plannedMinutes: 360`.
+  - CHK-10-26 · PROP · ya hay un fichaje `pending-employee-validation` del empleado en esa sucursal y día → `409 code:"checklog/duplicate_pending"`.
+  - CHK-10-27 · PROP · hay un fichaje `valid` del empleado (en cualquier sucursal) con hora dentro del rango → `409 code:"checklog/overlap_detected"`.
+  - CHK-10-28 · PROP · fichajes válidos de ese día fuera del rango pedido → `201` (el solape solo mira sellos dentro del rango, no jornadas abiertas que lo contengan).
+  - CHK-10-29 · PROP · empleado sin responsabilidad en esa sucursal, o `fired` → `201` (no se comprueba).
+  - CHK-10-30 · OP_SUPERVISOR · `employeeId` = él mismo → `201` (no se impide).
+  - CHK-10-31 · PROP · modo cierre con `checkinId` de un `checkin` válido sin salida y `checkoutAt` pasado → `201 {checkinId, checkoutId, autofilledFields:["geo"]}`; un fichaje; una notificación.
+  - CHK-10-32 · PROP · modo cierre sin `checkoutAt` y con turno ese día → `201`; salida = fin del primer turno.
+  - CHK-10-33 · PROP · modo cierre sin `checkoutAt` y sin calendario → `400 {error:"Could not resolve checkout time — provide checkoutAt explicitly", code:"checklog/day_disabled"}`.
+  - CHK-10-34 · PROP · modo cierre sin calendario pero con `checkoutAt` → `201` (el error de calendario no se mira en este modo, `:180-185`).
+  - CHK-10-35 · PROP · `checkinId` inexistente → `404 code:"checklog/checkin_not_found"`.
+  - CHK-10-36 · PROP · `checkinId` de otro empleado, otra sucursal, `status` no `valid` o tipo distinto de `checkin` → `409 code:"checklog/checkin_not_open"`.
+  - CHK-10-37 · PROP · ya existe un `checkout` (de cualquier estado) enlazado a ese `checkin` → `409 code:"checklog/checkout_already_exists"`.
+  - CHK-10-38 · PROP · modo cierre con `checkoutAt` anterior o igual al `checkin` → `400 code:"checklog/invalid_range"`.
+  - CHK-10-39 · PROP · modo cierre con salida futura → `400 code:"checklog/future_not_allowed"`.
+  - CHK-10-40 · PROP · fallo interno → `500 code:"checklog/internal_error"`.
+- Sospechas:
+  - No se comprueba que el empleado tenga responsabilidad en la sucursal ni su estado (`RequestManualChecklogCreation.ts:235-262`); un responsable puede crearse jornadas a sí mismo (CHK-10-29, CHK-10-30).
+  - El autorrelleno toma solo el primer turno aunque el día tenga varios (`:281-290`), mientras `plannedMinutes` suma todos.
+  - En modo jornada no se miran festivos (CHK-10-24).
+  - La zona no cae a la del calendario (`:250-252`), a diferencia del fichaje y de la corrección: la misma sucursal sin `timeZone` usa UTC aquí y la zona del calendario allí.
+
+## GET /api/v1/checkinbiz/calendar  ·  CHK-11
+- Servicio: checkinbiz, `ck/interfaces/http/calendar/calendar.router.ts:37-39` → `ck/interfaces/http/calendar/getEffectiveCalendar.controller.ts:9-52` → `shared/calendar/resolveEffectiveCalendar.usecase.ts` y `resolveEffectiveDay.usecase.ts`; tras `requireFirebaseAuth` (`ck/app.ts:46`).
+- Consumidores: app (`AppConstants.attendanceCalendarEndpoint`, `attendance_remote_datasource.dart:66-108`, query `entityId, employeeId, branchId?, scope=employee, dateLocal?`, con el ID token guardado en `access_token`). Panel: `NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER` (`.env.development:96`) → `panel/services/checkinbiz/calendar.service.ts:118-130` (`fetchEffectiveCalendar`) y `:85-92` (`fetchCalendarPreset`, `?id=`).
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/calendar.ts` (rama GET) y de `/calendar` del `criticalHandler` (`cf/firebase-entry-http/critical-handler.ts:54-68`). Controlador idéntico (solo cambian imports).
+- Diferencias con la CF: auth fallida → CF `401 {code:"calendar/unauthorized", error}`; contenedor `401 {error:"unauthenticated", message}`. El contenedor rechaza tokens revocados. En la app las dos acaban en `LoginFailedException`.
+- Autenticación: ID token de Firebase.
+- Autorización: **ninguna**; cualquier cuenta autenticada lee el calendario de cualquier entidad.
+- Entrada (query, o cuerpo como respaldo): `entityId` (obligatorio); `scope` ∈ {`entity`,`branch`,`employee`}; `branchId` (obligatorio con `scope=branch`); `employeeId` (obligatorio con `scope=employee`); `includeRaw` (`"true"`); `dateLocal` o `date` (`YYYY-MM-DD`, se interpreta en UTC); `tz`.
+- Respuesta correcta: `200 {code:"calendar/effective_resolved", data:{timezone, weeklySchedule, advance, holidays:[{…, source}], overridesDisabled, overridesDisabledByScope:{branch, employee}, sources:{timezone, schedule, advance}, ids, raw?}, effectiveDay:{timezone, dateLocal, weekday, isHoliday, isWorkingDay, day, weeklySchedule, advance, holidays, sources, ids, raw}}`.
+- Efectos: ninguno.
+- Criticidad: alta — bloquea el arranque de la app y alimenta la pantalla de horarios del panel.
+- Casos:
+  - CHK-11-01 · EMP_FB · `scope=employee&entityId&employeeId&branchId&dateLocal` → `200` con `data` y `effectiveDay` del día pedido.
+  - CHK-11-02 · PROP · `scope=entity&entityId` → `200`; `sources.schedule:"entity"`.
+  - CHK-11-03 · ADMIN · `scope=branch&entityId&branchId` con override de sucursal → `200`; `sources.schedule:"branch"`; `overridesDisabled` del nivel sucursal.
+  - CHK-11-04 · PROP · sucursal con `overridesDisabled:true` → `200`; el override se ignora (`sources.schedule:"entity"`).
+  - CHK-11-05 · PROP · empleado con override propio → `200`; ese día sustituye al de entidad/sucursal día a día.
+  - CHK-11-06 · PROP · `dateLocal` festivo → `effectiveDay.isHoliday:true`, `isWorkingDay:false`.
+  - CHK-11-07 · PROP · festivo repetido por `id` en entidad y sucursal → aparece una sola vez con `source:"entity"`.
+  - CHK-11-08 · PROP · `includeRaw=true` → `data.raw` con los tres documentos.
+  - CHK-11-09 · PROP · sin fecha y `tz` dado → `effectiveDay` calculado para «hoy» en esa zona.
+  - CHK-11-10 · AJENO · `entityId` de otra entidad → `200` con su calendario.
+  - CHK-11-11 · USR_FB / OP_WORKER → `200`.
+  - CHK-11-12 · ANON → `401 {error:"unauthenticated", message:"Missing Authorization header"}`.
+  - CHK-11-13 · TOKEN_INVALIDO → `401 {error:"unauthenticated", …}`.
+  - CHK-11-14 · EMP_JWT como Bearer → `401 {error:"unauthenticated", …}`.
+  - CHK-11-15 · sin `entityId` (incluido el `fetchCalendarPreset` del panel con solo `?id=`) → `400 {code:"calendar/bad_request", error:"entityId is required"}`.
+  - CHK-11-16 · `scope=branch` sin `branchId` → `400 {code:"calendar/bad_request", error:"branchId is required for branch scope"}`.
+  - CHK-11-17 · `scope=employee` sin `employeeId` → `400 code:"calendar/bad_request"`.
+  - CHK-11-18 · entidad sin `calendar/config` → `404 {code:"calendar/not_found", error:"Entity calendar not found"}`.
+  - CHK-11-19 · calendario sin `timezone` en ningún nivel → `400 {code:"calendar/missing_timezone", …}`.
+- Sospechas:
+  - Sin autorización: lectura cruzada entre entidades (CHK-11-10). Heredado de la CF.
+  - `fetchCalendarPreset` del panel pide `GET ?id=` sin `entityId` y siempre recibe 400 (CHK-11-15); sin confirmar si esa función se usa.
+
+## PATCH /api/v1/checkinbiz/calendar  ·  CHK-12
+- Servicio: checkinbiz, `ck/interfaces/http/calendar/calendar.router.ts:41-59` (`upsert`) → `upsertEntityCalendar.controller.ts:8-48`, `upsertBranchCalendar.controller.ts:8-62`, `upsertEmployeeCalendar.controller.ts:16-92`; si `action=savePreset` (query o cuerpo) → CHK-14.
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_HANDLER`) → `panel/services/checkinbiz/calendar.service.ts:24-39` (`upsertCalendar`, `client.patch`).
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/calendar.ts:12-34` (controladores iguales; el contenedor añade eventos).
+- Diferencias con la CF: auth fallida con otro cuerpo (como CHK-11); emite `calendar.holiday_changed` al añadir festivos. Lógica idéntica.
+- Autenticación: ID token de Firebase.
+- Autorización: **ninguna**.
+- Entrada: `scope` obligatorio. Entidad: `entityId` + al menos uno de `defaultSchedule`, `holiday{name,date,id?}`, `timezone`, `advance`; `replaceSchedule` opcional. Sucursal: `entityId`, `branchId` + al menos uno de `overridesSchedule`, `holiday`, `timezone`, `advance`, `overridesDisabled`; `timezone` obligatorio si viene `overridesSchedule`. Empleado: `entityId`, `employeeId` + al menos uno de `overridesSchedule`, `absence{id,startDate,endDate,status}`, `holiday`, `branchId`, `timezone`, `advance`, `overridesDisabled`. Horario validado por `shared/calendar/validators.ts:26-55` (turnos con `hour`/`minute`, horas 0-23, minutos 0-59, inicio < fin, día activo con al menos un turno).
+- Respuesta correcta: `200 {code:"calendar/entity_upserted", entityId}` | `{code:"calendar/branch_upserted", entityId, branchId}` | `{code:"calendar/employee_upserted", entityId, employeeId}`.
+- Efectos: `set(merge)` en `entities/{e}/calendar/config`, `…/branches/{b}/calendar/config` o `…/employees/{E}/calendar/config` (`ck/infrastructure/FirestoreCalendarRepository.ts:54-130`); festivo con `arrayUnion` y `id` generado si falta; `replaceSchedule:true` borra el horario antes de escribirlo. Evento `calendar.holiday_changed` (`action:"added"`).
+- Criticidad: alta — el horario decide si se puede fichar (CHK-08).
+- Casos:
+  - CHK-12-01 · PROP · entidad con `defaultSchedule` válido y `timezone` → `200 code:"calendar/entity_upserted"`.
+  - CHK-12-02 · PROP · entidad con `holiday{name,date}` → `200`; festivo con `id` generado; evento `holiday_changed` scope `entity`.
+  - CHK-12-03 · PROP · `replaceSchedule:true` + `defaultSchedule` con solo lunes → el horario queda solo con lunes (sin fusionar).
+  - CHK-12-04 · PROP · entidad sin nada que guardar → `400 {code:"calendar/bad_request", error:"Provide defaultSchedule or holiday or timezone or settings"}`.
+  - CHK-12-05 · PROP · entidad sin `entityId` → `400 {code:"calendar/bad_request", error:"entityId is required"}`.
+  - CHK-12-06 · PROP · festivo sin `name` o sin `date` → `400 "holiday.name is required"` / `"holiday.date is required"`.
+  - CHK-12-07 · PROP · turno con inicio ≥ fin, hora 24, minuto 60, sin `minute`, o día activo sin turnos → `400 code:"calendar/bad_request"` con el motivo.
+  - CHK-12-08 · PROP · festivo válido + `defaultSchedule` inválido en la misma llamada → `400`, pero el festivo ya quedó guardado.
+  - CHK-12-09 · ADMIN · sucursal con `overridesSchedule` y `timezone` → `200 code:"calendar/branch_upserted"`.
+  - CHK-12-10 · ADMIN · sucursal con `overridesSchedule` sin `timezone` → `400 "timezone is required when setting branch schedule"`.
+  - CHK-12-11 · ADMIN · sucursal sin `branchId` → `400 "entityId and branchId are required"`.
+  - CHK-12-12 · ADMIN · sucursal solo con `overridesDisabled:true` → `200`.
+  - CHK-12-13 · ADMIN · `branchId` inexistente → `200` (escribe la configuración bajo una sucursal que no existe).
+  - CHK-12-14 · PROP · empleado con `overridesSchedule` → `200 code:"calendar/employee_upserted"`.
+  - CHK-12-15 · PROP · empleado con `absence` válida → `200`; ausencia añadida.
+  - CHK-12-16 · PROP · `absence` sin `id`, `startDate`, `endDate` o `status` → `400` con el campo que falta.
+  - CHK-12-17 · PROP · `absence` que se solapa con otra → `400 {code:"calendar/overlap", error:"Absence overlaps existing range"}`.
+  - CHK-12-18 · PROP · empleado con `holiday` (vacaciones) → `200`; evento `holiday_changed` scope `employee`.
+  - CHK-12-19 · PROP · empleado sin nada que guardar → `400 "Provide overridesSchedule or absence or holiday or branchId/timezone or settings"`.
+  - CHK-12-20 · PROP · sin `scope` → `400 {code:"calendar/bad_request", error:"scope is required"}`.
+  - CHK-12-21 · PROP · `scope:"foo"` → `404 {code:"calendar/not_found", error:"Unsupported scope"}`.
+  - CHK-12-22 · AJENO · `scope:"entity"` con `entityId` de otra entidad → `200` y el horario ajeno queda cambiado.
+  - CHK-12-23 · OP_WORKER / EMP_FB → `200` (sin control de rol).
+  - CHK-12-24 · ANON / TOKEN_INVALIDO → `401 {error:"unauthenticated", …}`.
+- Sospechas:
+  - **Sin autorización de escritura**: cualquier cuenta de Firebase puede cambiar horarios, festivos y ausencias de cualquier entidad, y con ello bloquear o abrir los fichajes (CHK-12-22). Heredado de la CF `calendarHandler`, que solo validaba el token.
+  - Escritura parcial: el festivo (o la ausencia) se guarda antes de validar el horario (`upsertEntityCalendar.controller.ts:25-39`, `upsertEmployeeCalendar.controller.ts:47-68`).
+  - No se verifica que la sucursal o el empleado existan (CHK-12-13).
+
+## POST /api/v1/checkinbiz/calendar  ·  CHK-13
+- Servicio: checkinbiz, `ck/interfaces/http/calendar/calendar.router.ts:58` → mismo `upsert` que CHK-12 (`:41-56`).
+- Consumidores: sin `action`, ninguno detectado (el panel guarda con `PATCH`; usa `POST` solo con `?action=savePreset`, CHK-14).
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/calendar.ts:12-34`.
+- Diferencias con la CF: las de CHK-12.
+- Autenticación: ID token de Firebase.
+- Autorización: ninguna.
+- Entrada: idéntica a CHK-12.
+- Respuesta correcta: idéntica a CHK-12.
+- Efectos: idénticos a CHK-12.
+- Criticidad: baja — duplicado de CHK-12 sin consumidor; interesa solo para confirmar que se comporta igual.
+- Casos:
+  - CHK-13-01 · PROP · `{scope:"entity", entityId, timezone}` → `200 code:"calendar/entity_upserted"`.
+  - CHK-13-02 · PROP · sin `scope` → `400 code:"calendar/bad_request"`.
+  - CHK-13-03 · AJENO · entidad ajena → `200`.
+  - CHK-13-04 · ANON → `401 {error:"unauthenticated", …}`.
+- Sospechas: las de CHK-12.
+
+## POST /api/v1/checkinbiz/calendar?action=savePreset  ·  CHK-14
+- Servicio: checkinbiz, `ck/interfaces/http/calendar/calendar.router.ts:42-45` → `ck/interfaces/http/calendar/createCalendarPreset.controller.ts:7-48` → `ck/infrastructure/FirestoreCalendarRepository.ts:132-180`. También entra por `PATCH` con la misma `action`, y con `action` en el cuerpo.
+- Consumidores: panel → `panel/services/checkinbiz/calendar.service.ts:41-50` (`saveCalendarPreset`, `POST ?action=savePreset`).
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/calendar.ts:14-17`.
+- Diferencias con la CF: `createdBy` = uid del token (CF: `uid`/`userId` del cuerpo); evento `calendar.preset_saved`; auth fallida con otro cuerpo.
+- Autenticación: ID token de Firebase.
+- Autorización: ninguna.
+- Entrada: `scope` ∈ {`entity`,`branch`,`employee`}, `name`, `entityId` (obligatorios); `branchId` con `scope=branch`; `employeeId` con `scope=employee`.
+- Respuesta correcta: `201 {code:"calendar_preset/created", id, path}`.
+- Efectos: copia el `calendar/config` del ámbito en un documento nuevo de la misma colección `calendar` con `type:"preset"`, `name`, `createdAt`, `createdBy`, `sourceConfig`, `scope`, `entityId`, `branchId`, `employeeId`; evento `calendar.preset_saved`.
+- Criticidad: baja — plantillas de configuración, no afectan al horario vigente.
+- Casos:
+  - CHK-14-01 · PROP · `{scope:"entity", entityId, name}` con configuración existente → `201 code:"calendar_preset/created"`; `createdBy` = uid del token aunque el cuerpo traiga otro `uid`.
+  - CHK-14-02 · ADMIN · `scope:"branch"` con `branchId` → `201`.
+  - CHK-14-03 · PROP · falta `scope`, `name` o `entityId` → `400 {code:"calendar_preset/bad_request", error:"scope, name and entityId are required"}`.
+  - CHK-14-04 · PROP · `scope:"branch"` sin `branchId` → `400 "branchId is required for scope=branch"`; `scope:"employee"` sin `employeeId` → `400`.
+  - CHK-14-05 · PROP · `scope:"foo"` → `400 {code:"calendar_preset/bad_request", error:"Invalid scope or missing ids"}`.
+  - CHK-14-06 · PROP · el ámbito no tiene `calendar/config` → `404 {code:"calendar_preset/not_found", error:"No config to clone"}`.
+  - CHK-14-07 · PROP · `action:"savePreset"` en el cuerpo en vez de la query, o por `PATCH` → mismo `201`.
+  - CHK-14-08 · AJENO · entidad ajena → `201` (lee su configuración y le crea la plantilla).
+  - CHK-14-09 · ANON → `401 {error:"unauthenticated", …}`.
+  - CHK-14-10 · PROP · fallo de Firestore → `500 {code:"calendar_preset/error", error}`.
+- Sospechas:
+  - Sin autorización: permite leer (clonar) y escribir en el calendario de otra entidad. Heredado.
+
+## DELETE /api/v1/checkinbiz/calendar  ·  CHK-15
+- Servicio: checkinbiz, `ck/interfaces/http/calendar/calendar.router.ts:61-63` → `ck/interfaces/http/calendar/deleteCalendarItem.controller.ts:8-77`.
+- Consumidores: panel → `panel/services/checkinbiz/calendar.service.ts:94-107` (`deleteCalendarItem`, cuerpo JSON en el DELETE).
+- Origen: portado desde la CF `cf/services-saas/checkinbiz/firebase-checkinbiz-http/calendar.ts:39-42`.
+- Diferencias con la CF: evento `calendar.holiday_changed` (`action:"removed"`); auth fallida con otro cuerpo. Lógica idéntica.
+- Autenticación: ID token de Firebase.
+- Autorización: ninguna.
+- Entrada (cuerpo): `entityId`, `scope`, `kind` ∈ {`holiday`,`absence`}, `id` (obligatorios); `branchId` con `scope=branch`; `employeeId` con `scope=employee`.
+- Respuesta correcta: `200 {code:"calendar/holiday_deleted", scope, entityId, [branchId|employeeId], id}` o `200 {code:"calendar/absence_deleted", scope, entityId, employeeId, id}`.
+- Efectos: reescribe la lista `holidays` o `absences` del ámbito sin el elemento; evento `calendar.holiday_changed` en festivos (no en ausencias).
+- Criticidad: media — quitar un festivo reabre el fichaje ese día.
+- Casos:
+  - CHK-15-01 · PROP · festivo de entidad existente → `200 code:"calendar/holiday_deleted"`; evento `removed` con la fecha.
+  - CHK-15-02 · ADMIN · festivo de sucursal con `branchId` → `200` con `branchId`.
+  - CHK-15-03 · PROP · festivo de empleado con `employeeId` → `200` con `employeeId`.
+  - CHK-15-04 · PROP · ausencia de empleado → `200 code:"calendar/absence_deleted"`; sin evento.
+  - CHK-15-05 · PROP · falta `entityId`, `scope`, `kind` o `id` → `400 {code:"calendar/bad_request", error:"Missing required fields: entityId, scope, kind, id"}`.
+  - CHK-15-06 · PROP · `scope:"branch"` sin `branchId` → `400 "branchId required"`; `scope:"employee"` sin `employeeId` → `400 "employeeId required"`.
+  - CHK-15-07 · PROP · `id` de festivo inexistente → `404 {code:"calendar/not_found", error:"Holiday not found"}`.
+  - CHK-15-08 · PROP · `id` de ausencia inexistente → `404 "Absence not found"`.
+  - CHK-15-09 · PROP · `kind:"absence"` con `scope` entidad o sucursal, o `kind` desconocido → `404 {code:"calendar/not_found", error:"Unsupported scope/kind for delete"}`.
+  - CHK-15-10 · AJENO · festivo de otra entidad → `200` y queda borrado.
+  - CHK-15-11 · ANON → `401 {error:"unauthenticated", …}`.
+- Sospechas:
+  - Sin autorización (CHK-15-10). Heredado.
+
+## GET /api/v1/checkinbiz/calendar/availability  ·  CHK-16
+- Servicio: checkinbiz, `ck/interfaces/http/calendar/calendar.router.ts:29-31` → `ck/interfaces/http/calendar/availability.controller.ts:32-48` → `shared/calendar/resolveAvailability.usecase.ts:262-335`; alcance en `shared/checkbiz/auth/resolveActorScope.ts:25-63`.
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_CALENDAR_AVAILABILITY`, `.env.development:97`) → `panel/services/checkinbiz/availability.service.ts:13,76` (el proxy solo deja pasar subruta vacía o `/day`, `serverBackendProxy.ts:406-415`).
+- Origen: nativo del contenedor.
+- Diferencias con la CF: sin CF equivalente.
+- Autenticación: ID token de Firebase.
+- Autorización (`resolveActorScope`): propietario/administrador → toda la entidad; empleado de la entidad con responsabilidad activa de nivel ≥3 (manager u owner) en cualquier sucursal → toda la entidad; nivel 2 → solo sus sucursales de nivel ≥2; nivel 1 o sin ficha → 403.
+- Entrada (query): `entityId`, `from`, `to` (`YYYY-MM-DD`, `from ≤ to`, máximo 62 días); `branchId` opcional; `includeUnassigned` (por defecto sí; `"false"` lo desactiva).
+- Respuesta correcta: `200 {code:"calendar/availability_resolved", data:{range:{from, to, timezone}, headcount, groups:[{id, kind:"branch"|"unassigned", name, total}], rows:[{groupId, total, cells:[{date, available, closed}]}], warnings:{discardedHolidays}}}`. Plantilla computable: `active`, `vacation`, `sick_leave`, `leave_of_absence`, `paternity_leave`, `maternity_leave` (no `pending` ni `inactive`); sucursales `inactive` fuera.
+- Efectos: ninguno.
+- Criticidad: media — tablero de cobertura del panel.
+- Casos:
+  - CHK-16-01 · PROP · rango de 7 días → `200 code:"calendar/availability_resolved"` con todas las sucursales activas con plantilla y el grupo `__unassigned__` si hay empleados sin sucursal válida.
+  - CHK-16-02 · ADMIN → `200` con toda la entidad.
+  - CHK-16-03 · OP_OWNER / OP_MANAGER (nivel ≥3 en una sola sucursal) → `200` con toda la entidad.
+  - CHK-16-04 · OP_SUPERVISOR → `200` solo con sus sucursales; sin `__unassigned__`; `headcount` = personas visibles.
+  - CHK-16-05 · OP_SUPERVISOR · `branchId` de otra sucursal → `403 {code:"calendar/forbidden", error:"Branch out of actor scope"}`.
+  - CHK-16-06 · OP_WORKER → `403 {code:"calendar/forbidden", error:"Insufficient responsibility level"}`.
+  - CHK-16-07 · AJENO → `403 code:"calendar/forbidden"`.
+  - CHK-16-08 · ANON / TOKEN_INVALIDO → `401 {error:"unauthenticated", …}`.
+  - CHK-16-09 · PROP · sin `entityId` → `400 {code:"calendar/missing_params", error:"entityId is required"}`.
+  - CHK-16-10 · PROP · sin `from` o `to` → `400 code:"calendar/missing_params"`.
+  - CHK-16-11 · PROP · `from > to` o fecha no ISO → `400 code:"calendar/invalid_range"`.
+  - CHK-16-12 · PROP · 63 días → `400 {code:"calendar/range_too_long", error, days:63, limit:62}`.
+  - CHK-16-13 · PROP · entidad sin calendario → `404 code:"calendar/entity_not_found"`.
+  - CHK-16-14 · PROP · más de 1000 empleados computables sin `branchId` → `400 {code:"calendar/headcount_too_large", headcount, limit:1000}`.
+  - CHK-16-15 · PROP · `includeUnassigned=false` → sin grupo `__unassigned__`.
+  - CHK-16-16 · PROP · día en que todos tienen festivo colectivo → celda `available:0, closed:true`; si alguno falta por motivo propio (ausencia o estado) → `closed:false`.
+  - CHK-16-17 · PROP · festivo con fecha no ISO → se descarta y cuenta en `warnings.discardedHolidays`.
+
+## GET /api/v1/checkinbiz/calendar/availability/day  ·  CHK-17
+- Servicio: checkinbiz, `ck/interfaces/http/calendar/calendar.router.ts:33-35` → `availability.controller.ts:50-64` → `resolveAvailability.usecase.ts:338-394`.
+- Consumidores: panel → `panel/services/checkinbiz/availability.service.ts:14` (`AVAILABILITY_DAY_URL`).
+- Origen: nativo del contenedor.
+- Diferencias con la CF: sin CF equivalente.
+- Autenticación: ID token de Firebase.
+- Autorización: como CHK-16.
+- Entrada (query): `entityId`, `date` (`YYYY-MM-DD`), `groupId` (id de sucursal o `__unassigned__`).
+- Respuesta correcta: `200 {code:"calendar/availability_day_resolved", data:{date, group, closed, available:[{employeeId, fullName, shifts}], unavailable:[{employeeId, fullName, reason:"noShift"|"holiday"|"absence"|"employeeStatus", reasonName?, reasonSource?, absenceId?, paid?}]}}`.
+- Efectos: ninguno.
+- Criticidad: media — desglose del tablero.
+- Casos:
+  - CHK-17-01 · PROP · `groupId` = sucursal con plantilla → `200 code:"calendar/availability_day_resolved"`.
+  - CHK-17-02 · PROP · `groupId:"__unassigned__"` → `200` con los empleados sin sucursal válida.
+  - CHK-17-03 · PROP · empleado con ausencia propia ese día → en `unavailable` con `reason:"absence"`, `reasonSource:"employee"` y `absenceId`.
+  - CHK-17-04 · PROP · empleado `vacation` en día laborable sin festivo → `reason:"employeeStatus"`, `reasonName:"vacation"`.
+  - CHK-17-05 · OP_SUPERVISOR · su sucursal → `200`; otra sucursal → `403 {code:"calendar/forbidden", error:"Group out of actor scope"}`; `__unassigned__` → `403`.
+  - CHK-17-06 · OP_WORKER / AJENO → `403 code:"calendar/forbidden"`.
+  - CHK-17-07 · ANON → `401 {error:"unauthenticated", …}`.
+  - CHK-17-08 · PROP · sin `date` o sin `groupId` → `400 code:"calendar/missing_params"`.
+  - CHK-17-09 · PROP · `date` no ISO → `400 code:"calendar/invalid_range"`.
+  - CHK-17-10 · PROP · `groupId` que no es sucursal de la entidad, o sucursal inactiva → `404 {code:"calendar/group_not_found", error:"Group is not a branch of this entity"}`.
+  - CHK-17-11 · PROP · sucursal sin plantilla computable → `404 {code:"calendar/group_not_found", error:"Group has no computable headcount"}`.
+  - CHK-17-12 · PROP · entidad sin calendario → `404 code:"calendar/entity_not_found"`.
+- Sospechas:
+  - Un día sin clave en el horario se trata como 09:00-17:00 (`DEFAULT_DAY`, `resolveAvailability.usecase.ts:44,129-133`), mientras el fichaje lo trata como día deshabilitado (CHK-08-25): el tablero puede dar disponible a alguien que no puede fichar ese día.
+
+## POST /api/v1/checkinbiz/geo  ·  CHK-18
+- Servicio: checkinbiz, `ck/interfaces/http/geo/geo.router.ts:23-54` → `shared/maps/geocoding.ts:243-330`; tras `requireFirebaseAuth` (`ck/app.ts:48`).
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_GEO`, `.env.development:126`) → `panel/services/core/helper.service.ts:63-80` (`fetchLocation`), alta y edición de centros y `TaskWorkSiteField`. El handler del proxy tiene `requiresAuth:false` (`serverBackendProxy.ts:173-177`) pero el panel manda el Bearer y el proxy lo reenvía.
+- Origen: portado desde la CF `cf/firebase-entry-http/helpers/geo.ts` (lógica en `cf/core/shared/mapas/google.ts:68-161`).
+- Diferencias con la CF:
+  - `country` pasa a ser opcional: CF `400 {error:"country_required ISO 2"}` sin él; contenedor acota solo si es ISO-2 y si no lo ignora.
+  - Sin resultados: CF `404` con el cuerpo crudo de Google; contenedor `404 {predictions:[]}`.
+  - Error de Google (`REQUEST_DENIED`, caída): CF `401`/`500 {error}`; contenedor lo trata como sin resultados (`404` o `204`).
+  - `placedetails` añade `country`, `countryCode`, `region`, `city`, `postalCode`. Aditivo.
+  - Sin `action`: CF `404 {error:"action is required [autocomplete || placedetails]"}`; contenedor `404 {error:"action should be [autocomplete || placedetails]"}`.
+  - Auth fallida: CF `401 {message:"Invalid token", code}`; contenedor `401 {error:"unauthenticated", message}`.
+- Autenticación: ID token de Firebase.
+- Autorización: ninguna.
+- Entrada: `action` ∈ {`autocomplete`,`placedetails`}. Autocomplete: `address` (string obligatorio), `country` (ISO-2 opcional), `sessionToken`, `language`. Detalle: `placeId` (string obligatorio), `sessionToken`, `language`.
+- Respuesta correcta: autocomplete `200 [{addressQuery, resolvedText, placeId, provider:"google", sessionToken, lat:null, lng:null, timeZone:null, country}]`; detalle `200 {lat, lng, formattedAddress, timeZone, provider:"google", country, countryCode, region, city, postalCode}`.
+- Efectos: llamadas a Google Places (consumen cuota; las pruebas deben tenerlo en cuenta).
+- Criticidad: media — sin ella no se dan de alta centros con coordenadas, y de ellas depende la geocerca.
+- Casos:
+  - CHK-18-01 · PROP · `{action:"autocomplete", address:"Gran Vía 1, Madrid"}` sin `country` → `200` con sugerencias (en la CF daba 400).
+  - CHK-18-02 · PROP · `country:"es"` → `200` acotado a España; `country:"esp"` → se ignora y no acota.
+  - CHK-18-03 · PROP · autocomplete sin `address` o no string → `400 {error:"input_required"}`.
+  - CHK-18-04 · PROP · texto sin coincidencias (o sin `GOOGLE_MAPS_API_KEY` en el contenedor) → `404 {predictions:[]}`.
+  - CHK-18-05 · PROP · `{action:"placedetails", placeId}` válido → `200` con coordenadas, zona y componentes.
+  - CHK-18-06 · PROP · detalle sin `placeId` → `400 {error:"place_id_required"}`.
+  - CHK-18-07 · PROP · `placeId` inexistente → `204` sin cuerpo (el proxy del panel lo reenvía sin cuerpo).
+  - CHK-18-08 · PROP · `action` ausente o desconocida → `404 {error:"action should be [autocomplete || placedetails]"}`.
+  - CHK-18-09 · AJENO / EMP_FB / USR_FB → mismos resultados que PROP (sin autorización).
+  - CHK-18-10 · ANON / TOKEN_INVALIDO → `401 {error:"unauthenticated", …}`.
+- Sospechas:
+  - Cualquier cuenta de Firebase puede consumir la cuota de Google Places a cargo de la plataforma. Heredado.
+  - Un fallo de Google se presenta como «sin resultados» (404/204), sin forma de distinguirlo desde el cliente.
+
+## GET /api/v1/checkinbiz/status  ·  CHK-19
+- Servicio: checkinbiz, `ck/interfaces/checkinbiz.router.ts:14-16`; tras `requireFirebaseAuth` (`ck/app.ts:51`).
+- Consumidores: ninguno detectado.
+- Origen: nativo del contenedor.
+- Diferencias con la CF: sin CF equivalente.
+- Autenticación: ID token de Firebase.
+- Autorización: ninguna.
+- Entrada: ninguna.
+- Respuesta correcta: `200 {ok:true, service:"checkinbiz", version:"2.0.0"}`.
+- Efectos: ninguno.
+- Criticidad: baja — sonda de vida autenticada.
+- Casos:
+  - CHK-19-01 · USR_FB → `200 {ok:true, service:"checkinbiz", version:"2.0.0"}`.
+  - CHK-19-02 · ANON → `401 {error:"unauthenticated", message:"Missing Authorization header"}`.
+  - CHK-19-03 · TOKEN_INVALIDO → `401 {error:"unauthenticated", …}`.
+
+## GET /api/v1/checkinbiz/collaborators/one  ·  CHK-20
+- Servicio: checkinbiz, `ck/interfaces/http/collaborator/collaborator.router.ts:108-114` con la puerta `requireEntityWriter` (`:74-99`) → `ck/application/use-cases/auth/manageCollaborator.ts:107-118`; montado sin middleware global en `ck/app.ts:40`.
+- Consumidores: S2S (backoffice, `encodebiz-api/services/backoffice/src/infrastructure/clients/CheckinbizClient.ts:51-57`).
+- Origen: nativo del contenedor.
+- Diferencias con la CF: sin CF equivalente.
+- Autenticación (común a CHK-20 a CHK-23): `entityId` obligatorio y válido **antes** de mirar credenciales; si llega `x-encodebiz-key` → S2S (clave incorrecta: `401 {ok:false, error:"unauthorized"}`, sin probar el token); si no → ID token de Firebase por `validateToken`.
+- Autorización (común): S2S sin restricción; usuario solo con asiento en `user_entity_roles/{uid}_{entityId}` con `status:"active"` y rol `owner` o `admin` (`:90-93`); si no, `403 {ok:false, error:"forbidden"}`.
+- Entrada (query): `entityId` (≤128 caracteres, sin `/`, distinto de `.` y `..`), `email`.
+- Respuesta correcta: `200 {ok:true, account:{uid, email, fullName}|null, membership:{id, userId, entityId, role, status, createdAt, grantedBy, grantedReason, support}|null}`.
+- Efectos: ninguno.
+- Criticidad: media — soporte decide con ella si pone o quita un asiento.
+- Casos:
+  - CHK-20-01 · S2S · correo de un miembro → `200` con `account` y `membership`.
+  - CHK-20-02 · S2S · correo sin cuenta en Auth → `200 {ok:true, account:null, membership:null}`.
+  - CHK-20-03 · S2S · cuenta sin asiento en esa entidad → `200` con `account` y `membership:null`.
+  - CHK-20-04 · S2S_MALA → `401 {ok:false, error:"unauthorized"}`.
+  - CHK-20-05 · PROP (asiento activo) → `200`.
+  - CHK-20-06 · ADMIN (asiento activo) → `200`.
+  - CHK-20-07 · ADMIN con asiento `disabled` o `invited` → `403 {ok:false, error:"forbidden"}`.
+  - CHK-20-08 · OP_MANAGER (sin asiento) / AJENO → `403 {ok:false, error:"forbidden"}`.
+  - CHK-20-09 · ANON · con `entityId` → `401 {message:"Invalid token", code:"auth/unauthorized"}`.
+  - CHK-20-10 · TOKEN_INVALIDO → `401 {message:"Invalid token", code:"auth/invalid_token"}`.
+  - CHK-20-11 · ANON · sin `entityId` → `400 {ok:false, error:"entityId is required"}` (antes que la auth).
+  - CHK-20-12 · S2S · `entityId` con `%2F` o de 129 caracteres → `400 {ok:false, error:"invalid entityId"}`.
+  - CHK-20-13 · S2S · sin `email` → `400 {ok:false, error:"email is required"}`.
+
+## POST /api/v1/checkinbiz/collaborators  ·  CHK-21
+- Servicio: checkinbiz, `ck/interfaces/http/collaborator/collaborator.router.ts:122-153` → `manageCollaborator.ts:120-148` → `ck/infrastructure/FirestoreEntityMembershipRepository.ts:59-79`.
+- Consumidores: S2S (backoffice `CheckinbizClient.ts:59-70`; servicio `entities`, `encodebiz-api/services/entities/src/application/collaborators.ts:30-52`, que atiende a su vez el `NEXT_BACKEND_URI_ASSING_USER` del panel).
+- Origen: nativo del contenedor; sustituye la parte de reparto de permiso de la CF `cf/firebase-entry-http/users/assing-user.ts` (el alta de cuenta y el correo siguen fuera; no comparado campo a campo).
+- Diferencias con la CF: no hay CF equivalente directa; a diferencia de `assingUser`, aquí la cuenta de Auth tiene que existir ya.
+- Autenticación y autorización: las de CHK-20.
+- Entrada (cuerpo): `entityId`, `email` (con `@`), `role` ∈ {`owner`,`admin`}; opcionales `status` ∈ {`active`,`invited`} (por defecto `active`), `grantedBy` (por defecto el uid del actor), `reason` (se corta a 500), `support` (booleano).
+- Respuesta correcta: `201 {ok:true, collaborator:{id, userId, entityId, role, status, createdAt, grantedBy, grantedReason, support, account:{uid, email, fullName}}}`.
+- Efectos: `set` completo de `user_entity_roles/{uid}_{entityId}`; si no existe `users/{uid}`, lo crea con `fullName`, `email`, `phoneNumber:"-"`, `active:true` (`manageCollaborator.ts:76-98`).
+- Criticidad: media — reparte el permiso del que cuelga todo `canWrite`.
+- Casos:
+  - CHK-21-01 · S2S · cuenta existente, `role:"admin"` → `201`; asiento `status:"active"`, `support:false`.
+  - CHK-21-02 · S2S · `status:"invited"` (flujo de invitación de `entities`) → `201` con `status:"invited"`.
+  - CHK-21-03 · S2S · `grantedBy:"soporte:x@…"`, `reason` de 600 caracteres, `support:true` → `201`; `grantedReason` con 500 caracteres.
+  - CHK-21-04 · S2S · cuenta sin documento `users/{uid}` → `201` y el documento queda creado.
+  - CHK-21-05 · PROP · `role:"owner"` → `201`.
+  - CHK-21-06 · ADMIN · `role:"owner"` → `201` (no se mira el rol de quien concede).
+  - CHK-21-07 · ADMIN · `grantedBy` y `support:true` en el cuerpo → se guardan tal cual.
+  - CHK-21-08 · S2S · `email` sin `@` → `400 {ok:false, error:"email is required"}`.
+  - CHK-21-09 · S2S · `role:"member"` → `400 {ok:false, error:"invalid_role"}`.
+  - CHK-21-10 · S2S · `status:"disabled"` → `400 {ok:false, error:"invalid_status"}`.
+  - CHK-21-11 · S2S · entidad inexistente → `404 {ok:false, error:"entity_not_found"}`.
+  - CHK-21-12 · S2S · correo sin cuenta en Auth → `404 {ok:false, error:"user_not_found"}`.
+  - CHK-21-13 · S2S · la persona ya tiene asiento (cualquier estado) → `409 {ok:false, error:"already_member", role}`.
+  - CHK-21-14 · OP_MANAGER / AJENO / ADMIN `disabled` → `403 {ok:false, error:"forbidden"}`.
+  - CHK-21-15 · ANON → `401 code:"auth/unauthorized"`; S2S_MALA → `401 {ok:false, error:"unauthorized"}`; sin `entityId` → `400`.
+- Sospechas:
+  - Un administrador puede dar el rol `owner` a cualquier cuenta (CHK-21-06), es decir, subirse de rango a través de una segunda cuenta suya. `removeCollaborator` sí protege a los propietarios frente a administradores (`manageCollaborator.ts:215-217`); aquí no hay equivalente.
+  - `grantedBy` y `support` que manda un usuario se aceptan sin filtrar (`collaborator.router.ts:144-146`): un cliente puede marcar su propio asiento como de soporte.
+
+## PATCH /api/v1/checkinbiz/collaborators/:userId  ·  CHK-22
+- Servicio: checkinbiz, `ck/interfaces/http/collaborator/collaborator.router.ts:162-183` → `manageCollaborator.ts:167-194`.
+- Consumidores: ninguno detectado (el proxy del panel solo admite `DELETE` en ese handler, `serverBackendProxy.ts:124-129`; el backoffice no tiene método de edición).
+- Origen: nativo del contenedor; sustituye a la CF `cf/firebase-entry-http/auth/update-auth.ts` (`cf/core/auth/interfaces/http/updateAuthUser.controller.ts`).
+- Diferencias con la CF: `updateAuth` respondía `200 {code:"auth/updated_success"}`, `401 {code:"auth/unauthorized"}` sin permiso y `400 {error:"Invalid payload"}`; aquí `200 {ok:true, collaborator}`, `403 {ok:false, error:"forbidden"}` y códigos propios. El contenedor impide además degradar o desactivar al último propietario activo.
+- Autenticación y autorización: las de CHK-20 (`entityId` en cuerpo o query).
+- Entrada: `role` ∈ {`owner`,`admin`} y/o `status` ∈ {`active`,`invited`,`disabled`}.
+- Respuesta correcta: `200 {ok:true, collaborator:{…asiento con los cambios}}`.
+- Efectos: `set(merge)` de `role`/`status` en `user_entity_roles/{userId}_{entityId}`.
+- Criticidad: baja — sin consumidor hoy; alta si se expone.
+- Casos:
+  - CHK-22-01 · S2S · `role:"owner"` para un administrador → `200` con el rol cambiado.
+  - CHK-22-02 · PROP · `status:"disabled"` para un administrador → `200`.
+  - CHK-22-03 · ADMIN · su propio `userId` con `role:"owner"` → `200` (se autopromueve).
+  - CHK-22-04 · ADMIN · degradar a un propietario habiendo ≥2 propietarios activos → `200`.
+  - CHK-22-05 · PROP · degradar o desactivar al único propietario activo → `409 {ok:false, error:"last_owner"}`.
+  - CHK-22-06 · PROP · `userId` sin asiento → `404 {ok:false, error:"not_member"}`.
+  - CHK-22-07 · PROP · `role:"viewer"` → `400 invalid_role`; `status:"x"` → `400 invalid_status`.
+  - CHK-22-08 · PROP · sin `role` ni `status` → `200` con el asiento sin cambios.
+  - CHK-22-09 · OP_MANAGER / AJENO → `403 forbidden`; ANON → `401`; S2S_MALA → `401`.
+- Sospechas:
+  - Sin control por rol del actor: un administrador se promueve a propietario o degrada a un propietario (CHK-22-03, CHK-22-04). La ruta no tiene consumidor hoy, pero está publicada por nginx.
+  - `userId` no pasa por `isDocIdSegment`, a diferencia del `DELETE` (`collaborator.router.ts:162-177` frente a `:192-195`): un `%2F` en la ruta llega decodificado a `doc()` (resultado sin confirmar; previsiblemente 500).
+
+## DELETE /api/v1/checkinbiz/collaborators/:userId  ·  CHK-23
+- Servicio: checkinbiz, `ck/interfaces/http/collaborator/collaborator.router.ts:191-214` → `manageCollaborator.ts:204-233`.
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_COLLABORATORS_HANDLER`, `.env.development:151`) → `panel/services/core/entity.service.ts:330-344` (`removeCollaborator`, `?entityId=`; el proxy exige subruta `/[A-Za-z0-9_-]{1,128}`). S2S: backoffice `CheckinbizClient.ts:72-80`.
+- Origen: nativo del contenedor; antes el panel borraba el documento desde el navegador (sin CF equivalente).
+- Diferencias con la CF: sin CF equivalente.
+- Autenticación y autorización: las de CHK-20, más `owner_required` (un usuario administrador no puede quitar a un propietario).
+- Entrada: `:userId` (segmento válido), `entityId` en query o cuerpo.
+- Respuesta correcta: `200 {ok:true, removed:{…asiento retirado}}`.
+- Efectos: borra `user_entity_roles/{userId}_{entityId}`; deja un log `[collaborators] asiento retirado` con quién lo quitó. No toca Auth ni `users/{uid}`.
+- Criticidad: media — quita permisos desde el panel del cliente.
+- Casos:
+  - CHK-23-01 · PROP · quitar a un administrador → `200 {ok:true, removed}`; documento borrado.
+  - CHK-23-02 · PROP · quitar a otro propietario habiendo otro activo → `200`.
+  - CHK-23-03 · PROP · quitarse siendo el único propietario activo → `409 {ok:false, error:"last_owner"}`.
+  - CHK-23-04 · ADMIN · quitar a un propietario (activo o `invited`) → `403 {ok:false, error:"owner_required"}`.
+  - CHK-23-05 · ADMIN · quitar a otro administrador o a sí mismo → `200`.
+  - CHK-23-06 · S2S · quitar a un propietario que no es el último activo → `200`.
+  - CHK-23-07 · S2S · quitar al último propietario activo → `409 last_owner`.
+  - CHK-23-08 · PROP · quitar a un propietario `disabled` sin más propietarios activos que uno mismo → `200` (la guarda solo cuenta si el retirado está activo).
+  - CHK-23-09 · PROP · `userId` sin asiento → `404 {ok:false, error:"not_member"}`.
+  - CHK-23-10 · PROP · sin `entityId` → `400 {ok:false, error:"entityId is required"}`; `entityId` inválido → `400 invalid entityId`.
+  - CHK-23-11 · OP_MANAGER / AJENO / ADMIN `disabled` → `403 forbidden`; ANON → `401`; S2S_MALA → `401`.
+  - CHK-23-12 · Panel · `userId` con caracteres fuera de `[A-Za-z0-9_-]` → `403 {code:"auth/forbidden"}` del proxy, sin llegar al contenedor.
+
+## POST /api/v1/checkinbiz/collaborators/session  ·  CHK-24
+- Servicio: checkinbiz, `ck/interfaces/http/collaborator/collaborator.router.ts:228-251`.
+- Consumidores: S2S (backoffice `CheckinbizClient.ts:83-88`, `openSession`).
+- Origen: nativo del contenedor.
+- Diferencias con la CF: sin CF equivalente.
+- Autenticación: solo S2S (`x-encodebiz-key` = `ENCODEBIZ_API_KEY`); el ID token no vale.
+- Autorización: la persona debe tener asiento en la entidad (cualquier estado).
+- Entrada (cuerpo): `entityId`, `email`.
+- Respuesta correcta: `200 {ok:true, customToken, uid, expiresInMin:60}`.
+- Efectos: emite un custom token de Firebase para ese `uid`.
+- Criticidad: media — suplantación asistida desde soporte.
+- Casos:
+  - CHK-24-01 · S2S · miembro activo → `200` con `customToken`.
+  - CHK-24-02 · ANON (sin clave) / S2S_MALA → `401 {ok:false, error:"unauthorized"}`.
+  - CHK-24-03 · PROP con ID token y sin clave → `401 {ok:false, error:"unauthorized"}`.
+  - CHK-24-04 · S2S · falta `entityId` o `email` → `400 {ok:false, error:"entityId and email are required"}`.
+  - CHK-24-05 · S2S · correo sin cuenta → `404 {ok:false, error:"user_not_found"}`.
+  - CHK-24-06 · S2S · cuenta sin asiento → `409 {ok:false, error:"not_member"}`.
+  - CHK-24-07 · S2S · asiento `disabled` → `200` (el estado no se mira).
+- Sospechas:
+  - Emite token de acceso aunque el asiento esté `disabled` o `invited` (`:243-246`).
+  - `entityId` no pasa por `isDocIdSegment` aquí.
+
+## POST https://apiv100-firebaseentryhttp-checkinbiz-adddeviceemp-3bnjgtprva-uc.a.run.app (CF `addDeviceEmployee`, desarrollo)  ·  CHK-25
+- Servicio: sigue en Cloud Functions, `cf/services-saas/checkinbiz/firebase-checkinbiz-http/add-device-employee.ts:11-32`; token en `cf/core/shared/utils/validate2FAToken.ts:6-25`. No pasa por nginx.
+- Consumidores: app (`AppConstants.addDeviceEmployeeEndpoint`, `app/core/constants/app_constants.dart:70-72`; método `addDeviceEmployee` en `auth_remote_datasource.dart:148-169`). **Sin llamadas detectadas** en `app/` fuera del datasource: el método existe pero nada lo invoca. El propio `app_constants.dart:57-58` lo da por redundante tras el `verify` del contenedor.
+- Origen: sigue en Cloud Functions.
+- Diferencias con la CF: no aplica (es la CF). Su función la cubre hoy CHK-04, que registra el dispositivo al verificar.
+- Autenticación: Bearer JWT verificado con el `JWT_2FA_SECRET` de la CF (con un valor por defecto escrito en el código si falta la variable) y con `purpose === "2fa-authorization"` en el payload (`validate2FAToken.ts:15-19`). Ese `purpose` solo lo pone `generate2FAToken` (`cf/core/shared/tofactoVerification/speakeasy.ts:26-37`), cuyo resultado el `verify2FA` de la CF ya no entrega (`cf/core/auth/interfaces/http/verify2FAController.ts:32-36`). El `sessionToken` de CHK-01 no lleva `purpose`.
+- Autorización: el empleado del token.
+- Entrada: el cuerpo que manda la app (`{entityId, employeeId}`) se ignora; `User-Agent` como huella.
+- Respuesta correcta: `200` sin cuerpo.
+- Efectos: añade `base64(User-Agent)` a `security/trustedDevicesId.ids`.
+- Criticidad: baja — no tiene llamadas vivas en la app.
+- Casos:
+  - CHK-25-01 · EMP_JWT (`sessionToken` de `/auth/validate`) → `401 {message:"{\"message\":\"Token 2FA inválido o expirado\",\"code\":\"twofactor/unauthorized\"}", code:"auth/unknown"}` porque falta `purpose`.
+  - CHK-25-02 · ANON → `401 {error:"Token 2FA requerido", code:"twofactor/unauthorized"}` (después el manejador intenta responder otra vez y falla por dentro).
+  - CHK-25-03 · TOKEN_INVALIDO → `401` como CHK-25-01.
+  - CHK-25-04 · JWT con `purpose:"2fa-authorization"` firmado con el secreto de la CF → `200` sin cuerpo y UA registrado (sin confirmar que haya forma de obtener ese token hoy).
+- Sospechas:
+  - Inservible con las sesiones actuales: ningún endpoint vigente emite un token con `purpose`, así que toda llamada con el `sessionToken` de la app da 401. Además, si el `JWT_2FA_SECRET` de la CF no coincide con el del contenedor (sin confirmar), ni siquiera la firma se valida.
+
+## POST https://apiv100-firebaseentryhttp-users-recoverypassusers-3bnjgtprva-uc.a.run.app (CF `recoveryPassUsers`, desarrollo)  ·  CHK-26
+- Servicio: sigue en Cloud Functions, `cf/firebase-entry-http/users/recovery-pass-users.ts:73-118` → `cf/core/users/interfaces/http/recoveryPass.controller.ts:6-30`. No pasa por nginx.
+- Consumidores: app (`AppConstants.recoveryPassEndpoint`, `app_constants.dart:65-67`; `auth_remote_datasource.dart:172-181`, cuerpo `{email}` sin cabecera de auth). El panel usa otro camino (`NEXT_BACKEND_URI_RECOVERY_PASS` → servicio `entities`, fuera de esta parcela).
+- Origen: sigue en Cloud Functions.
+- Diferencias con la CF: no aplica.
+- Autenticación: ninguna.
+- Autorización: ninguna. Límite de 3 intentos por (correo, IP) cada 15 min, en `security_rate_limits` (`recovery-pass-users.ts:9-71`).
+- Entrada: `email` (obligatorio, formato `x@y.z`); cabecera opcional `locale` (`en` → plantilla inglesa; cualquier otra cosa → español).
+- Respuesta correcta: `200 {code:"auth/recover_accepted", message:"If the account exists, a recovery link will be sent."}`, exista o no la cuenta.
+- Efectos: crea o actualiza `security_rate_limits/recover_<hash>_<hash>`; si el correo está en la colección de usuarios, envía la plantilla `RECOVER_PASS` desde `hola@encodebiz.com`.
+- Criticidad: media — única vía de la app para recuperar la contraseña.
+- Casos:
+  - CHK-26-01 · ANON · correo de una cuenta existente → `200 code:"auth/recover_accepted"` y se envía el correo.
+  - CHK-26-02 · ANON · correo inexistente → `200` con el mismo cuerpo, sin correo.
+  - CHK-26-03 · ANON · sin `email` → `400 {error:"Email is required"}`.
+  - CHK-26-04 · ANON · `email:"no-es-correo"` → `400 {error:"Invalid email"}`.
+  - CHK-26-05 · ANON · cuarta petición del mismo correo e IP en 15 min → `429 {error:"Too many recovery attempts"}`.
+  - CHK-26-06 · ANON · cabecera `locale: en` → `200`; correo con la plantilla inglesa.
+  - CHK-26-07 · ANON · mayúsculas y espacios en el correo → se normaliza (`trim` + minúsculas) y cuenta para el mismo límite.
+- Sospechas:
+  - El controlador busca a la persona en la colección de usuarios (`FindUser`); un empleado de la app cuya cuenta de Auth no tenga ficha allí recibiría `200` sin correo. Sin confirmar: no se ha leído `FirestoreUserRepository`.
+
+## Resumen
+- Endpoints: 26 (consumidos por clientes: 22; 19 por el panel o la app y 3 solo S2S desde backoffice/entities). Sin consumidor detectado: CHK-13 (`POST /calendar` sin `action`), CHK-19 (`/status`), CHK-22 (`PATCH /collaborators/:userId`) y CHK-25 (CF `addDeviceEmployee`: la app tiene el método, pero nada lo llama). 24 viven en el contenedor y 2 siguen en Cloud Functions (CHK-25, CHK-26).
+- Casos: 388 (CHK-08, crear fichaje, se lleva 83).
+- Diferencias con Cloud Functions que pueden romper a un cliente:
+  - CHK-04 · el código maestro del 2FA de empleado estaba escrito en el código de la CF y valía para cualquiera; el contenedor solo lo acepta con `TWOFA_MASTER_CODE` definida. Si soporte o alguna prueba lo usa, ahora recibe 401.
+  - CHK-09 · dos rechazos nuevos, `checklog_update/invalid_timestamp` y `checklog_update/future_not_allowed`, que el `ErrorParser` de la app no conoce. Además, una fecha sin zona se interpreta en la zona de la sucursal o del empleado, no en UTC, así que cambia el instante guardado. Qué forma manda el panel está sin confirmar.
+  - CHK-10 · nuevo `checklog/future_not_allowed`. Una jornada manual de hoy con horas autorrellenadas se rechaza hasta que pasa la hora de salida; en la CF se aceptaba.
+  - CHK-08 · cambia el comportamiento, no el contrato: sin calendario ya no hay `400 calendar/not_resolved` sino un fichaje con día abierto 00:00-23:59. Con rango estricto, la salida de una jornada partida se reescribe al fin del turno trabajado y no del primero. Con margen negativo no hay valla.
+  - Auth de las rutas bajo `requireFirebaseAuth` (login, calendario, geo, 2FA del panel, disponibilidad): el 401 pasa a `{error:"unauthenticated", message}`, sin `code` (en la CF era `auth/unauthorized`, `auth/invalid_token` o `calendar/unauthorized`), y los tokens revocados se rechazan. En la app los dos acaban en `LoginFailedException` y el proxy del panel valida antes, así que no se ve rotura, pero cualquier cliente que lea `code` la notaría.
+  - CHK-18 · geo: sin resultados devuelve `404 {predictions:[]}` en vez del cuerpo de Google; un error de Google sale como 404 o 204 en vez de 401 o 500; cambia el mensaje de «falta `action`»; el país deja de ser obligatorio.
+  - CHK-02 · desaparece el límite de 20 logins por IP cada 15 min (el 429 de la CF).
+  - CHK-11/12 · un método no soportado en `/calendar` da 404 en vez de 405.
+- Sospechas principales:
+  - CHK-08-79 · con `isAdmin:"true"` (string) más el `uid` de un propietario en el cuerpo, un empleado ficha sin dispositivo de confianza y firma el fichaje con ese `uid`: el router compara con `=== true` y el controlador lo toma por verdadero y confía en `req.body.uid`. Heredado de la CF.
+  - CHK-01 → CHK-03 → CHK-04 · `/auth/validate` emite un `sessionToken` sin autenticar, a partir de `base64(employeeId, entityId)` sin firmar. Con él se resetea el 2FA del empleado y se da de alta un dispositivo propio como de confianza. El `sessionToken` no caduca.
+  - CHK-12/13/14/15 · los horarios, festivos, ausencias y plantillas se escriben y borran sin autorización: cualquier cuenta de Firebase, en cualquier entidad. CHK-11 lee el calendario entre entidades. Heredado del `calendarHandler`.
+  - CHK-01, CHK-02, CHK-08, CHK-10 · el `status` del empleado no se comprueba en ningún punto: un `fired` sigue validando y fichando.
+  - CHK-09 · no se comprueba que el fichaje pertenezca a `employeeId`, y el camino A escribe ese `employeeId` sobre el fichaje. Rechazar una corrección deja el fichaje en `failed` con la fecha propuesta. Sin `status`, la petición cuenta como rechazo.
+  - CHK-21/22 · un administrador puede conceder el rol `owner` o autopromoverse. CHK-24 emite token de sesión aunque el asiento esté `disabled`.
+  - CHK-07 · el claim `admin:true` se concede a cualquier cuenta que complete su TOTP.
+  - CHK-08-70 · el día, la fecha y los festivos se evalúan en la zona del calendario y las horas en la de la sucursal o el empleado.
+  - CHK-10 · no se comprueba la responsabilidad ni el estado del empleado destino; el autorrelleno toma solo el primer turno; la zona no cae a la del calendario.
+  - Panel `/tools/checking` · manda el JWT de `/validate` a CHK-03, CHK-04 y CHK-08 a través del proxy, que exige un ID token de Firebase y responde 403. No puede funcionar ni contra el contenedor ni contra la CF.
+  - CHK-17 · la disponibilidad trata un día sin configurar como 09:00-17:00, y el fichaje como día deshabilitado.
+- Notas para automatizar:
+  - Todo contra `http://141.95.47.135:8080` salvo CHK-25 y CHK-26, que van contra sus URL `run.app` de desarrollo.
+  - Los casos de horario de CHK-08 exigen preparar el calendario relativo a la hora de ejecución.
+  - CHK-18 consume cuota de Google.
+  - CHK-09 y CHK-10 envían notificaciones push e in-app reales a los empleados de prueba.
+  - Los fichajes emiten eventos `attendance.*` hacia los webhooks suscritos de la entidad.

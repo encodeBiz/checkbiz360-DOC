@@ -41,7 +41,8 @@
 - [capas/backoffice.md](./capas/backoffice.md) — Next.js, App Router, patrones, convenciones
 
 ### QA
-- [Qa/automatizacion-qa-staging.md](./Qa/automatizacion-qa-staging.md) — Qué se automatiza en staging, qué se queda manual y roadmap por fases
+- [Qa/plan-automatizacion.md](./Qa/plan-automatizacion.md) — Plan y método de la automatización: acciones, listeners y programadas; contrato y punta a punta; fases
+- [Qa/automatizacion-qa-staging.md](./Qa/automatizacion-qa-staging.md) — (sustituido por plan-automatizacion.md) Primer planteamiento, desde los planes manuales de QA
 - [Qa/fase2-autenticacion-y-acceso.md](./Qa/fase2-autenticacion-y-acceso.md) — Fase 2 de la regresión: qué se automatiza y los 7 hallazgos que la condicionan
 - [Qa/task-module-qa-plan.md](./Qa/task-module-qa-plan.md) — Plan de pruebas del módulo de tareas (revisar §3: el endpoint ya no es Cloud Function)
 

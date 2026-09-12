@@ -1,0 +1,949 @@
+# Catálogo de casos de uso — facturación (FAC), informes (INF), eventos (EVT) y analítica (ANA)
+
+> **Verificación (2026-09-11).** Catálogo obtenido por análisis estático del código de los
+> servicios, del panel y de la app, cruzado con lo desplegado de verdad en `dev-encodebiz`.
+> **Salvo lo que abajo se marque como confirmado, el resto es lectura del código, no
+> comprobación contra el entorno.** Los hallazgos de este catálogo que ya se han verificado
+> uno a uno están en [hallazgos.md](./hallazgos.md); las sospechas sin verificar se quedan
+> como tales y se comprobarán al escribir su prueba. El resultado esperado de cada caso es lo
+> que hace el código HOY, no lo que debería hacer.
+
+Análisis estático del 2026-09-11 sobre `encodebiz-api` (rama develop), `encodeBiz-SAAS/functions`, `encodebiz-front-saas` y `checkbiz360`. Las rutas son las que sirve el nginx de desarrollo (`http://141.95.47.135:8080`, `nginx/nginx.staging.conf`).
+
+## Actores adicionales
+
+- STRIPE: petición de Stripe al webhook con `stripe-signature` válida para el secreto de firma del entorno (webhook.router.ts:16-21).
+- STRIPE_FALSO: POST al webhook sin firma, con firma de otro secreto o con timestamp fuera de tolerancia.
+- CF_TRIGGER: trigger de Firebase (dev-encodebiz) que llama por S2S con `X-Encodebiz-Key` (encodeBiz-SAAS `core/analytics/infrastructure/AnalyticsServerClient.ts:11-15, :34`). A efectos de auth es S2S.
+
+## Notas comunes (valen para todos los bloques)
+
+- `requireFirebaseAuth` (packages/shared/src/middleware/firebaseAuth.ts:4-21): sin cabecera o sin `Bearer` → 401 `{error:"unauthenticated", message}`; token que no valida → 401 igual. El cuerpo no lleva `ok` ni `code`. Usa `verifyIdToken(token, true)`: rechaza también tokens **revocados** (:15). Las Cloud Functions no comprobaban revocación.
+- `requireApiKey` (packages/shared/src/middleware/apiKeyAuth.ts:4-9): `x-encodebiz-key` ausente o distinta de `ENCODEBIZ_API_KEY` → 401 `{ok:false, error:"unauthorized"}`.
+- EMP_JWT no es un ID token de Firebase: en toda ruta con `requireFirebaseAuth` da 401 `unauthenticated`. Ninguna ruta de esta parcela acepta sesión de empleado.
+- `canWrite` (packages/shared/src/checkbiz/auth/canWrite.ts:10-49): `user_entity_roles/{uid}_{entityId}` con `role` `owner` o `admin` → true (:17-21). **PROP y ADMIN reciben exactamente el mismo trato en todo el backend de esta parcela.** Con `includeBranchResponsibility` y `branchId`, busca la ficha `entities/{e}/employees` con `uid == uid` y una `employee_responsibilities` con `scope.branchId`, `active == 1` y `level >= minLevel` (por defecto supervisor) (:23-48). Niveles: worker 1, supervisor 2, manager 3, owner 4 (checkbiz/entities/Employee.ts:77-82). Para los OP_* la ficha tiene que tener `uid`.
+- El panel nunca llama al contenedor directamente: pasa por `/api/proxy/<handler>` (src/app/api/proxy/[handler]/route.ts y [...handler]/route.ts), que verifica el token antes y, si falta o no valida, responde 403 `{code:"auth/forbidden"}` sin llegar al backend (src/lib/http/serverBackendProxy.ts:570-581, :462-463). Los casos ANON/TOKEN_INVALIDO de este catálogo son contra nginx. El proxy no reenvía `Origin` (:595-602) y convierte 204 en respuesta sin cuerpo (:638-641).
+- La app móvil no consume nada de esta parcela: `lib/core/constants/app_constants.dart:1-110` no tiene constantes hacia billing, reports, events ni analytics, y no hay referencias en `lib/`.
+- Los `/health` de cada contenedor no se exponen: nginx contesta `/health` por su cuenta (nginx.staging.conf:55-58). Quedan fuera del catálogo.
+- La **ocultación por rol** está solo en el panel: las pestañas de entidad (facturación, suscripción, facturas) se pintan solo si `currentEntity.role === 'owner'` (src/app/main/[entityId]/entity/page.tsx:67-81, :111-118). El backend no aplica esa regla.
+- No existe endpoint HTTP de listado de facturas en ningún servicio. El panel lee `entities/{id}/invoices` directamente de Firestore (src/services/core/subscription.service.ts:119-125) y el resto se ve en el portal de Stripe (FAC-06).
+
+---
+
+## GET /api/v1/billing/subscriptions/:entityId  ·  FAC-01
+- Servicio: billing — services/billing/src/interfaces/http/billing.router.ts:14-17 (montado tras `requireFirebaseAuth` en app.ts:31)
+- Consumidores: ninguno detectado (el panel lee `entities/{id}/subscriptions` de Firestore: src/services/core/subscription.service.ts:109-116, :130-132)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token (Bearer)
+- Autorización: ninguna; no llama a `canWrite` (billing.router.ts:14-17)
+- Entrada: `entityId` en la ruta, sin validar
+- Respuesta correcta: 200 `{ok:true, subscriptions:[<doc>...]}` (FirestoreSubscriptionRepository.ts:28-31)
+- Efectos: solo lectura de Firestore
+- Criticidad: baja — sin consumidor, pero expone datos de cobro
+- Casos:
+  - FAC-01-01 · PROP · entidad con suscripción checkinbiz → 200, `subscriptions` con 1 elemento
+  - FAC-01-02 · ADMIN · ídem → 200, igual que PROP
+  - FAC-01-03 · PROP · entidad sin suscripciones → 200 `subscriptions: []`
+  - FAC-01-04 · PROP · entityId inexistente → 200 `subscriptions: []`
+  - FAC-01-05 · AJENO · entityId de otra entidad → 200 con sus suscripciones (ver Sospechas)
+  - FAC-01-06 · OP_WORKER · su entidad → 200 (no hay control de rol)
+  - FAC-01-07 · ANON → 401 `unauthenticated`
+  - FAC-01-08 · TOKEN_INVALIDO → 401 `unauthenticated`
+  - FAC-01-09 · EMP_JWT → 401 `unauthenticated`
+- Probable en staging: sí — solo lectura de Firestore
+- Sospechas: cualquier usuario autenticado lee plan, estado y `stripeSubscriptionId` de cualquier entidad conociendo su id (billing.router.ts:14-17).
+
+## GET /api/v1/billing/subscriptions/:entityId/:serviceId  ·  FAC-02
+- Servicio: billing — billing.router.ts:20-28
+- Consumidores: ninguno detectado
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token
+- Autorización: ninguna (billing.router.ts:20-28)
+- Entrada: `serviceId` ∈ {`checkinbiz`, `passinbiz`} (billing.router.ts:10-11, :22)
+- Respuesta correcta: 200 `{ok:true, subscription:{...doc, planData}}`; `planData` es `service/{serviceId}/plan/{sub.plan}` (FirestoreSubscriptionRepository.ts:16-26)
+- Efectos: solo lectura
+- Criticidad: baja — sin consumidor
+- Casos:
+  - FAC-02-01 · PROP · suscripción checkinbiz existente → 200 con `subscription.planData`
+  - FAC-02-02 · ADMIN · ídem → 200
+  - FAC-02-03 · PROP · `serviceId=foo` → 400 `unknown_service`
+  - FAC-02-04 · PROP · entidad sin suscripción a passinbiz → 404 `subscription_not_found`
+  - FAC-02-05 · PROP · suscripción cuyo plan ya no existe → 200 sin `planData` (queda `undefined` y el JSON lo omite)
+  - FAC-02-06 · AJENO · entidad ajena con suscripción → 200 (sin control)
+  - FAC-02-07 · ANON → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas: la misma exposición que FAC-01 (billing.router.ts:20-28).
+
+## POST /api/v1/billing/subscriptions  ·  FAC-03
+- Servicio: billing — billing.router.ts:31-56
+- Consumidores: panel (`NEXT_BACKEND_URI_SUBCRIBE`, .env.development:44; handler `subcribe` serverBackendProxy.ts:132-136; src/services/core/subscription.service.ts:43-61, llamado desde src/components/common/PricingCard/PricingCard.controller.tsx:25-52 y :86-95)
+- Origen: portado desde la CF firebase-entry-http/subscriptions/subscribe.ts (controlador core/subscriptions/interfaces/subscribe.controller.ts)
+- Diferencias con la CF:
+  - Sin permiso: CF 401 `{error:"No tienes permisos..."}` (subscribe.controller.ts:47-52) → contenedor 403 `{ok:false, error:"forbidden"}`.
+  - Orden de comprobaciones: la CF mira el permiso antes que el cuerpo; el contenedor valida cuerpo y `serviceId` primero (billing.router.ts:34-38). Sin `entityId`: CF 401, contenedor 400.
+  - Cuerpo inválido: CF 400 `{message, code:"sub/bad_request", details:[...]}` → contenedor 400 `{ok:false, error:"invalid_payload", details:"<texto>"}`; `details` pasa de array a string.
+  - `serviceId` desconocido: la CF no lo validaba; el contenedor responde 400 `unknown_service`.
+  - Entidad inexistente: CF 204 (subscribe.controller.ts:62-65) → contenedor 404 `entity_not_found`.
+  - Entidad no configurada: CF 400 con `code` `suscription/entity_not_configured` o `suscription_checkinbiz/entity_legal_not_configured` (:67-74) → contenedor 400 `{error:"entity_not_configured"}` sin `code`. El diccionario del panel solo traduce las claves `suscription/*` (src/config/errorLocales.ts:61-64, :194-197), así que el toast pasa de «Entidad no configurada» al texto `entity_not_configured` (httpClientFetchNext.ts:96-104, :152-156).
+  - Ya suscrito: CF 400 `suscription/already_subscribed_into_plan` (:76-79) → contenedor 409 `already_subscribed`; el toast enseña el token sin traducir.
+  - Éxito: CF 201 `{code:"suscription/success", message, sid}` → contenedor 201 `{ok:true, sid}`. El panel no lee el cuerpo (subscription.service.ts:51-56): compatible.
+  - Fallo del caso de uso: CF 500 `{code:"suscription/ko", error}` → contenedor 500 `{ok:false, error:"internal_error"}`.
+  - Auth: con `Origin` del panel la CF exigía los claims `admin` y `twoFA` (core/shared/utils/validateUserToken.ts:5-10, :35-47). Por el proxy no viaja `Origin`, así que en la práctica no aplicaba. El contenedor no mira claims.
+  - Efectos: la cantidad inicial en Stripe es el recuento del momento (Subscribe.ts:44, :59), cuando la CF ponía 0 salvo en re-suscripción (CF application/subscribe.ts:44-57). El correo SUBSCRIBE lo manda el contenedor (Subscribe.ts:69); en Functions lo mandaba el trigger `onDocumentWriteSubscriptions`.
+- Autenticación: Firebase ID token
+- Autorización: `canWrite(uid, entityId)` sin opciones → owner o admin (billing.router.ts:38; canWrite.ts:17-23). No hay distinción PROP/ADMIN.
+- Entrada: obligatorios `entityId`, `serviceId`, `planId` (billing.router.ts:34-36); `serviceId` ∈ {checkinbiz, passinbiz} (:37). `planId` no se valida contra una lista: si no existe `service/{serviceId}/plan/{planId}`, el caso de uso lanza (Subscribe.ts:21-22). Configuración (billing.router.ts:44-47): checkinbiz exige `name`, `legal.taxId`, `legal.legalName` y `legal.address` para cualquier plan (packages/shared/src/platform/FirestoreEntityRepository.ts:55-57); passinbiz exige además `slug`, `billingEmail`, método de pago, `branding.logo` y `active` (:59-70), salvo con `planId:"freemium"`. La entidad necesita `stripeCustomerId` (Subscribe.ts:23-25).
+- Respuesta correcta: 201 `{ok:true, sid:"<serviceId>"}` — el id del documento es el serviceId (FirestoreSubscriptionRepository.ts:50-53)
+- Efectos: Firestore `entities/{id}/subscriptions/{serviceId}` creado con `status:"pending"` (Subscribe.ts:29-38) y actualizado después con `stripeSubscriptionId` y `status` = `active` si el plan es freemium o payPerUse, `pending` en otro caso (:64-67). Stripe `subscriptions.create` con `quantity` = empleados cuyo status no es fired ni pending en checkinbiz (FirestoreEmployeeRepository.ts:224-235) o pases del mes anterior en passinbiz (GetCountPayPerUse.ts:26-41), y `trial_period_days` = `BILLING_TRIAL_DAYS` (45 por defecto) si no hay nada en `subscriptions-deleted` de ese servicio (Subscribe.ts:9, :55-62). Correo SUBSCRIBE a `billingEmail`; si falla se registra y no afecta a la respuesta (BillingNotifier.ts:13-23, :57-72).
+- Criticidad: alta — alta de servicio que genera cobro en Stripe
+- Casos:
+  - FAC-03-01 · PROP · entidad checkinbiz con datos legales y `stripeCustomerId`, sin suscripción previa, plan existente → 201 `sid:"checkinbiz"`; doc con `stripeSubscriptionId`; suscripción en Stripe con prueba de 45 días
+  - FAC-03-02 · ADMIN · mismas precondiciones → 201, igual que PROP
+  - FAC-03-03 · PROP · hay `subscriptions-deleted` previa de checkinbiz → 201; suscripción de Stripe sin prueba
+  - FAC-03-04 · PROP · plan `payPerUse` → 201; doc `status:"active"`
+  - FAC-03-05 · PROP · plan de pago no payPerUse → 201; el doc se queda en `status:"pending"`
+  - FAC-03-06 · PROP · falta `planId` → 400 `invalid_payload`
+  - FAC-03-07 · PROP · `serviceId:"foo"` → 400 `unknown_service`
+  - FAC-03-08 · PROP · `planId` inexistente → 500 `internal_error` (Subscribe.ts:21-22)
+  - FAC-03-09 · PROP · checkinbiz sin `legal.taxId` → 400 `entity_not_configured`
+  - FAC-03-10 · PROP · checkinbiz, `planId:"freemium"`, sin datos legales → 400 `entity_not_configured` (freemium no exime a checkinbiz, billing.router.ts:45)
+  - FAC-03-11 · PROP · passinbiz `freemium` con la entidad sin configurar pero con `stripeCustomerId` → pasa el filtro; el resultado depende de Stripe con el `stripePrice` del plan (sin confirmar)
+  - FAC-03-12 · PROP · entidad configurada sin `stripeCustomerId` → 500 `internal_error` (Subscribe.ts:23-25)
+  - FAC-03-13 · PROP · ya suscrita al mismo plan con `status:"active"` → 409 `already_subscribed`
+  - FAC-03-14 · PROP · ya suscrita al mismo plan con `status:"pending"` → 201; el doc se sobrescribe con `set` (FirestoreSubscriptionRepository.ts:51) y se crea otra suscripción en Stripe
+  - FAC-03-15 · PROP · entidad borrada que conserva su `user_entity_roles` → 404 `entity_not_found`
+  - FAC-03-16 · OP_MANAGER · sin `user_entity_roles` → 403 `forbidden`
+  - FAC-03-17 · AJENO · entityId ajeno → 403 `forbidden`
+  - FAC-03-18 · AJENO · entityId ajeno y `serviceId:"foo"` → 400 `unknown_service` (la validación va antes que el permiso)
+  - FAC-03-19 · ANON → 401 `unauthenticated`
+  - FAC-03-20 · TOKEN_INVALIDO → 401 `unauthenticated`
+  - FAC-03-21 · EMP_JWT → 401 `unauthenticated`
+  - FAC-03-22 · PROP · Stripe rechaza el alta (precio inválido) → 500 `internal_error`; el doc queda `status:"pending"` sin `stripeSubscriptionId` (se escribe en Subscribe.ts:38, antes de la llamada de :57)
+- Probable en staging: sí — Stripe en modo pruebas (el modo sale del prefijo de `STRIPE_PRO_KEY`, stripeClient.ts:40-42; que dev tenga clave de pruebas está sin confirmar). Manda un correo real a `billingEmail`: usar una entidad de pruebas con buzón controlado.
+- Sospechas:
+  - Se manda «Servicio Activado» aunque el doc se quede en `pending` en los planes de pago no payPerUse (Subscribe.ts:64-69).
+  - El trigger `onDocumentWriteSubscriptions` (firebase-firestore-trigger/index.ts:5, :10; subscriptionsWrite.controller.ts:76-82) sigue exportado en Functions. Si está desplegado en dev-encodebiz (sin confirmar), la escritura `status:"active"` de este endpoint dispara un segundo correo SUBSCRIBE.
+  - Si Stripe falla queda un doc `pending` huérfano (FAC-03-22).
+  - Repetir el alta sobre un `pending` crea una segunda suscripción en Stripe sin cancelar la primera (FAC-03-14).
+  - `planId` inexistente y entidad sin customer de Stripe responden 500, no 4xx.
+
+## DELETE /api/v1/billing/subscriptions/:entityId/:serviceId  ·  FAC-04
+- Servicio: billing — billing.router.ts:59-66
+- Consumidores: ninguno detectado (el panel usa FAC-05)
+- Origen: nativo del contenedor (forma REST de la baja)
+- Diferencias con la CF: sin CF equivalente (la baja de Functions era POST, ver FAC-05)
+- Autenticación: Firebase ID token
+- Autorización: `canWrite` owner o admin (billing.router.ts:62)
+- Entrada: `serviceId` ∈ {checkinbiz, passinbiz} (:61)
+- Respuesta correcta: 200 `{ok:true, cancelAt:<fecha ISO | null>}`
+- Efectos (Unsubscribe.ts:23-66): con `stripeSubscriptionId`, Stripe `cancel_at_period_end:true` y merge `{cancel_at, status:"cancelled"}` en el doc (:29-32). Sin `stripeSubscriptionId`, borra el doc y lo copia a `subscriptions-deleted/{serviceId}-deleted-<ts>` (:33-35; FirestoreSubscriptionRepository.ts:60-67), y `cancelAt` es null. Plan payPerUse no freemium con recuento > 0: Checkout de Stripe en modo `payment` y doc `status:"pending-pay"` (Unsubscribe.ts:46-61). Correo CANCELLED (:64).
+- Criticidad: media — mismo efecto que FAC-05 y sin consumidor
+- Casos:
+  - FAC-04-01 · PROP · suscripción con `stripeSubscriptionId` → 200, `cancelAt` = fin del periodo en curso (o de la prueba)
+  - FAC-04-02 · ADMIN · ídem → 200
+  - FAC-04-03 · PROP · suscripción sin `stripeSubscriptionId` → 200 `cancelAt:null`; doc movido a `subscriptions-deleted`
+  - FAC-04-04 · PROP · plan payPerUse con empleados → 200; doc `pending-pay`; el correo lleva enlace de pago
+  - FAC-04-05 · PROP · sin suscripción a ese servicio → 500 `internal_error` (Unsubscribe.ts:24-25; el router no lo captura)
+  - FAC-04-06 · PROP · `serviceId=foo` → 400 `unknown_service`
+  - FAC-04-07 · AJENO → 403 `forbidden`
+  - FAC-04-08 · OP_OWNER · sin `user_entity_roles` → 403 `forbidden`
+  - FAC-04-09 · ANON → 401 `unauthenticated`
+  - FAC-04-10 · PROP · segunda baja sobre una suscripción ya `cancelled` → 200 y segundo correo CANCELLED (la respuesta de Stripe a un update repetido está sin confirmar)
+- Probable en staging: sí — Stripe en modo pruebas
+- Sospechas: suscripción inexistente → 500 en vez de 404; una baja repetida reenvía el correo y, en payPerUse, crea otro Checkout.
+
+## POST /api/v1/billing/subscriptions/unsubscribe  ·  FAC-05
+- Servicio: billing — billing.router.ts:78-88
+- Consumidores: panel (`NEXT_BACKEND_URI_UNSUBCRIBE`, .env.development:46; handler `unsubcribe` serverBackendProxy.ts:137-141; src/services/core/subscription.service.ts:65-83, llamado desde src/components/common/PricingCard/PricingCard.controller.tsx:54-80 y src/components/common/RenuewCard/RenuewCard.controller.tsx:31-47)
+- Origen: portado desde la CF firebase-entry-http/subscriptions/unsubscribe.ts (core/subscriptions/interfaces/unsubscribe.controller.ts)
+- Diferencias con la CF:
+  - Sin permiso: CF 401 (unsubscribe.controller.ts:38-43) → contenedor 403 `forbidden`. La CF miraba el permiso antes que el cuerpo.
+  - Cuerpo inválido: CF 400 `{error:"Invalid payload", details:[...]}` → contenedor 400 `{ok:false, error:"invalid_payload", details:"<texto>"}`.
+  - **Suscripción inexistente: CF 400 `{message:"Subscription not found"}` (:66-68) → contenedor 500 `internal_error`** (Unsubscribe.ts:24-25). El toast pasa de «Subscription not found» a «internal_error».
+  - Suscripción sin `stripeSubscriptionId`: la CF respondía 200 sin tocar nada (:60-65); el contenedor borra el doc y lo archiva (Unsubscribe.ts:33-35).
+  - Éxito: CF 200 `{message:"UnSubscribed"}` → contenedor 200 `{ok:true, cancelAt}`. El panel no lee el cuerpo: compatible.
+  - Correo y cobro pendiente: en Functions los hacía el trigger al ver `cancel_at` (subscriptionsWrite.controller.ts:84-97, con el Checkout payPerUse en :19-53); el contenedor los hace en el caso de uso (Unsubscribe.ts:46-64).
+- Autenticación: Firebase ID token
+- Autorización: `canWrite` owner o admin (billing.router.ts:84)
+- Entrada: obligatorios `entityId` y `serviceId` (:80-82); `serviceId` ∈ {checkinbiz, passinbiz} (:83)
+- Respuesta correcta: 200 `{ok:true, cancelAt:<fecha ISO | null>}`
+- Efectos: los mismos que FAC-04 (Unsubscribe.ts:23-66): Stripe `cancel_at_period_end`, merge `{cancel_at, status:"cancelled"}`, o borrado con archivo en `subscriptions-deleted`; Checkout payPerUse y `status:"pending-pay"`; correo CANCELLED a `billingEmail`.
+- Criticidad: alta — baja de servicio contratado, con cobro pendiente en payPerUse
+- Casos:
+  - FAC-05-01 · PROP · suscripción con `stripeSubscriptionId` → 200, `cancelAt` = fin del periodo; doc `status:"cancelled"` con `cancel_at`
+  - FAC-05-02 · ADMIN · ídem → 200 (el panel solo enseña las pestañas al owner, page.tsx:111; el backend lo permite)
+  - FAC-05-03 · PROP · suscripción sin `stripeSubscriptionId` → 200 `cancelAt:null`; doc movido a `subscriptions-deleted`
+  - FAC-05-04 · PROP · payPerUse con recuento > 0 → 200; doc `pending-pay`; correo con «Completar pago pendiente» (BillingNotifier.ts:77-84)
+  - FAC-05-05 · PROP · payPerUse con recuento 0 → 200; sin Checkout; doc `cancelled`
+  - FAC-05-06 · PROP · falta `serviceId` → 400 `invalid_payload`
+  - FAC-05-07 · PROP · `serviceId:"foo"` → 400 `unknown_service`
+  - FAC-05-08 · PROP · entidad sin esa suscripción → 500 `internal_error`
+  - FAC-05-09 · PROP · `stripeSubscriptionId` que Stripe no reconoce → 500 `internal_error`; doc sin cambios
+  - FAC-05-10 · AJENO · entityId ajeno → 403 `forbidden`
+  - FAC-05-11 · OP_MANAGER · sin `user_entity_roles` → 403 `forbidden`
+  - FAC-05-12 · ANON → 401 `unauthenticated`
+  - FAC-05-13 · TOKEN_INVALIDO → 401 `unauthenticated`
+- Probable en staging: sí — Stripe en modo pruebas; correo real
+- Sospechas:
+  - Suscripción inexistente → 500: diferencia con la CF, visible en el toast.
+  - Si `onDocumentWriteSubscriptions` sigue desplegado en dev-encodebiz (sin confirmar), el merge con `cancel_at` dispara un segundo correo CANCELLED y, en payPerUse, un **segundo Checkout de Stripe** (subscriptionsWrite.controller.ts:84-97, :28-37).
+  - ADMIN puede dar de baja el servicio (canWrite.ts:20) aunque el panel se lo oculte.
+
+## POST /api/v1/billing/portal  ·  FAC-06
+- Servicio: billing — billing.router.ts:91-108
+- Consumidores: panel (`NEXT_BACKEND_URI_CONFIGBILLING`, .env.development:45; handler `configbilling` serverBackendProxy.ts:142-146; src/services/core/subscription.service.ts:86-106; src/app/main/[entityId]/entity/tabs/tabBilling/page.controller.tsx:72, precarga al abrir la pestaña, y :90, al hacer clic)
+- Origen: portado desde la CF firebase-entry-http/subscriptions/configBilling.ts (billingConfig.controller.ts; StripeSuscriptionRepository.ts:270-280)
+- Diferencias con la CF:
+  - Sin permiso: CF 401 (billingConfig.controller.ts:11-15) → contenedor 403 `forbidden`.
+  - Sin `entityId`: la CF llegaba a `canWrite(uid, undefined)` → 401; el contenedor responde 400 `invalid_payload`.
+  - Entidad inexistente: la CF respondía 204 y seguía ejecutando (billingConfig.controller.ts:22-23) → contenedor 404 `entity_not_found`.
+  - Éxito: CF 200 `{url}` → contenedor 200 `{ok:true, url}`. El panel lee `data.url`: compatible.
+  - Nombre del customer nuevo: CF `legal.legalName`; contenedor `legal.legalName ?? name` (StripeBillingGateway.ts:138-142).
+  - Error: CF 500 `{mesagge: e}` → contenedor 500 `internal_error`.
+- Autenticación: Firebase ID token
+- Autorización: `canWrite` owner o admin (billing.router.ts:94)
+- Entrada: `entityId` obligatorio (:93)
+- Respuesta correcta: 200 `{ok:true, url:"<sesión de billingPortal>"}`; `return_url` = `BILLING_PORTAL_RETURN_URL` o, por defecto, `https://saas.encodebiz.com/main/{entityId}/entity?tab=billing` (StripeBillingGateway.ts:5-6, :104-110)
+- Efectos: si la entidad no tiene `stripeCustomerId`, Stripe `customers.create` `{email: billingEmail, name, metadata.entityId}` y escritura de `entities/{id}.stripeCustomerId` (billing.router.ts:101-104; StripeBillingGateway.ts:135-145). Stripe `billingPortal.sessions.create`.
+- Criticidad: alta — da acceso a métodos de pago y facturas en Stripe
+- Casos:
+  - FAC-06-01 · PROP · entidad con `stripeCustomerId` → 200 con `url` de Stripe
+  - FAC-06-02 · ADMIN · ídem → 200 con `url` (mismo acceso al portal que PROP)
+  - FAC-06-03 · PROP · entidad sin `stripeCustomerId` → 200; customer creado y guardado en la entidad
+  - FAC-06-04 · PROP · sin `entityId` → 400 `invalid_payload`
+  - FAC-06-05 · PROP · entidad borrada que conserva `user_entity_roles` → 404 `entity_not_found`
+  - FAC-06-06 · PROP · `stripeCustomerId` inexistente en la cuenta de Stripe → 500 `internal_error`
+  - FAC-06-07 · AJENO · entityId ajeno → 403 `forbidden`
+  - FAC-06-08 · OP_OWNER · sin `user_entity_roles` → 403 `forbidden`
+  - FAC-06-09 · ANON → 401 `unauthenticated`
+  - FAC-06-10 · TOKEN_INVALIDO → 401 `unauthenticated`
+  - FAC-06-11 · PROP · dos llamadas simultáneas sobre una entidad sin customer → dos 200; dos customers en Stripe y la entidad se queda con el último que se escribe
+- Probable en staging: sí — Stripe en modo pruebas; exige el portal configurado en la cuenta de pruebas (sin confirmar)
+- Sospechas:
+  - ADMIN entra al portal de Stripe igual que PROP (billing.router.ts:94; canWrite.ts:20); solo el panel se lo oculta (page.tsx:111).
+  - El alta del customer no es atómica (billing.router.ts:101-104): el panel precarga al abrir la pestaña y vuelve a pedir al hacer clic si no llegó (page.controller.tsx:64-99), así que es alcanzable el caso FAC-06-11.
+  - Sin `BILLING_PORTAL_RETURN_URL`, la vuelta del portal en dev lleva al panel de producción (StripeBillingGateway.ts:5-6); que esté definida en dev está sin confirmar.
+
+## POST /api/v1/billing/webhook  ·  FAC-07
+- Servicio: billing — webhook.router.ts:15-36, montado antes de `express.json` (app.ts:20)
+- Consumidores: webhook externo (Stripe). Hay un endpoint de dev dado de alta el 2026-08-26 (DOCS/ingenieria/billing-v2/05_fin-de-prueba.md:36-38); a qué URL apunta y qué eventos tiene suscritos está sin confirmar (la nota solo menciona `invoice.finalized`).
+- Origen: portado desde la CF firebase-entry-http/webhooks/stripeWebhook.ts (core/subscriptions/interfaces/stripeWebhookController.controller.ts)
+- Diferencias con la CF:
+  - Método distinto de POST: CF 405 en texto (stripeWebhook.ts:6-8) → en el contenedor el router no casa y la petición cae en la superficie autenticada: 401 `unauthenticated` (app.ts:31).
+  - Firma ausente o inválida: CF 400 «Webhook rejected» en texto → contenedor 400 JSON `missing_signature` o `invalid_signature`.
+  - Fallo al procesar: CF 400 (stripeWebhook.ts:13-16) → contenedor 500 `handler_error`.
+  - Eventos `invoice.*` sin `serviceId` en la metadata del parent: la CF lanzaba y respondía 400 (stripeWebhookController.controller.ts:18-20) → el contenedor los trata o ignora y responde 200.
+  - Éxito: CF 200 texto «Webhook processed» → contenedor 200 JSON `{received:true}`.
+  - Secreto de firma: CF por `process.env.ENV === "production"` (stripeWebhookController.controller.ts:9-11) → contenedor por el prefijo de la clave (stripeClient.ts:30-37).
+  - Eventos: el contenedor añade `invoice.finalized` (correo con PDF y evento `invoice.issued`) y `customer.subscription.trial_will_end`, y deja sin tratar `checkout.session.completed` (la CF solo lo registraba, StripeSuscriptionRepository.ts:153-157). En `invoice.paid`/`payment_failed` la CF hacía `set(merge)` sin await sobre `entities/{e}/invoices/{stripeInvoiceId}` y creaba documentos (CF FirestoreSubscriptionRepository.ts:118-122); el contenedor solo actualiza el doc de ciclo existente localizado por `stripeInvoiceId` (StripeWebhookHandler.ts:126-149). `invoice.upcoming` solo ajustaba checkinbiz en la CF (StripeSuscriptionRepository.ts:122-134); el contenedor ajusta también passinbiz.
+- Autenticación: firma HMAC de Stripe sobre el cuerpo crudo (`express.raw` para `application/json`, webhook.router.ts:15-21). Secreto: `STRIPE_WEBHOOK` si la clave es `sk_live_`; si no, `STRIPE_WEBHOOK_SECRET_TEST ?? STRIPE_WEBHOOK` (stripeClient.ts:30-37). Tolerancia de timestamp: la del SDK por defecto (300 s; sin confirmar para la versión instalada).
+- Autorización: no aplica
+- Entrada: evento de Stripe en JSON crudo y cabecera `stripe-signature`
+- Respuesta correcta: 200 `{received:true}`
+- Efectos por tipo (StripeWebhookHandler.ts:33-77):
+  - `invoice.finalized`: SendInvoiceEmail (SendInvoiceEmail.ts:39-142) deja registro en `invoice_emails/{invoiceId}` y manda correo con el PDF adjunto. No envía y lo anota si `BILLING_SEND_INVOICE_DISABLED=true` (`envio_desactivado`), si el total es ≤ 0 (`importe_cero`) o si no hay destinatario (`sin_destinatario`); si `livemode` no casa con la clave, se salta sin registro; sin `invoice_pdf` registra `failed` y lanza → 500. Después emite `invoice.issued` a los webhooks salientes si resuelve la entidad (StripeWebhookHandler.ts:98-107; events/invoice.ts:31-33).
+  - `invoice.paid` / `invoice.payment_failed`: `update` del doc de ciclo con `status` PAID o FAILED si existe (:126-149); `payment_failed` emite además `invoice.payment_failed` (:46-49).
+  - `invoice.upcoming` y `customer.subscription.trial_will_end`: recuento y `subscriptions.update` de la cantidad sin prorrateo, solo si `metadata.serviceId` ∈ {checkinbiz, passinbiz} (:158-205; StripeBillingGateway.ts:91-96).
+  - `customer.subscription.deleted`: borra `subscriptions/{serviceId}` y archiva en `subscriptions-deleted`, si hay `entityId` y `serviceId` en metadata (:224-231).
+  - `payment_method.attached`/`detached`: `arrayUnion`/`arrayRemove` en `entities/{e}.billingConfig.payment_method` (:233-253).
+  - Resto de tipos: se registran en el log y 200.
+- Criticidad: alta — única entrada de cobros y facturas
+- Casos:
+  - FAC-07-01 · STRIPE · `invoice.finalized` de pruebas, total > 0, entidad con `billingEmail` → 200 `{received:true}`; `invoice_emails/{id}` `status:"sent"`; correo con PDF
+  - FAC-07-02 · STRIPE · `invoice.finalized` con total 0 → 200; `skipped` / `importe_cero`
+  - FAC-07-03 · STRIPE · `invoice.finalized` sin entidad resoluble ni `customer_email` → 200; `skipped` / `sin_destinatario`
+  - FAC-07-04 · STRIPE · `invoice.finalized` con `livemode:true` y clave de pruebas → 200; nada enviado ni registrado
+  - FAC-07-05 · STRIPE · reentrega del mismo `invoice.finalized` ya enviado → 200; sin segundo correo (cerrojo, SendInvoiceEmail.ts:187-190)
+  - FAC-07-06 · STRIPE · `invoice.finalized` sin `invoice_pdf` → 500 `handler_error`; registro `failed` / `sin_pdf`
+  - FAC-07-07 · STRIPE · `invoice.finalized` con `BILLING_SEND_INVOICE_DISABLED=true` → 200; `skipped` / `envio_desactivado`
+  - FAC-07-08 · STRIPE · `invoice.paid` con doc de ciclo existente → 200; doc `status:"PAID"`
+  - FAC-07-09 · STRIPE · `invoice.paid` sin doc de ciclo (factura de suscripción) → 200; sin escrituras
+  - FAC-07-10 · STRIPE · `invoice.payment_failed` con doc de ciclo → 200; `FAILED` con `error.code:"payment_failed"`; evento `invoice.payment_failed` a los endpoints suscritos
+  - FAC-07-11 · STRIPE · `invoice.upcoming` de una suscripción checkinbiz → 200; `quantity` = recuento de empleados
+  - FAC-07-12 · STRIPE · `customer.subscription.trial_will_end` de una suscripción sin `serviceId` nuestro → 200; sin cambios
+  - FAC-07-13 · STRIPE · `customer.subscription.deleted` con metadata → 200; doc borrado y copia en `subscriptions-deleted`
+  - FAC-07-14 · STRIPE · `customer.subscription.deleted` sin metadata → 200; sin cambios
+  - FAC-07-15 · STRIPE · `payment_method.attached` a un customer de una entidad → 200; método añadido a `billingConfig.payment_method`
+  - FAC-07-16 · STRIPE · `checkout.session.completed` → 200; sin efectos
+  - FAC-07-17 · STRIPE · evento válido y fallo de Firestore o Stripe dentro del manejador → 500 `handler_error`
+  - FAC-07-18 · STRIPE_FALSO · sin cabecera `stripe-signature` → 400 `missing_signature`
+  - FAC-07-19 · STRIPE_FALSO · firma con otro secreto → 400 `invalid_signature`
+  - FAC-07-20 · STRIPE_FALSO · cuerpo modificado tras firmar (p. ej. JSON re-serializado) → 400 `invalid_signature`
+  - FAC-07-21 · STRIPE_FALSO · evento firmado hace más de 5 minutos → 400 `invalid_signature`
+  - FAC-07-22 · ANON · `GET /api/v1/billing/webhook` → 401 `unauthenticated`
+- Probable en staging: con dobles — los positivos exigen firmar con el secreto de firma de dev (es una credencial) o reenviar con Stripe CLI; los negativos (18-22) son directos. `invoice.finalized` descarga el PDF de Stripe y manda un correo real.
+- Sospechas:
+  - Sin `STRIPE_PRO_KEY` o sin secreto de firma, la excepción cae en el catch de la firma y se responde 400 `invalid_signature` (webhook.router.ts:20-26; stripeClient.ts:13, :35): un fallo de configuración se ve igual que una firma falsa.
+  - No hay deduplicación por `event.id` (la preveía la fase F0 de billing-v2, DOCS/ingenieria/billing-v2/04_fases.md:68-69): un `invoice.payment_failed` reentregado vuelve a emitir el evento saliente.
+  - Qué eventos tiene suscritos el endpoint de Stripe de dev está sin confirmar (05_fin-de-prueba.md:36-44 apunta a que quizá solo `invoice.finalized`); sin `invoice.upcoming` no se ejecuta ningún recuento.
+
+## POST /api/v1/billing/internal/invoices/:invoiceId/send  ·  FAC-08
+- Servicio: billing — internal.router.ts:7-11, montado con `requireApiKey` (app.ts:28)
+- Consumidores: ninguno detectado (repesca manual)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: `x-encodebiz-key`
+- Autorización: la propia clave
+- Entrada: `invoiceId` de Stripe en la ruta
+- Respuesta correcta: 200 `{ok:true, result:"sent" | "skipped" | "duplicate"}`
+- Efectos: Stripe `invoices.retrieve` y las mismas reglas de correo que `invoice.finalized` (SendInvoiceEmail.ts:39-142), sin emitir evento
+- Criticidad: baja — herramienta interna
+- Casos:
+  - FAC-08-01 · S2S · factura de pruebas finalizada, total > 0, no enviada → 200 `result:"sent"`
+  - FAC-08-02 · S2S · la misma factura ya enviada → 200 `result:"duplicate"`
+  - FAC-08-03 · S2S · factura de 0 € → 200 `result:"skipped"`
+  - FAC-08-04 · S2S · `invoiceId` inexistente → 500 `internal_error`
+  - FAC-08-05 · S2S · borrador sin `invoice_pdf` → 500 `internal_error`; registro `failed`
+  - FAC-08-06 · ANON · sin clave → 401 `unauthorized`
+  - FAC-08-07 · PROP · Bearer válido y sin clave → 401 `unauthorized`
+- Probable en staging: sí — con clave S2S y una factura de pruebas de Stripe
+- Sospechas: sobre un borrador deja `invoice_emails` en `failed` (SendInvoiceEmail.ts:81-86).
+
+---
+
+## POST /api/reports/generate  ·  INF-01
+- Servicio: reports — services/reports/src/interfaces/report.router.ts:24-37 (montado en app.ts:13)
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKBIZ360_REPORTS`, .env.development:87; handler `checkbiz360_reports` serverBackendProxy.ts:291-295; src/services/checkinbiz/report.service.ts:94-137, llamado desde src/app/main/[entityId]/checkinbiz/report/ReportFormModal/ReportFormModal.controller.tsx:72-80)
+- Origen: portado desde la CF services-saas/checkinbiz/firebase-checkinbiz-http/generate-report.ts (interfaces/http/report/createReport.controller.ts). La CF está retirada de dev-encodebiz según .env.development:90-93.
+- Diferencias con la CF:
+  - Auth: la CF no validaba token (generate-report.ts:6-12; createReport.controller.ts:239-291), así que ANON generaba informes. El contenedor exige ID token, pero sigue sin autorización por entidad.
+  - Validación: la CF aceptaba cualquier fecha que entienda `new Date` y solo respondía 400 `{error:"Invalid payload", details:[...]}` si faltaba algo (createReport.controller.ts:33-65). El contenedor exige `YYYY-MM-DD` y `format` ∈ {pdf, xlsx}, y responde 400 `{ok:false, error:"validation_error", details:[issues de zod]}` (report.router.ts:15-22; app.ts:18-20). El panel manda `YYYY-MM-DD` (ReportFormModal.controller.tsx:61-62): compatible.
+  - **Origen de los datos:** la CF leía los checklogs de Firestore en el momento (createReport.controller.ts:247). El contenedor lee `employee_daily_reports` de Postgres, que el cron horario precalcula a las 02:xx locales para el día anterior (GenerateReportPDF.ts:12-65; DailyReportCron.ts:81-119). Un rango que incluye hoy, o días cuya construcción no corrió o falló, sale sin esos días, o como 204, donde la CF devolvía datos.
+  - El contenedor excluye a los colaboradores (`worker_meta.role = 'collaborator'`, GenerateReportPDF.ts:43-47).
+  - Formato: la CF solo hacía PDF; el contenedor hace PDF o XLSX.
+  - Respuesta 201: los mismos campos más `type:"attendance"` y `format`; `branch`/`employee` se unen con «, » en vez de «,» (GenerateReportPDF.ts:332-346 frente a createReport.controller.ts:267-278).
+  - Error: CF 500 `{code:"report/internal_error", message}` → contenedor 500 `{ok:false, error:"internal_error"}`.
+  - 204: igual en ambos. Express quita el cuerpo y el panel lo detecta por el estado (report.service.ts:117-121).
+- Autenticación: Firebase ID token (report.router.ts:24)
+- Autorización: ninguna; no llama a `canWrite` (report.router.ts:24-37)
+- Entrada: `entityId`; `start` y `end` en `YYYY-MM-DD`; opcionales `branchId`, `employeeId` y `format` (`pdf` por defecto). No se valida que `start` ≤ `end` ni un tope de rango.
+- Respuesta correcta: 201 `{reporData:{branch, employee, entity, entityId, start, end, status:"active", type:"attendance", format, ref:{path}}, code:"report/success"}` (report.router.ts:30; GenerateReportPDF.ts:335-346)
+- Efectos: Storage `checkbiz/reports/entities/{entityId}/{start}-{end}_{ts}.{pdf|xlsx}` en `FIREBASE_STORAGE_BUCKET` (GenerateReportPDF.ts:329-330; FirestoreReportClient.ts:101-109); Firestore `entities/{entityId}/reports/{id}` (FirestoreReportClient.ts:82-97); evento `report.generated` a los webhooks salientes suscritos, sin esperar (report.router.ts:29; events/report.ts:12-29); descarga del logo de la entidad si lo tiene (GenerateReportPDF.ts:92-99).
+- Criticidad: alta — es el registro de jornada con valor legal (RD-ley 8/2019)
+- Casos:
+  - INF-01-01 · PROP · filas en `employee_daily_reports` dentro del rango, `format:"pdf"` → 201 `code:"report/success"`; `ref.path` termina en `.pdf`; doc en `reports`
+  - INF-01-02 · ADMIN · ídem → 201
+  - INF-01-03 · PROP · `format:"xlsx"` → 201; `format:"xlsx"`, `ref.path` termina en `.xlsx`
+  - INF-01-04 · PROP · `branchId` de una sucursal con datos → 201; `branch` = nombre de esa sucursal
+  - INF-01-05 · PROP · `employeeId` → 201; `employee` = ese empleado
+  - INF-01-06 · PROP · rango sin filas precalculadas → 204 sin cuerpo
+  - INF-01-07 · PROP · rango = hoy, con fichajes de hoy → 204 (hoy aún no está precalculado)
+  - INF-01-08 · PROP · `branchId` de otra entidad → 204 (el filtro por `entity_id` no encuentra filas)
+  - INF-01-09 · PROP · solo han fichado colaboradores → 204
+  - INF-01-10 · PROP · `start:"2026-09-01T00:00:00Z"` → 400 `validation_error`
+  - INF-01-11 · PROP · `format:"csv"` → 400 `validation_error`
+  - INF-01-12 · PROP · falta `end` → 400 `validation_error`
+  - INF-01-13 · PROP · `start` posterior a `end` → 204 (el BETWEEN no devuelve filas)
+  - INF-01-14 · AJENO · `entityId` de otra entidad con datos → 201; el informe queda en el histórico de esa entidad y se emite el evento a sus webhooks (ver Sospechas)
+  - INF-01-15 · OP_WORKER · su entidad → 201 (sin control de rol)
+  - INF-01-16 · ANON → 401 `unauthenticated`
+  - INF-01-17 · TOKEN_INVALIDO → 401 `unauthenticated`
+  - INF-01-18 · EMP_JWT → 401 `unauthenticated`
+  - INF-01-19 · PROP · la URL del logo no responde → 201; el PDF sale sin logo (GenerateReportPDF.ts:93-99)
+- Probable en staging: sí — necesita filas en `employee_daily_reports` de `encodebiz_staging` (se siembran con INF-03 sobre `checklogs_raw` ya sincronizados); escribe en Storage y Firestore de dev
+- Sospechas:
+  - Sin autorización por entidad: cualquier usuario autenticado genera el registro de jornada de otra empresa. La respuesta trae los nombres de sus centros y empleados (`reporData.branch`, `reporData.employee`), el fichero queda en su histórico y se dispara `report.generated` hacia sus webhooks (report.router.ts:24-37). La descarga (INF-05) sí está protegida.
+  - Sin tope de rango: un rango de años recorre la tabla entera y construye el PDF en memoria (GenerateReportPDF.ts:307, :321-323).
+  - El día en curso nunca sale en un informe generado ese mismo día (DailyReportCron.ts:96-107).
+
+## POST /api/reports/tasks  ·  INF-02
+- Servicio: reports — report.router.ts:50-62
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_TASKS`, .env.development:88; handler `checkbiz360_reports_tasks` serverBackendProxy.ts:298-302; report.service.ts:141-199, llamado desde ReportFormModal.controller.tsx:64-70)
+- Origen: nativo del contenedor (TDR-004)
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token
+- Autorización: ninguna (report.router.ts:50-62)
+- Entrada: `entityId`; `start` y `end` en `YYYY-MM-DD`; opcionales `branchId`, `status` (cualquier texto) y `format` (solo `xlsx`) (report.router.ts:41-48)
+- Respuesta correcta: 201 `{reporData:{branch, employee:"", entity, entityId, start, end, status:"active", type:"task", format:"xlsx", ref:{path}}, code:"report/success"}` (GenerateTaskReport.ts:120-131)
+- Efectos: lee de Firestore `entities/{e}/tasks` con `dueAt` entre `start` 00:00Z y `end` 23:59:59.999Z, `branchId` opcional y `limit(1000)`, más las subcolecciones `ratings` y `resources` de cada tarea (FirestoreTaskReportClient.ts:40-81); `status` se filtra en memoria (:84). Escribe Storage `checkbiz/reports/entities/{e}/tasks_{start}-{end}_{ts}.xlsx` (GenerateTaskReport.ts:115-116) y el doc en `reports` (:133). No emite evento.
+- Criticidad: media — informe operativo, sin valor legal
+- Casos:
+  - INF-02-01 · PROP · tareas con `dueAt` en el rango → 201 `type:"task"`, `.xlsx`
+  - INF-02-02 · ADMIN · ídem → 201
+  - INF-02-03 · PROP · con `branchId` → 201; `branch` = nombre de esa sucursal
+  - INF-02-04 · PROP · `status:"completed"` → 201 solo con completadas; 204 si no hay ninguna
+  - INF-02-05 · PROP · rango sin tareas → 204
+  - INF-02-06 · PROP · solo hay tareas sin `dueAt` → 204 (el filtro de rango las excluye)
+  - INF-02-07 · PROP · `format:"pdf"` → 400 `validation_error`
+  - INF-02-08 · PROP · `start` mal formado → 400 `validation_error`
+  - INF-02-09 · PROP · tarea con una pausa abierta → 201; las horas en pausa cuentan hasta el momento del informe (GenerateTaskReport.ts:44-48)
+  - INF-02-10 · PROP · `branchId` + rango sin índice compuesto (`branchId`, `dueAt`) en Firestore → 500 `internal_error` (que el índice exista en dev está sin confirmar)
+  - INF-02-11 · AJENO · `entityId` ajeno con tareas → 201 (sin control)
+  - INF-02-12 · ANON → 401 `unauthenticated`
+  - INF-02-13 · TOKEN_INVALIDO → 401 `unauthenticated`
+- Probable en staging: sí — Firestore de dev
+- Sospechas:
+  - Sin autorización por entidad, igual que INF-01.
+  - `limit(1000)` va antes del filtro por `status` en memoria (FirestoreTaskReportClient.ts:47, :84): con más de 1000 tareas en el rango, el informe sale truncado sin aviso.
+  - Lee dos subcolecciones enteras por tarea (FirestoreTaskReportClient.ts:55-58): hasta 2000 lecturas extra por petición.
+
+## POST /api/reports/cron/trigger  ·  INF-03
+- Servicio: reports — report.router.ts:65-74
+- Consumidores: ninguno detectado (disparo manual; el cron corre cada hora dentro del proceso, DailyReportCron.ts:121-132)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente. La CF `recalcDailyReport` escribía otra estructura en Firestore (recalculateDailyReport.controller.ts:20-102); no es el mismo contrato.
+- Autenticación: `x-encodebiz-key` (report.router.ts:69)
+- Autorización: la propia clave
+- Entrada: `date` opcional en `YYYY-MM-DD`; si falta, ayer en UTC (:66-71)
+- Respuesta correcta: 200 `{ok:true, date, processed, failed, skipped}` (DailyReportCron.ts:58-77)
+- Efectos: para cada par (entidad, sucursal) activo en esa fecha, upsert en `employee_daily_reports` de Postgres (DailyReportCron.ts:19-54), con lecturas de centro, empleado y entidad en Firestore
+- Criticidad: media — alimenta INF-01
+- Casos:
+  - INF-03-01 · S2S · `date` con fichajes sincronizados → 200, `processed` ≥ 1
+  - INF-03-02 · S2S · sin cuerpo → 200, `date` = ayer en UTC
+  - INF-03-03 · S2S · fecha sin actividad → 200, `processed:0`
+  - INF-03-04 · S2S · `date:"11/09/2026"` → 400 `validation_error`
+  - INF-03-05 · S2S · sucursal borrada en Firestore con fichajes → 200, cuenta en `skipped`
+  - INF-03-06 · ANON → 401 `unauthorized`
+  - INF-03-07 · PROP · Bearer válido y sin clave → 401 `unauthorized`
+- Probable en staging: sí — escribe en `encodebiz_staging`
+- Sospechas: recorre todos los pares en serie dentro de la petición (DailyReportCron.ts:68-73). Con volumen puede superar los 120 s de `proxy_read_timeout` (nginx.staging.conf:18): nginx devolvería 504 mientras el proceso sigue trabajando.
+
+## GET /api/reports/status  ·  INF-04
+- Servicio: reports — report.router.ts:77-91
+- Consumidores: ninguno detectado
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: `x-encodebiz-key`
+- Autorización: la propia clave
+- Entrada: query `entityId`, `start` y `end` obligatorios (:79-80); el formato no se valida
+- Respuesta correcta: 200 `{ok:true, entityId, start, end, computed:[{branch_id, date, employees}]}`
+- Efectos: solo lectura de Postgres
+- Criticidad: baja — diagnóstico
+- Casos:
+  - INF-04-01 · S2S · entidad con filas → 200, `computed` por sucursal y día
+  - INF-04-02 · S2S · sin filas → 200 `computed: []`
+  - INF-04-03 · S2S · falta `end` → 400 `{ok:false, error:"entityId, start and end required"}`
+  - INF-04-04 · S2S · `start=abc` → 500 `internal_error` (Postgres rechaza el `::date`)
+  - INF-04-05 · ANON → 401 `unauthorized`
+- Probable en staging: sí
+- Sospechas: una fecha mal formada da 500 en vez de 400 (report.router.ts:82-88).
+
+## GET /api/reports/:reportId/download  ·  INF-05
+- Servicio: reports — report.router.ts:102-127
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_DOWNLOAD_REPORTS` = base `/api`, .env.development:121; handler `checkinbiz_download_reports` serverBackendProxy.ts:371-383; report.service.ts:201-224 compone `/reports/{id}/download?entityId=`)
+- Origen: portado desde la CF `documentsHandler` → `reportRouter` → `downloadReportController` (firebase-checkinbiz-http/documents.ts:11-12; interfaces/http/report/downloadReport.controller.ts:9-38). En dev, la descarga ya va al contenedor (.env.development:114-118).
+- Diferencias con la CF:
+  - Orden: la CF validaba los parámetros antes que el token; el contenedor exige token primero. ANON sin `entityId`: CF 400 → contenedor 401.
+  - Token inválido: CF 500 `{code:"report/internal_error", error:"Invalid token"}`, porque el mensaje del AuthError no contiene «auth/» (downloadReport.controller.ts:33-36) → contenedor 401 `unauthenticated`.
+  - El resto coincide: 400 `report/bad_request`, 403 `report/unauthorized`, 404 `report/not_found`, 200 `{ok, url, expiresAt}`.
+  - El bucket es el de `FIREBASE_STORAGE_BUCKET`, no el predeterminado (FirestoreReportClient.ts:150-161).
+- Autenticación: Firebase ID token
+- Autorización: `canWrite(uid, entityId)` → owner o admin (report.router.ts:115)
+- Entrada: `reportId` en la ruta; `entityId` obligatorio en la query (:104-108)
+- Respuesta correcta: 200 `{ok:true, url:"<URL firmada de lectura, 5 min>", expiresAt:"<ISO>"}` (:124-126)
+- Efectos: firma una URL de Storage; sin escrituras
+- Criticidad: alta — acceso al fichero del registro legal
+- Casos:
+  - INF-05-01 · PROP · informe existente → 200 con `url`; `expiresAt` ≈ ahora + 5 min
+  - INF-05-02 · ADMIN · ídem → 200
+  - INF-05-03 · PROP · se usa la URL antes de 5 min → descarga el fichero; después, Storage la rechaza (fuera del contenedor)
+  - INF-05-04 · PROP · `reportId` inexistente → 404 `report/not_found`
+  - INF-05-05 · PROP · doc de informe sin `ref.path` → 404 `report/not_found` (FirestoreReportClient.ts:133-134)
+  - INF-05-06 · PROP · sin `entityId` → 400 `report/bad_request`
+  - INF-05-07 · PROP · `reportId` de otra entidad con su propio `entityId` → 404 `report/not_found` (la ruta de Firestore es por entidad)
+  - INF-05-08 · AJENO · `entityId` y `reportId` de otra entidad → 403 `report/unauthorized`
+  - INF-05-09 · OP_MANAGER · su entidad, sin `user_entity_roles` → 403 `report/unauthorized`
+  - INF-05-10 · ANON → 401 `unauthenticated`
+  - INF-05-11 · TOKEN_INVALIDO → 401 `unauthenticated`
+  - INF-05-12 · PROP · `ref.path` apunta a un fichero ya borrado de Storage → 200 con URL; la descarga falla después (que el SDK no compruebe la existencia al firmar está sin confirmar)
+- Probable en staging: sí
+- Sospechas: ninguna propia; la exposición está en la generación (INF-01).
+
+---
+
+Nota común a EVT-01…EVT-10: todo cuelga de `requireFirebaseAuth` (services/events/src/app.ts:21) y **ningún handler comprueba la pertenencia a la entidad** (events.router.ts:27-217). El `entityId` solo se usa como ruta de Firestore. Los errores de zod responden 400 `{ok:false, error:"invalid_payload", detail:[issues]}` y el resto 500 `internal_error` (app.ts:25-31). El panel usa el contrato del contenedor a través del handler `events_handler` (`NEXT_BACKEND_URI_EVENTS_HANDLER`, .env.development:106; serverBackendProxy.ts:390-394; src/services/core/events.service.ts).
+
+## GET /api/v1/events/status  ·  EVT-01
+- Servicio: events — events.router.ts:29-31
+- Consumidores: ninguno detectado
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token
+- Autorización: ninguna
+- Entrada: ninguna
+- Respuesta correcta: 200 `{ok:true, module:"events", version:<EVENT_CONTRACT_VERSION>}` (el valor está en packages/shared/src/events/domain/types.ts; se espera `2025-08-01`, que es el defecto de FirestoreEndpointRepository.ts:34 — sin confirmar)
+- Efectos: ninguno
+- Criticidad: baja — diagnóstico
+- Casos:
+  - EVT-01-01 · PROP → 200 `module:"events"`
+  - EVT-01-02 · AJENO → 200
+  - EVT-01-03 · ANON → 401 `unauthenticated`
+  - EVT-01-04 · S2S · clave válida y sin Bearer → 401 `unauthenticated`
+- Probable en staging: sí
+
+## GET /api/v1/events/catalogue  ·  EVT-02
+- Servicio: events — events.router.ts:37-39
+- Consumidores: panel (events.service.ts:72-79)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente detectada. En Functions el catálogo era un registro poblado por import (core/webhook/registry.ts:10) y no se ha encontrado ruta HTTP que lo sirviera.
+- Autenticación: Firebase ID token
+- Autorización: ninguna (el catálogo es común)
+- Entrada: ninguna
+- Respuesta correcta: 200 `{ok:true, version, events:[{type, status:"available", since:"2025-08-01", description:{es, en}, example?}]}`; el array tiene 39 entradas (packages/shared/src/events/catalogue.ts:38-238)
+- Efectos: ninguno
+- Criticidad: media — el panel pinta de aquí a qué se puede suscribir el cliente
+- Casos:
+  - EVT-02-01 · PROP → 200, 39 eventos, todos `available`
+  - EVT-02-02 · ADMIN → 200
+  - EVT-02-03 · OP_WORKER → 200
+  - EVT-02-04 · AJENO → 200 (mismo catálogo)
+  - EVT-02-05 · ANON → 401 `unauthenticated`
+  - EVT-02-06 · TOKEN_INVALIDO → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas: la cabecera del fichero dice «Son los 33 de abajo» (catalogue.ts:16-18) y el array tiene 39. Para las aserciones, usar el array.
+
+## POST /api/v1/events/endpoints  ·  EVT-03
+- Servicio: events — events.router.ts:43-91
+- Consumidores: panel (events.service.ts:87-95)
+- Origen: portado desde la CF firebase-entry-http/webhook-delivery/create-webhook-endpoint.ts (core/webhook/interfaces/create-endpoint.controller.ts)
+- Diferencias con la CF:
+  - Respuesta: CF 201 `{data: created}` → contenedor 201 `{ok:true, endpoint:{id, entityId, url, secret, enabled, subscribedEvents, version, description, consecutiveFailures, disabledReason, createdAt, updatedAt}, secretShownOnce:true}`.
+  - Errores: CF 400 `{error:"Invalid payload", details}`, `{error:"URL must be HTTPS"}`, `{error:"Event not allowed: X"}`, `{error:"Max 10 endpoints per entity"}` y 409 `{error:"Webhook URL already exists for this entity"}` (create-endpoint.controller.ts:58-84) → contenedor 400 `invalid_payload` (con `detail`), `url_must_be_https`, `unknown_events` (con `detail` = lista), `too_many_endpoints` (con `max:10`) y 409 `url_already_registered`.
+  - Suscripciones: la CF solo admitía tipos registrados (:69-74); el contenedor admite además `*` y `familia.*` (catalogue.ts:251-258).
+  - `version`: la CF la tomaba del cuerpo; el contenedor fija `EVENT_CONTRACT_VERSION` y admite `description` (≤ 200).
+  - Autorización: igual en ambos, solo token y sin comprobar la entidad (create-webhook-endpoint.ts:8-16).
+- Autenticación: Firebase ID token
+- Autorización: ninguna
+- Entrada: `entityId` (min 1); `url` válida y `https://` tras quitar espacios y barra final; `subscribedEvents` array ≥ 1 de patrones válidos (se deduplican); `enabled` opcional (true por defecto); `description` ≤ 200 o null (events.router.ts:43-51)
+- Respuesta correcta: 201 con el secreto en claro, `whsec_` + 64 hex (signature.ts:13-15), e id `wh_…`
+- Efectos: Firestore `entities/{entityId}/webhook_endpoints/{id}` (FirestoreEndpointRepository.ts:62-76). No comprueba que la entidad exista.
+- Criticidad: alta — el endpoint recibe fichajes, tareas y documentos de la entidad
+- Casos:
+  - EVT-03-01 · PROP · URL https nueva, `["attendance.clock_in"]` → 201; `endpoint.secret` empieza por `whsec_` y mide 70 caracteres; `secretShownOnce:true`
+  - EVT-03-02 · ADMIN · ídem → 201
+  - EVT-03-03 · PROP · `["*"]` → 201
+  - EVT-03-04 · PROP · `["task.*"]` → 201
+  - EVT-03-05 · PROP · `["foo.bar"]` → 400 `unknown_events`, `detail:["foo.bar"]`
+  - EVT-03-06 · PROP · `["issue.opened"]` (comentado en el catálogo) → 400 `unknown_events`
+  - EVT-03-07 · PROP · URL `http://…` → 400 `url_must_be_https`
+  - EVT-03-08 · PROP · `url:"no-es-url"` → 400 `invalid_payload`
+  - EVT-03-09 · PROP · `subscribedEvents: []` → 400 `invalid_payload`
+  - EVT-03-10 · PROP · `description` de 201 caracteres → 400 `invalid_payload`
+  - EVT-03-11 · PROP · URL ya registrada en la entidad, con o sin barra final → 409 `url_already_registered`
+  - EVT-03-12 · PROP · la entidad ya tiene 10 endpoints → 400 `too_many_endpoints`, `max:10`
+  - EVT-03-13 · PROP · eventos repetidos → 201 con cada evento una sola vez
+  - EVT-03-14 · PROP · `enabled:false` → 201 con `enabled:false`
+  - EVT-03-15 · PROP · `entityId` inexistente → 201 (no se comprueba la entidad)
+  - EVT-03-16 · OP_WORKER · su entidad → 201 (sin control de rol)
+  - EVT-03-17 · AJENO · `entityId` de otra entidad → 201; el endpoint queda creado en esa entidad (ver Sospechas)
+  - EVT-03-18 · ANON → 401 `unauthenticated`
+  - EVT-03-19 · TOKEN_INVALIDO → 401 `unauthenticated`
+  - EVT-03-20 · EMP_JWT → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas:
+  - Sin autorización por entidad: un usuario autenticado de otra empresa puede suscribir su URL a `*` en cualquier entidad y recibir desde ese momento sus fichajes, tareas y documentos, firmados con un secreto que él mismo recibe (events.router.ts:57-91). La CF tenía el mismo hueco.
+  - El tope de 10 y la comprobación de duplicado no son atómicos (:70-76): dos altas simultáneas pueden pasarlos.
+
+## GET /api/v1/events/endpoints  ·  EVT-04
+- Servicio: events — events.router.ts:94-103
+- Consumidores: ninguno detectado (el panel lee la colección de Firestore en vivo, events.service.ts:4-8)
+- Origen: portado desde la CF firebase-entry-http/webhook-delivery/list-webhook-endpoint.ts (list-endpoint.controller.ts)
+- Diferencias con la CF: la CF aceptaba `entityId` en el cuerpo o en la query y respondía 200 `{data}`; el contenedor solo lo lee de la query y responde `{ok:true, endpoints}` con el secreto enmascarado. Sin `entityId`: CF 400 `{error:"Invalid payload", details:["entityId is required"]}` → contenedor 400 `entityId_required`. Si la CF devolvía el secreto está sin confirmar.
+- Autenticación: Firebase ID token
+- Autorización: ninguna
+- Entrada: query `entityId`
+- Respuesta correcta: 200 `{ok:true, endpoints:[{..., secret:"<primeros 11 caracteres>…"}]}` (:101)
+- Efectos: solo lectura
+- Criticidad: media
+- Casos:
+  - EVT-04-01 · PROP → 200 con el secreto enmascarado
+  - EVT-04-02 · ADMIN → 200
+  - EVT-04-03 · PROP · entidad sin endpoints → 200 `endpoints: []`
+  - EVT-04-04 · PROP · sin `entityId` → 400 `entityId_required`
+  - EVT-04-05 · AJENO · `entityId` de otra entidad → 200 con sus URLs y suscripciones
+  - EVT-04-06 · ANON → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas: AJENO lee las URLs y suscripciones de otra entidad.
+
+## PATCH /api/v1/events/endpoints/:id  ·  EVT-05
+- Servicio: events — events.router.ts:105-136
+- Consumidores: panel (events.service.ts:98-105)
+- Origen: portado desde la CF firebase-entry-http/webhook-delivery/toggle-webhook-endpoint.ts (toggle-endpoint.controller.ts), que solo cambiaba `enabled`
+- Diferencias con la CF: la CF era POST con `{entityId, endpointId, enabled}` y respondía 200 `{message:"Webhook endpoint enabled|disabled"}`. El contenedor es PATCH `/endpoints/:id`, cambia además `url`, `subscribedEvents` y `description`, responde 404 si no existe (en la CF, sin confirmar) y al reactivar pone `consecutiveFailures:0` y `disabledReason:null` (FirestoreEndpointRepository.ts:93-96).
+- Autenticación: Firebase ID token
+- Autorización: ninguna
+- Entrada: `entityId` obligatorio; opcionales `url` (URL válida y https), `subscribedEvents` (≥ 1 y válidos), `enabled` (booleano), `description` (≤ 200 o null) (:105-113)
+- Respuesta correcta: 200 `{ok:true, endpoint:{..., secret enmascarado}}`
+- Efectos: `update` del doc de Firestore
+- Criticidad: media
+- Casos:
+  - EVT-05-01 · PROP · `enabled:false` → 200 con `enabled:false`
+  - EVT-05-02 · PROP · endpoint apagado por fallos (`consecutiveFailures:20`) · `enabled:true` → 200; `consecutiveFailures:0`, `disabledReason:null`
+  - EVT-05-03 · ADMIN · cambia `subscribedEvents` → 200
+  - EVT-05-04 · PROP · `url` http → 400 `url_must_be_https`
+  - EVT-05-05 · PROP · `subscribedEvents:["foo"]` → 400 `unknown_events`
+  - EVT-05-06 · PROP · sin `entityId` → 400 `invalid_payload`
+  - EVT-05-07 · PROP · id inexistente → 404 `endpoint_not_found`
+  - EVT-05-08 · PROP · id de un endpoint de otra entidad con su propio `entityId` → 404 `endpoint_not_found`
+  - EVT-05-09 · PROP · `url` igual a la de otro endpoint de la entidad → 200 (el PATCH no comprueba duplicados)
+  - EVT-05-10 · PROP · cuerpo solo con `entityId` → 200; solo cambia `updatedAt`
+  - EVT-05-11 · AJENO · `entityId` e id de otra entidad → 200 (sin control)
+  - EVT-05-12 · ANON → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas: sin autorización por entidad; el PATCH permite duplicar una URL que el alta rechaza (events.router.ts:115-136 frente a :74-76).
+
+## DELETE /api/v1/events/endpoints/:id  ·  EVT-06
+- Servicio: events — events.router.ts:138-145
+- Consumidores: panel (events.service.ts:107-113, con `?entityId=`)
+- Origen: portado desde la CF firebase-entry-http/webhook-delivery/delete-webhook-endpoint.ts (delete-endpoint.controller.ts)
+- Diferencias con la CF: la CF recibía `{entityId, endpointId}` en el cuerpo y respondía 200 `{message}` aunque no existiera (delete-endpoint.controller.ts:33-53). El contenedor lleva el id en la ruta y `entityId` en la query, responde 404 si no existe y 200 `{ok:true}`.
+- Autenticación: Firebase ID token
+- Autorización: ninguna
+- Entrada: `:id`; query `entityId` obligatorio (:139-140)
+- Respuesta correcta: 200 `{ok:true}`
+- Efectos: borra el doc. Las entregas pendientes se quedan sin destino: el rescate las salta (RescueWorker.ts:31-34) y la purga las retira a los 30 o 90 días (PgDeliveryRepository.ts:135-143).
+- Criticidad: media
+- Casos:
+  - EVT-06-01 · PROP → 200 `ok:true`
+  - EVT-06-02 · ADMIN → 200
+  - EVT-06-03 · PROP · sin `entityId` → 400 `entityId_required`
+  - EVT-06-04 · PROP · `entityId` en el cuerpo en vez de la query → 400 `entityId_required`
+  - EVT-06-05 · PROP · id inexistente → 404 `endpoint_not_found`
+  - EVT-06-06 · AJENO · endpoint de otra entidad → 200; queda borrado
+  - EVT-06-07 · ANON → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas: sin autorización por entidad; un usuario ajeno puede cortar la integración de otra empresa.
+
+## POST /api/v1/events/endpoints/:id/rotate-secret  ·  EVT-07
+- Servicio: events — events.router.ts:148-154
+- Consumidores: panel (events.service.ts:129-138)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token
+- Autorización: ninguna
+- Entrada: cuerpo `{entityId}`
+- Respuesta correcta: 200 `{ok:true, secret:"whsec_…", secretShownOnce:true}`
+- Efectos: `update` del secreto; las entregas siguientes se firman con él (deliver.ts:20)
+- Criticidad: alta — el secreto es lo que autentica nuestras entregas ante el integrador
+- Casos:
+  - EVT-07-01 · PROP → 200 con un secreto nuevo, distinto del anterior
+  - EVT-07-02 · ADMIN → 200
+  - EVT-07-03 · PROP · EVT-08 justo después → la firma del receptor valida con el secreto nuevo y no con el viejo
+  - EVT-07-04 · PROP · sin `entityId` → 400 `invalid_payload`
+  - EVT-07-05 · PROP · id inexistente → 404 `endpoint_not_found`
+  - EVT-07-06 · AJENO · endpoint de otra entidad → 200 con el secreto nuevo en claro
+  - EVT-07-07 · ANON → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas: AJENO obtiene en claro el secreto de firma de otra entidad y deja al integrador legítimo sin poder validar las firmas (events.router.ts:148-154).
+
+## POST /api/v1/events/endpoints/:id/test  ·  EVT-08
+- Servicio: events — events.router.ts:161-191
+- Consumidores: panel (events.service.ts:120-126)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token
+- Autorización: ninguna
+- Entrada: cuerpo `{entityId}`
+- Respuesta correcta: 200 `{ok:true, eventId:"evt_…", status:"delivered"|"pending"|"dead"|"unknown", lastStatus, lastError}`
+- Efectos: inserta en `webhook_delivery` de Postgres (PgDeliveryRepository.ts:34-47) y hace, sin salir de la petición, un POST firmado con 4 s de timeout (deliver.ts:7, :19-44). Cabeceras: `X-EncodeBiz-Event-Id`, `X-EncodeBiz-Signature: t=<ts>,v1=<HMAC-SHA256 de "<ts>.<body>">`, `X-EncodeBiz-Retry`, `User-Agent: EncodeBiz Webhooks` (deliver.ts:29-35; signature.ts:7-10). Resultado: 2xx → `delivered` y contador de fallos a cero; 0, 408, 429 o 5xx → `pending`, con reintento a los 30 s; cualquier otro → `dead` y `consecutiveFailures` + 1 (deliver.ts:53-78; backoff.ts:5-9). Se entrega aunque el endpoint no esté suscrito a `endpoint.test`.
+- Criticidad: media — es la herramienta de integración del cliente
+- Casos:
+  - EVT-08-01 · PROP · receptor HTTPS que responde 200 → 200 `status:"delivered"`, `lastStatus:200`
+  - EVT-08-02 · PROP · el receptor responde 500 → 200 `status:"pending"`, `lastStatus:500`
+  - EVT-08-03 · PROP · el receptor responde 404 → 200 `status:"dead"`, `lastStatus:404`; `consecutiveFailures` + 1
+  - EVT-08-04 · PROP · el receptor tarda más de 4 s → 200 `status:"pending"`, `lastStatus:0`
+  - EVT-08-05 · PROP · endpoint deshabilitado → 200 `status:"pending"`, `lastStatus:null` (no se intenta, deliver.ts:86)
+  - EVT-08-06 · PROP · el receptor verifica la firma con el secreto del alta → el HMAC de `<t>.<body>` coincide con `v1`
+  - EVT-08-07 · ADMIN → 200
+  - EVT-08-08 · PROP · sin `entityId` → 400 `invalid_payload`
+  - EVT-08-09 · PROP · id inexistente → 404 `endpoint_not_found`
+  - EVT-08-10 · AJENO · endpoint de otra entidad → 200; sale un POST hacia la URL de esa entidad
+  - EVT-08-11 · ANON → 401 `unauthenticated`
+- Probable en staging: con dobles — hace falta un receptor HTTPS alcanzable desde el servidor
+- Sospechas: sin autorización por entidad. Las pruebas fallidas con 4xx cuentan para apagar el endpoint (deliver.ts:72-73; umbral de 20, backoff.ts:17).
+
+## GET /api/v1/events/deliveries  ·  EVT-09
+- Servicio: events — events.router.ts:196-208
+- Consumidores: panel (events.service.ts:142-154; manda `limit=50`)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token
+- Autorización: ninguna
+- Entrada: query `entityId` obligatorio; opcionales `status`, `eventType`, `endpointId` y `limit` (100 por defecto, 500 como tope, :205)
+- Respuesta correcta: 200 `{ok:true, count, deliveries:[{id, endpointId, entityId, eventId, eventType, event, status, attempt, nextAttemptAt, lastError, lastStatus, deliveredAt}]}`, de más reciente a más antigua; `event` es el payload completo (PgDeliveryRepository.ts:115-129)
+- Efectos: solo lectura de Postgres
+- Criticidad: media
+- Casos:
+  - EVT-09-01 · PROP → 200 con las entregas de la entidad
+  - EVT-09-02 · ADMIN → 200
+  - EVT-09-03 · PROP · `status=dead` → 200 solo con las muertas
+  - EVT-09-04 · PROP · `eventType=task.created` → 200 filtradas por tipo
+  - EVT-09-05 · PROP · `limit=1000` → 200 con 500 como mucho
+  - EVT-09-06 · PROP · `status=foo` → 200 `deliveries: []`
+  - EVT-09-07 · PROP · sin `entityId` → 400 `entityId_required`
+  - EVT-09-08 · PROP · `limit=abc` → 500 `internal_error` (llega `NaN` al LIMIT de Postgres)
+  - EVT-09-09 · PROP · `limit=-1` → 500 `internal_error`
+  - EVT-09-10 · AJENO · `entityId` de otra entidad → 200 con sus entregas y payloads completos
+  - EVT-09-11 · ANON → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas: AJENO lee los payloads de los eventos de otra entidad —fichajes, empleados, tareas— (events.router.ts:196-208). Un `limit` no numérico o negativo da 500.
+
+## POST /api/v1/events/deliveries/:id/replay  ·  EVT-10
+- Servicio: events — events.router.ts:211-217
+- Consumidores: panel (events.service.ts:157-160)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token
+- Autorización: ninguna; ni siquiera se pide `entityId`
+- Entrada: `:id` de la entrega
+- Respuesta correcta: 200 `{ok:true, status}`
+- Efectos: si la entrega está `dead` o `failed`, la devuelve a `pending` con `attempt:0` (PgDeliveryRepository.ts:104-113) y la intenta en el acto
+- Criticidad: media
+- Casos:
+  - EVT-10-01 · PROP · entrega `dead` y el receptor ya responde 200 → 200 `status:"delivered"`
+  - EVT-10-02 · ADMIN · ídem → 200
+  - EVT-10-03 · PROP · entrega `dead` y el receptor sigue en 404 → 200 `status:"dead"`
+  - EVT-10-04 · PROP · entrega `delivered` → 409 `delivery_not_replayable`
+  - EVT-10-05 · PROP · entrega `pending` → 409 `delivery_not_replayable`
+  - EVT-10-06 · PROP · id inexistente → 409 `delivery_not_replayable`
+  - EVT-10-07 · AJENO · id de una entrega de otra entidad → 200 (no hay comprobación de entidad)
+  - EVT-10-08 · ANON → 401 `unauthenticated`
+- Probable en staging: sí — la entrega muerta se provoca con un receptor que responda 4xx (no reintentable)
+- Sospechas: basta el id de la entrega (events.router.ts:211-217), y EVT-09 lo enseña a cualquiera que ponga el `entityId`.
+
+## POST /api/v1/events/s2s/publish  ·  EVT-11
+- Servicio: events — events.router.ts:237-249, montado con `requireApiKey` (app.ts:18)
+- Consumidores: ninguno detectado. El comentario habla de triggers de Firebase vía `services/firebase_sdk` (events.router.ts:219-226), pero allí solo aparece `/s2s/maintenance`, que es del backoffice (services/firebase_sdk/src/maintenance/log.ts:70; services/backoffice/src/app.ts:48).
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: `x-encodebiz-key`
+- Autorización: la propia clave
+- Entrada: `type` (min 1), `entityId` (min 1), `data` (cualquier cosa), `eventId` opcional, `occurredAt` opcional como fecha ISO (:229-235)
+- Respuesta correcta: 200 `{ok:true}`
+- Efectos: `publish()` busca los endpoints habilitados de la entidad que cubren el tipo, encola en `webhook_delivery` con `ON CONFLICT (endpoint_id, event_id) DO NOTHING` e intenta la entrega sin esperarla (publish.ts:37-83)
+- Criticidad: media — vía de emisión para quien está fuera del monorepo
+- Casos:
+  - EVT-11-01 · S2S · `task.created` a una entidad con endpoint suscrito → 200; entrega creada y enviada
+  - EVT-11-02 · S2S · mismo `eventId` dos veces → 200 las dos; una sola entrega por endpoint
+  - EVT-11-03 · S2S · entidad sin endpoints → 200 sin entregas
+  - EVT-11-04 · S2S · `type:"foo.bar"` → 400 `unknown_event`
+  - EVT-11-05 · S2S · `occurredAt:"ayer"` → 400 `invalid_payload`
+  - EVT-11-06 · S2S · falta `entityId` → 400 `invalid_payload`
+  - EVT-11-07 · ANON → 401 `unauthorized`
+  - EVT-11-08 · PROP · Bearer válido y sin clave → 401 `unauthorized`
+  - EVT-11-09 · S2S · `GET /api/v1/events/s2s/publish` con clave → 401 `unauthenticated` (sin ruta que case, cae en la superficie de gestión, app.ts:21)
+- Probable en staging: sí
+- Sospechas: con la clave se puede publicar cualquier tipo del catálogo, con datos arbitrarios y en nombre de cualquier entidad, incluido `endpoint.test`. Es lo esperable en S2S, pero esos payloads llegan a los integradores firmados como nuestros.
+
+---
+
+Nota común a ANA: `services/analytics/src/app.ts:1-28` **no tiene middleware de errores**. `server.ts:1` importa `express-async-errors`, así que una excepción en un handler llega al manejador por defecto de Express: 500 con cuerpo HTML «Internal Server Error» (NODE_ENV=production, docker-compose.staging.yml:190). Las rutas del panel y de heurística llevan CORS y `requireFirebaseAuth` (app.ts:18, :23); el resto de `/api/analytics` va con `requireApiKey` (app.ts:26). Una ruta desconocida bajo `/api/analytics/panel/` con token válido pasa el control de entidad y cae después en `requireApiKey` → 401 `unauthorized`.
+
+## POST /api/analytics/panel/stats  ·  ANA-01
+- Servicio: analytics — services/analytics/src/interfaces/panel.router.ts:29-80 (control de entidad en :14)
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_STATS_PANEL`, .env.development:77; handler `checkinbiz_stats_panel` serverBackendProxy.ts:245-249; src/app/main/[entityId]/checkinbiz/panel/components/hooks/useCheckbizStats.ts:6)
+- Origen: portado desde la CF `checkbizStatsController` (services-saas/checkinbiz/interfaces/http/report/stats.controller.ts; exportada en firebase-checkinbiz-http/index.ts:13, :39)
+- Diferencias con la CF:
+  - Token inválido: CF 500 `{error:"Invalid token"}`, porque el AuthError cae en el catch genérico (stats.controller.ts:19, :63-65) → contenedor 401 `unauthenticated`.
+  - Sin acceso: CF 403 `{error:"Unauthorized", code:"auth/unauthorized"}` (:40-44) → contenedor 403 `{ok:false, error:"forbidden", message:"No access to this entity"}` (core/entityAccess.ts:33-37).
+  - Orden: la CF validaba los campos antes que el permiso; el contenedor mira el acceso primero. Sin permiso y con campos incompletos: CF 400, contenedor 403.
+  - Sin `entityId`: CF 400 `{error:"Missing required fields..."}` → contenedor 400 `{ok:false, error:"entityId required"}` (entityAccess.ts:26-30).
+  - Fecha inválida: CF 500 `{error:"Invalid date"}` → contenedor 400 `{error:"Invalid date"}` (panel.router.ts:68-70).
+  - `topN:0`: la CF lo trataba como ausente (stats.controller.ts:52); el contenedor pasa 0 (panel.router.ts:59).
+  - Forma del éxito: la misma según el comentario (panel.router.ts:26-28); campo a campo, sin confirmar.
+- Autenticación: Firebase ID token
+- Autorización: `requireEntityAccess` → `user_entity_roles/{uid}_{entityId}` con `role` owner o admin; el `entityId` sale de la query o del cuerpo (entityAccess.ts:12-43). Los responsables de sucursal no entran.
+- Entrada: obligatorios `entityId`, `from`, `to` y `metric` (panel.router.ts:45-49); `from` y `to` tienen que parsear como fecha (:18-22); `metric` debe ser una de las 19 del switch (FetchCheckbizStats.ts:28-68); opcionales `branchId`, `topN`, `budgets`, `expectedStartHour`, `toleranceMinutes`, `expectedHoursPerDay`, `distanceThresholdMeters` y `granularity` (`total` por defecto)
+- Respuesta correcta: 200 con el resultado de `FetchCheckbizStats`, sin envoltorio `ok`
+- Efectos: solo lectura
+- Criticidad: media — tarjetas del panel
+- Casos:
+  - ANA-01-01 · PROP · `metric:"hours_by_branch"`, un mes → 200
+  - ANA-01-02 · ADMIN · ídem → 200
+  - ANA-01-03 · PROP · con `branchId` → 200 limitado a esa sucursal (cómo se filtra, sin confirmar)
+  - ANA-01-04 · PROP · `granularity:"daily"` → 200
+  - ANA-01-05 · PROP · `metric:"kpis"` (está en el tipo del panel, useCheckbizStats.ts:35, pero no en el switch) → 500 `{error:"Unsupported metric"}`
+  - ANA-01-06 · PROP · `metric:"foo"` → 500 `{error:"Unsupported metric"}`
+  - ANA-01-07 · PROP · `from:"abc"` → 400 `{error:"Invalid date"}`
+  - ANA-01-08 · PROP · falta `metric` → 400 `{error:"Missing required fields: entityId, from, to, metric"}`
+  - ANA-01-09 · PROP · falta `entityId` → 400 `{ok:false, error:"entityId required"}`
+  - ANA-01-10 · OP_MANAGER · sin `user_entity_roles` → 403 `forbidden`
+  - ANA-01-11 · AJENO → 403 `forbidden`
+  - ANA-01-12 · AJENO · faltan campos → 403 `forbidden` (el acceso va antes)
+  - ANA-01-13 · ANON → 401 `unauthenticated`
+  - ANA-01-14 · TOKEN_INVALIDO → 401 `unauthenticated`
+- Probable en staging: sí
+- Sospechas: una métrica no soportada responde 500 y no 400 (panel.router.ts:72-79; FetchCheckbizStats.ts:68).
+
+## GET /api/analytics/panel/overview  ·  ANA-02
+- Servicio: analytics — panel.router.ts:92-111
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_PANEL_OVERVIEW`, .env.development:139; handler `checkinbiz_panel_overview` serverBackendProxy.ts:254-258; src/app/main/[entityId]/checkinbiz/panel/components/hooks/usePanelOverview.ts:12)
+- Origen: nativo del contenedor (TDR-004)
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: Firebase ID token
+- Autorización: `requireEntityAccess`, owner o admin (entityAccess.ts:12-43)
+- Entrada: query `entityId`; `period` con la forma `^\d{4}-(0[1-9]|1[0-2])$` (application/BuildPanelOverview.ts:139-143); opcionales `branchId` y `employeeId`. El nivel es empleado si hay `employeeId`, sucursal si hay `branchId` y entidad si no hay ninguno (BuildPanelOverview.ts:368).
+- Respuesta correcta: 200 `{ok:true, ...overview}`; el panel espera la espina `reliability` / `environmentEffect` / `fragility` con estado `ready|warming|partial|unavailable` (usePanelOverview.ts:21-47; la forma exacta, sin confirmar)
+- Efectos: lectura de Postgres (mes pedido y anterior)
+- Criticidad: media — panel operativo v2
+- Casos:
+  - ANA-02-01 · PROP · `period=2026-08` → 200 `ok:true`
+  - ANA-02-02 · ADMIN · ídem → 200
+  - ANA-02-03 · PROP · con `branchId` → 200 a nivel sucursal
+  - ANA-02-04 · PROP · con `employeeId` → 200 a nivel empleado
+  - ANA-02-05 · PROP · `period=2026-13` → 400 `validation_error`
+  - ANA-02-06 · PROP · `period=2026-8` → 400 `validation_error`
+  - ANA-02-07 · PROP · sin `period` → 400 `validation_error`
+  - ANA-02-08 · PROP · sin `entityId` → 400 `{ok:false, error:"entityId required"}`
+  - ANA-02-09 · PROP · entidad sin datos en Postgres → 200 con bloques sin madurar (estado exacto, sin confirmar)
+  - ANA-02-10 · PROP · `branchId` de otra entidad → 200; las consultas filtran por `entityId` (BuildPanelOverview.ts:370-374), así que no debería traer datos ajenos (sin confirmar)
+  - ANA-02-11 · OP_MANAGER → 403 `forbidden`
+  - ANA-02-12 · AJENO → 403 `forbidden`
+  - ANA-02-13 · ANON → 401 `unauthenticated`
+  - ANA-02-14 · PROP · falla la consulta a Postgres → 500 con cuerpo HTML de Express
+- Probable en staging: sí — necesita datos en `encodebiz_staging` (dimensiones, `pattern_snapshots`, fichajes sincronizados)
+- Sospechas: los errores no controlados salen como 500 HTML y no JSON (app.ts sin manejador), y el panel no puede leer el motivo.
+
+## POST /api/analytics/heuristic  ·  ANA-03
+- Servicio: analytics — services/analytics/src/interfaces/heuristic.router.ts:32-76 (app.ts:23)
+- Consumidores: panel (`NEXT_BACKEND_URI_CHECKINBIZ_STATS` = `/api/analytics/heuristic`, .env.development:76; handler `checkinbiz_stats` serverBackendProxy.ts:240-244; src/services/checkinbiz/stats.service.ts:97-125, que lee `response.results`)
+- Origen: portado desde la CF `analyzeHeuristic` (firebase-checkinbiz-http/analyzePattern.ts:46-64)
+- Diferencias con la CF:
+  - **Autorización nueva:** la CF no comprobaba permiso (analyzePattern.ts:46-53) y cualquier token servía para cualquier entidad. El contenedor aplica `canWrite` (heuristic.router.ts:46-55): AJENO, OP_WORKER y OP_OTRA_SUCURSAL pasan de 200 a 403, y **con `employeeId` solo entran PROP y ADMIN**, así que un responsable de sucursal que viera la heurística de un empleado en la CF recibe ahora 403.
+  - Petición mal formada o patrón inexistente: en la CF, `analyzePattern` devolvía `{error}` sin `report` y el controlador leía `result.report.error` sobre undefined, lo que acababa en TypeError y 401 `{message:"Cannot read properties of undefined…", code:"auth/unknown"}` (analyzePattern.ts:17-19, :32-34, :54-62). El contenedor responde 400 `{error:"Bad request data", code:"bad_request"}` y 404 `{error:"Pattern not found", code:"pattern/not_found"}`.
+  - Token inválido: CF 401 `{code:"auth/invalid_token"}`, código con el que el HttpClient del panel cierra la sesión y manda a login (httpClientFetchNext.ts:141-147) → contenedor 401 sin `code`, que no lo provoca. Por el proxy, un token inválido se para antes con 403 `auth/forbidden`.
+  - Datos insuficientes: igual en ambos, 404 `{code:"analyze/insufficient_data", message}` (HeuristicCore.ts:25-31).
+- Autenticación: Firebase ID token
+- Autorización: con `branchId`, `canWrite(uid, entityId, {branchId, includeBranchResponsibility:true})` → owner o admin, o responsabilidad activa de nivel ≥ supervisor (2) en esa sucursal. Con `employeeId`, `canWrite(uid, entityId)` → solo owner o admin (heuristic.router.ts:46-51).
+- Entrada: `entityId`; exactamente uno de `branchId` o `employeeId`; `lang` obligatorio (`en` → inglés, cualquier otro → español) (:33-38, :68)
+- Respuesta correcta: 200 `{branchId, reliability, dataPoints, dataMaturity, dataQuality, profileType, results:[...]}` (HeuristicCore.ts:72-80)
+- Efectos: lectura de Firestore (`checkbiz_branch_patterns/{branchId}` o el patrón del empleado, e indicadores heurísticos)
+- Criticidad: media — análisis del detalle de sucursal
+- Casos:
+  - ANA-03-01 · PROP · `branchId` con patrón de ≥ 20 `dataPoints` → 200 con `results`
+  - ANA-03-02 · ADMIN · ídem → 200
+  - ANA-03-03 · OP_OWNER · nivel 4 en la sucursal → 200
+  - ANA-03-04 · OP_MANAGER · nivel 3 → 200
+  - ANA-03-05 · OP_SUPERVISOR · nivel 2 → 200
+  - ANA-03-06 · OP_WORKER · nivel 1 → 403 `auth/unauthorized`
+  - ANA-03-07 · OP_OTRA_SUCURSAL → 403 `auth/unauthorized`
+  - ANA-03-08 · OP_MANAGER · responsabilidad con `active:true` en vez de `1` → 403 (el filtro es `active == 1`, canWrite.ts:43)
+  - ANA-03-09 · PROP · `employeeId` con patrón → 200
+  - ANA-03-10 · OP_MANAGER · `employeeId` de su sucursal → 403 `auth/unauthorized`
+  - ANA-03-11 · PROP · `branchId` y `employeeId` a la vez → 400 `bad_request`
+  - ANA-03-12 · PROP · sin `branchId` ni `employeeId` → 400 `bad_request`
+  - ANA-03-13 · PROP · sin `lang` → 400 `bad_request`
+  - ANA-03-14 · PROP · `branchId` sin patrón → 404 `pattern/not_found`
+  - ANA-03-15 · PROP · patrón con menos de 20 `dataPoints` → 404 `analyze/insufficient_data`
+  - ANA-03-16 · PROP · `lang:"fr"` → 200 en español
+  - ANA-03-17 · PROP de la entidad A · `entityId=A` y `branchId` de una sucursal de B → 200 con el patrón de B (ver Sospechas)
+  - ANA-03-18 · AJENO · `entityId` y `branchId` de otra entidad → 403 `auth/unauthorized`
+  - ANA-03-19 · ANON → 401 `unauthenticated`
+  - ANA-03-20 · TOKEN_INVALIDO → 401 `unauthenticated`
+  - ANA-03-21 · EMP_JWT → 401 `unauthenticated`
+- Probable en staging: sí — necesita patrones en el Firestore de dev
+- Sospechas: el patrón de sucursal se lee de la colección global `checkbiz_branch_patterns/{branchId}`, sin filtrar por entidad (packages/shared/src/checkbiz/repositories/FirestoreBranchRepository.ts:131-133, :145-148), y el permiso se evalúa sobre el `entityId` que manda el cliente; `canWrite` da true a owner y admin sin mirar la sucursal (canWrite.ts:17-21). **Un PROP o ADMIN de cualquier entidad lee la heurística de una sucursal de otra conociendo su `branchId`** (heuristic.router.ts:46-62). A los OP no les pasa: su comprobación exige responsabilidad en esa sucursal dentro de su propia entidad.
+
+## POST /api/analytics/patterns/repair  ·  ANA-04
+- Servicio: analytics — services/analytics/src/interfaces/analytics.router.ts:24-34 (app.ts:26)
+- Consumidores: ninguno detectado
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: `x-encodebiz-key`
+- Autorización: la propia clave
+- Entrada: query `entityId` opcional; `apply=true` para escribir (por defecto simula) (:25-26)
+- Respuesta correcta: 200 `{ok:true, applied, entities, results}`
+- Efectos: con `apply=true` reescribe en Firestore los acumuladores de los patrones de empleado (comentario en :10-23). Sin `entityId` recorre todas las entidades con datos (:28).
+- Criticidad: media — escribe en el Firestore de dev sin vuelta atrás campo a campo
+- Casos:
+  - ANA-04-01 · S2S · `entityId`, sin `apply` → 200 `applied:false`; sin escrituras
+  - ANA-04-02 · S2S · `entityId` y `apply=true` → 200 `applied:true`; patrones corregidos
+  - ANA-04-03 · S2S · sin `entityId` → 200 recorriendo todas las entidades
+  - ANA-04-04 · S2S · `apply=TRUE` → 200 `applied:false` (solo vale el literal `true`)
+  - ANA-04-05 · S2S · `entityId` inexistente → 200 con resultado vacío (forma sin confirmar)
+  - ANA-04-06 · ANON → 401 `unauthorized`
+- Probable en staging: sí en simulación; con `apply=true`, solo sobre una entidad de pruebas
+- Sospechas: sin `entityId` y con `apply=true`, una sola petición reescribe todas las entidades (analytics.router.ts:28-32).
+
+## POST /api/analytics/dimensions/sync  ·  ANA-05
+- Servicio: analytics — analytics.router.ts:42-50
+- Consumidores: ninguno detectado (pensado para un cron diario, :36-41)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: `x-encodebiz-key`
+- Autorización: la propia clave
+- Entrada: query `entityId` opcional
+- Respuesta correcta: 200 `{ok:true, entities, results}`
+- Efectos: upsert de `dim_branches` y `dim_employees` en Postgres, leyendo Firestore
+- Criticidad: baja — mantenimiento de dimensiones
+- Casos:
+  - ANA-05-01 · S2S · con `entityId` → 200 `entities:1`
+  - ANA-05-02 · S2S · sin `entityId` → 200 `entities:N`
+  - ANA-05-03 · S2S · `entityId` inexistente → 200 (si falla o devuelve vacío, sin confirmar)
+  - ANA-05-04 · S2S · falla Postgres → 500 HTML
+  - ANA-05-05 · ANON → 401 `unauthorized`
+- Probable en staging: sí
+
+## GET /api/analytics/patterns/history  ·  ANA-06
+- Servicio: analytics — analytics.router.ts:55-126
+- Consumidores: ninguno detectado (merlin usa `fetchPatternSeries` de shared directamente; checkinbiz solo lo nombra en un comentario, services/checkinbiz/src/interfaces/checkinbiz.router.ts:12)
+- Origen: nativo del contenedor
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: `x-encodebiz-key`
+- Autorización: la propia clave
+- Entrada: `entityId` obligatorio; `branchId` obligatorio si no hay `employeeId`; `days` entre 7 y 90, 30 por defecto; lo que se sale se recorta y lo no numérico cuenta como 30 (:57-62)
+- Respuesta correcta: 200 `{ok:true, entityId, branchId|null, employeeId|null, days, snapshots:[...], evidence}`
+- Efectos: solo lectura de Postgres
+- Criticidad: baja — sin consumidor HTTP
+- Casos:
+  - ANA-06-01 · S2S · `entityId` y `branchId` → 200 con la serie de sucursal (`employee_id IS NULL`)
+  - ANA-06-02 · S2S · con `employeeId` → 200 con la serie del empleado
+  - ANA-06-03 · S2S · `employeeId` y `branchId` → 200 filtrado por los dos
+  - ANA-06-04 · S2S · `days=365` → 200 `days:90`
+  - ANA-06-05 · S2S · `days=1` → 200 `days:7`
+  - ANA-06-06 · S2S · `days=abc` → 200 `days:30`
+  - ANA-06-07 · S2S · sin `entityId` → 400 `{ok:false, error:"entityId required"}`
+  - ANA-06-08 · S2S · sin `branchId` ni `employeeId` → 400 `branchId required (or provide employeeId)`
+  - ANA-06-09 · ANON → 401 `unauthorized`
+- Probable en staging: sí
+
+## POST /api/analytics/build/pattern-snapshot  ·  ANA-07
+- Servicio: analytics — analytics.router.ts:134-150
+- Consumidores: S2S — CF_TRIGGER (`postPatternSnapshot`, encodeBiz-SAAS core/analytics/infrastructure/AnalyticsServerClient.ts:34), llamado por los triggers de patrón de sucursal y de empleado (analytics.router.ts:128-133)
+- Origen: nativo del contenedor (es el destino de la CF, no un port)
+- Diferencias con la CF: sin CF equivalente
+- Autenticación: `X-Encodebiz-Key`
+- Autorización: la propia clave
+- Entrada: `entityId`; `snapshotDate` en `YYYY-MM-DD`; `rawPattern` objeto; al menos uno de `branchId` o `employeeId` (:134-142)
+- Respuesta correcta: 200 `{ok:true, snapshot}`
+- Efectos: escribe en `pattern_snapshots` de Postgres con las valoraciones de tareas de PG (`buildPatternSnapshot`)
+- Criticidad: media — alimenta el histórico de patrones y a merlin
+- Casos:
+  - ANA-07-01 · CF_TRIGGER · patrón de sucursal → 200 con `snapshot`
+  - ANA-07-02 · CF_TRIGGER · patrón de empleado con `branchId:null` → 200
+  - ANA-07-03 · S2S · misma entidad, sucursal y fecha dos veces → 200 (si hace upsert o duplica, sin confirmar)
+  - ANA-07-04 · S2S · sin `branchId` ni `employeeId` → 500 con cuerpo HTML (ZodError sin manejador)
+  - ANA-07-05 · S2S · `snapshotDate:"2026/09/01"` → 500 HTML
+  - ANA-07-06 · S2S · sin `rawPattern` → 500 HTML
+  - ANA-07-07 · ANON → 401 `unauthorized`
+- Probable en staging: sí
+- Sospechas: un payload inválido da 500 HTML en vez de 400 (services/analytics/src/app.ts:1-28 no tiene manejador de errores), y la CF lo ve como fallo del servidor.
+
+---
+
+## Resumen
+
+- Endpoints: 31 (consumidos por clientes: 17, todos del panel; la app no consume ninguno). Además, 1 webhook externo (FAC-07, Stripe) y 1 S2S con consumidor detectado (ANA-07, trigger de Functions). Sin consumidor detectado: 12 (FAC-01, FAC-02, FAC-04, FAC-08, INF-03, INF-04, EVT-01, EVT-04, EVT-11, ANA-04, ANA-05, ANA-06).
+- Casos: 334 (FAC 101 · INF 56 · EVT 101 · ANA 76)
+- Diferencias con Cloud Functions que pueden romper a un cliente:
+  - **INF-01 cambia de fuente de datos.** Lee `employee_daily_reports` precalculadas a las 02:xx locales del día siguiente, no los checklogs en vivo. Un informe que incluye hoy, o días cuya construcción no corrió, sale sin esos días o como 204 «sin datos». Además excluye a los colaboradores.
+  - **ANA-03 añade autorización.** Con `employeeId` solo entran propietario y admin: un responsable de sucursal que veía la heurística de un empleado recibe 403. AJENO, OP_WORKER y OP_OTRA_SUCURSAL también pasan a 403.
+  - **FAC-05 (y FAC-04) con suscripción inexistente responde 500 `internal_error`** donde la CF daba 400 «Subscription not found».
+  - **FAC-03 pierde los códigos traducibles.** `entity_not_configured` y `already_subscribed` (este ahora 409) salen sin `code`, así que el diccionario del panel (`suscription/*`, errorLocales.ts:61-64) ya no aplica y el toast enseña el token crudo.
+  - **FAC-03/05 hacen ahora en el caso de uso lo que antes hacía el trigger** (correo de alta, correo de baja y Checkout payPerUse). Si `onDocumentWriteSubscriptions` sigue desplegado en dev-encodebiz, habrá correos y Checkouts duplicados (el despliegue está sin confirmar).
+  - **FAC-07 cambia lo que ve Stripe.** Los eventos `invoice.*` que no son nuestros pasan de 400 a 200 y los fallos de proceso de 400 a 500 (con reintentos); `checkout.session.completed` deja de tratarse. A qué URL apunta el endpoint de dev y qué eventos tiene suscritos está sin confirmar.
+  - **EVT:** el panel ya habla el contrato del contenedor. Volver a las CF (rollback) rompería gestión y listado: rutas distintas (POST con cuerpo frente a PATCH/DELETE con id en la ruta) y formas distintas (`{data}` frente a `{ok, endpoint}`).
+  - Menores, invisibles a través del proxy: token inválido da 401 donde la CF daba 500 (ANA-01, INF-05); el 403 de ANA-01 pierde `code:"auth/unauthorized"`; el contenedor rechaza tokens revocados, que las CF aceptaban.
+- Sospechas principales:
+  - **EVT-03…EVT-10 no tienen autorización por entidad.** Cualquier usuario autenticado puede, en cualquier entidad: dar de alta un endpoint suscrito a `*` y recibir sus fichajes y datos de empleados, rotar el secreto de firma y recibirlo en claro, borrar la integración, leer los payloads completos de las entregas y reintentar entregas con solo su id (events.router.ts:57-217).
+  - **INF-01 e INF-02 no tienen autorización por entidad.** Cualquier usuario autenticado genera el registro de jornada de otra empresa: la respuesta revela nombres de centros y empleados, el fichero queda en su histórico y se dispara `report.generated` hacia sus webhooks (report.router.ts:24-62).
+  - **ANA-03 lee el patrón de sucursal de una colección global** sin filtrar por entidad (FirestoreBranchRepository.ts:131-148). Un PROP o ADMIN de cualquier entidad lee la heurística de una sucursal ajena conociendo su `branchId`.
+  - **FAC-01 y FAC-02 exponen a cualquier usuario autenticado** las suscripciones (plan, estado, `stripeSubscriptionId`) de cualquier entidad.
+  - **Propietario y admin son idénticos en el backend:** alta, baja y portal de Stripe en billing, y descarga de informes. Solo el panel oculta las pestañas de facturación a quien no es owner (page.tsx:111).
+  - **Alta de servicio (FAC-03):** manda «Servicio Activado» aunque la suscripción quede `pending`; si Stripe falla, deja un doc `pending` huérfano; repetir el alta sobre un `pending` crea una segunda suscripción en Stripe.
+  - **Webhook de Stripe (FAC-07):** una clave o un secreto que faltan se reportan como `invalid_signature`; no hay deduplicación por `event.id`; y si el endpoint de dev no tiene `invoice.upcoming`, no se recuenta nunca la cantidad.
+  - **Errores 500 donde tocaba un 4xx:** plan inexistente o entidad sin customer (FAC-03), suscripción inexistente (FAC-04/05), métrica no soportada (ANA-01), fecha mal formada (INF-04), `limit` no numérico (EVT-09). Y todo error de analytics sale como 500 **HTML** (sin manejador), también el payload inválido que manda el trigger de Functions (ANA-07).
+  - **INF-02 trunca en silencio** a 1000 tareas antes del filtro por estado.
