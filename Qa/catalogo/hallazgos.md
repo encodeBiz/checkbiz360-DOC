@@ -165,6 +165,40 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   es público—.
 - **Casos.** EMP-01-09 (cubierto en la suite como fallo esperado) y su equivalente en CHK-01.
 
+## HAL-12 · El periodo de prueba son 45 días y el producto vende 15
+
+- **Observado.** `BILLING_TRIAL_DAYS=45` en el entorno de desarrollo, y el valor por defecto
+  del código también es 45: `const TRIAL_DAYS = Number(process.env.BILLING_TRIAL_DAYS ?? 45)`.
+  Ese número se envía a Stripe como `trial_period_days` en cada alta de quien no ha estado
+  suscrito antes.
+- **Dónde.** `encodebiz-api/services/billing/src/application/Subscribe.ts:9` y `:61`;
+  `/opt/encodebiz-api-dev/.env.staging`.
+- **Comprobado.** En desarrollo, 2026-09-12. **Producción no se ha mirado** —no se toca desde
+  aquí—, así que falta confirmar qué valor tiene allí.
+- **Confirmado por producto.** El periodo de prueba debe ser de **15 días**.
+- **Efecto.** Cada alta nueva se lleva 30 días de más antes del primer cobro.
+- **Pendiente.** Ajustar la variable a 15 en desarrollo y en producción, y decidir qué se hace
+  con las suscripciones ya creadas con 45.
+
+## HAL-13 · Un plan retirado sigue en el catálogo y no se puede contratar
+
+- **Observado.** `service/checkinbiz/plan/freemium` sigue existiendo en desarrollo, con
+  `maxBranches: 1`, `maxEmployees: 10` y su lista de características. **Producto lo da por
+  deprecado**: el único plan vigente es `bronze`. En desarrollo no hay ni una sola suscripción
+  freemium: las 8 que existen son bronze.
+- **Además, no es contratable.** Ni `freemium` ni `enterprise` tienen `stripePrice`, y
+  `Subscribe` envía siempre `items: [{price: plan.stripePrice}]` a Stripe. Con el precio sin
+  definir, el alta no puede completarse. *(Deducido del código; no se ha provocado.)*
+- **Y el panel lo muestra.** Los planes se leen con `getAll('service/{servicio}/plan')`, sin
+  filtrar ninguno, y `PricingCard` tiene una rama específica que suscribe directamente cuando
+  el plan es `freemium`. También hay lógica de límites que lo menciona en las pantallas de
+  sucursales y empleados.
+- **Dónde.** Firestore de desarrollo; `encodebiz-front-saas/src/services/core/subscription.service.ts`
+  y `.../components/common/PricingCard/PricingCard.controller.tsx:85`.
+- **Comprobado.** Contra el entorno de desarrollo, 2026-09-12.
+- **Efecto.** Un cliente nuevo puede ver y pulsar un plan retirado, y el alta falla.
+- **Casos.** FAC-03.
+
 ---
 
 ## Correcciones al catálogo encontradas al ejecutar

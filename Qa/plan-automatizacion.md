@@ -253,13 +253,18 @@ para los recorridos largos y las programadas.
 | Fase | Qué | Estado |
 |---|---|---|
 | 0 | Banco de pruebas: Playwright, cerrojos, emisión de tokens, humo | Hecho — 18 casos de humo en verde |
-| 1 | Inventario: endpoints por parcela, mapa de la migración HTTP, listeners y programadas, recorrido del alta al fichaje | En curso |
-| 2 | Proyecto de preparación y recorrido del alta al fichaje, en su parte de acciones | — |
+| 1 | Inventario: endpoints por parcela, mapa de la migración HTTP, listeners y programadas, recorrido del alta al fichaje | Hecho — 8 catálogos, ~1.741 casos |
+| 2 | Proyecto de preparación y recorrido del alta al fichaje, en su parte de acciones | Hecho — el mundo se crea entero por los endpoints reales en ~27 s |
 | 3 | La cadena de efectos del recorrido: listeners, snapshots y programadas forzadas | — |
-| 4 | Contratos por criticidad: fichaje y login; tareas; empleados, sucursales y empresas; documentos; facturación e informes | — |
+| 4 | Contratos por criticidad: fichaje y login; tareas; empleados, sucursales y empresas; documentos; facturación e informes | En curso — 82 pruebas en verde; fichaje cubierto en su jornada completa |
 | 5 | Comparativas función/contenedor, en las 34 rutas con función desplegada en desarrollo | — |
 | 6 | Ejecución en CI tras cada despliegue a staging | — |
 | 7 | Interfaz: panel en navegador y app con Maestro | — |
 
-Para pasar de la fase 1 a la 2 hacen falta credenciales de desarrollo en `qa/.env`: el
-service account de `dev-encodebiz` y la clave web de Firebase.
+Las credenciales ya están: la cuenta de servicio `qa-suite@dev-encodebiz` con tres permisos
+—crear usuarios de prueba, leer y escribir Firestore y lanzar programadas—, su clave en
+`qa/secrets/` y en GitHub como secreto `QA_FIREBASE_SA_DEV`.
+
+Lo que queda por delante, por orden de valor: seguir la fase 4 por lo más crítico (el resto de
+fichaje, login y permisos de tareas), y después la cadena de efectos de la fase 3 —los
+listeners y los snapshots que se disparan tras un fichaje—, que es lo que hoy no mira nadie.
