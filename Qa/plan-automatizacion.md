@@ -269,13 +269,32 @@ Pendiente: una ejecución nocturna para los recorridos largos y las programadas.
 **Lo que enseñó la primera ejecución de verdad** (2026-09-12, estreno del servidor propio):
 no falló el producto, falló la suite. La preparación de un fichero —crear seis trabajadores,
 cada uno con su alta, su responsabilidad y su sesión— cabía de sobra en el plazo por defecto
-desde un portátil y no cabía desde el runner de GitHub. El servidor nuevo responde en torno a
-**2 s por petición** frente a los 200 ms del anterior, así que los plazos de preparación se
-subieron a 150 s en los ficheros que crean gente.
+desde un portátil y no cabía desde el runner de GitHub. Los plazos de preparación se subieron
+a 150 s en los ficheros que crean gente.
 
 Es el fallo barato y merece la pena señalarlo: una suite que solo se ha ejecutado en la
-máquina de quien la escribió tiene plazos calibrados para esa máquina, y eso no se descubre
-hasta que corre en otra.
+máquina de quien la escribió tiene los plazos calibrados para esa máquina, y eso no se
+descubre hasta que corre en otra.
+
+### Por qué el entorno nuevo tarda más por operación
+
+Una operación de fichaje pasó de 200-300 ms a **1,5-2 s**. La causa está medida y **no es el
+servidor**: es distancia de red a Google.
+
+- Ida y vuelta a `firestore.googleapis.com` — VPS de desarrollo (Roubaix): **76 ms**. Servidor
+  de producción (Fráncfort): **1,6 ms**. Son ~74 ms extra por viaje, y un fichaje encadena
+  varias escrituras a Firestore.
+- El VPS **no está ahogado**: robo de CPU del hipervisor 0, carga 0,30 sobre 4 núcleos,
+  escritura sincronizada a disco 0,35 ms, 4,8 GB de RAM libres. Descartado.
+- Las dos máquinas están en Europa y usan el mismo resolutor de OVH, así que tampoco es DNS.
+
+Lo que **no** está establecido es por qué la ruta difiere; lo más probable es que Fráncfort
+tenga un punto de presencia de Google al lado y Roubaix no, pero eso es peering de OVH y queda
+fuera de nuestro alcance. **Decisión tomada: no se toca, es el entorno de desarrollo.**
+
+Para QA solo importa el presupuesto: el job tiene 20 minutos y la suite tarda 4. Si algún día
+se acerca, lo que hay que hacer es **paralelizar las preparaciones** que hoy crean trabajadores
+en serie, no perseguir el servidor.
 
 ---
 
