@@ -232,6 +232,25 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   el comportamiento observado en lugar de pintarlo en rojo.
 - **Casos.** CHK-09-16.
 
+## HAL-16 · Con `isAdmin` en texto, un empleado firma el fichaje con el uid de quien quiera
+
+- **Observado.** `POST /api/v1/checkinbiz/checklogs` con `isAdmin:"true"` —la cadena, no el
+  booleano— y un `uid` de propietario en el cuerpo, autenticado **solo con la sesión de
+  trabajador de la app**, responde `201` y el fichaje queda con `metadata.updated.uid` igual al
+  uid enviado en el cuerpo. Medido en desarrollo: la sesión era de un empleado y el fichaje
+  salió firmado por el propietario de la empresa.
+- **Dónde.** El enrutador compara con igualdad estricta (`checklog.router.ts:32`,
+  `isAdmin === true`), así que `"true"` entra por la vía de la sesión de trabajador; el
+  controlador lo comprueba de forma laxa (`createChecklog.controller.ts:132`) y da por bueno el
+  `uid` del cuerpo, con el que llama a `canWrite`. Como ese uid sí es de un administrador, el
+  permiso pasa —y de paso se salta el control de dispositivo de confianza (`:175`)—.
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12. Heredado
+  idéntico de la Cloud Function.
+- **Efecto.** Con la sesión de un empleado y un uid de administrador se ficha sin dispositivo de
+  confianza y el registro queda a nombre de otro. El uid tampoco es difícil de conseguir: queda
+  escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
+- **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
+
 ---
 
 ## Correcciones al catálogo encontradas al ejecutar

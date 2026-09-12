@@ -316,7 +316,7 @@ Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene 
   - CHK-08-82 · EMP_JWT · cuerpo JSON mal formado → `400` HTML del manejador por defecto de Express.
   - CHK-08-83 · EMP_JWT · fallo de Firestore durante el alta → `500 {error:<mensaje>, code:"checklog/internal_error"}`.
 - Sospechas:
-  - **Salto del dispositivo de confianza**: `isAdmin` no booleano (`"true"`, `1`) lleva a la vía del JWT de empleado, pero el controlador lo trata como admin y confía en `req.body.uid` (`checklog.router.ts:32` frente a `createChecklog.controller.ts:132-138,175`). Con el `uid` de un propietario o administrador, un empleado ficha sin dispositivo de confianza y firma el fichaje con ese `uid`. Heredado idéntico de la CF.
+  - **Confirmado, ya no es sospecha — HAL-16. Salto del dispositivo de confianza**: `isAdmin` no booleano (`"true"`, `1`) lleva a la vía del JWT de empleado, pero el controlador lo trata como admin y confía en `req.body.uid` (`checklog.router.ts:32` frente a `createChecklog.controller.ts:132-138,175`). Con el `uid` de un propietario o administrador, un empleado ficha sin dispositivo de confianza y firma el fichaje con ese `uid`. Heredado idéntico de la CF.
   - No se comprueba el `status` del empleado: un `fired`, `inactive` o `pending` con un `sessionToken` antiguo sigue fichando (CHK-08-23).
   - La zona del día (calendario) y la de las horas (sucursal o empleado) pueden diferir (CHK-08-70): `resolveDay` se llama sin `tzHint` (`:205-209`).
   - Las ausencias con rango (`absences`) no bloquean el fichaje; solo los `holidays` (CHK-08-28).

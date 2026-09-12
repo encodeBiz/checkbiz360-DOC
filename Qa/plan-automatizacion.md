@@ -201,9 +201,16 @@ catálogo sin traducir nada, y la cobertura es una cuenta simple: casos con prue
 casos del catálogo.
 
 **Dónde va la cobertura hoy** (2026-09-12, medida sobre la lista real de pruebas, no estimada):
-96 casos del catálogo cubiertos de ~1.741 —un 5,5 %—, más 18 comprobaciones de entorno que no
-salen del catálogo. Por módulo: fichaje y calendario 55, tareas 20, documentos 10, empleados 5,
+116 casos del catálogo cubiertos de ~1.741 —un 6,7 %—, más 18 comprobaciones de entorno que no
+salen del catálogo. Por módulo: fichaje y calendario 75, tareas 20, documentos 10, empleados 5,
 colaboradores 4, facturación 2, y cero en sucursales, empresas, informes, analítica y webhooks.
+
+Dentro de fichaje, el endpoint de crear fichaje (CHK-08) va por 35 de sus 83 casos: cubiertos
+la jornada normal, el orden de los fichajes, la vía del panel y lo básico de la geocerca.
+**Queda su bloque más grande: horarios** —días sin turno, festivos, tolerancias, jornada
+partida, rango estricto— y los casos que piden un empleado o una sucursal en un estado
+concreto: dispositivo de confianza, responsabilidad retirada, sucursal inactiva, empleado dado
+de baja y trabajo remoto.
 
 Cubrir los 1.741 **no es el objetivo** y nadie lo hace. El orden lo marca la criticidad: lo que
 más se usa y lo que más duele si se rompe.
@@ -264,7 +271,7 @@ para los recorridos largos y las programadas.
 | 1 | Inventario: endpoints por parcela, mapa de la migración HTTP, listeners y programadas, recorrido del alta al fichaje | Hecho — 8 catálogos, ~1.741 casos |
 | 2 | Proyecto de preparación y recorrido del alta al fichaje, en su parte de acciones | Hecho — el mundo se crea entero por los endpoints reales en ~27 s |
 | 3 | La cadena de efectos del recorrido: listeners, snapshots y programadas forzadas | — |
-| 4 | Contratos por criticidad: fichaje y login; tareas; empleados, sucursales y empresas; documentos; facturación e informes | En curso — 115 pruebas en verde; cubiertos la jornada completa de fichaje, la corrección de jornada y la jornada manual |
+| 4 | Contratos por criticidad: fichaje y login; tareas; empleados, sucursales y empresas; documentos; facturación e informes | En curso — 135 pruebas en verde; cubiertos la jornada completa, el orden de los fichajes, la vía del panel, la corrección de jornada y la jornada manual |
 | 5 | Comparativas función/contenedor, en las 34 rutas con función desplegada en desarrollo | — |
 | 6 | Ejecución en CI tras cada despliegue a staging | — |
 | 7 | Interfaz: panel en navegador y app con Maestro | — |
