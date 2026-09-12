@@ -362,6 +362,12 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   mudanza de servidor y su arreglo, el webhook apuntaba a un host muerto (HAL-18).
 - **Lo que falta.** No hay ninguna comprobación posterior de que lo facturado coincida con lo que
   debía facturarse. Una factura a 0 € de una empresa con empleados activos debería chillar.
+- **Y medido de la forma correcta, el mecanismo FUNCIONA.** Poniendo el fin de la prueba a dos
+  minutos vista en vez de «ahora», contra desarrollo el 2026-09-12: a los **21 s** llegó el aviso
+  previo y la cantidad pasó de `0` a `5`; a los **138 s** se emitió la factura por **10,00 €**,
+  con la línea `5 × Checkbiz Plan Bronze`. Es decir: el diseño es correcto y el recálculo hace su
+  trabajo **siempre que el aviso llegue**. Todo el riesgo está en que no llegue, y eso ya ocurrió
+  (HAL-18). Lo que sigue faltando es una comprobación posterior de que lo facturado cuadre.
 - **Casos.** Bloque 1. La prueba fiel **no puede usar `trial_end: "now"`**: eso se salta los dos
   avisos de los que depende el diseño. Hay que recorrer la secuencia de eventos, con un reloj de
   prueba de Stripe o con un fin de prueba a unos minutos vista.
