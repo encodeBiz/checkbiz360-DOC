@@ -133,6 +133,50 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Efecto.** Un mensaje de error menos claro en la app; no bloquea el fichaje.
 - **Casos.** Bloque de creación de fichaje (catálogo CHK).
 
+## HAL-10 · Un anónimo puede averiguar si una tarea existe
+
+- **Observado.** `POST /api/v1/tasks/:taskId/assignments` con un `entityId` y un `taskId`
+  cualesquiera, **sin ninguna credencial**, responde `404 {"code":"task/not_found"}` cuando la
+  tarea no existe, y solo llega al `401` cuando existe. La diferencia entre las dos respuestas
+  revela la existencia del recurso a quien no se ha identificado. El 404 de dominio se
+  distingue además del 404 de ruta inexistente, que es `{"ok":false,"error":"not_found"}`.
+- **Dónde.** `encodebiz-api/services/tasks/src/interfaces/http/task/assignTaskWorkers.controller.ts`:
+  valida el cuerpo, **busca la tarea**, y solo después llama a `resolveTaskActor`. Otros
+  controladores de tareas siguen el mismo orden.
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12.
+- **Efecto.** Permite sondear qué identificadores de tarea existen en una empresa sin tener
+  cuenta. El contenido no se filtra; la existencia y el estado, sí.
+- **Casos.** TSK-09 y el resto de rutas de tarea que resuelven el actor después de buscar.
+
+## HAL-11 · Una entrada mal formada revienta y devuelve la traza interna
+
+- **Observado.** Enviando como `token` el texto `null` codificado en base64, las dos puertas de
+  validación de empleado responden `500`:
+  - `/api/v1/employees/validate` → `{"ok":false,"error":"internal_error"}`.
+  - `/api/v1/checkinbiz/auth/validate` → `{"message":"Internal server error","code":"staff/internal_error","errors":["Cannot destructure property 'employeeId' of 'decoded' as it is null."]}`.
+  La segunda **devuelve al cliente el mensaje de la excepción de JavaScript**, con el nombre de
+  la variable interna.
+- **Dónde.** `encodebiz-api/services/checkinbiz/src/interfaces/http/auth/validateEmployee.controller.ts`
+  y su gemelo en `packages/shared/src/checkbiz/employees/validateEmployee.ts`: `JSON.parse`
+  devuelve `null` y la desestructuración lanza.
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12.
+- **Efecto.** Una entrada que debería rechazarse con un `400` provoca un error del servidor, y
+  en una de las dos rutas se filtra detalle del código a quien no tiene credencial —el endpoint
+  es público—.
+- **Casos.** EMP-01-09 (cubierto en la suite como fallo esperado) y su equivalente en CHK-01.
+
+---
+
+## Correcciones al catálogo encontradas al ejecutar
+
+Las pruebas también corrigen el inventario. Se anotan aquí para no repetir el error.
+
+- **TSK-09-01.** El catálogo decía que asignar «sin `employeeIds`» devuelve `400
+  task/bad_request`. No es cierto: el controlador desestructura con `employeeIds = []`, y una
+  lista vacía sí es un array, así que la comprobación pasa y la petición sigue hasta el
+  `404`. El `400` solo se produce cuando `employeeIds` **no es un array** (una cadena, por
+  ejemplo). Corregido en la prueba y pendiente de corregir en `tareas.md`.
+
 ---
 
 ## Sospechas graves pendientes de verificar

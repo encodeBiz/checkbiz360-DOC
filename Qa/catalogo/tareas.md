@@ -477,7 +477,7 @@ Estados: `draft`, `assigned`, `in_progress`, `completed`, `validated`, `rejected
   - Solo a los recién asignados: evento `task.assigned` y notificación `task_assigned`, esta **esperada con `await`** (`:68-71`).
 - Criticidad: alta — reparto del trabajo desde el panel y desde la app.
 - Casos:
-  - TSK-09-01 · ANON · `employeeIds` ausente o no array → 400 `task/bad_request`
+  - TSK-09-01 · ANON · `employeeIds` **que no es un array** (una cadena, un número) → 400 `task/bad_request`. Corregido el 2026-09-12 al ejecutarlo: con `employeeIds` **ausente** NO da 400, porque el controlador desestructura con `employeeIds = []` y una lista vacía pasa la comprobación; la petición sigue hasta el 404.
   - TSK-09-02 · ANON · tarea inexistente → 404 `task/not_found`
   - TSK-09-03 · ANON · tarea existente → 401 `auth/unauthorized`
   - TSK-09-04 · TOKEN_INVALIDO → 401 `auth/unauthorized`
