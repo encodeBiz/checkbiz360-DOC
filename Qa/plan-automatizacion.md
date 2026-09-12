@@ -298,18 +298,69 @@ en serie, no perseguir el servidor.
 
 ---
 
-## 11. Fases
+## 11. El objetivo es encontrar errores, no acumular verdes
 
-| Fase | Qué | Estado |
-|---|---|---|
-| 0 | Banco de pruebas: Playwright, cerrojos, emisión de tokens, humo | Hecho — 18 casos de humo en verde |
-| 1 | Inventario: endpoints por parcela, mapa de la migración HTTP, listeners y programadas, recorrido del alta al fichaje | Hecho — 8 catálogos, ~1.741 casos |
-| 2 | Proyecto de preparación y recorrido del alta al fichaje, en su parte de acciones | Hecho — el mundo se crea entero por los endpoints reales en ~27 s |
-| 3 | La cadena de efectos del recorrido: listeners, snapshots y programadas forzadas | — |
-| 4 | Contratos por criticidad: fichaje y login; tareas; empleados, sucursales y empresas; documentos; facturación e informes | En curso — 135 pruebas en verde; cubiertos la jornada completa, el orden de los fichajes, la vía del panel, la corrección de jornada y la jornada manual |
-| 5 | Comparativas función/contenedor, en las 34 rutas con función desplegada en desarrollo | — |
-| 6 | Ejecución en CI tras cada despliegue a staging | Funcionando desde el 2026-09-12, con el estreno del servidor propio |
-| 7 | Interfaz: panel en navegador y app con Maestro | — |
+Conviene decirlo antes de la hoja de ruta, porque decide cómo se escribe cada prueba.
+
+Una suite se puede escribir de dos maneras. Una es preguntarle al sistema lo que ya se sabe
+que contesta bien: sale verde, da tranquilidad y **no sirve para nada**. La otra es ir a
+buscar dónde se rompe: los caminos que nadie recorre, el actor que no debería poder, el dato
+en el límite, el efecto que ocurre por detrás y nadie mira.
+
+De ahí tres reglas que ya están en uso y que no se negocian:
+
+- **La prueba afirma lo correcto, nunca lo observado**, cuando las dos cosas difieren. Si hoy
+  el sistema hace algo que no debe, la prueba escribe lo que debería hacer y se marca como
+  fallo conocido con su referencia. Copiar el fallo dentro de la prueba lo convierte en
+  requisito y lo entierra para siempre.
+- **Un verde solo vale lo que vale su aserción.** Comprobar que responde `200` no es
+  comprobar nada: hay que mirar qué quedó escrito. Un `200` con el dato mal guardado es peor
+  que un `500`, porque nadie se entera.
+- **Cuando una prueba se pone roja, la primera hipótesis es que el producto está mal**, no
+  que la prueba está mal. Solo después de mirarlo se decide. Al revés se acaba ajustando la
+  prueba hasta que pase, que es la forma educada de esconder un fallo.
+
+Y lo que no se sabe, se dice que no se sabe. Un hallazgo nombra el hecho medido; si la causa
+no está establecida, se escribe que no lo está.
+
+---
+
+## 12. Los bloques, en el orden en que se atacan
+
+La hoja de ruta va **por el recorrido de un cliente**, no por endpoints sueltos. Y cada
+bloque incluye **los efectos que provoca**, no solo la respuesta: el índice de búsqueda, las
+coordenadas, el espejo en Postgres y el cobro se comprueban junto al acto que los dispara.
+
+Esto corrige el planteamiento anterior, que apartaba los efectos a una fase futura. Apartados
+nunca se prueban: el orden por endpoints deja siempre lo asíncrono para el final, y el final
+no llega.
+
+**Bloque 1 · Puesta en marcha.** Alta de usuario y de empresa con su CRUD completo, activación
+de checkinbiz, y aparejado a eso lo que el alta desencadena: las entradas del índice de
+búsqueda, las coordenadas de la dirección y el alta en facturación. Después, horarios,
+sucursales y empleados. Y para cerrarlo, **adelantar los 15 días de prueba** y comprobar que
+el cobro sale bien y que la factura llega.
+
+**Bloque 2 · Fichajes**, con todo lo que arrastran.
+
+**Bloque 3 · Módulos menos críticos**: tareas, documental e informes.
+
+**Bloque 4 · Complementarios**: disponibilidad y calendario.
+
+**Bloque 5 · Postgres**: el espejo y todo lo que se calcula ahí solo.
+
+**Bloque 6 · Merlin**, y las programadas de madrugada, disparadas a mano.
+
+### Lo que ya está construido
+
+El banco de pruebas (Playwright, los dos cerrojos, la emisión de tokens y 18 casos de humo),
+el inventario completo (8 catálogos, ~1.741 casos), el mundo de la ejecución que se crea por
+los endpoints reales, la ejecución automática en CI tras cada despliegue, y del bloque 2 la
+mayor parte del fichaje: jornada completa, orden de los fichajes, vía del panel, horarios,
+geocerca, corrección de jornada y jornada manual.
+
+Queda pendiente y sin fecha: las comparativas función/contenedor —solo cubren 34 rutas
+secundarias, ninguna crítica— y las pruebas de interfaz con navegador y con Maestro.
 
 Las credenciales ya están: la cuenta de servicio `qa-suite@dev-encodebiz` con tres permisos
 —crear usuarios de prueba, leer y escribir Firestore y lanzar programadas—, su clave en

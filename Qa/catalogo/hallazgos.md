@@ -165,20 +165,23 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   es público—.
 - **Casos.** EMP-01-09 (cubierto en la suite como fallo esperado) y su equivalente en CHK-01.
 
-## HAL-12 · El periodo de prueba son 45 días y el producto vende 15
+## HAL-12 · ~~El periodo de prueba son 45 días y el producto vende 15~~ · CORREGIDO en desarrollo
 
-- **Observado.** `BILLING_TRIAL_DAYS=45` en el entorno de desarrollo, y el valor por defecto
-  del código también es 45: `const TRIAL_DAYS = Number(process.env.BILLING_TRIAL_DAYS ?? 45)`.
+- **Observado en su momento.** `BILLING_TRIAL_DAYS=45` en el entorno de desarrollo, y el valor
+  por defecto del código también es 45: `const TRIAL_DAYS = Number(process.env.BILLING_TRIAL_DAYS ?? 45)`.
   Ese número se envía a Stripe como `trial_period_days` en cada alta de quien no ha estado
   suscrito antes.
 - **Dónde.** `encodebiz-api/services/billing/src/application/Subscribe.ts:9` y `:61`;
   `/opt/encodebiz-api-dev/.env.staging`.
-- **Comprobado.** En desarrollo, 2026-09-12. **Producción no se ha mirado** —no se toca desde
-  aquí—, así que falta confirmar qué valor tiene allí.
 - **Confirmado por producto.** El periodo de prueba debe ser de **15 días**.
-- **Efecto.** Cada alta nueva se lleva 30 días de más antes del primer cobro.
-- **Pendiente.** Ajustar la variable a 15 en desarrollo y en producción, y decidir qué se hace
-  con las suscripciones ya creadas con 45.
+- **Corregido.** El 2026-09-12 por la tarde, comprobado en el servidor de desarrollo en los dos
+  sitios que importan: `BILLING_TRIAL_DAYS=15` en `/opt/encodebiz-api-dev/.env.staging` **y** el
+  contenedor `billing` en marcha devolviendo `15`. Que el fichero esté bien no basta: si el
+  contenedor no se recreó después del cambio, sigue con el valor viejo.
+- **Lo que queda.** El valor por defecto del **código** sigue siendo 45, así que un entorno que
+  no declare la variable se llevaría 30 días de más en silencio. Y **producción no se ha
+  mirado** —no se toca desde aquí—: falta confirmar qué valor tiene allí y qué se hace con las
+  suscripciones ya creadas con 45.
 
 ## HAL-13 · Un plan retirado sigue en el catálogo y no se puede contratar
 
