@@ -251,6 +251,25 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-17 · Apagar la semana entera abre el fichaje en vez de cerrarlo
+
+- **Observado.** Un horario con los **siete días** deshabilitados no impide fichar: el fichaje
+  sale `201` con `scheduleApplied.source:"default"` y una ventana abierta de 00:00 a 23:59.
+  Deshabilitar **un solo día** sí lo cierra (`400 checklog/day_disabled`). La diferencia está en
+  si queda algún turno en la semana, no en lo que diga `disabled`.
+- **Dónde.** `createChecklog.controller.ts:210-229`: `noConfig` agrupa «no hay calendario» con
+  «no hay un solo turno en toda la semana» (`hasAnyShifts`), y en ese caso construye un día
+  abierto. Es un valor por defecto **deliberado** —el comentario del código lo dice: el fichaje
+  no debe romper si nadie ha configurado nada—, pero atrapa también a quien sí configuró y lo
+  que configuró fue «aquí no se trabaja».
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12.
+- **Efecto.** Una empresa o una sucursal que apaga los siete días desde el panel obtiene lo
+  contrario de lo que pidió: fichaje abierto las 24 horas, sin aviso. **Decisión de producto
+  pendiente**: si el valor por defecto solo debe aplicarse cuando no existe `calendar/config`,
+  basta con no mirar `hasAnyShifts`.
+- **Casos.** CHK-08-31 (la suite fija el comportamiento observado) y CHK-08-24 (un día suelto sí
+  cierra).
+
 ---
 
 ## Correcciones al catálogo encontradas al ejecutar

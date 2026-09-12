@@ -205,14 +205,14 @@ catálogo sin traducir nada, y la cobertura es una cuenta simple: casos con prue
 casos del catálogo.
 
 **Dónde va la cobertura hoy** (2026-09-12, medida sobre la lista real de pruebas, no estimada):
-116 casos del catálogo cubiertos de ~1.741 —un 6,7 %—, más 18 comprobaciones de entorno que no
-salen del catálogo. Por módulo: fichaje y calendario 75, tareas 20, documentos 10, empleados 5,
+127 casos del catálogo cubiertos de ~1.741 —un 7,3 %—, más 18 comprobaciones de entorno que no
+salen del catálogo. Por módulo: fichaje y calendario 86, tareas 20, documentos 10, empleados 5,
 colaboradores 4, facturación 2, y cero en sucursales, empresas, informes, analítica y webhooks.
 
-Dentro de fichaje, el endpoint de crear fichaje (CHK-08) va por 35 de sus 83 casos: cubiertos
-la jornada normal, el orden de los fichajes, la vía del panel y lo básico de la geocerca.
-**Queda su bloque más grande: horarios** —días sin turno, festivos, tolerancias, jornada
-partida, rango estricto— y los casos que piden un empleado o una sucursal en un estado
+Dentro de fichaje, el endpoint de crear fichaje (CHK-08) va por **46 de sus 83 casos**:
+cubiertos la jornada normal, el orden de los fichajes, la vía del panel, lo básico de la
+geocerca y el bloque de horarios —día sin jornada, festivo, tolerancia, jornada partida y rango
+estricto—. Lo que queda son casos que piden un empleado o una sucursal en un **estado**
 concreto: dispositivo de confianza, responsabilidad retirada, sucursal inactiva, empleado dado
 de baja y trabajo remoto.
 
@@ -261,9 +261,21 @@ código.
 
 ## 10. Dónde corre
 
-Ahora, en local: `cd qa && npm test`. Después, en GitHub Actions, como un paso que se
-ejecuta al terminar el despliegue de staging y publica el informe; y una ejecución nocturna
-para los recorridos largos y las programadas.
+En local con `cd qa && npm test`, y en GitHub Actions como un paso del propio workflow de
+staging: `needs: deploy`, así que prueba lo que se acaba de desplegar y no la versión
+anterior. Publica el informe como artefacto y un resumen en la página de la ejecución.
+Pendiente: una ejecución nocturna para los recorridos largos y las programadas.
+
+**Lo que enseñó la primera ejecución de verdad** (2026-09-12, estreno del servidor propio):
+no falló el producto, falló la suite. La preparación de un fichero —crear seis trabajadores,
+cada uno con su alta, su responsabilidad y su sesión— cabía de sobra en el plazo por defecto
+desde un portátil y no cabía desde el runner de GitHub. El servidor nuevo responde en torno a
+**2 s por petición** frente a los 200 ms del anterior, así que los plazos de preparación se
+subieron a 150 s en los ficheros que crean gente.
+
+Es el fallo barato y merece la pena señalarlo: una suite que solo se ha ejecutado en la
+máquina de quien la escribió tiene plazos calibrados para esa máquina, y eso no se descubre
+hasta que corre en otra.
 
 ---
 
@@ -277,7 +289,7 @@ para los recorridos largos y las programadas.
 | 3 | La cadena de efectos del recorrido: listeners, snapshots y programadas forzadas | — |
 | 4 | Contratos por criticidad: fichaje y login; tareas; empleados, sucursales y empresas; documentos; facturación e informes | En curso — 135 pruebas en verde; cubiertos la jornada completa, el orden de los fichajes, la vía del panel, la corrección de jornada y la jornada manual |
 | 5 | Comparativas función/contenedor, en las 34 rutas con función desplegada en desarrollo | — |
-| 6 | Ejecución en CI tras cada despliegue a staging | — |
+| 6 | Ejecución en CI tras cada despliegue a staging | Funcionando desde el 2026-09-12, con el estreno del servidor propio |
 | 7 | Interfaz: panel en navegador y app con Maestro | — |
 
 Las credenciales ya están: la cuenta de servicio `qa-suite@dev-encodebiz` con tres permisos

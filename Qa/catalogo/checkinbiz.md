@@ -254,14 +254,14 @@ Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene 
   - CHK-08-22 · EMP_JWT · sucursal sin campo `status` → se trata como activa → `201`.
   - CHK-08-23 · EMP_INACTIVO (`status` `fired`, `inactive`, `vacation` o `pending`) · resto del escenario base → `201` (el estado del empleado no se comprueba).
 
-  - CHK-08-24 · EMP_JWT · el día de la semana tiene `disabled:true` en el horario efectivo → `400 {error:"Day disabled in effective schedule", code:"checklog/day_disabled"}`; sin registro; evento `attendance.clock_rejected` con `reason:"no_shift_scheduled"`.
+  - CHK-08-24 · EMP_JWT · el día de la semana tiene `disabled:true` en el horario efectivo **y el resto de la semana conserva turnos** → `400 {error:"Day disabled in effective schedule", code:"checklog/day_disabled"}`; sin registro; evento `attendance.clock_rejected` con `reason:"no_shift_scheduled"`. La coletilla no es un detalle: con los siete días apagados el resultado es el contrario (CHK-08-31, HAL-17).
   - CHK-08-25 · EMP_JWT · el día no aparece en el horario (clave ausente) pero otros días tienen turnos → `400 code:"checklog/day_disabled"`.
   - CHK-08-26 · EMP_JWT · el día existe con `shifts: []` y otros días tienen turnos → `400 code:"checklog/day_disabled"`.
   - CHK-08-27 · EMP_JWT · festivo de entidad, sucursal o empleado con `date` = fecha local de hoy → `400 {error:"Holiday", code:"checklog/day_disabled"}`.
   - CHK-08-28 · EMP_JWT · ausencia (`absences[]`, rango) que cubre hoy, sin festivo → `201` (las ausencias no se miran; solo `holidays`, `:290-294`).
   - CHK-08-29 · EMP_JWT · la entidad no tiene `calendar/config` → `201`; `scheduleApplied.source:"default"`, turno 00:00-23:59, `scheduleDay.weekPlannedMinutes` = 7×1439.
   - CHK-08-30 · EMP_JWT · calendario sin `timezone` en ningún nivel → `201` con día abierto; zona = `branch.address.timeZone` o `UTC`.
-  - CHK-08-31 · EMP_JWT · calendario con zona pero sin ningún turno en la semana → `201` con día abierto.
+  - CHK-08-31 · EMP_JWT · calendario con zona pero sin ningún turno en la semana —incluidos los siete días con `disabled:true`— → `201` con día abierto, `scheduleApplied.source:"default"`, turno 00:00-23:59. **Ver HAL-17**: apagar la semana entera abre el fichaje en lugar de cerrarlo.
   - CHK-08-32 · EMP_JWT · override de sucursal con `overridesDisabled:true` → se ignora el horario de la sucursal y rige el de la entidad (`sources.schedule:"entity"`).
   - CHK-08-33 · EMP_JWT · `checkin` antes de inicio − tolerancia (08:40 con turno 09:00 y 15 min) → `400 {error:"Check out of schedule", code:"checklog/out_of_schedule"}`; evento rechazado `out_of_schedule`.
   - CHK-08-34 · EMP_JWT · `checkin` dentro de la tolerancia (08:50), `enableDayTimeRange:false` → `201`; `timestamp` = hora real, `adjustedTimestamp:null`.
