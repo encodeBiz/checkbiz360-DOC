@@ -72,6 +72,13 @@ posible, tal como lo describe el catálogo. Esto es lo que demuestra la migraci�
 espera un 403 con `task/unauthorized` y el contenedor devuelve un 500, aparece aquí. Son
 pruebas rápidas e independientes entre sí.
 
+**Y lo que no tiene endpoint.** Hay comportamientos que ningún cliente provoca con una petición
+—lo que decide un cron, lo que hace Stripe cuando se acaba una prueba, lo que escribe un
+trigger— y son justo los que nadie mira. Ahí la suite habla con el sistema de terceros por su
+API para colocar la condición —adelantar un `trial_end`, cerrar una factura— y después mide el
+efecto en el nuestro. No se simula nada: se le pide al sistema de verdad que haga ahora lo que
+iba a hacer luego.
+
 **Recorridos de punta a punta.** Pocas, lentas y las que más valen. Una empresa nace por el
 alta real, se configura —horarios, sucursal, empleado, responsabilidad—, su trabajador entra
 en la app, activa el segundo factor, ficha, y la prueba comprueba después la cadena de
@@ -304,6 +311,38 @@ a 150 s en los ficheros que crean gente.
 Es el fallo barato y merece la pena señalarlo: una suite que solo se ha ejecutado en la
 máquina de quien la escribió tiene los plazos calibrados para esa máquina, y eso no se
 descubre hasta que corre en otra.
+
+### Cómo se prueba un cobro que ocurre dentro de quince días
+
+El final del periodo de prueba es el momento más caro del producto y el que nadie mira nunca,
+porque para verlo hay que esperar. El truco es el mismo de los horarios —**mover el calendario,
+nunca el reloj**— aplicado al dinero: se adelanta el `trial_end` de la suscripción con la API de
+Stripe y Stripe hace exactamente lo que haría el día que tocase. No se inventa ninguna factura.
+
+Lo que se comprueba es un número, y es un número que ya salió mal una vez. Una empresa se
+suscribe el día que se da de alta, cuando no tiene un solo empleado, así que la suscripción nace
+con **cero** unidades; la gente llega después. Si nadie vuelve a contar la plantilla antes de
+facturar, la factura sale a 0,00 € y el cliente usa el servicio gratis. La suite lo mide de
+punta a punta: 0 unidades al empezar, 14 personas en plantilla, y una factura de **28,00 €** con
+la línea «14 × Checkbiz Plan Bronze». Si sale 0 € habiendo gente, es rojo y lo dice con esas
+palabras.
+
+Dos detalles que cuestan una tarde si no se saben:
+
+- **`trial_end: "now"` no vale.** Corta la prueba en seco y Stripe se salta
+  `customer.subscription.trial_will_end`, que es justo donde nuestro backend cuenta la plantilla
+  y ajusta las unidades. Cortando en seco, la factura sale con las unidades viejas. Hay que
+  dejar el fin de la prueba en un instante **futuro**.
+- **Stripe emite el ciclo en borrador** y lo cierra por su cuenta alrededor de una hora después.
+  El importe ya está decidido ahí, así que la parte del dinero se comprueba sobre el borrador;
+  pero el correo con el PDF y el evento `invoice.issued` cuelgan del cierre, y para eso se le
+  pide a Stripe que cierre y cobre ahora — otra vez, hacer ahora lo que iba a hacer luego.
+
+Va en un **proyecto aparte y el último**, y las dos razones importan. El importe sale de la
+plantilla que existe *cuando se cobra*, y la plantilla la van creando los demás ficheros: si
+esto corriera antes cobraría por dos personas en vez de por catorce y saldría verde igual. Y
+adelantar el fin de la prueba no tiene vuelta atrás para esa empresa, así que nada que se
+ejecute después puede contar con una empresa en periodo de prueba.
 
 ### La regla más cara de la suite: lo del mundo se usa, no se cambia
 

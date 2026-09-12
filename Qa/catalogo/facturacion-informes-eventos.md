@@ -260,9 +260,9 @@ Análisis estático del 2026-09-11 sobre `encodebiz-api` (rama develop), `encode
   - FAC-07-06 · STRIPE · `invoice.finalized` sin `invoice_pdf` → 500 `handler_error`; registro `failed` / `sin_pdf`
   - FAC-07-07 · STRIPE · `invoice.finalized` con `BILLING_SEND_INVOICE_DISABLED=true` → 200; `skipped` / `envio_desactivado`
   - FAC-07-08 · STRIPE · `invoice.paid` con doc de ciclo existente → 200; doc `status:"PAID"`
-  - FAC-07-09 · STRIPE · `invoice.paid` sin doc de ciclo (factura de suscripción) → 200; sin escrituras
+  - FAC-07-09 · STRIPE · `invoice.paid` sin doc de ciclo (factura de suscripción) → 200; sin escrituras. Medido el 2026-09-12, y con historia: al cobrar aparecían documentos en `entities/{e}/invoices/` con la factura entera de Stripe dentro, escritos por la **Cloud Function retirada**, que seguía suscrita a `invoice.paid` en desarrollo. Se desactivó ese endpoint el mismo día y la colección vuelve a quedar vacía. **Ver HAL-31**: el documento encendía `processInvoices`, cuyo siguiente paso es emitir otra factura, y esa función sigue desplegada.
   - FAC-07-10 · STRIPE · `invoice.payment_failed` con doc de ciclo → 200; `FAILED` con `error.code:"payment_failed"`; evento `invoice.payment_failed` a los endpoints suscritos
-  - FAC-07-11 · STRIPE · `invoice.upcoming` de una suscripción checkinbiz → 200; `quantity` = recuento de empleados
+  - FAC-07-11 · STRIPE · `invoice.upcoming` de una suscripción checkinbiz → 200; `quantity` = recuento de empleados. **Se cubre por `customer.subscription.trial_will_end`**, que comparte cuerpo (`syncQuantity`): `invoice.upcoming` lo manda Stripe un día antes de la renovación y no se puede provocar a demanda, mientras que el fin de la prueba sí se adelanta. Medido el 2026-09-12: de 0 a 14 unidades en ~20 s.
   - FAC-07-12 · STRIPE · `customer.subscription.trial_will_end` de una suscripción sin `serviceId` nuestro → 200; sin cambios
   - FAC-07-13 · STRIPE · `customer.subscription.deleted` con metadata → 200; doc borrado y copia en `subscriptions-deleted`
   - FAC-07-14 · STRIPE · `customer.subscription.deleted` sin metadata → 200; sin cambios
@@ -274,11 +274,14 @@ Análisis estático del 2026-09-11 sobre `encodebiz-api` (rama develop), `encode
   - FAC-07-20 · STRIPE_FALSO · cuerpo modificado tras firmar (p. ej. JSON re-serializado) → 400 `invalid_signature`
   - FAC-07-21 · STRIPE_FALSO · evento firmado hace más de 5 minutos → 400 `invalid_signature`
   - FAC-07-22 · ANON · `GET /api/v1/billing/webhook` → 401 `unauthenticated`
+  - FAC-07-23 · **recorrido completo, no un evento suelto**: adelantar `trial_end` de una suscripción checkinbiz con tarjeta puesta → Stripe avisa, nuestro backend cuenta la plantilla, Stripe emite el ciclo en **borrador** y la factura sale a plantilla × precio del plan. Medido el 2026-09-12: suscripción nacida con 0 unidades, plantilla real 14, factura **28,00 €** con la línea «14 × Checkbiz Plan Bronze (at €2.00 / month)». Las unidades se ajustan a los ~20 s del aviso y el borrador aparece a los ~180 s.
+  - FAC-07-24 · tras cobrar ese primer recibo, la suscripción queda `active` en Stripe y en `entities/{e}/subscriptions/checkinbiz`. Confirmado el 2026-09-12.
 - Probable en staging: con dobles — los positivos exigen firmar con el secreto de firma de dev (es una credencial) o reenviar con Stripe CLI; los negativos (18-22) son directos. `invoice.finalized` descarga el PDF de Stripe y manda un correo real.
+- **Cómo se prueba el cobro sin esperar quince días** (cubierto en `qa/tests/facturacion/`): se adelanta `trial_end` con la API de Stripe y se deja que Stripe haga lo que haría el día que tocase. Dos detalles que cuestan una tarde si no se saben: (1) `trial_end: "now"` **no vale** —corta la prueba en seco y se salta `customer.subscription.trial_will_end`, que es donde se cuenta la plantilla, así que la factura sale con las unidades viejas—; hay que dejarlo en un instante futuro. (2) Stripe emite el ciclo en **borrador** y lo cierra por su cuenta alrededor de una hora después: el importe ya está decidido ahí, pero para probar el correo con el PDF y el evento `invoice.issued` hay que cerrarla a mano con `POST /invoices/{id}/finalize` y `…/pay`.
 - Sospechas:
   - Sin `STRIPE_PRO_KEY` o sin secreto de firma, la excepción cae en el catch de la firma y se responde 400 `invalid_signature` (webhook.router.ts:20-26; stripeClient.ts:13, :35): un fallo de configuración se ve igual que una firma falsa.
   - No hay deduplicación por `event.id` (la preveía la fase F0 de billing-v2, DOCS/ingenieria/billing-v2/04_fases.md:68-69): un `invoice.payment_failed` reentregado vuelve a emitir el evento saliente.
-  - Qué eventos tiene suscritos el endpoint de Stripe de dev está sin confirmar (05_fin-de-prueba.md:36-44 apunta a que quizá solo `invoice.finalized`); sin `invoice.upcoming` no se ejecuta ningún recuento.
+  - ~~Qué eventos tiene suscritos el endpoint de Stripe de dev está sin confirmar~~ · **CONFIRMADO el 2026-09-12.** El endpoint del contenedor (`we_1U8be9…`) tiene los ocho que hacen falta, `customer.subscription.trial_will_end` incluido, y el recuento funciona. Lo que apareció al mirar es otra cosa: **hay un segundo endpoint activo**, el de la Cloud Function retirada, con `invoice.paid`, `invoice.upcoming`, `payment_method.attached` y `customer.subscription.created`. Los dos procesan el mismo evento. Ver HAL-31.
 
 ## POST /api/v1/billing/internal/invoices/:invoiceId/send  ·  FAC-08
 - Servicio: billing — internal.router.ts:7-11, montado con `requireApiKey` (app.ts:28)

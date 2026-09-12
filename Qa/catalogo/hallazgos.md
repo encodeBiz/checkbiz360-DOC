@@ -263,6 +263,86 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-31 · ~~La función vieja y el contenedor procesaban los mismos eventos de Stripe~~ · CORREGIDO en desarrollo
+
+**Estado.** En **producción no llegó a ocurrir**: el endpoint de la función (`Event Handler
+Prod`) ya estaba **Deshabilitado**, comprobado por producto en el panel de Stripe el
+2026-09-12 — solo recibe `https://api.checkbiz360.com/api/v1/billing/webhook`. Lo que estaba
+mal era **desarrollo**, donde el endpoint equivalente seguía habilitado; se desactivó el
+2026-09-12 y ahora las dos cuentas están igual. Se conserva el hallazgo entero porque describe
+una cadena que sigue existiendo en el código y que se rearma con una casilla: los dos endpoints
+siguen dados de alta, solo que apagados, y con sus eventos configurados.
+
+**Alcance de lo medido**: modo de **pruebas** de la cuenta de Stripe; el endpoint de más
+apuntaba a la Cloud Function del proyecto **de desarrollo** (`dev-encodebiz`, desplegada el
+2026-08-23, URL terminada en `3bnjgtprva`; la de producción termina en `jxvyznhhja`).
+
+Tres hechos encadenados, medidos el 2026-09-12 al cobrar el final de un periodo de prueba. Por
+separado son molestos; juntos forman una cadena que termina en una segunda factura al mismo
+cliente, y lo único que la cortaba era que un documento salía mal formado.
+
+**1. La Cloud Function retirada sigue suscrita a los eventos de Stripe.** En la cuenta de
+pruebas hay dos endpoints activos: el del contenedor
+(`https://api-staging.checkbiz360.com/api/v1/billing/webhook`) y el de la función
+(`apiv100-firebaseentryhttp-stripewebhook-3bnjgtprva-uc.a.run.app`, que es la URL de
+`apiV100-firebaseEntryHttp-stripeWebhook` en `dev-encodebiz`), y este último conserva
+`invoice.paid`, `invoice.upcoming`, `payment_method.attached` y
+`customer.subscription.created`. Los dos procesan el mismo evento.
+
+**2. Esa función crea documentos que el contenedor decidió no crear.** Tras cobrar, la empresa
+tenía dos documentos en `entities/{entityId}/invoices/{stripeInvoiceId}` —uno por la factura de
+0,00 € del inicio de la prueba y otro por la de 28,00 €— con la **factura entera de Stripe**
+dentro de `paymentData`: unos cuarenta campos, incluidos `invoice_pdf` y `hosted_invoice_url`,
+que son enlaces que abren la factura sin pedir credencial. El contenedor guarda tres campos
+(`number`, `total`, `status`) y **solo sobre un ciclo que ya exista**: `markInvoice` hace
+`update`, nunca crea. La función hace `set(merge)`, que crea.
+
+**3. Crear ese documento enciende un procesador cuyo siguiente paso es emitir otra factura.**
+`processInvoices` está **desplegada en desarrollo** (comprobado con `functions:list`) y escucha
+`onDocumentCreated /entities/{eid}/invoices/{iid}`. Su trabajo es `InvoicePaymentProcessor`, que
+cuenta lo facturable y, si hay algo, llama a `makeInvoice` contra Stripe — una factura nueva
+para el mismo cliente.
+
+**Por qué no llegó a cobrarse dos veces, que es lo que hay que mirar.** El procesador se
+ejecutó —tres veces hoy, a las 14:55, 15:02 y 15:20— y murió en la primera lectura:
+
+```
+[onCreateInvoice] Nueva invoice undefined para entity undefined
+[onCreateInvoice] Error procesando undefined
+Error: Value for argument "documentPath" is not a valid resource path.
+```
+
+El documento que la función escribe no lleva `entityId` ni `id`, así que `findById(undefined)`
+lanza antes de llegar a Stripe. **Lo que separa hoy a un cliente de una segunda factura es que
+el documento esté mal formado**, no una comprobación. Y el error lo traga un `catch` que
+registra y sale, así que no lo ve nadie.
+
+- **Dónde.** `saas:functions/src/core/subscriptions/infrastructure/FirestoreSubscriptionRepository.ts:118-122`
+  (`set(merge)` que crea); `saas:functions/src/firebase-firestore-trigger/subscriptions/processInvoices.ts`
+  (el trigger); `saas:functions/src/core/subscriptions/application/InvoicePaymentProcessor.ts:63-70`
+  (`makeInvoice`); y en el otro lado `api:services/billing/src/application/StripeWebhookHandler.ts:123-149`,
+  cuyo comentario dice explícitamente que no crea documentos ahí porque «crear uno ahí era lo
+  que disparaba el procesador y podía encadenar facturas nuevas». La precaución del contenedor
+  existe; lo que la anula es la función que sigue viva.
+- **Efecto inmediato en desarrollo.** El historial de facturación de una empresa tiene
+  documentos que el contenedor no escribió, con el objeto completo de Stripe y sus enlaces
+  dentro. Con las reglas de Firestore de desarrollo abiertas hasta 2030, ese contenido es
+  legible por cualquiera.
+- **Cómo se cortó.** Desactivando el endpoint viejo en Stripe, que es una casilla y corta los
+  tres puntos de golpe. **Desactivado y no borrado a propósito**: al borrar un endpoint, Stripe
+  se lleva su secreto de firma, y la función conserva el suyo en `STRIPE_WEBHOOK_SECRET_TEST`;
+  si algún día hay que volver a ella como rollback, desactivado se revierte con una llamada y
+  borrado no.
+- **Lo que queda vivo, y por eso el hallazgo no se borra.** `processInvoices` **sigue
+  desplegada** en desarrollo, escuchando `onDocumentCreated /entities/{eid}/invoices/{iid}`.
+  Ahora mismo no la despierta nadie porque el contenedor no crea ahí; pero la precaución del
+  contenedor **depende de que nadie más escriba en esa colección**, y eso no se ve leyendo su
+  código. Lo guarda FAC-07-09, en verde: si alguna vez vuelve a aparecer un documento ahí, esa
+  prueba se pone roja.
+- **Casos.** FAC-07-09, en la suite y en verde desde que se desactivó el endpoint. Relacionado
+  con HAL-02, el mismo patrón —función y contenedor procesando el mismo evento— en los
+  fichajes, que sigue abierto.
+
 ## HAL-30 · A quien trabaja en otro huso se le busca el turno del día equivocado
 
 - **Observado.** Un empleado con `enableRemoteWork` y zona propia a trece horas de su centro.
