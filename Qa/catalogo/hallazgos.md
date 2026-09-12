@@ -263,6 +263,75 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-28 · Un descanso se engancha a la jornada de otro día y le cambia las horas
+
+- **Observado.** Un empleado con responsabilidad en dos sucursales, B y B2. Se deja una jornada
+  **cerrada** en B2 (entrada y salida) y después se abre una jornada nueva en B. Un `restin`
+  enviado con `branchId` de B2 responde `201` y queda con `checkin` apuntando al **`checkin`
+  cerrado de B2**. Medido en desarrollo el 2026-09-12: el descanso se enganchó a un fichaje ya
+  marcado `closed:true`.
+- **Dónde.** `services/checkinbiz/src/application/use-cases/checklog/CreateChecklog.ts:57-63`.
+  La búsqueda del fichaje relacionado filtra por `type == "checkin"` y por `branchId`, ordena
+  por fecha y coge el primero. No filtra por `status`, ni por `closed`, ni por jornada.
+- **La asimetría es lo que lo convierte en defecto y no en decisión.** El mismo caso de uso sí
+  rechaza el `checkout` en otra sucursal (`checklog/different_branches`, `:31-33`) por este
+  motivo exacto: una jornada no se parte entre dos centros. El descanso no tiene esa
+  comprobación.
+- **Efecto.** Las horas de una jornada ya cerrada cambian después de cerrarse, y cambian hacia
+  atrás en el tiempo: el descanso pertenece a hoy y se suma a la jornada de otro día. Lo que
+  lee la analítica y lo que aparece en el informe de aquel día dejan de coincidir con lo que
+  ocurrió, sin que nadie haya editado nada. En una empresa con dos centros —lo normal en el
+  producto— basta con equivocarse de centro en la app.
+- **Casos.** CHK-08-59, cubierto en la suite como fallo esperado. Relacionado: CHK-08-58, el
+  caso sin historial en B2, que sí se rechaza porque no hay a qué engancharse.
+
+## HAL-27 · Desactivar a un colaborador le quita el panel pero no le quita el fichaje
+
+- **Observado.** Un asiento de administrador puesto en `status:"disabled"` con
+  `PATCH /api/v1/checkinbiz/collaborators/:userId` sigue pudiendo crear fichajes a nombre de
+  cualquier empleado de la empresa: `POST /api/v1/checkinbiz/checklogs` con `isAdmin:true`
+  responde `201`. La misma cuenta, en la misma llamada, ya **no** puede consultar la ficha de
+  un colaborador (`403 forbidden`). Medido en desarrollo el 2026-09-12.
+- **Dónde.** `packages/shared/src/checkbiz/auth/canWrite.ts:16-21`: lee
+  `user_entity_roles/{uid}_{entityId}`, mira `role` y devuelve `true` si es `owner` o `admin`.
+  El campo `status` del asiento no se consulta nunca. El enrutador de colaboradores sí lo
+  comprueba (`collaborator.router.ts:91`, `seat.status !== "active"`), y de ahí la diferencia
+  de respuesta entre las dos rutas.
+- **Alcance.** `canWrite` no es solo del fichaje: es la comprobación de permiso de entidad que
+  usan las rutas de escritura de checkinbiz. Un asiento desactivado conserva todas.
+- **Efecto.** «Desactivar» es lo que se hace cuando alguien deja la empresa pero se quiere
+  conservar el rastro de lo que hizo, en vez de retirar el asiento. Quien lo haga se queda
+  creyendo que ha cerrado el acceso: el panel le responde que no tiene permiso, y la API le
+  deja firmar jornadas de otros.
+- **Casos.** CHK-08-77, cubierto en la suite como fallo esperado, junto a COL-03-05 —el
+  contraste, en verde—. Ya estaba anotado el mismo comportamiento en COL-01-04.
+
+## HAL-26 · El panel pide la hora del fichaje, la valida, y el servidor la tira
+
+- **Observado.** `POST /api/v1/checkinbiz/checklogs` con `isAdmin:true` y `timestamp` de hace
+  tres horas responde `201` y el fichaje queda sellado **ahora**: 180,02 minutos de diferencia
+  entre la hora pedida y la guardada. Medido en desarrollo el 2026-09-12.
+- **Dónde.** `services/checkinbiz/src/interfaces/http/checklog/createChecklog.controller.ts`:
+  `const timestamp = now`, con `now = DateTime.now().setZone(tz)`. El `timestamp` del cuerpo no
+  se lee en ningún punto del controlador, ni se valida, ni se rechaza.
+- **Y el panel lo manda.** El formulario de asistencia tiene un campo de fecha y hora
+  **obligatorio**, con regla propia de validación para que no sea futura
+  (`front:src/app/main/[entityId]/checkinbiz/attendance/AttendanceFormModal/`,
+  `timestamp: notFutureDateRule(t)`), y lo envía en el cuerpo. Quien lo rellena no tiene forma
+  de saber que se descarta: la respuesta es un `201` y un aviso de éxito.
+- **Efecto.** La vía del panel existe para registrar lo que la app no registró —alguien que se
+  dejó el móvil, una entrada que falló—. Eso siempre se hace después, así que el fichaje
+  correcto es siempre uno del pasado. Tal y como está, todo fichaje añadido desde el panel
+  queda con la hora en que se añadió, no con la hora que se pidió, y el registro dice algo
+  distinto de lo que ocurrió. **La edición sí respeta la hora** (`updateChecklog`, CHK-09), así
+  que hoy el único modo de dejar la hora correcta es crear el fichaje y corregirlo acto
+  seguido.
+- **Relacionado.** El panel manda como `geo` las coordenadas de la propia sucursal
+  (`branch.address.geo`), así que un fichaje creado por esta vía nunca cae fuera de la
+  geocerca. Es coherente con que lo marque un administrador y no el empleado, pero conviene
+  saberlo al leer `metadata.distance` de un fichaje del panel.
+- **Casos.** CHK-08-74, cubierto en la suite como fallo esperado.
+
 ## HAL-25 · La edición de una ficha acepta cualquier campo, incluida la lista de dispositivos
 
 - **Observado.** `POST /api/v1/employees/update` no tiene lista de campos permitidos: hace
