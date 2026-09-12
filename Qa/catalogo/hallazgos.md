@@ -84,10 +84,19 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   (monta `upsert` tras `requireFirebaseAuth`, sin más control) y
   `.../calendar/upsertEntityCalendar.controller.ts` (sin comprobación de permiso). Ninguno de
   los controladores de calendario comprueba pertenencia.
-- **Comprobado.** En el código, 2026-09-11.
+- **Comprobado.** En el código el 2026-09-11, y **con peticiones reales el 2026-09-12**: una
+  cuenta de otra empresa lee el calendario ajeno (`200`) y le añade un festivo (`200`), y queda
+  escrito.
+- **No es solo escribir: es el módulo entero.** El catálogo dice «Autorización: ninguna» en las
+  cinco rutas de calendario — leer (CHK-11), guardar (CHK-12), crear (CHK-13), guardar plantillas
+  (CHK-14) y borrar festivos y ausencias (CHK-15). Cualquier cuenta del proyecto puede hacer las
+  cinco cosas sobre cualquier empresa.
 - **Efecto.** Cualquiera con una cuenta de Firebase del proyecto puede reescribir el calendario
-  laboral de cualquier empresa si conoce su `entityId`, y eso altera qué fichajes se aceptan.
-- **Casos.** Alcances `entity`, `branch` y `employee` del bloque de calendario (catálogo CHK).
+  laboral de cualquier empresa si conoce su `entityId`, y eso decide **qué fichajes se aceptan**:
+  cerrando los días de una empresa, su plantilla entera deja de poder fichar. También puede leer
+  su organización del trabajo y borrarle los festivos.
+- **Casos.** CHK-11-10 y CHK-12-22, cubiertos en la suite como fallos esperados; y los alcances
+  `entity`, `branch` y `employee` del resto del bloque de calendario.
 
 ## HAL-07 · `/auth/validate` entrega una sesión con solo dos identificadores sin firma
 
@@ -253,6 +262,31 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   confianza y el registro queda a nombre de otro. El uid tampoco es difícil de conseguir: queda
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
+
+## HAL-22 · Sin horario configurado, la app se rompe pero el fichaje funciona
+
+- **Observado.** Una empresa recién dada de alta no tiene `calendar/config` —alguien tiene que
+  entrar al panel a ponerlo—. En ese estado:
+  - `GET /api/v1/checkinbiz/calendar` → **404** `{code:"calendar/not_found"}`. Es la llamada con
+    la que **arranca la pantalla de fichaje de la app**, y la app la convierte en excepción
+    (`attendance_remote_datasource.dart:104`, `ErrorParser.parseApiError`).
+  - `POST /api/v1/checkinbiz/checklogs` → **201**. El fichaje se defiende solo: sin configuración
+    abre el día de 00:00 a 23:59 con `scheduleApplied.source:"default"` en vez de romper
+    (`createChecklog.controller.ts:210-229`).
+- **Dónde.** `getEffectiveCalendar.controller.ts` (404 sin configuración) frente a
+  `createChecklog.controller.ts:210-229` (valor por defecto seguro).
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12 (CHK-11-18 y
+  CHK-08-31).
+- **Efecto.** La incoherencia es el problema: el fichaje, que es la operación que el horario
+  guarda, tolera que no haya horario; la lectura que la app necesita para pintar la pantalla, no.
+  Una empresa que se da de alta un viernes y reparte la app antes de configurar el horario tiene
+  a toda su plantilla con la app fallando, cuando fichar habría funcionado.
+- **Lo que no está establecido.** Qué enseña exactamente la pantalla ante ese error: eso hay que
+  mirarlo en la app, no en la API. Lo que sí está establecido es que la API responde 404 y que el
+  cliente lo convierte en excepción.
+- **Decisión pendiente.** O el alta deja el horario puesto por defecto, o la lectura devuelve el
+  mismo día abierto que ya aplica el fichaje en vez de un 404.
+- **Casos.** CHK-11-18 y, como contraste, CHK-08-31.
 
 ## HAL-21 · Un administrador se hace propietario, y de paso aparta al que lo era
 
