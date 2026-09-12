@@ -343,6 +343,20 @@ el cobro sale bien y que la factura llega.
 
 **Bloque 2 · Fichajes**, con todo lo que arrastran.
 
+> **Cómo debe montarse la prueba del cobro al terminar la prueba gratuita** (medido el
+> 2026-09-12, para no volver a descubrirlo):
+>
+> - Va **siempre después de crear los empleados**. La cantidad facturable sale de ellos; sin
+>   gente la factura es de 0 € por definición y la prueba no probaría nada.
+> - La aserción no es «hay factura»: es que el importe **cuadre con la plantilla** — tantos
+>   empleados facturables por el precio unitario. Si sale 0 € habiendo empleados, **es rojo**.
+>   Esa es justamente la forma que tomaría HAL-19 si el aviso previo se pierde.
+> - No vale `trial_end: "now"`: se salta los avisos de los que depende el recálculo. Hay que
+>   poner el fin de la prueba **a un par de minutos vista** y dejar que la secuencia ocurra.
+>   Medido: el aviso llega a los ~21 s y la factura se emite a los ~138 s.
+> - Por eso va en un proyecto aparte y no en cada despliegue: son dos minutos y medio de reloj
+>   de pared.
+
 **Bloque 3 · Módulos menos críticos**: tareas, documental e informes.
 
 **Bloque 4 · Complementarios**: disponibilidad y calendario.
