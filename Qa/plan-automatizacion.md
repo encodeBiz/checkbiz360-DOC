@@ -281,6 +281,21 @@ verde con su línea en el informe; si el caso falla por otro motivo, **rojo de v
 diciendo qué llegó en lugar de qué; y si alguien lo arregla, rojo también, diciendo que el
 defecto ya no se manifiesta. La marca sola no distingue los dos últimos del primero.
 
+La guarda se ganó el sitio otra vez al escribir el bloque de tareas. El caso que denuncia que
+un trabajador puede reabrir una tarea ya validada (HAL-35) salió rojo a la primera con
+`400 task/no_open_session`: al operario le faltaba fichar, y sin la guarda ese caso habría
+salido verde para siempre diciendo que denuncia algo que nunca llegó a intentar. Van dos
+veces, y las dos por lo mismo —una precondición que no se cumplía—, así que conviene decirlo
+con todas las letras: **la guarda no sobra cuando el caso es sencillo; es justo ahí donde el
+fallo por el motivo equivocado se parece más a un acierto.**
+
+**Y hay un caso donde la guarda cuesta más de pensar: cuando el defecto es una ausencia.** El
+de la corrección que no llega al espejo (HAL-34) se manifiesta como una jornada que *no* se
+construye, y eso es exactamente lo que también produciría una preparación rota. Ahí la guarda
+no puede afirmar un código de respuesta, así que afirma lo contrario —que la jornada no está—
+y el comentario deja escrito qué hacer el día que aparezca: o se arregló, y sobra el indulto,
+o la está construyendo otra cosa y el caso ha dejado de probar lo que dice.
+
 ---
 
 ## 9. Cómo se lee el resultado
@@ -463,6 +478,19 @@ el inventario completo (8 catálogos, ~1.741 casos), el mundo de la ejecución q
 los endpoints reales, la ejecución automática en CI tras cada despliegue, y del bloque 2 la
 mayor parte del fichaje: jornada completa, orden de los fichajes, vía del panel, horarios,
 geocerca, corrección de jornada y jornada manual.
+
+Del bloque 3, **tareas**, que es el segundo módulo más grande del catálogo. Tres ficheros y una
+forma de atacarlo que conviene reutilizar en los que quedan:
+
+- **La vida de una tarea en un solo recorrido** (`46-tareas-vida`): una tarea y una persona, de
+  encargarla a valorarla. Cada paso depende del anterior, así que probarlos sueltos —cada uno
+  con su tarea recién creada— probaría otra cosa. Empieza por la regla que **cruza dos
+  módulos**: sin jornada abierta no se empieza una tarea. Esa regla no vive en tareas ni en
+  fichaje, vive entre los dos, y solo se ve recorriendo el camino entero.
+- **Los guardianes** (`47-tareas-guardianes`): de ahí salieron HAL-35 y HAL-36.
+- **La valla del encargo** (`48-tareas-valla`): `workSite`, lo único del módulo que no venía de
+  las Cloud Functions. Todas las vallas se definen con punto y radio **a propósito**: por ahí no
+  se llama a Google, y con una calle o un `placeId` sí —y eso se factura—.
 
 Queda pendiente y sin fecha: las comparativas función/contenedor —solo cubren 34 rutas
 secundarias, ninguna crítica— y las pruebas de interfaz con navegador y con Maestro.

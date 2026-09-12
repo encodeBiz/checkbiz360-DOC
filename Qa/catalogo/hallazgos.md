@@ -153,9 +153,19 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   valida el cuerpo, **busca la tarea**, y solo después llama a `resolveTaskActor`. Otros
   controladores de tareas siguen el mismo orden.
 - **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12.
+- **Y no es solo la existencia.** Medidas dos sondas más el 2026-09-12, las dos **sin ninguna
+  credencial**:
+  - `POST /:taskId/validation` responde `400 task/invalid_status` si la tarea no está completada
+    y llega al `401` si lo está (`validateTask.controller.ts:17-19`). O sea que se puede saber
+    **si una tarea está terminada**.
+  - `POST /:taskId/ratings` responde `400` con «Employee is not assigned to this task» antes de
+    autenticar (`rateTaskWorker.controller.ts:22-24`). Probando identificadores de empleado
+    contra una tarea se averigua **quién figura en ella**.
 - **Efecto.** Permite sondear qué identificadores de tarea existen en una empresa sin tener
-  cuenta. El contenido no se filtra; la existencia y el estado, sí.
-- **Casos.** TSK-09 y el resto de rutas de tarea que resuelven el actor después de buscar.
+  cuenta, y de las que existen, si están terminadas y quién trabaja en ellas. El contenido no se
+  filtra; la existencia, el estado y la plantilla asignada, sí.
+- **Casos.** TSK-09, TSK-14-03 y TSK-17-03, cubiertos en la suite como fallos esperados, y el
+  resto de rutas de tarea que resuelven el actor después de buscar.
 
 ## HAL-11 · Una entrada mal formada revienta y devuelve la traza interna
 
@@ -262,6 +272,123 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   confianza y el registro queda a nombre de otro. El uid tampoco es difícil de conseguir: queda
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
+
+## HAL-37 · Rechazar una tarea deja su pausa abierta para siempre
+
+- **Observado.** Una tarea en curso y pausada que se rechaza queda en `rejected` **conservando
+  `pausedAt` y `pauseId`**. La pausa nunca se cierra, así que su duración no entra en `pausedMs`
+  y el documento de la pausa se queda sin `endedAt`. Medido en desarrollo el 2026-09-12.
+- **Dónde.** `services/tasks/src/interfaces/http/task/rejectTask.controller.ts` escribe con
+  `updateTaskUseCase`. Completar, cancelar y reabrir sí cierran la pausa abierta, y lo hacen **en
+  la misma transacción** que el cambio de estado (`updateTaskStatus.controller.ts:120`, `:131`,
+  `:146`, con `endedReason` distinto en cada caso). El rechazo se escribió por otro camino y se
+  quedó fuera de esa red.
+- **Efecto.** El tiempo en pausa es lo que permite separar lo trabajado de lo parado, que es
+  justo lo que se pidió al añadir las pausas. Una tarea rechazada deja ese cálculo incompleto sin
+  que nada lo indique. Y como el rechazo tampoco mira el estado (ver HAL-35), la tarea rechazada
+  se puede además reanudar, lo que reabre una pausa sobre otra.
+- **Casos.** TSK-15-13, cubierto en la suite como fallo esperado. TSK-08-21 —reanudar una tarea
+  rechazada— queda pendiente de probar.
+
+## HAL-36 · La política de terminación se guarda y no la lee nadie
+
+- **Observado.** Una tarea con `config.completionPolicy: "all_assigned_workers"` asignada a dos
+  personas queda **entera en `completed`** en cuanto la completa la primera. La asignación de la
+  segunda no cambia, y nadie le dice que su parte sigue pendiente. Medido en desarrollo el
+  2026-09-12.
+- **Dónde.** `services/tasks/src/interfaces/http/task/task.helpers.ts:334` la normaliza y la
+  guarda. En todo el repositorio el nombre aparece **dos veces**: ahí y en la definición del tipo
+  (`domain/entities/Task.ts:29`). Ningún controlador la lee.
+- **Efecto.** El ajuste existe en el alta, se guarda, se devuelve en la ficha y el panel puede
+  enseñarlo: todo indica que está en vigor. Donde más se nota es al asignar una tarea a una
+  sucursal entera —el reparto de un turno, un inventario— porque **basta uno de treinta** para
+  darla por terminada, y los otros veintinueve desaparecen de la lista de pendientes sin haber
+  hecho nada.
+- **Casos.** TSK-11-44, cubierto en la suite como fallo esperado, con la comprobación de que la
+  política **sí se guardó** antes del indulto: sin esa línea, el caso no distinguiría «no se
+  aplica» de «no se guardó».
+
+## HAL-35 · Las tareas no tienen máquina de estados: se mira el destino, nunca el origen
+
+- **Observado.** Dos cosas, la misma causa:
+  1. Un trabajador asignado devuelve a `in_progress` una tarea que la empresa ya **validó**, él
+     solo, con un `PATCH /status`. Desde ahí puede completarla otra vez, lo que reescribe
+     `completedAt` y `completedBy`, con el acta de validación todavía en pie.
+  2. Reabrir una tarea validada a `assigned` —esto sí lo hace el propietario, y está bien que
+     pueda— limpia `startedAt`, `completedAt`, `completedBy`, los campos de cancelación y los
+     contadores de pausa, y **conserva `validatedAt` y `validatedBy`**. La tarea queda pendiente
+     y firmada a la vez.
+  3. Y lo mismo por la otra puerta: **rechazar una tarea ya validada responde 200** y la deja en
+     `rejected` sin retirar `validatedAt` ni `validatedBy`. En el expediente quedan dos actas
+     contradictorias —una validación y un rechazo— y la tarea sigue diciendo que se dio por
+     buena. `rejectTask` no mira el estado de origen en ningún momento, mientras que validar sí
+     exige `completed` y lo comprueba antes que nada.
+  Medido en desarrollo el 2026-09-12.
+- **Dónde.** `services/tasks/src/interfaces/http/task/updateTaskStatus.controller.ts`. El
+  controlador decide qué escribir según el estado **de destino** (`:104-167`) y no consulta
+  `task.status` en ningún momento. El permiso para las dos transiciones de trabajador es
+  `canOperateAssignedTask` (`:45`), que se cumple con figurar en la tarea. La lista de campos que
+  se limpian al reabrir está escrita a mano en `:139-146`, y ahí no están los de validación.
+- **Lo que lo hace invisible**, que es lo que lo convierte en hallazgo y no en nota: el endpoint
+  **sí** comprueba el destino y rechaza `validated`, `rejected` o cualquier palabra que no
+  contemple con `400 Unsupported status transition` (`:165-167`). Quien lo prueba a mano escribe
+  un estado inventado, recibe el rechazo y concluye que las transiciones están controladas. No
+  hay una máquina de estados: hay una lista de destinos permitidos.
+- **Y el contraste que lo remata.** El mismo trabajador, sobre la misma tarea validada,
+  intentando también volver atrás, **sí recibe un 403** si el estado que pide es `assigned`: esa
+  rama está protegida con `canManageTask` (`:133-135`). La protección existe y está escrita; lo
+  que no hay es una regla que la aplique a todas las vueltas atrás. Quien lea el código por la
+  rama de `assigned` se llevará la impresión de que las reaperturas están controladas. Cubierto
+  en verde como TSK-11-64, al lado del caso que falla, porque por separado ninguno de los dos
+  cuenta la historia.
+- **Efecto.** La validación es la firma de la empresa sobre el trabajo hecho, y cualquiera de los
+  asignados puede dejarla sin efecto sin que nadie la retire. El informe de tareas lee
+  `validatedAt`, así que una tarea reabierta sigue contando como validada.
+- **Casos.** TSK-11-30, TSK-11-65 y TSK-15-14, cubiertos en la suite como fallos esperados;
+  TSK-11-08 y TSK-11-64 cubren en verde las dos mitades que sí funcionan —el rechazo del destino
+  y el permiso de la reapertura— porque son las que engañan.
+- **Aparte, y sin declararlo defecto:** una tarea `assigned` se completa sin haber pasado nunca
+  por `in_progress` (TSK-11-47), y queda con `completedAt` y sin `startedAt`. Puede ser
+  deliberado —marcar hecho algo que se hizo sin la app es un caso real—, así que la suite lo
+  prueba en verde para dejar escrito qué guarda el sistema cuando ocurre: una tarea terminada
+  cuya duración no existe.
+
+## HAL-34 · Corregir la hora de un fichaje no cambia el informe legal
+
+El hermano silencioso de HAL-33, y peor de ver: allí no llegaba nada, aquí llega **casi** todo.
+
+- **Observado.** Una entrada se corrige de `16:35:45` a `12:35:46` por el camino bueno —propuesta
+  del propietario, firma del empleado, `200` en las dos—. En Firestore el documento queda con la
+  hora nueva. En `checklogs_raw`, la columna `timestamp` **sigue siendo la vieja**, y con ella
+  `real_date_market`. La fila sí se reescribió —su `updated_at` es posterior a la corrección—:
+  lo que no cambió fueron esas dos columnas. Medido en desarrollo el 2026-09-12, comparando el
+  documento de Firestore con su fila.
+- **Dónde.** `services/sync/src/interfaces/sync.router.ts:91-106`. El `ON CONFLICT (id) DO UPDATE`
+  enumera las columnas que se refrescan —`status`, `closed`, `is_suspect`, `failed_code`,
+  `adjusted_timestamp`, `distance`, `metadata_raw`…— y **`timestamp` y `real_date_market` no
+  están en la lista**. En un `INSERT … ON CONFLICT`, lo que no se enumera se queda como estaba.
+- **El detalle que lo prueba sin lugar a dudas.** La hora corregida **está dentro de esa misma
+  fila**: `metadata_raw` sí se actualiza, y lleva el historial entero de la corrección con
+  `"timestamp": "2026-09-12T12:35:46.588Z"` al lado de un `timestamp` de columna que dice
+  `16:35:45.985`. El dato viajó; no aterrizó donde alguien lo lee.
+- **Efecto, que es el de verdad grave.** Todo lo que se calcula aguas abajo lee la columna:
+  `BuildEmployeeDailyReports` selecciona por `real_date_market` y mide por `timestamp`
+  (`:38-43`), y `BuildBranchEffect`, `BuildBranchRisk` y `BuildOperatingCost` filtran por
+  `timestamp`. Ninguno mira `adjusted_timestamp` —la única columna de tiempo que sí se refresca—
+  ni `metadata_raw`. Así que **el registro de jornada, el que tiene valor legal, conserva para
+  siempre la hora equivocada**, y con ella los informes diarios y las series de analítica. La
+  corrección con doble firma es justo el mecanismo que la ley da para enmendar un registro mal
+  tomado: existe, se ejecuta, se firma, y no llega a donde importa.
+- **Lo que lo hace invisible.** El panel lee Firestore, así que enseña la hora corregida y todo
+  parece en orden. Solo discrepa Postgres, que es lo que nadie mira y lo que sostiene el informe.
+  Las dos respuestas son `200`, no hay ningún error en ningún registro, y `sync_log` anota la
+  sincronización como `success` —porque lo fue: la petición entró y se escribió—.
+- **Casos.** INF-03-02, cubierto en la suite como fallo esperado, con la aserción de la hora
+  antes del indulto para que el día que se arregle avise en vez de seguir en verde.
+- **La lección.** Un `ON CONFLICT DO UPDATE` con la lista de columnas escrita a mano es una lista
+  que envejece: cada columna nueva —y cada columna que pasa a ser mutable— hay que acordarse de
+  añadirla, y olvidarse no rompe nada visible. Aquí la corrección de una hora tenía que haber
+  entrado en esa lista el día que se escribió el flujo de correcciones.
 
 ## HAL-33 · ~~El espejo de Postgres llevaba semanas vacío y nadie se enteró~~ · CORREGIDO en desarrollo
 
@@ -802,8 +929,6 @@ confirmarlas; cada una se verificará al escribir su prueba.
   permisos ni cascada (catálogo ENT).
 - **`isAdmin` como texto en el fichaje.** Enviar `isAdmin:"true"` y el `uid` de un propietario
   saltaría el dispositivo de confianza (catálogo CHK).
-- **`completionPolicy` no se aplica** y **transiciones de estado sin control de origen** en
-  tareas (catálogo TSK).
 - **Consulta de suscripciones y generación de informes sin filtrar por entidad** (catálogo
   FAC/INF).
 - **Doble correo de «servicio activado»** al suscribir (catálogo de listeners).
