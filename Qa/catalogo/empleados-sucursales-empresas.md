@@ -742,7 +742,7 @@ Dueño de `user_entity_roles`: checkinbiz (`api:services/checkinbiz/src/interfac
   - COL-02-14 · S2S · correo sin cuenta en Auth → 404 `{ok:false, error:"user_not_found"}`.
   - COL-02-15 · S2S · entidad inexistente → 404 `entity_not_found`.
   - COL-02-16 · S2S · ya es miembro → 409 `{ok:false, error:"already_member", role}`.
-- Sospechas: por la vía del token, quien llama puede escribir `grantedBy`, `reason` y `support`, que son las marcas de auditoría que distinguen un asiento de soporte.
+- Sospechas: **CONFIRMADO — HAL-21**: por esta vía un administrador concede el rol `owner` (COL-02-04), a cualquiera y sin ser propietario. Y además, por la vía del token, quien llama puede escribir `grantedBy`, `reason` y `support`, que son las marcas de auditoría que distinguen un asiento de soporte.
 
 ## GET /api/v1/checkinbiz/collaborators/one?entityId=&email=  ·  COL-03
 - Servicio: checkinbiz, `collaborator.router.ts:108-114`; `manageCollaborator.ts:107-118`.
@@ -787,7 +787,7 @@ Dueño de `user_entity_roles`: checkinbiz (`api:services/checkinbiz/src/interfac
   - COL-04-10 · S2S · `status:"active"` para aceptar una invitación → 200.
   - COL-04-11 · ADMIN_INVITADO · intenta aceptar su propia invitación por aquí → 403 `forbidden`: la puerta exige asiento activo.
   - COL-04-12 · AJENO → 403. ANON → 401 `auth/unauthorized`.
-- Sospechas: (1) **escalada de privilegios**: un administrador puede hacerse propietario, o rebajar y desactivar a un propietario, porque `updateCollaborator` no recibe al actor (la baja por DELETE sí lo protege con `owner_required`); (2) el recuento de `last_owner` bloquea operaciones legítimas sobre propietarios invitados; (3) la ruta que sustituye a `updateAuth` no la usa nadie: aceptar invitaciones sigue siendo una escritura del navegador en Firestore.
+- Sospechas: (1) **CONFIRMADO — HAL-21. Escalada de privilegios**: un administrador puede hacerse propietario, o rebajar y desactivar a un propietario, porque `updateCollaborator` no recibe al actor (la baja por DELETE sí lo protege con `owner_required`); (2) el recuento de `last_owner` bloquea operaciones legítimas sobre propietarios invitados; (3) la ruta que sustituye a `updateAuth` no la usa nadie: aceptar invitaciones sigue siendo una escritura del navegador en Firestore.
 
 ## DELETE /api/v1/checkinbiz/collaborators/:userId?entityId=  ·  COL-05
 - Servicio: checkinbiz, `collaborator.router.ts:191-214`; `manageCollaborator.ts:204-233`.

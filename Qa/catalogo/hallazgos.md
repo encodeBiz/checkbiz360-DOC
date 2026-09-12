@@ -254,6 +254,33 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-21 · Un administrador se hace propietario, y de paso aparta al que lo era
+
+- **Observado.** Con un asiento de `admin` activo en una empresa, y solo con su token de
+  Firebase, se puede:
+  - `PATCH /api/v1/checkinbiz/collaborators/{supropiouid}` con `role:"owner"` → **200**, y queda
+    escrito: se asciende a sí mismo.
+  - `PATCH` sobre el uid de un propietario con `role:"admin"` → **200**: lo rebaja.
+  - `POST /api/v1/checkinbiz/collaborators` con `role:"owner"` para un correo cualquiera →
+    **201**: entrega la propiedad de la empresa a quien quiera, incluido alguien de fuera.
+- **Dónde.** `services/checkinbiz/src/application/use-cases/auth/manageCollaborator.ts:120-148`
+  (conceder) y `:167-194` (modificar). Ninguna de las dos recibe quién llama, así que no puede
+  comparar su rango con el del afectado. La puerta de entrada
+  (`collaborator.router.ts`) solo exige «asiento activo `owner` **o** `admin`».
+- **Lo que lo convierte en descuido y no en decisión.** La tercera puerta del mismo fichero sí
+  lo protege: `DELETE` (`:204-233`) comprueba explícitamente que a un propietario solo lo retire
+  otro propietario (`owner_required`) y que nunca se quede sin ninguno. La intención está
+  implementada; falta en dos de las tres puertas.
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12, con un
+  administrador recién sentado sobre una empresa de prueba.
+- **Efecto.** El escalón entre propietario y administrador deja de existir. Quien entra como
+  administrador —una invitación, un colaborador externo, una cuenta comprometida— se queda con
+  la empresa: puede cobrar, dar de baja el servicio, apartar al dueño y entregar el control a un
+  tercero. La protección del borrado no sirve de nada si primero se puede rebajar al propietario
+  a administrador.
+- **Casos.** COL-04-02, COL-04-03 y COL-02-04, cubiertos en la suite como fallos esperados.
+  COL-05-04 va en verde al lado, a propósito: es la prueba de que la regla existe.
+
 ## HAL-20 · checkinbiz se activa sin método de pago
 
 - **Regla de producto, confirmada el 2026-09-12.** Para activar checkinbiz hace falta **método
