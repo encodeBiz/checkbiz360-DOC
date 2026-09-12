@@ -254,6 +254,33 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
+## HAL-19 · El importe a cobrar depende de un aviso previo, y nadie comprueba que llegara
+
+- **Observado.** La cantidad facturable —cuántos empleados se cobran— **no se calcula al emitir
+  la factura**. Se ajusta antes, al recibir `invoice.upcoming` o
+  `customer.subscription.trial_will_end`, porque sobre un borrador ya creado
+  `subscriptions.update` no reescribe las líneas (`StripeWebhookHandler.ts:176-181`). Si ese
+  aviso no llega, la factura sale con la cantidad **con la que nació la suscripción**, que para
+  una empresa recién dada de alta es **cero**.
+- **Dónde.** `services/billing/src/application/StripeWebhookHandler.ts:158-204` y
+  `services/billing/src/application/Subscribe.ts:59`.
+- **Comprobado.** Contra desarrollo, 2026-09-12. Forzando el fin de la prueba sin dar tiempo a
+  los avisos, la factura del primer mes salió con la línea `0 × Checkbiz Plan Bronze (at €2.00 /
+  month)`, **0,00 €**, sobre una empresa con 16 empleados y una suscripción que después quedó
+  correctamente en 16 unidades. Es decir: la cantidad se corrigió, pero la factura ya estaba
+  emitida.
+- **Y ya ocurrió una vez.** El comentario del propio código lo cuenta: passinbiz «se quedaba con
+  la cantidad con la que nació —cero— y facturaba 0,00 € mes tras mes». El ajuste por webhook es
+  precisamente el arreglo de aquello.
+- **Efecto.** Cualquier interrupción del webhook durante la ventana del aviso convierte ese mes
+  en gratis, en silencio y sin que nada lo señale. **Y hoy esa interrupción existió**: entre la
+  mudanza de servidor y su arreglo, el webhook apuntaba a un host muerto (HAL-18).
+- **Lo que falta.** No hay ninguna comprobación posterior de que lo facturado coincida con lo que
+  debía facturarse. Una factura a 0 € de una empresa con empleados activos debería chillar.
+- **Casos.** Bloque 1. La prueba fiel **no puede usar `trial_end: "now"`**: eso se salta los dos
+  avisos de los que depende el diseño. Hay que recorrer la secuencia de eventos, con un reloj de
+  prueba de Stripe o con un fin de prueba a unos minutos vista.
+
 ## HAL-18 · Desarrollo se quedó sordo a Stripe tras la mudanza de servidor
 
 - **Observado.** En Stripe, modo prueba, hay **dos** webhooks dados de alta y los dos
