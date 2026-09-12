@@ -200,6 +200,14 @@ cubre lleva ese identificador al principio del título. El informe se lee así c
 catálogo sin traducir nada, y la cobertura es una cuenta simple: casos con prueba entre
 casos del catálogo.
 
+**Dónde va la cobertura hoy** (2026-09-12, medida sobre la lista real de pruebas, no estimada):
+96 casos del catálogo cubiertos de ~1.741 —un 5,5 %—, más 18 comprobaciones de entorno que no
+salen del catálogo. Por módulo: fichaje y calendario 55, tareas 20, documentos 10, empleados 5,
+colaboradores 4, facturación 2, y cero en sucursales, empresas, informes, analítica y webhooks.
+
+Cubrir los 1.741 **no es el objetivo** y nadie lo hace. El orden lo marca la criticidad: lo que
+más se usa y lo que más duele si se rompe.
+
 Los actores tienen nombres fijos, iguales en el catálogo y en las pruebas:
 
 | Actor | Quién es |
@@ -256,7 +264,7 @@ para los recorridos largos y las programadas.
 | 1 | Inventario: endpoints por parcela, mapa de la migración HTTP, listeners y programadas, recorrido del alta al fichaje | Hecho — 8 catálogos, ~1.741 casos |
 | 2 | Proyecto de preparación y recorrido del alta al fichaje, en su parte de acciones | Hecho — el mundo se crea entero por los endpoints reales en ~27 s |
 | 3 | La cadena de efectos del recorrido: listeners, snapshots y programadas forzadas | — |
-| 4 | Contratos por criticidad: fichaje y login; tareas; empleados, sucursales y empresas; documentos; facturación e informes | En curso — 82 pruebas en verde; fichaje cubierto en su jornada completa |
+| 4 | Contratos por criticidad: fichaje y login; tareas; empleados, sucursales y empresas; documentos; facturación e informes | En curso — 115 pruebas en verde; cubiertos la jornada completa de fichaje, la corrección de jornada y la jornada manual |
 | 5 | Comparativas función/contenedor, en las 34 rutas con función desplegada en desarrollo | — |
 | 6 | Ejecución en CI tras cada despliegue a staging | — |
 | 7 | Interfaz: panel en navegador y app con Maestro | — |

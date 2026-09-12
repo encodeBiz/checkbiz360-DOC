@@ -340,6 +340,7 @@ Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene 
 - Entrada: `entityId`, `employeeId`, `branchId`, `id` (strings no vacíos); `status` ∈ {`valid`,`failed`} (opcional, **por defecto `failed`**); `timestamp` (camino A; Date, epoch ms, ISO con o sin zona; si falta, ahora); `reason` (camino A); `updateId` (camino B); `rejectionReason` (camino B con `failed`).
 - Respuesta correcta: `200 {message:"Checklog created", code:"checklog/updated"}`.
 - Efectos: camino A → `status:"pending-employee-validation"`, `metadata.requestUpdates` += `{id:updateId, createdAt, action:"edited", reason, updateBy, previousStatus, previousDate, data:{entityId, timestamp, employeeId, status, id}}`, `metadata.updated`; push + notificación in-app `update_checklog_pending` al empleado (`:325-335`); evento `attendance.correction_requested`. Camino B → escribe `update.data` de la propuesta con `status` del cuerpo, `requestUpdate`, `metadata.updated`; con `failed` borra `closed` y guarda `metadata.rejectionReason`; evento `correction_accepted` o `correction_rejected`.
+- **Ojo con el historial:** `metadata.requestUpdates` **nunca está vacío**. Todo fichaje nace con una entrada `action:"created"` (`data:{}`, `updateBy` = quien lo creó) que escribe `createChecklog.controller.ts:429-435`, así que la primera corrección es la **segunda** entrada del array. Comprobado al ejecutar, 2026-09-12.
 - Criticidad: alta — corrección de un registro legal, con doble validación empleado/empresa.
 - Casos:
   - CHK-09-01 · PROP · camino A con `reason` y `timestamp` pasado con `Z` → `200 code:"checklog/updated"`; fichaje en `pending-employee-validation`; nueva entrada `edited`; notificación al empleado; evento `correction_requested`.
@@ -360,7 +361,7 @@ Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene 
   - CHK-09-16 · EMP_FB · `status:"failed"` y `rejectionReason` → `200`; el fichaje queda `status:"failed"`, sin `closed`, con `metadata.rejectionReason` y con el `timestamp` de la propuesta; evento `correction_rejected`.
   - CHK-09-17 · EMP_FB · sin `updateId` → `400 {error:"updateId is required", code:"checklog_update/updateId_required"}`.
   - CHK-09-18 · EMP_FB · `updateId` que no está en `requestUpdates` → `400 {error:"updateId is required", code:"checklog_update/not_found"}`.
-  - CHK-09-19 · EMP_FB · fichaje sin `requestUpdates` → `400 code:"checklog_update/not_found"`.
+  - CHK-09-19 · EMP_FB · fichaje sobre el que nadie ha propuesto nada, con un `updateId` cualquiera → `400 code:"checklog_update/not_found"`. (La rama «sin `requestUpdates`» del código es inalcanzable: el array siempre trae la entrada `created`.)
   - CHK-09-20 · EMP_FB · propuesta guardada con fecha futura y `status:"valid"` → `400 code:"checklog_update/future_not_allowed"`; con `status:"failed"` → `200` conservando la fecha original.
   - CHK-09-21 · EMP_FB · la misma `updateId` confirmada dos veces, o la entrada `created` original → `200` las dos veces (no se mira el estado actual del fichaje).
   - CHK-09-22 · EMP_FB · jornada manual (CHK-10) pendiente, `updateId` de `manual_request_created` y `status:"valid"` → `200`; el fichaje pasa a `valid`.
@@ -372,8 +373,8 @@ Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene 
   - CHK-09-28 · TOKEN_INVALIDO / EMP_JWT → `401 {message:"Invalid token", code:"auth/invalid_token"}`.
   - CHK-09-29 · PROP · fallo de Firestore → `500 {error, code:"checklog/internal_error"}`.
 - Sospechas:
-  - No se comprueba que el fichaje `id` pertenezca a `employeeId` (`checkData.employeeId` no se compara), y el camino A escribe el `employeeId` del cuerpo sobre el fichaje (`:261-270`): una corrección con ids cruzados reasigna el fichaje a otro empleado (CHK-09-14). En el camino B, un empleado que conozca el `id` y un `updateId` del fichaje de un compañero lo modifica.
-  - Rechazar una propuesta deja el fichaje en `failed` y con la fecha propuesta (`:271-293`), salvo si la propuesta es futura: el registro original se pierde en vez de conservarse. Heredado.
+  - **Confirmado, ya no es sospecha — HAL-14.** No se comprueba que el fichaje `id` pertenezca a `employeeId` (`checkData.employeeId` no se compara), y el camino A escribe el `employeeId` del cuerpo sobre el fichaje (`:261-270`): una corrección con ids cruzados reasigna el fichaje a otro empleado (CHK-09-14). En el camino B, un empleado que conozca el `id` y un `updateId` del fichaje de un compañero lo modifica.
+  - **Confirmado, ya no es sospecha — HAL-15.** Rechazar una propuesta deja el fichaje en `failed` y con la fecha propuesta (`:271-293`), salvo si la propuesta es futura: el registro original se pierde en vez de conservarse. Heredado.
   - `status` ausente equivale a `failed` (`:69`): una confirmación sin `status` es un rechazo.
   - El camino B no mira si hay propuesta pendiente (`status` del fichaje) ni si ya se resolvió (CHK-09-21).
   - Un responsable de sucursal (nivel ≥2) no puede corregir por esta vía, aunque sí puede crear jornadas manuales (CHK-10). Hecho observado; si es intencionado, sin confirmar.

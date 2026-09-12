@@ -199,12 +199,53 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Efecto.** Un cliente nuevo puede ver y pulsar un plan retirado, y el alta falla.
 - **Casos.** FAC-03.
 
+## HAL-14 · Una corrección con identificadores cruzados le cambia el dueño al fichaje
+
+- **Observado.** `POST /api/v1/checkinbiz/checklogs/update` no comprueba que el fichaje `id`
+  pertenezca al `employeeId` del cuerpo. Enviando la ficha de un empleado y el identificador del
+  fichaje de otro, la petición responde `200 checklog/updated` y el fichaje queda reescrito con
+  el `employeeId` recibido: cambia de dueño. La notificación de la corrección le llega al
+  empleado nuevo, no al que fichó.
+- **Dónde.** `encodebiz-api/services/checkinbiz/src/interfaces/http/checklog/updateChecklog.controller.ts:120-124`
+  busca el fichaje por `id` y `entityId` sin comparar nunca `checkData.employeeId`, y `:238-270`
+  lo reescribe con el `employeeId` del cuerpo.
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12.
+- **Efecto.** La jornada de una persona pasa a contarse en la de otra, y desaparece del historial
+  de quien la trabajó. Es un registro con valor legal. El mismo hueco existe por el camino del
+  empleado: quien conozca el `id` y un `updateId` del fichaje de un compañero de su empresa lo
+  resuelve como si fuera suyo.
+- **Casos.** CHK-09-14, cubierto en la suite como fallo esperado.
+
+## HAL-15 · Rechazar una corrección deja escrita la hora que se rechazaba
+
+- **Observado.** Cuando el empleado rechaza una propuesta (`status:"failed"`), el fichaje queda
+  con la hora **propuesta**, no con la que tenía. La original solo sobrevive en el historial
+  (`metadata.requestUpdates[].previousDate`), no en el propio fichaje. La única excepción es una
+  propuesta con fecha futura, que sí restaura la original.
+- **Dónde.** `updateChecklog.controller.ts:271-293`: el camino de resolución escribe `update.data`
+  —la propuesta— y solo cambia el `status`.
+- **Comprobado.** Contra el entorno de desarrollo con peticiones reales, 2026-09-12. Viene
+  heredado de la Cloud Function; no se introdujo al migrar.
+- **Efecto.** Un rechazo invalida el fichaje y además le deja escrita la hora que el empleado
+  acaba de negar. Si es intencionado, conviene decirlo; si no, el rechazo debería devolver
+  `previousDate` y `previousStatus`. **Decisión de producto pendiente**: por eso la prueba fija
+  el comportamiento observado en lugar de pintarlo en rojo.
+- **Casos.** CHK-09-16.
+
 ---
 
 ## Correcciones al catálogo encontradas al ejecutar
 
 Las pruebas también corrigen el inventario. Se anotan aquí para no repetir el error.
 
+- **CHK-09 · el historial nunca está vacío.** El catálogo daba por hecho que
+  `metadata.requestUpdates` solo guarda correcciones. No es así: todo fichaje nace ya con una
+  entrada `action:"created"` —con `data:{}` y el `uid` de quien lo creó— que escribe
+  `createChecklog.controller.ts:429-435`. Tras la primera propuesta hay **dos** entradas, no una.
+  De ahí se siguen dos cosas: el caso CHK-09-19 tal y como estaba descrito («fichaje sin
+  `requestUpdates`») es inalcanzable —lo que se prueba es un `updateId` que no está en la lista—,
+  y el `id` de la entrada de creación es un `updateId` válido que un empleado puede resolver
+  (CHK-09-21).
 - **TSK-09-01.** El catálogo decía que asignar «sin `employeeIds`» devuelve `400
   task/bad_request`. No es cierto: el controlador desestructura con `employeeIds = []`, y una
   lista vacía sí es un array, así que la comprobación pasa y la petición sigue hasta el
