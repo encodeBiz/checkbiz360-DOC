@@ -135,6 +135,7 @@ Abreviaturas de ficheros: `api:` = `encodebiz-api/`, `cf:` = `encodeBiz-SAAS/fun
   - EMP-03-28 · PROP · reenvío con `id` inventado y el `email` de una cuenta cualquiera de Auth, por ejemplo el propietario de otra entidad → 200; se cambia la contraseña de esa cuenta y se le manda la bienvenida (no se comprueba que `id` sea de la entidad ni que el correo sea suyo, employee.router.ts:153-161).
   - EMP-03-29 · PROP · falla el SMTP en un alta normal → 201 igualmente: `sendWelcomeEmail` devuelve `false` y no lanza (employeeAccess.ts:88-91).
   - EMP-03-30 · PROP · falla el SMTP en un reenvío → 400 `{error:"No se pudo reenviar el correo de bienvenida"}`.
+  - EMP-03-31 · PROP · tras el alta, la persona aparece en `searchIndex/entities__{entityId}__employees__{employeeId}` con `type:"employee"`; se indexan nombre, correo y teléfono, así que se encuentra por cualquiera de los tres.
 - Sospechas: (1) crear un empleado con el correo de una cuenta existente de Auth le cambia la contraseña a esa persona (la CF hacía lo mismo desde el disparador); (2) el reenvío permite restablecer la contraseña de cualquier cuenta de Auth conociendo su correo, y a cualquier PROP o ADMIN de cualquier entidad; (3) la comprobación de duplicados distingue mayúsculas; (4) sin `email` el error dice «ya existe»; (5) las fichas dadas de baja siguen consumiendo cupo, aunque el repositorio tiene `countByEntity`, que las excluye (FirestoreEmployeeRepository.ts:224-235), y no se usa aquí.
 
 ## POST /api/v1/employees/update  ·  EMP-04
@@ -239,6 +240,7 @@ Abreviaturas de ficheros: `api:` = `encodebiz-api/`, `cf:` = `encodeBiz-SAAS/fun
   - EMP-07-02 · PROP · sin `entityId` → 400 `details:["entityId is required"]`.
   - EMP-07-03 · PROP · id inexistente → 404 `employee_not_found`.
   - EMP-07-04 · AJENO → 403. ANON → 401.
+  - EMP-07-05 · PROP · la baja retira la entrada del buscador, aunque la ficha se quede en `fired` (baja blanda). **No es inmediato**: medido en ~7 s contra desarrollo, así que hay que preguntar hasta que desaparezca, no mirar una sola vez.
 - Sospechas: ninguna adicional.
 
 ## POST /api/v1/employees/:employeeId/email  ·  EMP-08
@@ -421,6 +423,7 @@ Todas pasan por `requireFirebaseAuth` (`api:services/branches/src/app.ts:16`) y 
   - SUC-01-14 · OP_MANAGER · cuerpo válido → 403 `{error:"Unauthorized to perform this operation on the entity", code:"auth/unauthorized"}`.
   - SUC-01-15 · AJENO → 403 (mismo cuerpo). AJENO con cuerpo inválido → 403 (el permiso va antes).
   - SUC-01-16 · ANON → 401 `{error:"unauthenticated", message:"Missing Authorization header"}`.
+  - SUC-01-17 · PROP · tras el alta, el centro aparece en `searchIndex/entities__{entityId}__branches__{branchId}` con `type:"branch"` y se encuentra por prefijo del nombre.
 - Sospechas: el alta acepta `archived` y la edición `inactive` (divergencia heredada, documentada en `branch.validation.ts:137-144`).
 
 ## POST /api/v1/branches/update  ·  SUC-02
@@ -536,6 +539,7 @@ Todas pasan por `requireFirebaseAuth` (`api:services/branches/src/app.ts:16`) y 
   - ENT-01-08 · sin `name` o `name:"  "` → 400 `{error:"Invalid payload", details:["name is required"]}`.
   - ENT-01-09 · `active:"true"` (cadena) → 400 «active must be a boolean».
   - ENT-01-10 · ANON → 401 `unauthenticated`. TOKEN_INVALIDO → 401.
+  - ENT-01-11 · PROP · tras el alta, la empresa aparece en el buscador: `searchIndex/entities__{entityId}` con `type:"entities"`, y una consulta `keywords_prefix array-contains` por su nombre la encuentra. Lo escribe `entity.router.ts:42-52` **sin esperar y sin lanzar**: si falla, el alta responde 201 igual y la empresa no sale al buscar.
 - Sospechas: (1) asignación masiva: el cuerpo entero acaba en el documento de la entidad, incluidos campos de facturación como `stripeCustomerId` (la CF igual); (2) la empresa se puede quedar sin propietario y la respuesta es 201.
 
 ## POST /api/v1/entities/update  ·  ENT-02
