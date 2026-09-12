@@ -292,13 +292,13 @@ Salvo que la precondición diga otra cosa: el empleado E está `active` y tiene 
   - CHK-08-58 · EMP_JWT · `checkin` en B y `restin` en B2 sin ningún `checkin` histórico en B2 → `400 {message:"Chrckin related is not found", code:"checklog/invalid"}`.
   - CHK-08-59 · EMP_JWT · como el anterior pero con un `checkin` antiguo en B2 → `201` enlazado a ese `checkin` antiguo de B2.
   - CHK-08-60 · EMP_JWT · a 60 m de G con radio 100 → `201`, `metadata.distance` ≈ 60.
-  - CHK-08-61 · EMP_JWT · distancia exactamente igual al radio (borde) → `201` (dentro incluye el borde, `geofence.ts:56`; haversine sin redondeo, `shared/checkbiz/utils/getDistanceInMeters.ts`).
+  - CHK-08-61 · EMP_JWT · distancia exactamente igual al radio (borde) → `201`: dentro incluye el borde (`distanceMeters <= radiusMeters`, `geofence.ts:56`). **Para probarlo hay que medir desde dentro**: el rechazo por estar fuera redondea la distancia al metro (`createChecklog.controller.ts:507`, `Math.round`), mientras que el fichaje aceptado guarda la distancia entera en `metadata.distance`. Con la redondeada, poner el radio ahí deja el punto real unos centímetros fuera. Confirmado el 2026-09-12.
   - CHK-08-62 · EMP_JWT · a 250 m con radio 100, secuencia válida → `400 {error:"Outside allowed radius", code:"checklog/out_of_radius", details:{distanceMeters:250, allowedRadiusMeters:100, branchId}}`; queda un fichaje `status:"failed"`, `failedCode:"checklog/out_of_radius"`; evento rechazado `out_of_geofence` con `distance_meters` y `allowed_radius_meters`.
   - CHK-08-63 · EMP_JWT · fuera de radio y además secuencia inválida (segundo `checkin`) → `400 code:"checklog/out_of_radius"` y **sin** registro `failed` (el caso de uso lo rechaza sin escribir).
   - CHK-08-64 · EMP_JWT · sucursal con `disableRatioChecklog:true`, a 5 km → `201`, sin `metadata.distance`.
   - CHK-08-65 · EMP_JWT · empleado con `enableRemoteWork:true`, a 5 km → `201`; `metadata.tz` = `employee.address.timeZone`.
   - CHK-08-66 · EMP_JWT · sucursal sin `ratioChecklog` (o no numérico, p. ej. `"100"`) → sin valla → `201`.
-  - CHK-08-67 · EMP_JWT · `ratioChecklog: 0`, en el punto exacto → `201`; a 1 m → `400 code:"checklog/out_of_radius"`.
+  - CHK-08-67 · **inalcanzable por la API**: `POST /branches` y `/branches/update` rechazan `ratioChecklog` con `400 "ratioChecklog must be greater than 0"` (`branch.validation.ts:58`). Un radio 0 solo existiría escribiendo en Firestore a mano, y `isUsableGeofence` sí lo admitiría (`geofence.ts:45`). Medido el 2026-09-12.
   - CHK-08-68 · EMP_JWT · sucursal sin `address.geo` → sin valla → `201`.
   - CHK-08-69 · EMP_JWT · `ratioChecklog` negativo → sin valla → `201` (en la CF, siempre `out_of_radius`).
   - CHK-08-70 · EMP_JWT · empleado remoto en `America/Mexico_City`, calendario en `Europe/Madrid`, turno 09:00-17:00 → las horas del turno se evalúan en hora de México, pero el día de la semana, la fecha local y los festivos en hora de Madrid; entre las 00:00 y las 07:00 de Madrid el `checkin` se evalúa con el día siguiente al de México.
