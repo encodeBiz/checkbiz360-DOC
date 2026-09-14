@@ -21,6 +21,14 @@ Body: `entityId`, `branchId`, `title`, `description?`, `priority?`, `scheduledSt
 Efectos: crea la tarea (`status: draft|assigned`), asignaciones iniciales, actividad `created`; si `config.notifyIfNotStarted` y hay `scheduledStartAt`, calcula `scheduledStartNotificationAt` (+15 min).
 `201` → `TaskDetail`. `400` config/prioridad inválida. `404` branch inexistente. `403` sin permiso.
 
+### `POST /:taskId/duplicate` — duplicar tarea
+Permiso: `canManageTask` (sobre la `config` del original).
+Body: `entityId`, `dueAt` (obligatorio), `scheduledStartAt?`, `title?` (por defecto, el del original + `" (copia)"`).
+Copia el encargo: `branchId`, `description`, `priority`, `config` (normalizada por `validateTaskConfig`) y `workSite` **literal**, sin volver a resolverlo —re-resolverlo llamaría a Google por el `placeId` y podría mover la valla—.
+No copia: asignaciones, evidencias, notas, valoraciones, historial ni `metadata` (`externalRef` es la clave de idempotencia del add-on; duplicarla rompería la sincronización).
+Efectos: crea la tarea en `status: draft` con `assignedEmployeeIds: []`, actividad `created` con `metadata.duplicatedFrom`, evento `task.created`. Sin notificación: no hay nadie a quien avisar hasta que se asigne.
+`201` → `TaskDetail`. `400` falta `dueAt` o es inválido; `404` original inexistente; `400` `task/source_config_invalid` si la `config` del original no es usable.
+
 ### `GET /:taskId` — detalle
 Permiso: `canViewTask`.
 `200` → `TaskDetail` = `{ task, assignments, notes, resources, ratings, activity, validations }`. `404` si no existe.
@@ -51,6 +59,24 @@ Efectos: aplica la transición (`started`/`completed`/…), sella `startedAt`/`c
    - al **completar**, la distancia se registra pero **no bloquea**.
 
 Una tarea sin `workSite` no tiene comprobación geográfica: la valla que le corresponde es la de su sucursal, ya aplicada en el check-in que la precondición 1 exige.
+
+---
+
+### `POST /:taskId/pause` — pausar
+Permiso: `canOperateAssignedTask` (asignado, o supervisor en adelante).
+Body: `entityId`, `reason?` (texto libre), `geo?` (se guarda, no se juzga).
+**Sin precondiciones de jornada ni geocerca**: se pausa precisamente cuando uno se va (ver [08_pausas.md](./08_pausas.md), D5).
+Efectos, en una transacción sobre la tarea: abre `pauses/{pauseId}`, sella `pausedAt`, `pausedBy`, `pauseId` y suma 1 a `pauseCount`. La tarea **sigue `in_progress`** (D2). Actividad `paused`; evento `task.paused` (sin el motivo, que puede llevar datos personales).
+`200` → `Task`. `400` `task/not_in_progress` o `task/already_paused`. `403` sin permiso. `404` inexistente.
+
+### `POST /:taskId/resume` — reanudar
+Permiso: `canOperateAssignedTask`.
+Body: `entityId`, `geo?` (obligatorio si la tarea tiene `workSite`).
+**Mismas precondiciones que iniciar**: jornada abierta (salvo back office) y, con `workSite`, estar dentro de la valla. Fuera de ella se rechaza y queda actividad `resume_rejected`, igual que `start_rejected` al iniciar.
+Efectos, en una transacción: cierra la pausa (`endedReason: resumed`, `durationMs`), suma su duración a `pausedMs` y borra `pausedAt`/`pausedBy`/`pauseId`. Actividad `resumed`; evento `task.resumed` con `pause_duration_ms`.
+`200` → `Task`. `400` `task/not_paused`, `task/no_open_session`, `task/geo_required` o `task/out_of_worksite`. `403` sin permiso. `404` inexistente.
+
+**Cambios de estado con una pausa abierta** (`PATCH /:taskId/status`): `completed` y `cancelled` la cierran en la misma transacción que el cambio (`endedReason` con el estado); `assigned` y `draft` la cierran como `reset` y ponen `pausedMs` y `pauseCount` a cero (D4, D8).
 
 ---
 
@@ -120,6 +146,10 @@ Body: `employeeId`, `rating` (1–5), `comment?`, `image?` (opcional, multipart)
 | `task/unauthorized` | 403 | Token inválido o sin nivel suficiente |
 | `task/branch_not_found` | 404 | Branch inexistente |
 | `task/branch_inactive` | 400 | Branch no activa |
+| `task/source_config_invalid` | 400 | La `config` de la tarea que se duplica no es usable |
+| `task/not_in_progress` | 400 | Solo se puede pausar una tarea en curso |
+| `task/already_paused` | 400 | La tarea ya está pausada |
+| `task/not_paused` | 400 | Se pide reanudar una tarea que no está pausada |
 | `task/employee_not_found` | 404 | Empleado del staff JWT inexistente |
 | `task/no_open_session` | 400 | El empleado no tiene jornada abierta |
 | `task/geo_required` | 400 | La tarea tiene `workSite` y el body no trae `geo` |

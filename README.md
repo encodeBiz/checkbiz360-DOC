@@ -14,11 +14,11 @@
 ## Navegación
 
 ### Seguridad
-- [Security-Audit/](../Security-Audit/README.md) — Auditoría de seguridad 2026-05-25: hallazgos, severidades y plan de remediación
-  - [AUDIT-BACKEND.md](../Security-Audit/2026-05-25/AUDIT-BACKEND.md) — 8 hallazgos en Cloud Functions / Firestore / Storage
-  - [AUDIT-BACKOFFICE.md](../Security-Audit/2026-05-25/AUDIT-BACKOFFICE.md) — 6 hallazgos en Next.js backoffice
-  - [AUDIT-MOBILE.md](../Security-Audit/2026-05-25/AUDIT-MOBILE.md) — 6 hallazgos en app Flutter
-  - [REMEDIATION-PLAN.md](../Security-Audit/2026-05-25/REMEDIATION-PLAN.md) — Plan priorizado por fases con owners y estimados
+- [Security-Audit/](./Security-Audit/README.md) — Auditoría de seguridad 2026-05-25: hallazgos, severidades y plan de remediación
+  - [AUDIT-BACKEND.md](./Security-Audit/2026-05-25/AUDIT-BACKEND.md) — 8 hallazgos en Cloud Functions / Firestore / Storage
+  - [AUDIT-BACKOFFICE.md](./Security-Audit/2026-05-25/AUDIT-BACKOFFICE.md) — 6 hallazgos en Next.js backoffice
+  - [AUDIT-MOBILE.md](./Security-Audit/2026-05-25/AUDIT-MOBILE.md) — 6 hallazgos en app Flutter
+  - [REMEDIATION-PLAN.md](./Security-Audit/2026-05-25/REMEDIATION-PLAN.md) — Plan priorizado por fases con owners y estimados
 
 ### Arquitectura y dominio
 - [ARQUITECTURA.md](./ARQUITECTURA.md) — Visión de sistema, capas, stack, comunicación

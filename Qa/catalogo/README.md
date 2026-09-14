@@ -29,4 +29,5 @@ planes manuales de QA. El método está en [../plan-automatizacion.md](../plan-a
 | [empleados-sucursales-empresas.md](./empleados-sucursales-empresas.md) | Empleados, sucursales, empresas y colaboradores | EMP, SUC, ENT, COL | Publicado · análisis estático |
 | [facturacion-informes-eventos.md](./facturacion-informes-eventos.md) | Facturación, informes, webhooks salientes y analítica | FAC, INF, EVT, ANA | Publicado · análisis estático |
 | [mapa-migracion.md](./mapa-migracion.md) | Qué llama cada cliente, adónde va y qué queda fuera del HTTP | MAP | Publicado · análisis estático |
-| [hallazgos.md](./hallazgos.md) | Fallos y comportamientos dudosos, confirmados | HAL | Abierto |
+| [hallazgos.md](./hallazgos.md) | Fallos y comportamientos dudosos, confirmados, con su corrección debajo | HAL | 35 de 37 corregidos o con código listo (14-sep-2026); 2 esperan decisión |
+| [hallazgos-triaje.md](./hallazgos-triaje.md) | Los hallazgos clasificados por importancia, con su resolución y el orden de ataque | HAL | Auditoría y primera tanda de arreglos, 2026-09-13 |

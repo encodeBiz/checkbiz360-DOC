@@ -236,6 +236,9 @@ que `SERVICES` no admite su serviceId.
   vacíos que se ven son los del fixture `passinbiz.plans.ts`, y los planes que
   se facturan viven en `service/{id}/plan/{planId}` en Firestore, no en el repo.
 - Qué eventos tiene realmente suscritos el endpoint del webhook en Stripe.
+  **Sigue sin verificar el 2026-09-05, y ha dejado de ser un detalle menor**:
+  es la hipótesis principal de por qué una suscripción de prueba llegó a su
+  primer corte sin cobrar. Ver `05_fin-de-prueba.md`.
 
 ## Lo que el módulo no cubre y va a tener que cubrir
 

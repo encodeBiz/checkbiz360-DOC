@@ -144,7 +144,21 @@ Reglas derivadas:
 
 D3 mantiene «vivos cuando Stripe pregunta», así que `invoice.upcoming` sigue
 siendo el momento de verdad. La diferencia con el as-is es que deja de estar
-solo. Cuatro capas, de más barata a más cara:
+solo. Cuatro capas, de más barata a más cara —precedidas de una condición que
+este diseño daba por supuesta y no lo estaba:
+
+**0. Que el aviso llegue, y que llegue también en el primer corte.** Añadido el
+2026-09-05; el detalle y la evidencia, en `05_fin-de-prueba.md`. Dos supuestos
+que no se sostienen. Uno: `invoice.upcoming` solo dispara si está **suscrito en
+el endpoint** de Stripe, y un evento no suscrito no falla —simplemente no
+ocurre—; las cuatro capas de abajo no lo cubren porque todas cuelgan de él. La
+lista de eventos suscritos es parte del diseño, se escribe y se verifica en el
+pase a producción. Dos: este apartado razona sobre renovaciones mensuales, pero
+la factura que más importa es la **primera**, la del fin del trial de 45 días
+—la suscripción nace con `quantity` 0 porque la entidad aún no tiene plantilla—.
+`customer.subscription.trial_will_end` da un segundo disparador para ese corte,
+tres días antes, ejecutando **el mismo recuento** que `invoice.upcoming`: no es
+un mecanismo distinto, es el mismo con otro gatillo.
 
 **1. Que el fallo se note (R11).** `updateSubscription` devuelve un `Result` que
 hoy se descarta. Se comprueba `.success`; si falla, se lanza, y el webhook
@@ -320,6 +334,9 @@ detalle. No crea nada en Stripe, así que no puede quemar un número.
                      + idempotency_key
 3. customer.subscription.created/.updated → estado real en Firestore,
                      endTestPeriod desde trial_end
+3b. customer.subscription.trial_will_end → 3 días antes de acabar la prueba,
+                     mismo recuento que (5). Es el primer corte del cliente:
+                     el que estrena el cobro
 4. (uso) passinbiz → meterEvent por emisión, identificador idempotente
 5. invoice.upcoming → por cada item, ChargeStrategy resuelve quantity.
                       Fallo ⇒ 5xx ⇒ Stripe reintenta. Se registra en billingRuns
@@ -362,6 +379,14 @@ informa**.
   y la duración del draft son ajustes del dashboard de Stripe. El diseño no debe
   depender del valor exacto: la capa 3 es una segunda oportunidad, no la
   principal.
+- **Un evento no suscrito no se distingue de uno que no hizo nada.** Toda la red
+  del apartado anterior cuelga de que `invoice.upcoming` —y `trial_will_end`—
+  estén marcados en el endpoint del webhook. Es configuración de consola con
+  consecuencia de diseño: si falta, no hay excepción, no hay log y no hay cobro.
+  Ver `05_fin-de-prueba.md`.
+- **El primer corte no tiene mínimo facturable.** `Plan.minItemsPay` existe pero
+  `Subscribe` no lo aplica —solo se usa en `Unsubscribe`—, así que una prueba que
+  termina con cero unidades factura 0 €. Decisión de producto pendiente.
 - **El precio del add-on de Rentman sigue abierto** (D6a). El diseño es agnóstico
   al número, pero la Fase 5 no puede cerrarse sin él.
 - **`countSource` es un contrato entre módulos.** Un `countSource` mal escrito en

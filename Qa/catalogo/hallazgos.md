@@ -8,10 +8,29 @@ Cada hallazgo dice qué se ha observado y dónde, no por qué ocurre, salvo que 
 establecida. Una prueba que choca con un hallazgo afirma el comportamiento correcto y se marca
 como fallo esperado con su identificador; el día que se arregle, la prueba avisará.
 
+## Estado al 2026-09-14
+
+De los 37 hallazgos, **35 están corregidos o con el código listo** y 2 esperan una decisión
+de producto. La suite completa contra staging ya no lleva ningún indulto. El detalle de cada
+uno está en su bullet **Corregido**, y el plan, las decisiones tomadas y lo que queda a mano
+en [hallazgos-triaje.md](./hallazgos-triaje.md).
+
+| Estado | Hallazgos |
+|---|---|
+| Corregido en desarrollo y verificado por la suite | HAL-01, 06, 07, 08, 10, 11, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 35, 36, 37 |
+| Corregido en desarrollo, a falta de una configuración fuera del repo | HAL-19 (suscribir `invoice.created` en el webhook de Stripe) |
+| Código listo, retirada o publicación pendiente | HAL-02 y HAL-05 (borrar las funciones en `dev-encodebiz`), HAL-09 (siguiente versión de la app) |
+| Cerrados con anterioridad | HAL-12, HAL-18, HAL-31, HAL-33 |
+| Decisión de producto pendiente, sin tocar | HAL-03 (geocerca al crear sucursal), HAL-04 (segundo factor al crear empleado) |
+
+Los identificadores no se reutilizan: un hallazgo corregido conserva su número y su texto
+original, con la corrección debajo.
+
 ---
 
-## HAL-01 · Suscribir sin cliente de Stripe responde un 500 genérico
+## HAL-01 · Suscribir sin cliente de Stripe responde un 500 genérico · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-14, en desarrollo. El router de facturación traduce los rechazos con código del alta: `subscribe/not_found` → 404, `subscribe/entity_not_configured` → 412, `subscribe/plan_not_available` → 409. Con HAL-20 el caso original ya no se alcanza —sin cliente de Stripe no hay método de pago y la activación se corta antes—, pero el 500 deja de existir.
 - **Observado.** Una empresa con los datos legales completos pero sin cliente de Stripe recibe
   `500 internal_error` al suscribirse. `Subscribe.ts` lanza un `Error` con el código
   `subscribe/entity_not_configured` dentro del texto, nadie lo captura y el manejador general
@@ -24,8 +43,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   el portal antes de suscribir.
 - **Casos.** REC-03.
 
-## HAL-02 · En desarrollo, cada fichaje sale dos veces por webhook
+## HAL-02 · En desarrollo, cada fichaje sale dos veces por webhook · CÓDIGO LISTO, retirada pendiente
 
+- **Corregido.** El 2026-09-13. `onChecklogWebhook` sale del índice del SaaS (`feat/retirar-triggers-duplicados`, fusionado en su `develop`, sin desplegar). Borrar la función en `dev-encodebiz` lo bloqueó el clasificador y queda para hacer a mano; en producción, comprobar qué está desplegado antes del pase.
 - **Observado.** Al crear un fichaje, el contenedor emite su evento (`emitChecklogCreated`), y
   además el trigger `onChecklogWebhook`, desplegado y activo en `dev-encodebiz`, emite otro al
   escribirse el documento.
@@ -63,8 +83,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   fichaje no comprueba desde qué dispositivo se hace.
 - **Casos.** REC-06, REC-09.
 
-## HAL-05 · La facturación del día 5 sigue programada en desarrollo
+## HAL-05 · La facturación del día 5 sigue programada en desarrollo · CÓDIGO LISTO, retirada pendiente
 
+- **Corregido.** El 2026-09-13. `triggerInvoiceWorker` y `processInvoices` salen del índice del SaaS (misma rama). Borrar las dos funciones —y con la programada, su job de Scheduler— en `dev-encodebiz` queda para hacer a mano.
 - **Observado.** El job de Cloud Scheduler de `triggerInvoiceWorker` está habilitado en
   `dev-encodebiz`, con el cron `0 3 5 * *`, a la vez que existe el servicio de facturación en
   contenedor.
@@ -74,8 +95,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Consecuencia para QA.** Ninguna prueba lo fuerza.
 - **Casos.** PRG-03.
 
-## HAL-06 · El calendario de una empresa lo escribe cualquier cuenta autenticada
+## HAL-06 · El calendario de una empresa lo escribe cualquier cuenta autenticada · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Leer exige pertenecer a la empresa —asiento activo, o ficha de empleado con ese uid, que es como lo pide la app— y escribir exige asiento o responsabilidad de supervisor o más sobre el ámbito (`calendar.access.ts`; `requireEntityMember` y `requireEntityWriter` en shared). CHK-11-10 y CHK-12-22 en verde.
 - **Observado.** `PATCH`/`POST /api/v1/checkinbiz/calendar` guarda y borra horarios, festivos y
   ausencias de la entidad que venga en el cuerpo, sin comprobar que quien llama pertenezca a
   esa entidad. El router solo exige un ID token de Firebase válido; el controlador de alcance
@@ -98,8 +120,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Casos.** CHK-11-10 y CHK-12-22, cubiertos en la suite como fallos esperados; y los alcances
   `entity`, `branch` y `employee` del resto del bloque de calendario.
 
-## HAL-07 · `/auth/validate` entrega una sesión con solo dos identificadores sin firma
+## HAL-07 · `/auth/validate` entrega una sesión con solo dos identificadores sin firma · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. El login y el correo de bienvenida emiten un JWT firmado con `JWT_2FA_SECRET` y con vida de 30 días; las dos puertas de validación verifican la firma y responden `401 employee/invalid_token` a lo demás, exista la ficha o no; la sesión caduca a los 30 días y `expiresAt` llega relleno. La app ya tenía camino de reserva: si el token se rechaza, vuelve a hacer login con Firebase y valida con uno nuevo. En producción, la primera vez, los tokens guardados en las apps instaladas se rechazarán y la app repetirá el login sola.
 - **Observado.** El endpoint público `POST /api/v1/checkinbiz/auth/validate` recibe un token que
   es `base64(JSON {employeeId, entityId})` —sin firma— y, si la ficha existe, devuelve un
   `sessionToken` válido y sin caducidad. Quien conozca o acierte ese par obtiene sesión de ese
@@ -113,8 +136,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Casos.** Bloque de validación de empleado (catálogo CHK); ya cubierto en la suite como
   comportamiento actual.
 
-## HAL-08 · Los webhooks salientes no comprueban la entidad
+## HAL-08 · Los webhooks salientes no comprueban la entidad · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Cada ruta de `endpoints` y de entregas exige asiento activo en la entidad; el reintento de una entrega se comprueba contra la entidad de la propia entrega. Cubierto por el fichero nuevo `26-webhooks-salientes.spec.ts` (EVT-03-17, EVT-04-05, EVT-06-06, EVT-07-06), en verde.
 - **Observado.** `POST/GET/PATCH/DELETE /api/v1/events/endpoints` operan sobre el `entityId` que
   viaja en el cuerpo o en la query, sin comprobar que la cuenta autenticada pertenezca a esa
   entidad. El router exige `requireFirebaseAuth` pero ninguna ruta llama a `canWrite` ni valida
@@ -127,8 +151,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   y recibir sus fichajes, leer su secreto de firma, o borrar su integración.
 - **Casos.** EVT (catálogo de facturación-informes-eventos).
 
-## HAL-09 · La app no reconoce el código de secuencia `invalid_checkin`
+## HAL-09 · La app no reconoce el código de secuencia `invalid_checkin` · CÓDIGO LISTO en la app, sin publicar
 
+- **Corregido.** El 2026-09-14. Las dos cadenas corregidas en `fix/codigo-invalid-checkin` de `checkbiz360`, desde su `develop`, sin fusionar ni publicar: sale con la siguiente versión de la app.
 - **Observado.** Ante un checkin fuera de secuencia, el contenedor responde
   `checklog/invalid_checkin`, pero el analizador de errores de la app compara contra
   `checklog/invalid_checki` (truncado). El caso cae en la rama por defecto y el usuario no ve el
@@ -142,8 +167,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Efecto.** Un mensaje de error menos claro en la app; no bloquea el fichaje.
 - **Casos.** Bloque de creación de fichaje (catálogo CHK).
 
-## HAL-10 · Un anónimo puede averiguar si una tarea existe
+## HAL-10 · Un anónimo puede averiguar si una tarea existe · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-14, en desarrollo. Los catorce controladores que buscan la tarea comprueban antes que hay credencial válida —ID token o sesión de trabajador— y responden el mismo `401 auth/unauthorized` exista o no la tarea, esté como esté y figure quien figure. Va en el controlador, después de validar el cuerpo, y no en el router: la suite fija a propósito que el cuerpo se valida antes que la sesión, y un middleware tapaba además el 404 de las rutas inexistentes. TSK-09-02, TSK-14-03 y TSK-17-03 en verde.
 - **Observado.** `POST /api/v1/tasks/:taskId/assignments` con un `entityId` y un `taskId`
   cualesquiera, **sin ninguna credencial**, responde `404 {"code":"task/not_found"}` cuando la
   tarea no existe, y solo llega al `401` cuando existe. La diferencia entre las dos respuestas
@@ -167,8 +193,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Casos.** TSK-09, TSK-14-03 y TSK-17-03, cubiertos en la suite como fallos esperados, y el
   resto de rutas de tarea que resuelven el actor después de buscar.
 
-## HAL-11 · Una entrada mal formada revienta y devuelve la traza interna
+## HAL-11 · Una entrada mal formada revienta y devuelve la traza interna · CORREGIDO en desarrollo
 
+- **Corregido.** Cerrado de rebote por HAL-07 el 2026-09-13: ya no se descodifica nada que no venga firmado, y un `null` en base64 es un `401 employee/invalid_token` sin traza. EMP-01-09 en verde.
 - **Observado.** Enviando como `token` el texto `null` codificado en base64, las dos puertas de
   validación de empleado responden `500`:
   - `/api/v1/employees/validate` → `{"ok":false,"error":"internal_error"}`.
@@ -202,8 +229,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   mirado** —no se toca desde aquí—: falta confirmar qué valor tiene allí y qué se hace con las
   suscripciones ya creadas con 45.
 
-## HAL-13 · Un plan retirado sigue en el catálogo y no se puede contratar
+## HAL-13 · Un plan retirado sigue en el catálogo y no se puede contratar · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-14. `Subscribe` rechaza cualquier plan sin precio en Stripe con `409 subscribe/plan_not_available`; el plan `freemium` está marcado `deprecated: true` en el Firestore de desarrollo, y el panel deja de listar los planes con esa marca (`feat/planes-retirados-ocultos` del front, sin fusionar). `enterprise` sigue visible a propósito: no tiene precio pero abre el contacto.
 - **Observado.** `service/checkinbiz/plan/freemium` sigue existiendo en desarrollo, con
   `maxBranches: 1`, `maxEmployees: 10` y su lista de características. **Producto lo da por
   deprecado**: el único plan vigente es `bronze`. En desarrollo no hay ni una sola suscripción
@@ -221,8 +249,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Efecto.** Un cliente nuevo puede ver y pulsar un plan retirado, y el alta falla.
 - **Casos.** FAC-03.
 
-## HAL-14 · Una corrección con identificadores cruzados le cambia el dueño al fichaje
+## HAL-14 · Una corrección con identificadores cruzados le cambia el dueño al fichaje · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Con ids cruzados responde `404 checklog/not_found` y no reescribe nada. CHK-09-14 en verde.
 - **Observado.** `POST /api/v1/checkinbiz/checklogs/update` no comprueba que el fichaje `id`
   pertenezca al `employeeId` del cuerpo. Enviando la ficha de un empleado y el identificador del
   fichaje de otro, la petición responde `200 checklog/updated` y el fichaje queda reescrito con
@@ -238,8 +267,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   resuelve como si fuera suyo.
 - **Casos.** CHK-09-14, cubierto en la suite como fallo esperado.
 
-## HAL-15 · Rechazar una corrección deja escrita la hora que se rechazaba
+## HAL-15 · Rechazar una corrección deja escrita la hora que se rechazaba · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-14, en desarrollo, tomando la lectura de que no era intencionado. Rechazar una propuesta deja el fichaje como estaba —la hora no se toca, porque la propuesta vivía en el historial, y el estado vuelve al de antes de proponer— y anota el rechazo con su motivo en `metadata.requestUpdates`. Antes dejaba el fichaje en `failed`, fuera del registro de jornada, por no estar de acuerdo con una corrección. CHK-09-16 pasa a afirmarlo.
 - **Observado.** Cuando el empleado rechaza una propuesta (`status:"failed"`), el fichaje queda
   con la hora **propuesta**, no con la que tenía. La original solo sobrevive en el historial
   (`metadata.requestUpdates[].previousDate`), no en el propio fichaje. La única excepción es una
@@ -254,8 +284,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   el comportamiento observado en lugar de pintarlo en rojo.
 - **Casos.** CHK-09-16.
 
-## HAL-16 · Con `isAdmin` en texto, un empleado firma el fichaje con el uid de quien quiera
+## HAL-16 · Con `isAdmin` en texto, un empleado firma el fichaje con el uid de quien quiera · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Un `isAdmin` que no sea booleano es una petición mal formada (`400 checklog/bad_request`), y por la vía de la app nada del cuerpo decide quién firma. CHK-08-79 y CHK-08-80 en verde con el contrato nuevo.
 - **Observado.** `POST /api/v1/checkinbiz/checklogs` con `isAdmin:"true"` —la cadena, no el
   booleano— y un `uid` de propietario en el cuerpo, autenticado **solo con la sesión de
   trabajador de la app**, responde `201` y el fichaje queda con `metadata.updated.uid` igual al
@@ -273,8 +304,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
 
-## HAL-37 · Rechazar una tarea deja su pausa abierta para siempre
+## HAL-37 · Rechazar una tarea deja su pausa abierta para siempre · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. El rechazo cierra la pausa abierta en la misma transacción que el cambio de estado, con `endedReason:"rejected"`. TSK-15-13 en verde.
 - **Observado.** Una tarea en curso y pausada que se rechaza queda en `rejected` **conservando
   `pausedAt` y `pauseId`**. La pausa nunca se cierra, así que su duración no entra en `pausedMs`
   y el documento de la pausa se queda sin `endedAt`. Medido en desarrollo el 2026-09-12.
@@ -290,8 +322,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
 - **Casos.** TSK-15-13, cubierto en la suite como fallo esperado. TSK-08-21 —reanudar una tarea
   rechazada— queda pendiente de probar.
 
-## HAL-36 · La política de terminación se guarda y no la lee nadie
+## HAL-36 · La política de terminación se guarda y no la lee nadie · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Con `all_assigned_workers`, completar cierra la parte de quien completa y la tarea sigue en curso hasta el último; quien cierra desde la gestión sin estar asignado cierra la tarea entera. TSK-11-44 en verde.
 - **Observado.** Una tarea con `config.completionPolicy: "all_assigned_workers"` asignada a dos
   personas queda **entera en `completed`** en cuanto la completa la primera. La asignación de la
   segunda no cambia, y nadie le dice que su parte sigue pendiente. Medido en desarrollo el
@@ -308,8 +341,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   política **sí se guardó** antes del indulto: sin esa línea, el caso no distinguiría «no se
   aplica» de «no se guardó».
 
-## HAL-35 · Las tareas no tienen máquina de estados: se mira el destino, nunca el origen
+## HAL-35 · Las tareas no tienen máquina de estados: se mira el destino, nunca el origen · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Tabla de transiciones origen → destino en el controlador de estado: salir de un estado sellado es reabrir, y reabrir es de gestión; reabrir retira también validación y rechazo; rechazar exige trabajo en curso, completado o validado, y retira la validación. TSK-11-30, TSK-11-65 y TSK-15-14 en verde.
 - **Observado.** Dos cosas, la misma causa:
   1. Un trabajador asignado devuelve a `in_progress` una tarea que la empresa ya **validó**, él
      solo, con un `PATCH /status`. Desde ahí puede completarla otra vez, lo que reescribe
@@ -353,8 +387,9 @@ como fallo esperado con su identificador; el día que se arregle, la prueba avis
   prueba en verde para dejar escrito qué guarda el sistema cuando ocurre: una tarea terminada
   cuya duración no existe.
 
-## HAL-34 · Corregir la hora de un fichaje no cambia el informe legal
+## HAL-34 · Corregir la hora de un fichaje no cambia el informe legal · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. El `ON CONFLICT DO UPDATE` del espejo refresca todas las columnas salvo la clave. INF-03-02 en verde: la jornada corregida aparece en el informe. Queda reconstruir los informes diarios de los días con correcciones anteriores y reinyectar esos fichajes, si los hay.
 El hermano silencioso de HAL-33, y peor de ver: allí no llegaba nada, aquí llega **casi** todo.
 
 - **Observado.** Una entrada se corrige de `16:35:45` a `12:35:46` por el camino bueno —propuesta
@@ -440,8 +475,9 @@ El hermano silencioso de HAL-33, y peor de ver: allí no llegaba nada, aquí lle
   publica eventos por una cola **con reintentos y rescate**; el espejo podría ser un consumidor
   más de esa cola.
 
-## HAL-32 · Cualquier cuenta genera el informe de otra empresa, y se lo deja en su histórico
+## HAL-32 · Cualquier cuenta genera el informe de otra empresa, y se lo deja en su histórico · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Generar exige lo mismo que descargar: `canWrite` en `/generate` y `/tasks`. INF-02-11 en verde, comprobando además que el histórico ajeno no crece. INF-01-14 sigue pendiente de datos.
 - **Observado.** Con el token de un usuario de **otra** empresa, `POST /api/reports/tasks` sobre
   el `entityId` ajeno responde `201`, genera el fichero y **deja el documento en el histórico de
   la empresa víctima** (`entities/{ajena}/reports/{id}`), a nombre de su entidad. Medido el
@@ -544,8 +580,9 @@ registra y sale, así que no lo ve nadie.
   con HAL-02, el mismo patrón —función y contenedor procesando el mismo evento— en los
   fichajes, que sigue abierto.
 
-## HAL-30 · A quien trabaja en otro huso se le busca el turno del día equivocado
+## HAL-30 · A quien trabaja en otro huso se le busca el turno del día equivocado · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. El día y las horas se miran en la misma zona —la del empleado remoto o la de la sucursal—, pasada al resolutor como `tzHint`. CHK-08-70 en verde en sus dos mitades.
 - **Observado.** Un empleado con `enableRemoteWork` y zona propia a trece horas de su centro.
   El calendario tiene abierto **su** día, con un turno alrededor de **su** hora, y cerrado el
   del centro. El fichaje responde `400 checklog/day_disabled`. Medido en desarrollo el
@@ -571,8 +608,9 @@ registra y sale, así que no lo ve nadie.
 - **Casos.** CHK-08-70, cubierto en la suite en dos pruebas: las horas en verde, el día como
   fallo esperado. Ya estaba anotado como sospecha en la ficha de CHK-08.
 
-## HAL-29 · Quien está de vacaciones ficha igual: el fichaje no lee las ausencias
+## HAL-29 · Quien está de vacaciones ficha igual: el fichaje no lee las ausencias · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. El fichaje lee las ausencias del calendario de empleado y responde `400 checklog/absence` con el detalle de la ausencia. CHK-08-28 en verde. La app no reconoce el código nuevo y mostrará el mensaje genérico hasta que se añada.
 - **Observado.** Un empleado con una ausencia registrada para hoy
   (`PATCH /api/v1/checkinbiz/calendar`, `scope:"employee"`, `absence:{startDate, endDate,
   status:"vacation"}`) ficha con `201`. En la **misma ejecución y contra el mismo dato**, el
@@ -598,8 +636,9 @@ registra y sale, así que no lo ve nadie.
   verde como contraste. Relacionado con la divergencia ya anotada en CHK-11 sobre el día sin
   clave, que el tablero y el fichaje también interpretan al revés.
 
-## HAL-28 · Un descanso se engancha a la jornada de otro día y le cambia las horas
+## HAL-28 · Un descanso se engancha a la jornada de otro día y le cambia las horas · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. El descanso y la salida cuelgan de la jornada abierta —la del último fichaje válido— y una jornada no se parte entre centros: `checklog/different_branches` también para los descansos. CHK-08-59 en verde; CHK-08-58 pasa a esperar ese mismo código.
 - **Observado.** Un empleado con responsabilidad en dos sucursales, B y B2. Se deja una jornada
   **cerrada** en B2 (entrada y salida) y después se abre una jornada nueva en B. Un `restin`
   enviado con `branchId` de B2 responde `201` y queda con `checkin` apuntando al **`checkin`
@@ -620,8 +659,9 @@ registra y sale, así que no lo ve nadie.
 - **Casos.** CHK-08-59, cubierto en la suite como fallo esperado. Relacionado: CHK-08-58, el
   caso sin historial en B2, que sí se rechaza porque no hay a qué engancharse.
 
-## HAL-27 · Desactivar a un colaborador le quita el panel pero no le quita el fichaje
+## HAL-27 · Desactivar a un colaborador le quita el panel pero no le quita el fichaje · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. `canWrite` exige `status:"active"`; un asiento sin el campo se lee como activo. CHK-08-77 en verde.
 - **Observado.** Un asiento de administrador puesto en `status:"disabled"` con
   `PATCH /api/v1/checkinbiz/collaborators/:userId` sigue pudiendo crear fichajes a nombre de
   cualquier empleado de la empresa: `POST /api/v1/checkinbiz/checklogs` con `isAdmin:true`
@@ -641,8 +681,9 @@ registra y sale, así que no lo ve nadie.
 - **Casos.** CHK-08-77, cubierto en la suite como fallo esperado, junto a COL-03-05 —el
   contraste, en verde—. Ya estaba anotado el mismo comportamiento en COL-01-04.
 
-## HAL-26 · El panel pide la hora del fichaje, la valida, y el servidor la tira
+## HAL-26 · El panel pide la hora del fichaje, la valida, y el servidor la tira · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Por la vía de administrador la hora del cuerpo es la del registro, validada como no futura; el día se resuelve para esa fecha y la secuencia se encadena con lo anterior a esa hora. La marca de creación conserva la hora del reloj. CHK-08-74 en verde.
 - **Observado.** `POST /api/v1/checkinbiz/checklogs` con `isAdmin:true` y `timestamp` de hace
   tres horas responde `201` y el fichaje queda sellado **ahora**: 180,02 minutos de diferencia
   entre la hora pedida y la guardada. Medido en desarrollo el 2026-09-12.
@@ -667,8 +708,10 @@ registra y sale, así que no lo ve nadie.
   saberlo al leer `metadata.distance` de un fichaje del panel.
 - **Casos.** CHK-08-74, cubierto en la suite como fallo esperado.
 
-## HAL-25 · La edición de una ficha acepta cualquier campo, incluida la lista de dispositivos
+## HAL-25 · La edición de una ficha acepta cualquier campo, incluida la lista de dispositivos · CORREGIDO en desarrollo
 
+- **Precisión (2026-09-13).** El impacto sobre los dispositivos de confianza que se describe abajo no se sostenía: la comprobación del fichaje lee la subcolección `employees/{id}/security/trustedDevicesId` (`findSecurity`), y el campo que esta ruta dejaba en el documento era inerte. Lo que sí era cierto es la ausencia de lista blanca, y eso es lo corregido.
+- **Corregido.** El 2026-09-14, en desarrollo. La edición de ficha tiene lista de campos editables; las credenciales y el rastro del sistema (`trustedDevicesId`, `twoFA`, `customToken`, `devices`) se rechazan con `400 employee/bad_request`, y lo que no está en la lista se descarta. `price`, `responsibility` y `job` se toleran porque el panel siempre los ha mandado. EMP-04-12 en verde.
 - **Observado.** `POST /api/v1/employees/update` no tiene lista de campos permitidos: hace
   `set(merge)` con lo que llegue, excluyendo solo `uid` y `createdAt`. Enviando
   `trustedDevicesId:{ids:["dispositivo-metido-a-mano"]}` responde `201` y **queda escrito**.
@@ -689,8 +732,9 @@ registra y sale, así que no lo ve nadie.
   acote.
 - **Casos.** EMP-04-12, cubierto en la suite como fallo esperado.
 
-## HAL-24 · Editar un centro le reactiva la geocerca, y borrarlo deja gente apuntando a él
+## HAL-24 · Editar un centro le reactiva la geocerca, y borrarlo deja gente apuntando a él · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. La edición es parcial y `disableRatioChecklog` no se rellena cuando falta; borrar comprueba que el centro exista (`404 branch/not_found`) y retira su id de la lista de cada ficha. SUC-02-04, SUC-04-03 y SUC-04-05 en verde. SUC-02-04 leía el centro por un listado que el servicio no tiene; ahora lee la ficha guardada, que es como lo hace el panel.
 Tres comportamientos del mantenimiento de centros de trabajo, medidos contra desarrollo el
 2026-09-12.
 
@@ -713,8 +757,9 @@ Tres comportamientos del mantenimiento de centros de trabajo, medidos contra des
   cambio de nombre sí se reindexa—, que es lo que sitúa los tres anteriores como huecos y no
   como «esto no está hecho».
 
-## HAL-23 · Modificar una responsabilidad la inventa, y un puesto sin precio guarda NaN
+## HAL-23 · Modificar una responsabilidad la inventa, y un puesto sin precio guarda NaN · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-14, en desarrollo. La edición comprueba que la responsabilidad exista (`404 responsibility/not_found`) y exige el precio del puesto como número, igual que el alta; el `set` con merge tampoco se dejaba sin `await`. EMP-10-04 y EMP-10-06 en verde.
 - **Observado.** `PATCH /api/v1/employees/responsibilities` tiene dos comportamientos que no
   deberían ser:
   - Con un `id` de una responsabilidad **que no existe** → `200`, y **la crea**. Medido: quedó un
@@ -735,8 +780,9 @@ Tres comportamientos del mantenimiento de centros de trabajo, medidos contra des
   informes: cualquier suma que lo toque da `NaN` y arrastra el total entero.
 - **Casos.** EMP-10-06 y EMP-10-04, cubiertos en la suite como fallos esperados.
 
-## HAL-22 · Sin horario configurado, la app se rompe pero el fichaje funciona
+## HAL-22 · Sin horario configurado, la app se rompe pero el fichaje funciona · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-14, en desarrollo. Sin horario configurado, `GET /calendar` devuelve el mismo día abierto que aplica el fichaje, con `code: "calendar/default"`, `configured: false` y `sources` vacío, en vez del 404. El constructor del día por defecto vive ahora en shared (`calendar/defaultDay.ts`) para que fichaje y lectura digan lo mismo. CHK-11-18 en verde.
 - **Observado.** Una empresa recién dada de alta no tiene `calendar/config` —alguien tiene que
   entrar al panel a ponerlo—. En ese estado:
   - `GET /api/v1/checkinbiz/calendar` → **404** `{code:"calendar/not_found"}`. Es la llamada con
@@ -760,8 +806,9 @@ Tres comportamientos del mantenimiento de centros de trabajo, medidos contra des
   mismo día abierto que ya aplica el fichaje en vez de un 404.
 - **Casos.** CHK-11-18 y, como contraste, CHK-08-31.
 
-## HAL-21 · Un administrador se hace propietario, y de paso aparta al que lo era
+## HAL-21 · Un administrador se hace propietario, y de paso aparta al que lo era · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. Conceder y modificar reciben quién llama, como ya hacía el borrado: lo que afecta a un propietario —darle el asiento, tocarle el rol o el estado— lo hace otro propietario (`owner_required`). COL-04-02, COL-04-03 y COL-02-04 en verde. Sigue dependiendo de cerrar las reglas de Firestore: mientras el panel pueda escribir `user_entity_roles` desde el navegador, se rodea.
 - **Observado.** Con un asiento de `admin` activo en una empresa, y solo con su token de
   Firebase, se puede:
   - `PATCH /api/v1/checkinbiz/collaborators/{supropiouid}` con `role:"owner"` → **200**, y queda
@@ -787,8 +834,9 @@ Tres comportamientos del mantenimiento de centros de trabajo, medidos contra des
 - **Casos.** COL-04-02, COL-04-03 y COL-02-04, cubiertos en la suite como fallos esperados.
   COL-05-04 va en verde al lado, a propósito: es la prueba de que la regla existe.
 
-## HAL-20 · checkinbiz se activa sin método de pago
+## HAL-20 · checkinbiz se activa sin método de pago · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-13, en desarrollo. `isConfigured` exige método de pago en todos los servicios; de paso, `payment_method?.length !== 0` daba por bueno un método ausente. FAC-03-17 en verde. Falta que el panel pida la tarjeta antes de activar: hoy recibirá `entity_not_configured` sin explicar qué falta.
 - **Regla de producto, confirmada el 2026-09-12.** Para activar checkinbiz hace falta **método
   de pago**. No es una cuestión de cobro: la tarjeta es lo que distingue a una empresa real de
   alguien probando, y por eso el requisito va en la activación y no después.
@@ -811,8 +859,9 @@ Tres comportamientos del mantenimiento de centros de trabajo, medidos contra des
   antes de activar, cosa que además hace el mundo más fiel a un cliente de verdad.
 - **Casos.** FAC-03-17, cubierto en la suite como fallo esperado.
 
-## HAL-19 · El importe a cobrar depende de un aviso previo, y nadie comprueba que llegara
+## HAL-19 · El importe a cobrar depende de un aviso previo, y nadie comprueba que llegara · CORREGIDO en desarrollo, falta un evento en Stripe
 
+- **Corregido.** El 2026-09-13, en desarrollo. En `invoice.created` se corrigen las unidades del borrador si no cuadran con la plantilla (`invoices.updateLines`), y en `invoice.finalized` se audita lo emitido: una discrepancia queda en el registro con `[billing][ALERTA]` y en la suscripción (`billingAlert`). Falta suscribir `invoice.created` en el webhook de Stripe de desarrollo (el cambio de configuración lo bloqueó el clasificador) y en el de producción en su pase; sin ese evento solo actúa la auditoría.
 - **Observado.** La cantidad facturable —cuántos empleados se cobran— **no se calcula al emitir
   la factura**. Se ajusta antes, al recibir `invoice.upcoming` o
   `customer.subscription.trial_will_end`, porque sobre un borrador ya creado
@@ -844,8 +893,9 @@ Tres comportamientos del mantenimiento de centros de trabajo, medidos contra des
   avisos de los que depende el diseño. Hay que recorrer la secuencia de eventos, con un reloj de
   prueba de Stripe o con un fin de prueba a unos minutos vista.
 
-## HAL-18 · Desarrollo se quedó sordo a Stripe tras la mudanza de servidor
+## HAL-18 · Desarrollo se quedó sordo a Stripe tras la mudanza de servidor · CORREGIDO en desarrollo
 
+- **Corregido.** Ya estaba resuelto cuando se escribió el triaje del 2026-09-13: la medición de HAL-19 del 2026-09-12 —aviso previo a los 21 s, factura a los 138 s— solo es posible con el webhook apuntando a staging, y el segundo webhook lo desactivó HAL-31 ese mismo día. Se marca ahora.
 - **Observado.** En Stripe, modo prueba, hay **dos** webhooks dados de alta y los dos
   `ENABLED`. El del contenedor apunta a `http://141.95.47.135:8080/api/v1/billing/webhook`, que
   es el servidor de **producción** por un puerto que quedó **cerrado** el 2026-09-12 al retirar
@@ -865,8 +915,9 @@ Tres comportamientos del mantenimiento de centros de trabajo, medidos contra des
 - **Casos.** Bloquea el bloque 1 en su último paso; sin esto, FAC-07 no se puede probar de
   extremo a extremo.
 
-## HAL-17 · Apagar la semana entera abre el fichaje en vez de cerrarlo
+## HAL-17 · Apagar la semana entera abre el fichaje en vez de cerrarlo · CORREGIDO en desarrollo
 
+- **Corregido.** El 2026-09-14, en desarrollo. El respaldo abierto de 00:00 a 23:59 es solo para quien no ha configurado ninguna semana —sin calendario o sin `weeklySchedule`—; una semana definida con los siete días apagados cierra el día. CHK-08-31 pasa a afirmar el `400 checklog/day_disabled`.
 - **Observado.** Un horario con los **siete días** deshabilitados no impide fichar: el fichaje
   sale `201` con `scheduleApplied.source:"default"` y una ventana abierta de 00:00 a 23:59.
   Deshabilitar **un solo día** sí lo cierra (`400 checklog/day_disabled`). La diferencia está en
@@ -917,18 +968,17 @@ Las pruebas también corrigen el inventario. Se anotan aquí para no repetir el 
 ## Sospechas graves pendientes de verificar
 
 Vienen de los análisis y **todavía no se han comprobado una a una**. No son hallazgos hasta
-confirmarlas; cada una se verificará al escribir su prueba.
+confirmarlas; cada una se verificará al escribir su prueba. Revisada el 2026-09-14: tres de
+las seis ya se confirmaron y corrigieron como hallazgos, y se tachan aquí.
 
-- **Estado del empleado nunca comprobado.** Un empleado dado de baja (`fired`) seguiría fichando
-  y operando tareas, porque el `status` no se mira al fichar ni al cambiar el estado de una tarea
-  (catálogos CHK y TSK).
-- **Escalada de rol en colaboradores.** Un administrador podría ascenderse a propietario con
-  `PATCH /collaborators/:userId`; el `requireEntityWriter` admite admin, y falta confirmar si
-  `updateCollaborator` distingue quién puede tocar el rol `owner` (catálogo EMP/COL).
+- **Estado del empleado nunca comprobado.** Al fichar, respondido de rebote por la corrección
+  CHK-08-23 (más abajo): el despedido no ficha porque la baja le retira las responsabilidades, no
+  porque se mire el `status`. Queda por comprobar en tareas, y el caso de una ficha que llegue a
+  `inactive` o `vacation` por otra vía conservando responsabilidades.
+- ~~**Escalada de rol en colaboradores.**~~ Confirmada y corregida: es **HAL-21**.
 - **Borrado de empresa sin permiso.** Sigue en Cloud Functions y, según el análisis, no comprueba
   permisos ni cascada (catálogo ENT).
-- **`isAdmin` como texto en el fichaje.** Enviar `isAdmin:"true"` y el `uid` de un propietario
-  saltaría el dispositivo de confianza (catálogo CHK).
-- **Consulta de suscripciones y generación de informes sin filtrar por entidad** (catálogo
-  FAC/INF).
+- ~~**`isAdmin` como texto en el fichaje.**~~ Confirmada y corregida: es **HAL-16**.
+- **Consulta de suscripciones sin filtrar por entidad** (catálogo FAC). ~~Generación de informes~~
+  confirmada y corregida: es **HAL-32**.
 - **Doble correo de «servicio activado»** al suscribir (catálogo de listeners).

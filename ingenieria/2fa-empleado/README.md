@@ -4,8 +4,8 @@ El TOTP del empleado (el QR que se escanea con Google Authenticator y el código
 teclea después) vivía en dos Cloud Functions, `enable2FA` y `verify2FA`. Ahora lo sirve el
 servicio `checkinbiz`, detrás de nginx, sin cold start.
 
-El TOTP del **panel** —`enable2FAUser`, `verify2FAUser`, `get2FAUserStatus`— sigue en
-Firebase: ver [Lo que queda fuera](#lo-que-queda-fuera).
+El TOTP del **panel** —`enable2FAUser`, `verify2FAUser`, `get2FAUserStatus`— también vive ya
+en `checkinbiz` desde el 2026-09-08: ver [El segundo factor del panel](#el-segundo-factor-del-panel).
 
 ## Las rutas
 
@@ -70,14 +70,51 @@ hay dos casas.
 Las funciones se quedan desplegadas hasta que el corte lleve un tiempo en pie: apagarlas es
 una decisión aparte y posterior.
 
-## Lo que queda fuera
+## El segundo factor del panel
 
-El segundo factor del panel no se ha portado porque **no tiene servicio donde vivir**. Toca
-`users/{uid}` y escribe *custom claims* de Firebase Auth, o sea la cuenta de la plataforma,
-no checkbiz. Meterlo en `checkinbiz` sería convertirlo en el cajón que
-[ADR-0001](adr/0001-limite-de-checkinbiz-y-servicio-critico.md) dice que no sea, y `backoffice`
-es el panel del staff de encodeBiz, otro público distinto.
+Portado el **2026-09-08**, también a `checkinbiz`.
 
-Cuando se decida su casa, el algoritmo ya está compartido: `TwoFactorVerificationService` vive
-en `@encodebiz/shared` justamente para eso. Y el corte allí es barato — tres variables
-`NEXT_BACKEND_URI_*` del front, sin release de app de por medio.
+| Antes (Cloud Function) | Ahora |
+|---|---|
+| `apiV100-firebaseEntryHttp-get2FAUserStatus` | `GET /api/v1/checkinbiz/auth/2fa/user/status` |
+| `apiV100-firebaseEntryHttp-enable2FAUser` | `POST /api/v1/checkinbiz/auth/2fa/user/enable` |
+| `apiV100-firebaseEntryHttp-verify2FAUser` | `POST /api/v1/checkinbiz/auth/2fa/user/verify` |
+
+Cuelga del router **autenticado** y no del público, porque su credencial sí es el ID token de
+Firebase: quien configura el segundo factor del panel ya ha entrado con su correo y su
+contraseña. El `uid` sale de ese token, nunca del cuerpo.
+
+Va bajo `/2fa/user/…` y no bajo `/2fa/…` para no chocar con el del empleado. Comparten motor
+—`TwoFactorVerificationService` de `@encodebiz/shared`, mismo secreto en base32 y misma
+etiqueta `otpauth://`— y no comparten nada más: aquí el sujeto es un usuario del panel y su
+secreto vive en `users/{uid}/security/twoFA`.
+
+### Por qué se decidió lo contrario de lo que decía este documento
+
+La versión anterior de esta sección decía que el 2FA del panel **no tenía servicio donde
+vivir**, y que meterlo en `checkinbiz` lo convertiría en un cajón. Las dos cosas eran ciertas
+cuando se escribieron. Han cambiado dos:
+
+1. **Ya hay un criterio escrito de qué es el núcleo**, y el acceso lo es sin discusión: esto
+   entra en cada inicio de sesión de un administrador. Ver
+   [salida-del-monolito/ADR-003](../salida-del-monolito/adr/ADR-003-el-nucleo-y-un-contenedor-por-dominio.md).
+2. **`checkinbiz` ha dejado de ser un cajón**: la gestión de plantilla salió a `employees`, y
+   los centros y la empresa nacieron en `branches` y `entities`. El servicio se ha hecho más
+   pequeño, no más grande, y lo que queda dentro es el camino del fichaje y sus dependencias.
+
+Lo que no cambia es el riesgo que aquella advertencia señalaba, así que sigue anotado: el
+criterio de entrada al núcleo son dos varas —que un error propio salga como un fichaje que no
+cuenta, y que no sea código que se toque a menudo—, y hay que sostenerlas.
+
+### Lo que hay que mirar al cortar
+
+`verify2FAUser` no solo valida el código: **escribe custom claims en Firebase Auth**
+(`admin:true`, `twoFA:true`), mezclándolas con las que ya hubiera —escribirlas a pelo borraría
+cualquier otra que llevara la cuenta—. De esas claims cuelga el guard de sesión del Edge del
+panel, y el front tiene que **refrescar el ID token** justo después de la llamada o seguirá
+presentando el de antes, sin `twoFA`.
+
+Por eso el síntoma de un corte mal hecho aquí no es un error visible: es alguien entrando al
+panel sin segundo factor.
+
+El corte es barato: tres variables `NEXT_BACKEND_URI_*` del front, sin release de app.

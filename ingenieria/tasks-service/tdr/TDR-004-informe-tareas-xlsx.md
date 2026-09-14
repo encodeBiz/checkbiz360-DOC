@@ -73,6 +73,9 @@ Nombres resueltos y cacheados en memoria durante la generación:
 | Inicio | `task.startedAt` (fecha-hora local; vacío si no hay) |
 | Fin | `task.completedAt` (vacío si no hay) |
 | Tiempo invertido (h) | `(completedAt − startedAt)` en horas, `0.00`; vacío si falta alguno |
+| En pausa (h) | `(pausedMs + (now − pausedAt si hay pausa abierta))` en horas, `0.00`; vacío sin `startedAt` |
+| Nº pausas | `task.pauseCount`; vacío sin `startedAt` |
+| Tiempo invertido sin pausas (h) | `max(0, Tiempo invertido − En pausa)`, `0.00`; vacío sin `completedAt` |
 | Equipo | `task.assignedEmployeeIds` → nombres concatenados con `, ` |
 | Valoración | media de `ratings.rating`, `0.0`; vacío si no hay |
 | Nº evidencias | `count(resources)` |

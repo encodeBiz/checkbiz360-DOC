@@ -47,6 +47,7 @@ La API de tareas pasa a un microservicio dedicado (`tasks`, puerto 3006). Firest
 | 05 | [Integración: Front de administración](./05_integracion-front-admin.md) | Guía de consumo desde el back office (Firebase ID token, permisos por nivel) |
 | 06 | [Integración: App móvil](./06_integracion-app-movil.md) | Guía de consumo desde la app del empleado (staff JWT, subida de evidencias) |
 | 07 | [Integración: Informe de tareas](./07_integracion-informe-tareas.md) | Guía del informe de tareas en Excel (`POST /api/reports/tasks`) |
+| 08 | [Pausas en las tareas](./08_pausas.md) | Propuesta: pausar y reanudar, decisiones pendientes y fases por uso |
 
 ## Architecture Decision Records (ADRs)
 

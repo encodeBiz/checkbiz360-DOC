@@ -183,13 +183,13 @@ El parámetro `dateLocal` del query string se ignoraba. Fix: `DateTime.utc()` �
 
 ### Bug crítico: `useEffect` dentro de render-prop de Formik
 
-[`CalendarSection.tsx:512-536`](../encodebiz-front-saas/src/app/main/\[entityId\]/checkinbiz/calendar/components/CalendarSection.tsx) — viola las Rules of Hooks y resetea el formulario cada vez que cambia `baseSchedule`, sobrescribiendo ediciones del usuario.
+[`CalendarSection.tsx:512-536`](../../encodebiz-front-saas/src/app/main/[entityId]/checkinbiz/calendar/components/CalendarSection.tsx) — viola las Rules of Hooks y resetea el formulario cada vez que cambia `baseSchedule`, sobrescribiendo ediciones del usuario.
 
 **Fix:** extraer a un componente hijo dentro de `<Formik>`.
 
 ### Bug crítico: IDs inconsistentes en ausencias de empleado
 
-[`HolidayModal.tsx:73-86`](../encodebiz-front-saas/src/app/main/\[entityId\]/checkinbiz/calendar/components/HolidayModal.tsx) — en creación usa `${values.name}-${date}` (espacios/caracteres especiales); en edición acumula `${values.id}-${i}` → registros huérfanos. **Causa directa de duplicaciones de festivos.**
+[`HolidayModal.tsx:73-86`](../../encodebiz-front-saas/src/app/main/[entityId]/checkinbiz/calendar/components/HolidayModal.tsx) — en creación usa `${values.name}-${date}` (espacios/caracteres especiales); en edición acumula `${values.id}-${i}` → registros huérfanos. **Causa directa de duplicaciones de festivos.**
 
 ### Bug: N llamadas secuenciales por rango
 
@@ -205,7 +205,7 @@ Al editar una ausencia existente, sus propias fechas aparecen como "ocupadas".
 
 ### Bug: scope incorrecto en `EmployeeHolidaysTab`
 
-[`EmployeeHolidaysTab.tsx:112`](../encodebiz-front-saas/src/app/main/\[entityId\]/checkinbiz/calendar/components/EmployeeHolidaysTab.tsx) — llama `fetchEffectiveCalendar({ scope: 'entity', employeeId })` → debería ser `scope: 'employee'`.
+[`EmployeeHolidaysTab.tsx:112`](../../encodebiz-front-saas/src/app/main/[entityId]/checkinbiz/calendar/components/EmployeeHolidaysTab.tsx) — llama `fetchEffectiveCalendar({ scope: 'entity', employeeId })` → debería ser `scope: 'employee'`.
 
 ### Código muerto
 

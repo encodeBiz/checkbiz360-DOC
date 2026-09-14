@@ -91,10 +91,13 @@ El informe también queda registrado en el histórico `entities/{entityId}/repor
 
 Una hoja **"Tareas"**, una fila por tarea:
 
-`Empresa · Centro · Título · Estado · Prioridad · Inicio · Fin · Tiempo invertido (h) · Equipo · Valoración · Nº evidencias`
+`Empresa · Centro · Título · Estado · Prioridad · Inicio · Fin · Tiempo invertido (h) · En pausa (h) · Nº pausas · Tiempo invertido sin pausas (h) · Equipo · Valoración · Nº evidencias`
 
 - **Inicio/Fin**: fecha-hora local del centro; vacío si la tarea no los tiene marcados.
-- **Tiempo invertido (h)**: `Fin − Inicio` de la tarea, en horas; vacío si falta alguno.
+- **Tiempo invertido (h)**: `Fin − Inicio` de la tarea, en horas; vacío si falta alguno. Es tiempo transcurrido, no trabajado.
+- **En pausa (h)**: suma de las pausas; en una tarea en curso y pausada, la abierta cuenta hasta el momento del informe. Vacío si la tarea no ha empezado.
+- **Nº pausas**: cuántas. Vacío si la tarea no ha empezado.
+- **Tiempo invertido sin pausas (h)**: Tiempo invertido − En pausa; solo con la tarea terminada. No es tiempo trabajado: es el transcurrido menos las pausas que alguien pulsó (ver [08_pausas.md](./08_pausas.md), D9).
 - **Equipo**: nombres de los asignados concatenados.
 - **Valoración**: media de las valoraciones de la tarea (1–5).
 
