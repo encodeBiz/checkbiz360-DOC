@@ -22,6 +22,7 @@ en [hallazgos-triaje.md](./hallazgos-triaje.md).
 | Código listo, retirada o publicación pendiente | HAL-02 y HAL-05 (borrar las funciones en `dev-encodebiz`), HAL-09 (siguiente versión de la app) |
 | Cerrados con anterioridad | HAL-12, HAL-18, HAL-31, HAL-33 |
 | Decisión de producto pendiente, sin tocar | HAL-03 (geocerca al crear sucursal), HAL-04 (segundo factor al crear empleado) |
+| Abierto el 2026-09-15, sin corregir | HAL-38 (editar una tarea desde el panel no asigna) |
 
 Los identificadores no se reutilizan: un hallazgo corregido conserva su número y su texto
 original, con la corrección debajo.
@@ -303,6 +304,40 @@ original, con la corrección debajo.
   confianza y el registro queda a nombre de otro. El uid tampoco es difícil de conseguir: queda
   escrito en `metadata.updated.uid` de todo fichaje creado desde el panel.
 - **Casos.** CHK-08-79, cubierto en la suite como fallo esperado.
+
+## HAL-38 · Editar una tarea desde el panel no asigna a nadie, y dice que sí
+
+- **Observado.** En el formulario «Editar tarea» del panel se elige a una persona, se guarda y
+  sale «Operación completada correctamente». La tarea sigue sin nadie asignado: ni asignación,
+  ni `assignedEmployeeIds`, ni cambio de `draft` a `assigned`. Quitar a alguien en el mismo
+  formulario tampoco lo retira. Lo encontró un usuario el 2026-09-15 al duplicar una tarea y
+  asignar la copia. En los datos de desarrollo, la copia «Tare prueba (copia)»
+  (`9cj0dwlO1jyBKADrpxjg`) registra cuatro actividades `updated` entre las 16:03 y las 16:06 y
+  ninguna `assigned`, con `assignedEmployeeIds: []`.
+- **Dónde.** El panel manda los empleados en el `PATCH` de edición
+  (`encodebiz-front-saas/.../tasks/components/TaskFormDialog.tsx:173`, enviado por
+  `PDET:183`). `services/tasks/src/interfaces/http/task/updateTask.controller.ts:9` solo lee
+  `title`, `description`, `scheduledStartAt`, `dueAt`, `priority`, `config` y `workSite`, y
+  responde 200. La asignación tiene su propia ruta (`POST /:taskId/assignments`), que el
+  formulario de edición no llama. El alta sí asigna porque `createTask.controller.ts` lee
+  `assignedEmployeeIds` en el mismo cuerpo.
+- **Lo mismo con la sucursal**, leído en el código y sin medir: el formulario manda `branchId`
+  y el `PATCH` tampoco lo lee, así que cambiar de sucursal al editar se pierde igual.
+- **Lo que empuja al formulario.** El botón «Asignar» de la ficha solo aparece con
+  `canManageAssignments`, y esa comprobación sale antes de mirar si el usuario es propietario o
+  administrador cuando no tiene ficha de empleado
+  (`encodebiz-front-saas/.../tasks/[id]/detail/page.controller.tsx:253-258`). Un propietario
+  sin ficha —el caso de quien lo encontró— no ve el botón que sí funciona, y el único camino que
+  le queda es el que no asigna.
+- **Por qué no lo vio la suite.** Ningún caso editaba una tarea con credencial ni asignaba por
+  la ruta propia; solo se cubría el alta con asignados (TSK-02-06). Y un caso que mirase solo la
+  respuesta del `PATCH` habría salido verde: el fallo está en la suma de panel y servidor, y
+  solo se ve yendo a la ficha a comprobar qué quedó escrito.
+- **Efecto.** Trabajo que el responsable cree repartido no le aparece a nadie en la app: no hay
+  aviso de asignación, nadie lo empieza, y la tarea vence sin que conste por qué.
+- **Casos.** TSK-05-27 (asignar desde el formulario) y TSK-05-28 (retirar desde el
+  formulario), cubiertos en la suite como fallo esperado, con el 200 de hoy afirmado antes del
+  indulto. TSK-09-21 comprueba que la copia sí se asigna por la ruta propia.
 
 ## HAL-37 · Rechazar una tarea deja su pausa abierta para siempre · CORREGIDO en desarrollo
 

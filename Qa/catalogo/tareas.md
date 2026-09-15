@@ -287,6 +287,7 @@ Estados: `draft`, `assigned`, `in_progress`, `completed`, `validated`, `rejected
     - `priority` (un valor inválido da 400)
     - `config` (reemplaza la config entera)
     - `workSite` (`null` lo borra)
+  - **No lee `assignedEmployeeIds` ni `branchId`**, aunque el formulario de edición del panel manda los dos. Se descartan sin error y la respuesta es 200 (HAL-38).
 - Respuesta correcta: 200, el documento `Task` actualizado.
 - Efectos:
   - `set` con merge sobre la tarea.
@@ -322,6 +323,8 @@ Estados: `draft`, `assigned`, `in_progress`, `completed`, `validated`, `rejected
   - TSK-05-24 · PROP · tarea en `validated` o `cancelled` → 200 (no hay restricción de estado)
   - TSK-05-25 · OP_SUPERVISOR · con `allowSupervisorCreation=true`, manda `config.allowSupervisorValidation=true` → 200; a partir de ahí puede validar (TSK-14)
   - TSK-05-26 · PROP · body con `status: "completed"` → 200, el estado no cambia (`status` no se lee aquí)
+  - TSK-05-27 · PROP · el formulario «Editar tarea» del panel, sobre una copia sin asignar, con `assignedEmployeeIds: [A]` → debería dejar a A asignado (asignación, `assignedEmployeeIds` y `status: assigned`). Hoy responde 200 y no asigna: HAL-38. Añadido el 2026-09-15
+  - TSK-05-28 · PROP · el mismo formulario sobre una tarea con `[A, B]`, enviando `[B]` → debería retirar a A. Hoy responde 200 y A sigue asignado: HAL-38. Añadido el 2026-09-15
 - Sospechas:
   - `scheduledStartAt: null` o `""` no vacía el campo. `:36-37` asigna `undefined`, `stripUndefined` lo quita (`REPO:53,105`), y además el aviso se recalcula con la fecha vieja (`:80-82`).
   - Una `config` parcial reemplaza la config completa y desactiva en silencio los interruptores no enviados (`:53-58`, `H:330-339`).
@@ -497,6 +500,7 @@ Estados: `draft`, `assigned`, `in_progress`, `completed`, `validated`, `rejected
   - TSK-09-18 · PROP · tarea `validated` o `cancelled` con `[C]` → 200, el estado no cambia
   - TSK-09-19 · PROP · empleado válido cuya ficha no tiene `uid` → sin confirmar: 200, o 500 `internal_error` con la asignación ya escrita (la notificación in-app llevaría `uid: undefined`)
   - TSK-09-20 · EMP_INACTIVO · con nivel supervisor → 200 (no se mira el estado del actor)
+  - TSK-09-21 · PROP · copia recién duplicada de una tarea asignada, con `[A]` → 200, la copia pasa a `assigned` con A y el original conserva sus asignados. Añadido el 2026-09-15
 - Sospechas:
   - Reenviar a un empleado ya asignado reinicia su asignación a `assigned` aunque estuviera `working` o `completed` (`:33-45`, `REPO:146-155`). Sin confirmar si el panel manda la lista completa o solo los nuevos.
   - La notificación se espera con `await` (`:70`). Si falla la escritura in-app (`packages/shared/src/checkbiz/notifications/CheckbizOperationals.ts:207`, con `uid: employee.uid as string`; `document.create` no filtra `undefined` en `packages/shared/src/notifications/FirestoreAppNotificationsRepository.ts:34-37`; y `ignoreUndefinedProperties` no aparece en `shared`), la petición responde 500 con la asignación ya hecha. Las demás rutas notifican sin esperar.
