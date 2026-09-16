@@ -338,9 +338,9 @@ Cadena de siempre para los dos repos y los dos pasos: `develop → staging → m
   sucursal como equipo. Todas las llamadas pasan por `checkinbiz_teams_handler` con 200/201.
 - `tsc` sin errores en los dos repos y el lint del panel sin errores en lo tocado.
 
-**Sin verificar.** El build de producción del panel: compila, pero su prerender necesita las
-variables de Vercel, y el despliegue de Vercel está bloqueado para todos los commits recientes
-del panel —también los anteriores a esto— por la verificación de cuenta del autor.
+**Sin verificar.** El build de producción completo del panel: compila, pero el prerender
+necesita variables de entorno que el worktree no tiene. Vercel solo despliega `main`, así que el
+panel de staging se prueba en local, como se ha hecho.
 
 **Pendiente para producción.**
 
