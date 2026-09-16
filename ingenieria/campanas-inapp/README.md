@@ -29,7 +29,7 @@ campaigns/{campaignId}
   startAt: Timestamp            // desde cuándo sale
   endAt: Timestamp | null       // hasta cuándo; null, hasta que se apague
   roles: string[]               // owner | admin; vacío = todos
-  image: string | null          // URL https de la cabecera
+  image: string | null          // URL https de la cabecera; subida, firmada en Storage
   ctaUrl: string | null         // ruta del panel ("/checkinbiz/employee?tab=teams") o https://…
   content: {
     es: { title, body, ctaText? },   // obligatorio
@@ -49,7 +49,7 @@ campaigns/{campaignId}/openBy/{uid}
 |---|---|---|
 | Leer campañas activas | Panel | Firestore directo, `active == true`, tope 20; fechas y rol en el navegador |
 | Marca `openBy/{uid}` | Panel | Firestore directo, solo alta, al cerrar el diálogo |
-| Crear y editar campañas | **checkinbiz** | `/api/v1/checkinbiz/campaigns`, solo con clave S2S |
+| Crear y editar campañas, subir su imagen | **checkinbiz** | `/api/v1/checkinbiz/campaigns`, solo con clave S2S |
 | Permiso, auditoría y pantalla | **backoffice** | `/api/v1/backoffice/campaigns` → checkinbiz |
 
 checkinbiz es el dueño de la colección, igual que de `user_entity_roles`: la validación de la
@@ -66,7 +66,14 @@ quién lo pide, si puede (`campaigns:write`, root y admin) y el apunte de antes 
 - **El tope de 20 activas del panel es real.** La consulta no ordena por fecha: una campaña
   caducada que sigue `active: true` ocupa un hueco. El backoffice marca las caducadas y avisa
   si hay más de 20 encendidas.
-- **La imagen va por URL.** No hay subida de ficheros en esta primera versión.
+- **La imagen se sube desde el propio formulario.** El backoffice pasa los bytes a checkinbiz,
+  que la guarda en Storage (`campaigns/images/`) y devuelve una URL firmada hasta 2050, el mismo
+  criterio que el media de `entities`: la pinta el navegador de cualquier cliente, y una URL
+  corta obligaría a refirmarla. PNG, JPEG, WebP o GIF, hasta 2 MB, comprobando la firma del
+  fichero y no solo lo que dice la cabecera. Sigue pudiéndose pegar una URL `https`.
+- **Las imágenes que no se usan se quedan en Storage.** Subir y cancelar, o cambiar la imagen,
+  deja el fichero anterior: cuesta céntimos, y borrarlo al vuelo podría romper una campaña que
+  ya la está enseñando.
 - **`ctaUrl` solo admite ruta del panel (`/…`) o `https://`.** Nada de `javascript:` ni `//host`.
 - **Roles, solo `owner` y `admin`.** El tipo del panel declara también `member` y `viewer`, pero
   checkinbiz solo reconoce esos dos (ver `EntityMembership`): los otros no dan acceso a nada, y
