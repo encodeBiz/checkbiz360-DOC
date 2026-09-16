@@ -27,6 +27,7 @@ planes manuales de QA. El método está en [../plan-automatizacion.md](../plan-a
 | [tareas.md](./tareas.md) | Tareas: permisos, interruptores, máquina de estados | TSK | Publicado · análisis estático |
 | [documentos.md](./documentos.md) | Gestión documental | DOC | Publicado · análisis estático |
 | [empleados-sucursales-empresas.md](./empleados-sucursales-empresas.md) | Empleados, sucursales, empresas y colaboradores | EMP, SUC, ENT, COL | Publicado · análisis estático |
+| [equipos.md](./equipos.md) | Equipos: plantillas de responsabilidades, aplicar a una sucursal, guardar una sucursal | EQP | Publicado · con prueba (`52-equipos.spec.ts`) |
 | [facturacion-informes-eventos.md](./facturacion-informes-eventos.md) | Facturación, informes, webhooks salientes y analítica | FAC, INF, EVT, ANA | Publicado · análisis estático |
 | [mapa-migracion.md](./mapa-migracion.md) | Qué llama cada cliente, adónde va y qué queda fuera del HTTP | MAP | Publicado · análisis estático |
 | [hallazgos.md](./hallazgos.md) | Fallos y comportamientos dudosos, confirmados, con su corrección debajo | HAL | 35 de 37 corregidos o con código listo (14-sep-2026); 2 esperan decisión |
