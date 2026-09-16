@@ -3,7 +3,7 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** checkinbiz — Plantilla (empleados y responsabilidades) → Equipos
 **Fecha de inicio:** 2026-09-13
-**Estado:** Diseño acordado · en dos pasos: sucursal, después tarea · paso 1 en implementación
+**Estado:** Paso 1 (sucursal) implementado en `develop` y `staging` de API y panel · paso 2 (tarea) sin empezar
 **Autor:** Jose Acevedo
 
 ---
@@ -319,6 +319,35 @@ El paso 1 no tiene dependencias fuera de sí mismo: no toca tareas, ni la app, n
 Cadena de siempre para los dos repos y los dos pasos: `develop → staging → main`.
 
 ---
+
+## Estado de la implementación (2026-09-16)
+
+**Paso 1 · Sucursal — en `develop` y `staging`, sin pasar a producción.**
+
+| Repo | Rama | Commit | Merge en `staging` |
+|---|---|---|---|
+| `encodebiz-api` | `feat/equipos-sucursal` | `55b20b3` | `6163147` |
+| `encodebiz-front-saas` | `feat/equipos-sucursal` | `377f74fc` | `798081d2` |
+
+**Verificado.**
+
+- `52-equipos.spec.ts` —35 casos del [catálogo EQP](../../Qa/catalogo/equipos.md)— en verde contra el
+  servicio de la rama en local y en la ejecución de CI contra staging (416 de 416).
+- El panel, en local contra el API de staging y con un navegador: crear un equipo, añadir un
+  miembro, aplicarlo a una sucursal con el salto explicado y guardar la plantilla de una
+  sucursal como equipo. Todas las llamadas pasan por `checkinbiz_teams_handler` con 200/201.
+- `tsc` sin errores en los dos repos y el lint del panel sin errores en lo tocado.
+
+**Sin verificar.** El build de producción del panel: compila, pero su prerender necesita las
+variables de Vercel, y el despliegue de Vercel está bloqueado para todos los commits recientes
+del panel —también los anteriores a esto— por la verificación de cuenta del autor.
+
+**Pendiente para producción.**
+
+1. `NEXT_BACKEND_URI_CHECKINBIZ_TEAMS_HANDLER` en Vercel, con `/api/v1/employees/teams` del
+   borde de cada entorno, **antes** de que el panel llegue a `main`. Sin ella el proxy da 403.
+2. El pase de los dos repos a `main`, API primero.
+3. Preguntar a Tapissat lo de la primera decisión abierta.
 
 ## Lo que no es evidente
 
