@@ -38,6 +38,17 @@ Si el fichaje es correcto, el estado de la pantalla cambia a "Dentro de jornada"
 3. Si tiene verificación biométrica activada, complete la autenticación.
 4. El sistema procesa el fichaje de salida. La pantalla mostrará la confirmación con la hora de salida y el tiempo total trabajado en la jornada.
 
+### Avisos antes de cerrar la jornada
+
+**Desde la versión 1.6.0 de la app**, si algo no cuadra la app lo dice antes de fichar y deja decidir a la persona. El aviso sale al principio, antes de pedir ubicación o biometría, y siempre con dos salidas: **Cancelar** o **Finalizar jornada**.
+
+Se avisa en dos casos:
+
+- **El turno no ha terminado.** Sale cuando faltan más de 30 minutos para el final del turno que se está haciendo. En jornada partida se mide contra el turno actual, no contra el final del día: salir a las 13:00 con turno de 9 a 13 no avisa. Sin horario configurado para ese día, tampoco.
+- **Participa en tareas que siguen en curso.** Solo cuenta las tareas propias, no las del equipo. La app no las pausa ni las cierra: una tarea puede tener varios asignados y los demás pueden seguir trabajando en ella.
+
+Ninguno de los dos impide fichar. Están para que nadie cierre la jornada sin querer, no para bloquear a quien sabe lo que hace.
+
 > **Importante:** El check-out cierra la jornada activa. Si olvida registrar la salida, la jornada quedará en estado `incomplete_workday` hasta que un responsable la corrija manualmente o el empleado la resuelva desde la pantalla de notificaciones.
 
 ---

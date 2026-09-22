@@ -123,6 +123,16 @@ Historial en `/attendance/history` (drawer, no tab principal).
 - Labels bottom nav: `TextUtils.toHeaderTitle`
 - Loading: reutilizar `LoadingPlaceholder` (logo animado) antes de introducir `CircularProgressIndicator`
 
+### Selectores, fechas y buscadores
+
+Todo lo que se elige abriendo algo comparte componente y aspecto:
+
+- `AppSelectField` (`lib/presentation/widgets/common/app_select_field.dart`) para los desplegables y `AppDateField` para las fechas. Diez desplegables y tres fechas de tareas, asistencia, documentos y soporte los usan; quedan fuera a propósito el selector de idioma y el de entidad del drawer.
+- `AppSelectField` **no** usa `DropdownButton`: su menú se abre encima del campo, centrado en la opción elegida, y con listas largas ocupa media pantalla. El menú propio se ancla debajo del campo con `LayerLink` + `OverlayPortal`, con el ancho del campo, y se cierra al tocar fuera. Sigue recibiendo `DropdownMenuItem` para no tocar las pantallas al cambiar la implementación.
+- El estilo de la caja cerrada está en `appSelectorDecoration` / `appSelectorBorder` / `appSelectorArrow` (`design_system/utils/selector_decoration.dart`): borde en `buttonsPrimary` en los tres estados, radio pequeño y sin relleno propio.
+- Lo que se levanta va en blanco y sin borde: `canvasColor` (menús) y `datePickerTheme` (calendario) se fijan en `AppTheme`. Sin ponerlos caían en `colorScheme.surface`, que en esta app es el lavanda del fondo. El borde del menú de `DropdownButton` no se puede pintar, así que ninguna de las tres capas lo lleva.
+- Las filas de esas listas van cuadradas: el `listTileTheme` global redondea todos los `ListTile` y dentro de un menú la elegida salía como una pastilla.
+
 ### i18n
 
 - No introducir strings visibles sin l10n

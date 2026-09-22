@@ -38,6 +38,17 @@ Se o registo estiver correto, o estado do ecrã muda para «Dentro da jornada» 
 3. Se tiver a verificação biométrica ativada, complete a autenticação.
 4. O sistema processa o registo de saída. O ecrã mostrará a confirmação com a hora de saída e o tempo total trabalhado na jornada.
 
+### Avisos antes de fechar a jornada
+
+**A partir da versão 1.6.0 da aplicação**, se algo não bater certo a aplicação di-lo antes de registar e deixa a pessoa decidir. O aviso aparece logo no início, antes de pedir localização ou biometria, e sempre com duas saídas: **Cancelar** ou **Terminar jornada**.
+
+Avisa em dois casos:
+
+- **O turno ainda não terminou.** Aparece quando faltam mais de 30 minutos para o fim do turno que está a ser feito. Em jornada partida mede-se contra o turno atual, não contra o fim do dia: sair às 13:00 com turno das 9 às 13 não avisa. Sem horário configurado para esse dia, também não.
+- **Participa em tarefas que continuam em curso.** Só contam as tarefas próprias, não as da equipa. A aplicação não as pausa nem as fecha: uma tarefa pode ter vários atribuídos e os restantes podem continuar a trabalhar nela.
+
+Nenhum dos dois impede o registo. Estão lá para que ninguém feche a jornada sem querer, não para bloquear quem sabe o que está a fazer.
+
 > **Importante:** o registo de saída fecha a jornada ativa. Se se esquecer de registar a saída, a jornada ficará no estado `incomplete_workday` até que um responsável a corrija manualmente ou o funcionário a resolva a partir do ecrã de notificações.
 
 ---

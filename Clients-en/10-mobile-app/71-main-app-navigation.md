@@ -29,6 +29,14 @@ The clocking screen is the first one that appears on signing in and is the core 
 
 The screen shows the current time, the branch or workplace associated and, where GPS validation is required, the status of your location in relation to the permitted radius.
 
+From version 1.3.2, the screen is organised into cards:
+
+- **Control card**, with the clocking button that corresponds to each moment and two timers: the **workday** timer, which starts with the entry and does not stop during breaks, and the **break** timer, which adds up all the day's breaks. They are calculated from the valid clock records, so they also reflect corrections made from the back office.
+- **Work information**: branch, the day's schedule —one shift per line— and break. With a strict break the minutes are shown; with a flexible break, "Flexible".
+- **Today's tasks**.
+
+If today is not a working day for the employee, the card says so —distinguishing a public holiday from a day off— and the clocking screen explains why you cannot clock in and that, if you worked, you can request a manual workday.
+
 > **Warning:** To make a clock record you must have an active internet connection and GPS enabled. Without these elements, clocking cannot be completed.
 
 ---
@@ -60,9 +68,19 @@ The tasks section shows the activities assigned to you by your manager or admini
 
 - Consult the list of assigned tasks with their status and priority.
 - See the detail of each task: description, deadline, expected start date and evidence.
-- Start a task, add progress notes, upload photo or video evidence and mark it as completed.
+- See the **work site**, if the task has its own, and open it with **View in Maps**. Before starting, the app calculates the distance and warns you if you are far away; the server is what decides.
+- Start a task, **pause and resume it** (from version 1.4.0), add progress notes, upload photo or video evidence and mark it as completed. Starting, resuming and completing require having clocked in for the workday.
+- **From version 1.6.0**, starting, pausing, resuming and completing are also on the task card in the list and on the **Today's tasks** card of the attendance screen, without opening the detail. They only appear on your own tasks, and completing asks for confirmation.
+- **Search by branch or by worker** in the filters: the search boxes show options as soon as you tap them, with nothing typed.
+- Consult the **time spent**, the total of pauses and the task **history** (from version 1.4.0).
 
 The **description is shown with its formatting**: the headings, lists and checklists the manager wrote from the back office appear as such, not as plain text with symbols. The tick boxes in a checklist are a working guide: they can be read, but not ticked from the app, because they form part of the task's text and not of its status. Links open in the device's browser.
+
+### What a supervisor sees in the list
+
+Anyone with people reporting to them sees their own tasks and their team's in the same list. **From version 1.6.0** they appear separated: **My tasks** at the top, in a section that can be collapsed, and **Team tasks** below. Your own ones also carry a mark next to the title, and they are the only ones with action buttons on the card. On **Today's tasks**, your own come first.
+
+An employee with nobody reporting to them sees none of this: every task in their list is theirs.
 
 > **Warning:** updating a task's status requires an internet connection.
 

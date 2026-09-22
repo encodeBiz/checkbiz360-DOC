@@ -38,6 +38,17 @@ If the clock-in is correct, the screen status changes to "Within workday" and th
 3. If you have biometric verification enabled, complete the authentication.
 4. The system processes the exit record. The screen will show the confirmation with the exit time and the total time worked during the workday.
 
+### Warnings before closing the workday
+
+**From version 1.6.0 of the app**, if something does not add up the app says so before clocking out and lets the person decide. The warning comes first, before asking for location or biometrics, and always with two ways out: **Cancel** or **End workday**.
+
+There are two cases:
+
+- **The shift has not ended.** It appears when more than 30 minutes are left of the shift being worked. On a split shift it is measured against the current shift, not against the end of the day: leaving at 13:00 on a 9 to 13 shift does not warn. With no schedule set for that day, it does not warn either.
+- **You are taking part in tasks that are still in progress.** Only your own tasks count, not the team's. The app neither pauses nor closes them: a task can have several people assigned and the others may still be working on it.
+
+Neither of them prevents clocking out. They are there so nobody closes their workday by accident, not to block someone who knows what they are doing.
+
 > **Important:** The check-out closes the active workday. If you forget to record the exit, the workday will remain in `incomplete_workday` status until a manager corrects it manually or the employee resolves it from the notifications screen.
 
 ---

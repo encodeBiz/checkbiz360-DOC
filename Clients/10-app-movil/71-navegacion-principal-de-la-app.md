@@ -29,6 +29,14 @@ La pantalla de fichaje es la primera que aparece al iniciar sesión y constituye
 
 La pantalla muestra la hora actual, la sucursal o punto de trabajo asociado y, en caso de requerir validación por GPS, el estado de su ubicación en relación con el radio permitido.
 
+Desde la versión 1.3.2, la pantalla se organiza en tarjetas:
+
+- **Tarjeta de control**, con el botón de fichaje que corresponde a cada momento y dos cronómetros: el de la **jornada**, que empieza con la entrada y no se detiene durante los descansos, y el de **descanso**, que suma todos los descansos del día. Se calculan a partir de los fichajes válidos, así que reflejan también las correcciones hechas desde el backoffice.
+- **Información laboral**: sucursal, horario del día —un turno por línea— y descanso. Con descanso estricto se muestran los minutos; con descanso flexible, «Flexible».
+- **Tareas de hoy**.
+
+Si hoy no es día laborable para el empleado, la tarjeta lo indica —distinguiendo un festivo de un día libre— y el fichaje explica por qué no se puede fichar y que, si trabajó, puede pedir una jornada manual.
+
 > **Aviso:** Para realizar un fichaje es imprescindible contar con conexión a internet activa y el GPS habilitado. Sin estos elementos, el fichaje no podrá completarse.
 
 ---
@@ -60,9 +68,19 @@ La sección de tareas muestra las actividades que le han sido asignadas por su m
 
 - Consultar el listado de tareas asignadas con su estado y su prioridad.
 - Ver el detalle de cada tarea: descripción, fecha límite, fecha prevista de inicio y evidencias.
-- Iniciar una tarea, añadir notas de progreso, subir evidencias en foto o vídeo y marcarla como completada.
+- Ver el **lugar de trabajo**, si la tarea tiene uno propio, y abrirlo con **Ver en Maps**. Antes de iniciar, la app calcula la distancia y avisa si está lejos; quien decide es el servidor.
+- Iniciar una tarea, **pausarla y reanudarla** (desde la versión 1.4.0), añadir notas de progreso, subir evidencias en foto o vídeo y marcarla como completada. Iniciar, reanudar y completar requieren tener la jornada fichada.
+- **Desde la versión 1.6.0**, iniciar, pausar, reanudar y completar están también en la propia tarjeta de la lista y en la tarjeta **Tareas de hoy** de la pantalla de asistencia, sin entrar en el detalle. Solo aparecen en las tareas propias, y completar pide confirmación.
+- **Buscar por sucursal o por trabajador** en los filtros: los buscadores muestran opciones nada más tocarlos, sin escribir nada.
+- Consultar el **tiempo invertido**, el total de pausas y el **historial** de la tarea (desde la versión 1.4.0).
 
 La **descripción se muestra con su formato**: los títulos, las listas y las listas de comprobación que el responsable escribió desde el backoffice se ven como tales, no como texto plano con símbolos. Las casillas de una lista de comprobación son una guía de trabajo: se leen, pero no se marcan desde la app, porque forman parte del texto de la tarea y no de su estado. Los enlaces se abren en el navegador del dispositivo.
+
+### Qué ve un supervisor en la lista
+
+Quien tiene gente a cargo ve en la misma lista sus tareas y las de su equipo. **Desde la versión 1.6.0** salen separadas: arriba **Mis tareas**, en una sección que se puede plegar, y debajo **Tareas del equipo**. Las propias llevan además una marca junto al título, y son las únicas con botones de acción en la tarjeta. En **Tareas de hoy**, las propias salen primero.
+
+Un empleado sin gente a cargo no ve ninguna de estas separaciones: todas las tareas de su lista son suyas.
 
 > **Aviso:** actualizar el estado de una tarea requiere conexión a internet.
 

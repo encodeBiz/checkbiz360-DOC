@@ -443,6 +443,28 @@ Tab en bottom nav (índice 0 dentro de `AttendanceShellPage`).
 
 La app puede leer tareas directamente desde Firestore (streams en tiempo real). Las mutaciones siempre van por HTTP.
 
+### Acciones desde la lista y desde inicio (1.6.0)
+
+Iniciar, pausar, reanudar y completar no viven solo en la ficha. Están en la tarjeta de la lista y en la tarjeta «Tareas de hoy» del home de asistencia.
+
+- `taskQuickActionsFor(task, isAssigned)` decide qué botones salen: `assigned` → iniciar; en curso → pausar + completar; pausada → reanudar + completar. Solo en tareas propias.
+- `taskQuickActionProvider` ejecuta la mutación sin cargar la ficha entera, marca la tarea como ocupada mientras la llamada va por el aire —el segundo toque se ignora— y parchea la lista con la tarea que devuelve el servidor, vía `taskListItemPatchProvider`.
+- Sin jornada abierta el toque no falla en silencio: avisa y lleva a fichar. Reanudar no la exige (08_pausas.md, D5).
+- Completar con `requireEvidenceOnCompletion` abre la ficha en lugar de llamar al servidor: desde la lista no se sabe si ya hay evidencias.
+- Completar pide confirmación, en la lista y en la ficha. Es la única acción que el empleado no deshace solo.
+
+### Separación de lo propio para supervisor+ (1.6.0)
+
+- `taskOwnerGroups(tasks, employeeId)` parte la lista en «Mis tareas» y «Tareas del equipo», con lo empezado primero dentro de cada mitad. Solo de supervisor para arriba; un worker ve la agrupación por estado de siempre.
+- `TaskOwnershipBadge` marca las propias: chip con etiqueta en la lista, solo icono en la fila de inicio. `showsTaskOwnership` exige rol supervisor+ y estar asignado.
+- `taskOwnFirst(tasks, employeeId)` en `todayScheduledTasksProvider` ordena la tarjeta de inicio con lo propio delante, sin tocar el orden interno.
+
+### Buscadores de sucursal y trabajador
+
+- `TaskLookupField` precarga las diez primeras opciones al enfocar, sin escribir nada, y las cachea cinco minutos.
+- Por debajo de tres letras filtra en local esas sugerencias: el backend genera los prefijos de `keywords_prefix` desde tres caracteres (`buildPrefixes(tokens, min = 3)`), así que con dos la consulta no puede devolver nada.
+- La lista de resultados se pinta en una capa flotante anclada al campo, no colgando de él.
+
 ## 13. Errores estándar
 
 ```typescript

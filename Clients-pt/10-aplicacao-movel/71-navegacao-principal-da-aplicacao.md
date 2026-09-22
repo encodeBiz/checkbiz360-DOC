@@ -29,6 +29,14 @@ O ecrã de registo é o primeiro que aparece ao iniciar sessão e constitui o n�
 
 O ecrã mostra a hora atual, a sucursal ou ponto de trabalho associado e, caso seja exigida validação por GPS, o estado da sua localização em relação ao raio permitido.
 
+A partir da versão 1.3.2, o ecrã organiza-se em cartões:
+
+- **Cartão de controlo**, com o botão de registo que corresponde a cada momento e dois cronómetros: o da **jornada**, que começa com a entrada e não para durante as pausas, e o de **descanso**, que soma todas as pausas do dia. São calculados a partir dos registos válidos, pelo que refletem também as correções feitas a partir do backoffice.
+- **Informação laboral**: sucursal, horário do dia —um turno por linha— e descanso. Com descanso estrito são mostrados os minutos; com descanso flexível, «Flexível».
+- **Tarefas de hoje**.
+
+Se hoje não for dia útil para o funcionário, o cartão indica-o —distinguindo um feriado de um dia livre— e o registo explica porque não é possível registar e que, se trabalhou, pode pedir uma jornada manual.
+
 > **Aviso:** para efetuar um registo é imprescindível ter ligação à internet ativa e o GPS ativado. Sem estes elementos, o registo não poderá ser concluído.
 
 ---
@@ -60,9 +68,19 @@ A secção de tarefas mostra as atividades que lhe foram atribuídas pelo seu ma
 
 - Consultar a lista de tarefas atribuídas com o seu estado e a sua prioridade.
 - Ver o detalhe de cada tarefa: descrição, prazo, data prevista de início e evidências.
-- Iniciar uma tarefa, acrescentar notas de progresso, carregar evidências em foto ou vídeo e marcá-la como concluída.
+- Ver o **local de trabalho**, se a tarefa tiver um próprio, e abri-lo com **Ver no Maps**. Antes de iniciar, a aplicação calcula a distância e avisa se estiver longe; quem decide é o servidor.
+- Iniciar uma tarefa, **pausá-la e retomá-la** (a partir da versão 1.4.0), acrescentar notas de progresso, carregar evidências em foto ou vídeo e marcá-la como concluída. Iniciar, retomar e concluir requerem ter a jornada registada.
+- **A partir da versão 1.6.0**, iniciar, pausar, retomar e concluir estão também no próprio cartão da lista e no cartão **Tarefas de hoje** do ecrã de assiduidade, sem entrar no detalhe. Só aparecem nas tarefas próprias, e concluir pede confirmação.
+- **Procurar por sucursal ou por funcionário** nos filtros: os campos de procura mostram opções mal lhes toca, sem escrever nada.
+- Consultar o **tempo investido**, o total de pausas e o **histórico** da tarefa (a partir da versão 1.4.0).
 
 A **descrição é mostrada com a sua formatação**: os títulos, as listas e as listas de verificação que o responsável escreveu a partir do backoffice veem-se como tal, e não como texto simples com símbolos. As caixas de uma lista de verificação são um guia de trabalho: leem-se, mas não se marcam a partir da aplicação, porque fazem parte do texto da tarefa e não do seu estado. As ligações abrem-se no navegador do dispositivo.
+
+### O que vê um supervisor na lista
+
+Quem tem pessoas a seu cargo vê na mesma lista as suas tarefas e as da equipa. **A partir da versão 1.6.0** aparecem separadas: em cima **As minhas tarefas**, numa secção que se pode fechar, e por baixo **Tarefas da equipa**. As próprias levam ainda uma marca junto ao título, e são as únicas com botões de ação no cartão. Em **Tarefas de hoje**, as próprias aparecem primeiro.
+
+Um funcionário sem pessoas a cargo não vê nenhuma destas separações: todas as tarefas da sua lista são suas.
 
 > **Aviso:** atualizar o estado de uma tarefa exige ligação à internet.
 

@@ -10,11 +10,53 @@ El empleado gestiona sus tareas desde la sección de tareas de la app móvil. Al
 
 ### Iniciar una tarea
 
-Cuando el empleado está listo para comenzar, abre el detalle de la tarea y pulsa **Iniciar tarea**. El estado cambia de *asignada* a *en progreso* y el responsable lo ve reflejado en el backoffice.
+Cuando el empleado está listo para comenzar, pulsa **Iniciar**. El estado cambia de *asignada* a *en progreso* y el responsable lo ve reflejado en el backoffice.
+
+**Desde la versión 1.6.0 de la app** el botón está en tres sitios, y hace lo mismo en los tres: en la propia tarjeta de la lista de tareas, en la tarjeta **Tareas de hoy** de la pantalla de asistencia, y dentro del detalle como hasta ahora. Ya no hace falta abrir la tarea para empezarla.
+
+Los botones solo aparecen en las tareas que el empleado tiene asignadas. Un supervisor que ve tareas de su equipo sigue actuando sobre ellas desde el detalle.
+
+Para iniciar hace falta tener la **jornada abierta** (haber fichado la entrada) y, si la tarea tiene lugar de trabajo propio, estar dentro de su margen. Ver [Relación con el control horario](./39-que-es-el-modulo-de-tareas.md#relación-con-el-control-horario) y [Lugar de trabajo propio](./40-crear-una-tarea.md#lugar-de-trabajo-propio).
 
 ### Marcar una tarea como completada
 
-Una vez finalizada la actividad, el empleado pulsa **Marcar como completada**. Si la tarea tiene activada la exigencia de evidencia —lo está por defecto—, el sistema no permite cerrarla sin al menos una foto o vídeo adjuntos, y devuelve el error `task/evidence_required`.
+Una vez finalizada la actividad, el empleado pulsa **Completar**. Si la tarea tiene activada la exigencia de evidencia —lo está por defecto—, el sistema no permite cerrarla sin al menos una foto o vídeo adjuntos, y devuelve el error `task/evidence_required`.
+
+**Desde la versión 1.6.0**, completar pide confirmación antes de cerrar la tarea. Es la única de las cuatro acciones que el empleado no puede deshacer por su cuenta: para volver atrás hace falta que un responsable la rechace. Iniciar, pausar y reanudar no preguntan, porque se deshacen con otro toque.
+
+Si la tarea exige evidencia y se pulsa **Completar** desde la lista, la app abre el detalle en vez de intentar cerrarla: es donde se suben las fotos.
+
+---
+
+## Pausar y reanudar una tarea
+
+Cuando el trabajo se interrumpe —para comer, para ir a por material, o porque sigue al día siguiente—, la tarea se **pausa** y después se **reanuda**, tantas veces como haga falta. El tiempo en pausa se suma aparte y sale en el [informe de tareas](./48-informes-de-tareas.md).
+
+### Desde la app
+
+En el detalle de una tarea en progreso, el empleado pulsa **Pausar**; para seguir, pulsa **Reanudar**. Está disponible **desde la versión 1.4.0 de la app**.
+
+**Desde la 1.6.0** están también fuera del detalle: en la tarjeta de la lista de tareas, junto a **Completar**, y en **Tareas de hoy** como botón de icono al lado del principal.
+
+- En la app, el botón de pausar aparece cuando el empleado tiene la jornada fichada.
+- **Reanudar** pide lo mismo que iniciar: jornada abierta y, si la tarea tiene lugar de trabajo propio, estar dentro de su margen.
+- El detalle muestra el **tiempo invertido** —de inicio a fin, o hasta ahora, descontando las pausas— y el total de pausas.
+
+### Desde el backoffice
+
+En el detalle de una tarea en progreso aparecen los botones **Pausar** y **Reanudar**. En el resumen de la tarea, la cifra **Pausas** indica desde cuándo está pausada o, si ya no lo está, cuánto han sumado las pausas.
+
+Pueden pausar y reanudar los empleados asignados y, desde el backoffice, supervisores, managers y owners.
+
+> **Importante:** una tarea con lugar de trabajo propio no se puede reanudar ni completar desde el backoffice, porque el panel no envía ubicación. Debe hacerlo un empleado desde la app. Pausarla desde el backoffice sí es posible.
+
+### Reglas de la pausa
+
+- **La pausa es de la tarea**, no de cada persona. Solo hay una pausa abierta a la vez: si hay varios asignados, cualquiera de ellos la pausa o la reanuda, y queda anotado quién lo hizo.
+- **Completar, cancelar o rechazar** una tarea en pausa está permitido: la pausa se cierra en ese momento. No hace falta reanudar solo para poder cerrarla.
+- **Reabrir** la tarea pone a cero los contadores de pausa; el historial conserva las pausas anteriores.
+- La pausa **no amplía la fecha límite**: el cumplimiento temporal se sigue calculando igual.
+- Pausar y reanudar **no envían notificaciones**.
 
 > **Consejo:** Animar a los empleados a añadir un comentario breve al completar la tarea —aunque no sea obligatorio— mejora la calidad del registro y facilita la validación por parte del responsable.
 
@@ -44,14 +86,17 @@ El responsable también puede añadir comentarios desde el backoffice, que el em
 
 ---
 
-## Historial de cambios de estado
+## Historial de la tarea
 
-Cada tarea mantiene un registro cronológico e inmutable de todos los cambios de estado que ha experimentado. El historial es accesible desde el detalle de la tarea en el backoffice e incluye:
+La sección **Historial** del detalle de la tarea cuenta su recorrido completo, en orden: creada, asignada, iniciada, pausada y reanudada, completada, validada o rechazada, cancelada, y los cambios de estado hechos a mano. Cada línea indica:
 
-- Fecha y hora exacta de cada cambio de estado.
-- Estado anterior y estado nuevo.
-- Nombre del usuario o del sistema que realizó el cambio.
-- Comentario asociado al cambio, si lo hubo.
+- Fecha y hora.
+- Quién lo hizo y con qué rol. Las acciones automáticas aparecen como **Sistema**; si una persona del backoffice no tiene nombre registrado, aparece como **Usuario del panel**.
+- El motivo, en las validaciones, los rechazos y la última cancelación.
+
+También quedan anotados los intentos de iniciar o reanudar una tarea **fuera de su lugar de trabajo** («Inicio rechazado: fuera del lugar de trabajo»), que ayudan a entender por qué un empleado no pudo empezar.
+
+Las notas, evidencias y valoraciones tienen su propia sección en el detalle y no se repiten en el historial. Desde la versión 1.4.0, la app muestra también el historial de la tarea, pausas incluidas.
 
 Este historial no puede editarse ni eliminarse. Garantiza la trazabilidad completa de la tarea y sirve como base para resolver discrepancias o auditar el desempeño del equipo.
 
