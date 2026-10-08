@@ -92,3 +92,18 @@ mismo:
 - La pantalla de validación de la tarea gana el paso de conciliación (Fase 2).
 - `inventory` se entera del cierre por `task.validated`, `task.rejected` y
   `task.status_changed` con `status: "cancelled"` — los eventos que existen.
+
+---
+
+## Adenda 2026-10-08 — el cuadre pregunta también por lo reservado
+
+Jose detectó una tarea validada con «gastado 0»: se había reservado material, el operario no
+registró salida ni consumo en la app y, al cerrar, la reserva se soltó y el material volvió al
+almacén sin que nadie lo dijera. Lo habitual, no la excepción.
+
+Asignar sigue sin ser consumir: nada se da por gastado solo. Lo que cambia es que **al validar
+se pregunta también por lo reservado que no salió**, precargado como gastado, y el validador
+corrige. Lo que diga se apunta como salida y consumo de esa cantidad (resolución `used` del
+cuadre); el resto se libera como antes. Si se valida sin pasar por el panel (eventos), lo
+reservado se libera entero, igual que hasta ahora.
+
