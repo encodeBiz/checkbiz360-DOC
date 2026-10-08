@@ -147,9 +147,11 @@ con identificador o sin él. La entrega de **cantidades** a una persona (una caj
 veinte pares de guantes desechables) no entra. Si un cliente lo pide, el modelo lo admite como un
 movimiento más del libro (`delivery`, de almacén a persona, con acuse) sin tocar lo de la Fase 6.
 
-## D7 — ¿Entran artículos y almacenes en `searchIndex`?
+## D7 — ¿Entran artículos y almacenes en `searchIndex`? — DECIDIDO Y HECHO (2026-10-07)
 
-**Bloquea:** Fase 1.
-**Estado:** sin decidir.
+**Estado:** hecho en API y panel (en `staging` el 2026-10-07).
 
-Si se buscan desde el panel, entran — y su borrado tiene que acordarse de retirar la entrada.
+Entran, en las cuatro operaciones del CRUD, y el borrado o archivo retira la entrada. La primera
+versión no lo hacía y buscaba en memoria sobre el catálogo entero; Jose: «ninguna tabla de la
+plataforma funciona así». Ver [05 §Panel](./05_fases.md) y `reindex-search.ts` para reparar una
+entidad.

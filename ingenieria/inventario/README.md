@@ -3,7 +3,7 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** checkinbiz — Inventario (add-on de pago)
 **Fecha de inicio:** 2026-09-28
-**Estado:** API completa en `develop` (Fases 0–5, 2026-09-29) · panel completo en `develop` de encodebiz-front-saas (2026-09-29) · app completa en `develop` de checkbiz360 (2026-09-29) · sin promover a `staging` en ninguno
+**Estado:** Fases 0–5 en `staging` de API, panel (local, `npm run start:dev`) y app, al 2026-10-08, con la forma final del panel (todo es material, una sola entrada, índice de búsqueda y paginación en servidor, pestañas en una página) · Fase 6 diseñada, sin código · sin pasar a producción (ver [05 §Lo que exige cada entorno](./05_fases.md): precio de Stripe en vivo y alta del servicio, variables en Vercel, compose y nginx de prod, migración `023`, índices compuestos de `items` con `--project` explícito y `reindex-search --apply` por entidad)
 **Autor:** Jose Acevedo
 
 ---
