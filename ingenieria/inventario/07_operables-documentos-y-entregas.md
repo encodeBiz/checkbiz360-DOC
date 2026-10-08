@@ -1,6 +1,39 @@
 # 07 — Operables con papeles: documentos, revisiones y entregas a personas
 
-**Fecha:** 2026-10-07 (corregido el 2026-10-08) · **Estado:** **6a hecha** (API, panel y app, 2026-10-08; API en staging) · 6b y 6c, diseño · **Decisionario:** Jose Acevedo
+**Fecha:** 2026-10-07 (corregido el 2026-10-08) · **Estado:** **6a y 6b hechas** (6a: API, panel y app; 6b: API y panel; 2026-10-08, API en staging, panel en develop) · 6c, diseño · **Decisionario:** Jose Acevedo
+
+> **Lo construido en 6b y en qué se separa de este diseño** (2026-10-08):
+> - Un documento lleva **listas de vínculos**, `linkedItemIds` y `linkedUnitIds`, además del
+>   `itemId`/`unitId` con que se subió. Así un papel que ya está en Gestión documental se
+>   **vincula** desde la ficha del operable sin copiarse (Jose: «desde el detalle del operable
+>   debes poder sincronizar documentos también»), y una misma póliza puede cubrir varios
+>   ejemplares. `POST`/`DELETE /documents/:id/links {itemId? | unitId?}`; desvincular no borra.
+> - **Desde los dos sitios, con un solo formulario**: Gestión documental ofrece el ámbito
+>   «Equipo» (con el inventario) y «Vincular a un equipo» en la ficha del documento; la ficha
+>   del operable tiene la sección «Documentos» con «Subir documento» y «Vincular existente». En
+>   los dos, «Aplica a» elige todos los ejemplares (`item`) o uno (`unit`).
+> - **Por tipo cuenta el papel más reciente**: una ITV renovada deja sin efecto la caducada,
+>   para el rojo y para los avisos.
+> - «En regla» se calcula en `@encodebiz/shared` (`unitCompliance`), porque lo usan el
+>   inventario y los informes. Las rutas son `GET /units/:id/documents` (sus papeles y su nivel)
+>   y `GET /items/:id/documents` (el expediente del operable con los de cada ejemplar), en vez
+>   de `/compliance`.
+> - Sin papeles el nivel es `none` y **no se pinta**: no todo equipo tiene revisión obligatoria.
+> - El rojo sale en la fila del ejemplar, en el selector de material de las tareas y en
+>   Existencias (cuántos fuera de regla por fila). Reservar o entregar un ejemplar en rojo
+>   responde 200 `created:false` con el aviso `unit_not_compliant`; en el panel la línea pide
+>   marcar «Lo sé y lo reservo igualmente», y la reserva guarda `acceptedWarnings` (quién:
+>   `reservedBy`). El calendario y la app aún no lo pintan.
+> - Los avisos de caducidad corren en `inventory` cada 6 h y poco después de arrancar (un
+>   intervalo diario no llegaría a dispararse con los despliegues), una vez por papel y fecha,
+>   apuntado en `entities/{e}/inventory_notices`. El umbral es 30 días fijo, aún no por empresa.
+>   `scripts/document-expiry.js` simula sin `--apply`.
+> - El informe «Equipos y EPIs» gana la hoja **«Equipos y revisiones»** (Excel): cada ejemplar
+>   con su estado, quién lo tiene y cada papel con tipo, resultado, caducidad y estado. El PDF
+>   sigue pendiente.
+> - Probado contra staging con Cuidama el 2026-10-08: ITV caducada → rojo; entregar y reservar
+>   sin aceptar → `created:false`; ITV nueva → en regla; vincular y desvincular de otro
+>   ejemplar; el documento sale en Gestión documental y en su buscador.
 
 > **Lo construido en 6a y en qué se separa de este diseño** (2026-10-08):
 > - La entrega **no entra en el libro de movimientos**: su historia vive en `unit_assignments`
