@@ -1,7 +1,7 @@
 # TDR-005 — El material de cada tarea en el informe de tareas
 
 **Fecha:** 2026-10-08
-**Estado:** Diseño aprobado, en implementación
+**Estado:** Implementado y en `develop` y `staging` desde el 2026-10-08 (desplegado en el entorno de desarrollo por el Staging CI/CD, run 37756082894); pendiente del siguiente pase a producción
 **Componente:** `encodebiz-api` — `reports` (`POST /api/reports/tasks`) + `@encodebiz/shared`
 **Decisiones de referencia:** [ADR-004](../adr/ADR-004-asignar-no-es-consumir.md),
 [tasks-service/TDR-004](../../tasks-service/tdr/TDR-004-informe-tareas-xlsx.md)
@@ -132,3 +132,24 @@ ampliada en tres columnas y una hoja «Material» con una fila por tarea y artí
 totales de la hoja «Material» cuadran con lo que enseña la ficha de la tarea en el panel.
 Con una entidad sin add-on, el fichero es el mismo que antes de este cambio. Compila limpio
 en el pipeline del monorepo.
+
+## 9. Comprobado el 2026-10-08
+
+En local contra dev, reproduciendo el pipeline sin subir a Storage ni escribir histórico:
+
+- **Cuidama Servicios** (add-on `active`), una tarea con material entre el 10 y el 10 de
+  octubre: la hoja «Tareas» sale con 17 columnas y la hoja «Material» con cuatro filas, tres
+  consumibles reservados y sin salir (reservado 100 / 20 / 20, consumido 0, coste 0 con
+  coste unitario en la ficha) y una fregadora `FR-2` reservada del 9 al 10 con unidad de uso
+  en días. La columna «Material» de la tarea dice solo `Fregadora FR-2`: los consumibles aún
+  no se han consumido, y esa columna es lo consumido. «Sin cuadrar» y «Coste material» van
+  vacíos, que es lo correcto con todo todavía en el almacén.
+- **Entidad de QA** (sin add-on), cinco tareas: 14 columnas, una sola hoja, igual que antes.
+- `shared`, `reports` e `inventory` compilan; los tres envoltorios de `inventory` delegan los
+  métodos nuevos.
+
+Fusionado a `develop` (`df7f94b`) y a `staging` (`b845811`) el mismo día; el despliegue de
+staging pasó con el borde verificado. Lo que queda: el pase a producción con el siguiente
+`staging → main`, y en el primer informe real mirar si la columna «Material» de una tarea
+abierta debería decir también lo reservado y no solo lo consumido. Hoy sigue el §2 al pie de
+la letra; la hoja «Material» ya enseña lo reservado.

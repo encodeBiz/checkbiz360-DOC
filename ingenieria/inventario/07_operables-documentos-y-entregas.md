@@ -1,6 +1,27 @@
 # 07 — Operables con papeles: documentos, revisiones y entregas a personas
 
-**Fecha:** 2026-10-07 (corregido el 2026-10-08) · **Estado:** diseño, sin código · **Decisionario:** Jose Acevedo
+**Fecha:** 2026-10-07 (corregido el 2026-10-08) · **Estado:** **6a hecha** (API, panel y app, 2026-10-08; API en staging) · 6b y 6c, diseño · **Decisionario:** Jose Acevedo
+
+> **Lo construido en 6a y en qué se separa de este diseño** (2026-10-08):
+> - La entrega **no entra en el libro de movimientos**: su historia vive en `unit_assignments`
+>   y en su espejo `unit_assignments_raw` (migración 024). El libro es de saldos y la entrega
+>   no los toca; meterla ahí obligaba a tocar signos y recálculos sin ganar nada.
+> - `device_credential` es **el desbloqueo del móvil** (huella, cara o código): `local_auth`
+>   no dice cuál de los tres fue, y el registro lo llama así.
+> - El peldaño de **contraseña** se verifica de verdad: la app reautentica en Firebase y manda
+>   el acuse con ese ID token recién emitido; el servidor exige `auth_time` de menos de cinco
+>   minutos. La firma biométrica responde 400 `method_not_available` hasta el módulo de firma.
+> - Al **devolver** dañado o no devuelto, el ejemplar queda `unavailable` con el motivo; **no**
+>   se retira solo (retirar es decisión de una persona, como en §4.2).
+> - Entregar con avisos (reservas futuras, no disponible) responde **200 `created:false` con
+>   `warnings`** y no crea nada hasta `acceptWarnings`; lo aceptado queda en `acceptedWarnings`.
+> - Un ejemplar entregado **no se reserva** para tareas (409 `inventory/unit_assigned`) y
+>   **cuenta como ocupado** en Existencias.
+> - El informe «Equipos y EPIs» de 6a es **Excel, por persona** (`POST /api/reports/equipment`,
+>   402 sin el add-on); el PDF y la vista por ejemplar quedan para 6b.
+> - Probado contra staging con tokens reales de Cuidama el 2026-10-08: avisos, 409 por doble
+>   entrega, 403 si confirma otro, 400 biométrico, confirmación con contraseña verificada,
+>   «con Jose Manuel» en la lista de ejemplares.
 
 > Jose, 2026-10-07: «Necesitamos poder relacionarles documentos como propiedad, la inspección
 > de prevención de riesgos, etc. Y poder demostrar mediante el sistema que a un trabajador se
@@ -64,6 +85,14 @@ El servicio documental admite dos ámbitos nuevos:
 |---|---|---|
 | `item` | el artículo (`itemId`) | lo común a todos los ejemplares del modelo: declaración CE, manual, ficha técnica |
 | `unit` | el ejemplar (`unitId`) | lo propio de ese ejemplar: factura o propiedad, seguro, ITV, revisiones, inspección PRL |
+
+**Se cuelga desde los dos sitios** (Jose, 2026-10-08: «los documentos se pueden asignar desde
+documentación o desde los operables directamente»): desde **Gestión documental**, al subir un
+documento, eligiendo como ámbito un artículo o un ejemplar (con el mismo buscador de
+material); y desde la **ficha del operable** o del ejemplar, con «Añadir documento», que abre
+la misma subida con el ámbito ya puesto. Es un solo documento, guardado una vez en el servicio
+documental: se ve en la lista de Gestión documental (filtrable por artículo o ejemplar) y en la
+ficha del ejemplar, y editarlo o archivarlo en un sitio se ve en el otro.
 
 Tipos nuevos en el catálogo de `DocumentType`:
 

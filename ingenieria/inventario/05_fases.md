@@ -268,7 +268,7 @@ versatilidad», y «Existencias es el core, el centro de mando». El panel qued�
   hecha nada más crearla); en el detalle de la tarea las acciones van a la vista.
 - Se retiraron las pestañas Catálogo, Tablero/Ocupación, Libro y Discrepancias.
 
-## Fase 6 — Operables con papeles (diseño 2026-10-07, sin código)
+## Fase 6 — Operables con papeles (diseño 2026-10-07; 6a hecha el 2026-10-08)
 
 **Objetivo:** que un operable pueda demostrar de quién es, qué revisiones ha pasado y en manos
 de quién está, para una inspección de trabajo. Jose, 2026-10-07: «dentro de inventario, como

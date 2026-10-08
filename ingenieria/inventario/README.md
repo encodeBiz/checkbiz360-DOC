@@ -84,7 +84,7 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 | [TDR-002](./tdr/TDR-002-saldos-movimientos-y-conciliacion.md) | Saldos, libro de movimientos y conciliación del sobrante | 2 | Diseño aprobado |
 | [TDR-003](./tdr/TDR-003-operables-agenda-y-choque.md) | Operables: agenda, detección de choque y tablero | 3 | Diseño aprobado |
 | [TDR-004](./tdr/TDR-004-espejo-postgres-e-informes.md) | Espejo a Postgres desde `inventory`, migración 023 e informes | 4 | Diseño aprobado |
-| [TDR-005](./tdr/TDR-005-material-en-el-informe-de-tareas.md) | El material de cada tarea en el informe de tareas, solo con el add-on | — | Diseño aprobado, en implementación |
+| [TDR-005](./tdr/TDR-005-material-en-el-informe-de-tareas.md) | El material de cada tarea en el informe de tareas, solo con el add-on | — | Implementado, en staging |
 
 ---
 
@@ -97,8 +97,8 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 - [x] **Fase 3** — Operables: reserva a tarea, choque y tablero de ocupación ✔ API, panel (pestaña «Ocupación», agenda por ejemplar) y app en `develop` (2026-09-29)
 - [x] **Fase 4** — Espejo a Postgres desde `inventory` e informe de consumo ✔ API y panel (informe, con el libro como descarga CSV) en `develop` (2026-09-29; sin pestaña de libro desde el 2026-10-07); migración `023` y variables pendientes de aplicar en dev
 - [x] **Fase 5** — Avisos de mínimo y listado de discrepancias ✔ API y panel en `develop` (2026-09-29; las discrepancias son un filtro de Existencias con aviso, no una pestaña, desde el 2026-10-07)
-- [ ] **Fase 6** — Operables con papeles: documentos y revisiones del ejemplar (rojo y aviso, sin bloquear), entrega a personas con acuse, e informe «Equipos y EPIs» en Informes para la inspección. **Diseñada el 2026-10-07, corregida el 2026-10-08, sin código** ([07](./07_operables-documentos-y-entregas.md), [ADR-007](./adr/ADR-007-entrega-es-asignacion-con-acuse.md)); el acuse, con biometría y escalera de alternativas (D8, decidida)
-- [ ] **Material en el informe de tareas** — con el add-on, tres columnas más en «Tareas» y una hoja «Material»; sin él, el informe de siempre. **Diseñado el 2026-10-08, en implementación** ([TDR-005](./tdr/TDR-005-material-en-el-informe-de-tareas.md))
+- [ ] **Fase 6** — Operables con papeles: documentos y revisiones del ejemplar (rojo y aviso, sin bloquear), entrega a personas con acuse, e informe «Equipos y EPIs» en Informes para la inspección. **Diseñada el 2026-10-07, corregida el 2026-10-08; 6a (entrega con acuse, «Mi material», informe Equipos y EPIs) hecha el 2026-10-08, API en staging** ([07](./07_operables-documentos-y-entregas.md), [ADR-007](./adr/ADR-007-entrega-es-asignacion-con-acuse.md)); el acuse, con biometría y escalera de alternativas (D8, decidida)
+- [x] **Material en el informe de tareas** — con el add-on, tres columnas más en «Tareas» y una hoja «Material»; sin él, el informe de siempre. **En `develop` y `staging` desde el 2026-10-08, desplegado en dev; pendiente de pase a producción** ([TDR-005](./tdr/TDR-005-material-en-el-informe-de-tareas.md))
 
 **Lo que sale de otro repo:** las pantallas de la app —material de la tarea, selector de
 almacén, consumo precargado, paso de cuadre— y las del panel son el camino crítico de las
