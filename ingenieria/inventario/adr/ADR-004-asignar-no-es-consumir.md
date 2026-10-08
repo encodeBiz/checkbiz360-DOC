@@ -113,3 +113,14 @@ lo que consta que salió, la diferencia se apunta antes como salida desde lo res
 mismo gesto y con el mismo id de petición: repetirla no duplica nada. Vale igual en el panel y
 en la app. La validación queda como red para lo que nadie haya declarado.
 
+**Quién hace qué, desde el 2026-10-08** (Jose: «el operario debe dar solo el consumo; la salida
+del almacén debe hacerse desde el propio almacén o artículo»):
+
+- **El almacén da la salida**, desde la ficha del almacén o la del artículo («Salida a una
+  tarea»). Es opcional: sirve a quien entrega el material antes del trabajo.
+- **El operario solo declara el consumo**, en la app, sobre lo reservado o sobre lo no
+  previsto. Si nadie dio salida, la apunta el propio consumo desde el almacén de la sucursal (o
+  el elegido, si tiene varios).
+- **Desde la tarea ya no se registran salidas**, ni en la app ni en el panel.
+- **El validador cuadra lo que quede**, como arriba.
+
