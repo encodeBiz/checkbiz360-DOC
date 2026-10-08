@@ -107,3 +107,9 @@ corrige. Lo que diga se apunta como salida y consumo de esa cantidad (resolució
 cuadre); el resto se libera como antes. Si se valida sin pasar por el panel (eventos), lo
 reservado se libera entero, igual que hasta ahora.
 
+Y **se puede declarar el consumo sobre lo reservado en cualquier momento**, sin registrar antes
+la salida (Jose, 2026-10-08: «esto lo pueden delegar sobre planificación»). Si se declara más de
+lo que consta que salió, la diferencia se apunta antes como salida desde lo reservado, en el
+mismo gesto y con el mismo id de petición: repetirla no duplica nada. Vale igual en el panel y
+en la app. La validación queda como red para lo que nadie haya declarado.
+
