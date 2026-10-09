@@ -378,6 +378,17 @@ sin firma)», «Contraseña, reautenticación verificada». Con el reto, para pe
   `signing_keys`; si hay que invalidar una clave, se marca `supersededAt`. Una firma hecha con
   una clave borrada ya no se puede volver a comprobar desde Firestore: solo desde su evidencia.
 
+### QA (2026-10-09)
+
+Catálogo [Qa/catalogo/firma.md](../../Qa/catalogo/firma.md) (FIR-01..03, 20 casos) y
+`qa/tests/con-datos/53-firma.spec.ts`: hace de móvil con una clave P-256 de Node, registra la
+clave y comprueba su certificado contra la CA publicada, pide retos, firma el acuse de una
+nómina y verifica la evidencia con `crypto` sin la plataforma; firma alterada, reto ajeno,
+acuse pulsado y permisos del acta. **20 de 20 en verde contra staging el 2026-10-09.** Corre en
+el CI tras cada despliegue de staging. Dos cosas que enseñó: Node rechazaba uno de cada ~128
+certificados por un número de serie con DER no mínimo (corregido), y tras un fallo Playwright
+sigue en otro proceso, así que cada bloque que firma reafirma su clave antes.
+
 ### Siguiente paso, solo en el documental: la firma dentro del PDF
 
 Jose, 2026-10-09: la nómina debe salir **firmada por dentro**, no como documento más acta. Es
