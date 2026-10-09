@@ -12,8 +12,8 @@ la app). **El documental comprueba también la firma del acuse de recibo (2026-1
 staging; §El documental como segundo consumidor). Reglas de Firestore versionadas en `encodebiz-api` y
 desplegadas en dev (2026-10-09). Acta de firma hecha y probada en staging con una nómina (2026-10-09, §El acta):
 evidencia cerrada al firmar, PDF bajo demanda, comprobación independiente con OpenSSL en verde, y la descarga
-en la ficha del documento del panel.** Falta que la app firme el acuse de documentos (hoy solo firma la entrega
-de equipos), probar en móviles reales y el pase a prod
+en la ficha del documento del panel.** **La app firma también el acuse de documentos con el `subject` que da el documental
+(2026-10-09, §Dónde se firma).** Falta probar en móviles reales y el pase a prod
 ([deployment-prod/2026-10](../../deployment-prod/2026-10-inventario-firma-back.md)). Jose, 2026-10-08: «esto es otro
 módulo, así que déjalo documentado y terminemos con lo de Inventario ahora».
 **Autor:** Jose Acevedo
@@ -141,15 +141,16 @@ El flujo es el mismo en los dos (`SignAcknowledgement`):
 | Acuse | `purpose` | `subject` | Acuse |
 |---|---|---|---|
 | Entrega de material («Mi material» → «Confirmar recepción») | `inventory.assignment_ack` | el que da `GET /inventory/assignments/:id/signing-subject` (la entrega y sus documentos con versión) | `POST /inventory/assignments/:id/acknowledge` con `method: biometric_signature`, `challengeId`, `signature`. El servidor comprueba la firma y escribe el método según el nivel de la clave (`biometric_signature` o `device_credential`), verificado. Una firma no válida responde 400 `inventory/signature_invalid` y la app lo muestra como error |
-| Acuse de recibo de un documento (Documentos → «Acusar recibo») | `documents.acknowledgement` | `{ documentId, version }`, la versión que el trabajador tiene delante | `POST /documents/:id/ack` con `challengeId` y `signature`. **El documental aún no comprueba la firma**: hoy ignora esos campos y el reto caduca sin usarse. Cuando lo haga, tiene que reconstruir este mismo `subject` |
+| Acuse de recibo de un documento (Documentos → «He leído este documento») | `documents.acknowledgement` | el que da `GET /documents/:id/signing-subject` (`documentId`, `version`, `contentSha256` si el fichero lo tiene, `title`): lo firmado es el contenido, no solo el id | `POST /documents/:id/ack` con `challengeId` y `signature`. El documental comprueba la firma y escribe `method` según el nivel de la clave, `verified: true`. Una firma no válida responde 400 `documents/signature_invalid` y la app lo muestra como error («No se pudo comprobar la firma»), sin reintentar sin firma: un acuse pulsado no se sube a firmado después (app, 2026-10-09) |
 
 ### Lo que queda
 
-- **Reglas de Firestore** (encodeBiz-SAAS): cerrar `signing_keys/**`, `signing_challenges/**` y
-  `signingKey` del dispositivo al cliente.
-- **Comprobar la firma en el documental** (`verifySignedChallenge` en su acuse), con el
-  `subject` de arriba.
-- **Hash del fichero** en lo firmado, si se quiere: lo tiene que guardar el documental.
+Lo que quedaba aquí se hizo el 2026-10-09: las reglas de Firestore (§Reglas), la comprobación
+de la firma en el documental y el hash del fichero dentro de lo firmado (§El documental como
+segundo consumidor). Desde ese día la app pide el `subject` al documental en vez de componerlo
+(`GET /documents/:id/signing-subject`), igual que hace con la entrega. En los dos acuses, si el
+servidor no da el `subject` o el reto, la app sigue por el camino de siempre; si lo que falla
+es la comprobación de la firma (400 `signature_invalid`), lo muestra como error y no acusa.
 
 ### Pendiente de comprobar en móviles reales
 
@@ -376,6 +377,14 @@ sin firma)», «Contraseña, reautenticación verificada». Con el reto, para pe
   es «solo se añade» **por convención nuestra**: ningún script, limpieza ni prueba borra
   `signing_keys`; si hay que invalidar una clave, se marca `supersededAt`. Una firma hecha con
   una clave borrada ya no se puede volver a comprobar desde Firestore: solo desde su evidencia.
+
+### Siguiente paso, solo en el documental: la firma dentro del PDF
+
+Jose, 2026-10-09: la nómina debe salir **firmada por dentro**, no como documento más acta. Es
+PAdES con certificado emitido por una CA propia de la plataforma; vale solo para PDF (lo demás
+sigue con evidencia y acta, que no sobran: son un plus y lo único que hay para lo que no es
+PDF) y **no toca el inventario**. Diseño en
+[documental-service/08](../documental-service/08_firma-incrustada-en-el-pdf.md).
 
 ### Fuera de este paso
 

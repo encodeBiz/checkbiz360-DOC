@@ -267,6 +267,12 @@ acuse firmado). Hasta que se publique, la app actual sigue confirmando entregas 
 desbloqueo del móvil o la contraseña, que el servidor acepta igual. Pendiente de probar en un
 Android y un iPhone reales (clave con solo PIN, gama baja sin StrongBox).
 
+## 9b. Lo que NO entra en este lote (para no buscarlo)
+
+La firma incrustada en el PDF (PAdES con CA propia, [documental 08](../ingenieria/documental-service/08_firma-incrustada-en-el-pdf.md))
+está diseñada, no construida. Cuando entre, traerá una CA por entorno en el volumen de secretos
+(`signing-ca.key`, `signing-ca.crt`) y, si se quiere sello de tiempo, `SIGNING_TSA_URL`.
+
 ## 10. Orden de ejecución el día del pase
 
 1. Migraciones 023 y 024 (§4), una a una.
