@@ -52,7 +52,7 @@ el paso y seguir: lo que viene después no depende, salvo que se indique.
 | 2.5 | Panel | Pulsar «Descargar el acta de firma» | Se abre un PDF de una página: quién, cuándo, cómo; documento, versión y SHA-256; cadena firmada; firma; clave pública y su huella; evidencia; cómo comprobarla |
 | 2.6 | Panel | En la misma ficha, **Descargar** el documento | Es el **PDF firmado** (con la marca del margen), no el original |
 | 2.7 | Acrobat | Abrir ese PDF en Acrobat Reader → panel de firmas | «La firma es válida… identidad del firmante desconocida» (interrogación amarilla); «el documento no se ha modificado» |
-| 2.8 | Panel | Entidad → **Entorno de trabajo** → **Firma electrónica** → «Descargar el certificado (.cer)» | Baja `checkbiz360-firma-ca.cer` |
+| 2.8 | Panel | Entidad → **Entorno de trabajo** → **Firma electrónica** → «Descargar para Acrobat y Windows (.cer)» y «Descargar en texto (.crt)» | Bajan `checkbiz360-firma-ca.cer` y `.crt`; los dos abren en el llavero de Mac |
 | 2.9 | Acrobat | Edición → Preferencias → Firmas → Identidades y certificados de confianza → Más → Certificados de confianza → Importar el `.cer` → marcar «raíz de confianza» → cerrar y reabrir el PDF | **Tick verde**: firma válida y firmante «CN=Jose Manuel Acevedo», emitido por «CheckBiz360 Firma CA (dev)» |
 | 2.10 | Panel | Intentar volver a subir… no: editar el título del documento y guardar | La confirmación y el acta siguen; el PDF sigue siendo el firmado |
 
