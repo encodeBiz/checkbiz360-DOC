@@ -245,10 +245,12 @@ informe de tareas sale idéntico al de siempre y los documentos siguen igual.
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_INVENTORY` | `https://api.checkbiz360.com/api/reports/inventory/consumption` |
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_EQUIPMENT` | `https://api.checkbiz360.com/api/reports/equipment` |
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_SIGNATURES` | `https://api.checkbiz360.com/api/reports/signatures` |
+| `NEXT_BACKEND_URI_CHECKINBIZ_SIGNING_CA` | `https://api.checkbiz360.com/api/v1/checkinbiz/auth/signing-ca.crt` |
 
 Sin la primera, toda la sección Inventario responde «el proxy rechazó la llamada»; sin las dos
-siguientes, los dos informes nuevos fallan al generar; sin la última, «Descargar el acta de firma»
-en la ficha del documento no funciona. Vercel solo tiene producción: no se tocan para
+siguientes, los dos informes nuevos fallan al generar; sin la cuarta, «Descargar el acta de firma»
+en la ficha del documento no funciona; sin la quinta, no se descarga el certificado de la CA desde
+«Entorno de trabajo». Vercel solo tiene producción: no se tocan para
 probar.
 
 ### 8.2 Promoción
