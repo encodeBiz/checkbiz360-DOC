@@ -69,9 +69,14 @@ Copiar de `nginx.staging.conf` (líneas 36, 111 y 191–192):
     location = /api/v1/inventory  { proxy_pass http://inventory_service/api/v1/inventory; }
   …
     location /api/v1/inventory/ {
+      client_max_body_size 4m;   # importación por plantilla (TDR-007): sin esto nginx corta en 1 MB
       proxy_pass http://inventory_service/api/v1/inventory/;
     }
 ```
+
+El `client_max_body_size` llegó con la importación masiva por plantilla (2026-10-09): la subida
+viaja como base64 dentro de JSON y un fichero de más de ~750 KB pasa del mega por defecto de
+nginx. Staging lo tiene desde esa fecha; si el pase no lleva la importación, sobra pero no estorba.
 
 Todo lo demás de este lote cuelga de rutas que prod **ya** proxya: `/api/reports/` (informe de
 equipos y de consumo), `/api/v1/documents/` (ámbitos, vínculos, `signing-subject`) y
@@ -196,7 +201,8 @@ regla de retención debe borrarlas: son la prueba. Conviene activar en el bucket
 
 `signing_keys/{employeeId}/keys`, `signing_challenges`, `entities/{e}/inventory_notices`, y
 bajo cada entidad con el módulo: `items`, `warehouses`, `item_units`, `stock`, `movements`,
-`unit_reservations`, `unit_assignments`, `task_materials`. `documents` gana campos
+`unit_reservations`, `unit_assignments`, `task_materials` y, con la importación por plantilla,
+`import_batches` (con sus subcolecciones `rows` y `results`). `documents` gana campos
 (`itemId`, `unitId`, `linkedItemIds`, `linkedUnitIds`, `contentSha256`, `metadata.result`) sin
 migrar nada: los anteriores no los tienen y el código lo contempla.
 
@@ -245,7 +251,7 @@ informe de tareas sale idéntico al de siempre y los documentos siguen igual.
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_INVENTORY` | `https://api.checkbiz360.com/api/reports/inventory/consumption` |
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_EQUIPMENT` | `https://api.checkbiz360.com/api/reports/equipment` |
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_SIGNATURES` | `https://api.checkbiz360.com/api/reports/signatures` |
-| `NEXT_BACKEND_URI_CHECKINBIZ_SIGNING_CA` | `https://api.checkbiz360.com/api/v1/checkinbiz/auth/signing-ca.crt` |
+| `NEXT_BACKEND_URI_CHECKINBIZ_SIGNING_CA` | `https://api.checkbiz360.com/api/v1/checkinbiz/auth/signing-ca/bundle` |
 
 Sin la primera, toda la sección Inventario responde «el proxy rechazó la llamada»; sin las dos
 siguientes, los dos informes nuevos fallan al generar; sin la cuarta, «Descargar el acta de firma»
