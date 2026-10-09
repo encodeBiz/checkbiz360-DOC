@@ -6,8 +6,10 @@
 **Estado:** **App: clave creada en el login y vinculada al dispositivo (2026-10-09,
 rama `feat/firma-clave-en-dispositivo` de checkbiz360)**. **Servidor: hecho el 2026-10-09 (§Lado del
 servidor) en `checkinbiz/auth` y `shared`, en develop y staging de encodebiz-api, probado contra staging**
-(registro, reto, acuse firmado y verificado; firma alterada y reto ajeno rechazados). Falta que la
-app lo llame y las reglas de Firestore. Jose, 2026-10-08: «esto es otro
+(registro, reto, acuse firmado y verificado; firma alterada y reto ajeno rechazados). **App
+adaptada al servidor el 2026-10-09** (registro por API, reto y acuse firmado; §Lo construido en
+la app). Faltan las reglas de Firestore, la comprobación en el documental y probar en móviles
+reales. Jose, 2026-10-08: «esto es otro
 módulo, así que déjalo documentado y terminemos con lo de Inventario ahora».
 **Autor:** Jose Acevedo
 
@@ -102,77 +104,53 @@ ECDSA P-256; se firma el SHA-256 del contenido (`SHA256withECDSA`). Clave en el 
 Secure Enclave en iOS; Keystore o StrongBox en Android (si StrongBox falla, el paquete reintenta
 en el TEE). La privada no sale nunca del móvil.
 
-### Dónde queda: junto al token de notificaciones
+### Dónde queda: la registra el servidor
 
-`notification_tokens/{employeeId}/devices/{deviceId}`, el documento que ya guarda el token FCM
-del móvil, gana el campo `signingKey` (escrito con merge, nunca toca el token):
+> Corregido el 2026-10-09 con el lado del servidor: la primera versión escribía `signingKey`
+> desde la app en Firestore; ya no. La app no escribe la clave en ningún sitio.
 
-| Campo | Qué |
-|---|---|
-| `level` | `biometric` · `device_credential` · `none` |
-| `keyAlias` | `cb360_sign_<employeeId>` |
-| `publicKey` | la pública en **PEM** (SubjectPublicKeyInfo), o `null` si no hay clave |
-| `publicKeyFormat` | `pem` |
-| `algorithm`, `keySize` | lo que informa el chip (`EC`, 256) |
-| `signatureAlgorithm` | `SHA256withECDSA` |
-| `createdAt` | cuándo se creó la clave en el móvil (ISO, UTC) |
-| `unavailableReason` | sin clave, por qué: `no_screen_lock`, `not_supported` (web/escritorio) o `create_failed_<código>` |
-| `uid`, `employeeId` | de quién es |
-| `updatedAt` | hora del servidor de la última vinculación (cada login) |
+Al terminar el login la app llama a **`POST /auth/signing-keys`** (checkinbiz, ID token de
+Firebase) con `employeeId`, `deviceId` (el identificador persistente que usa el token FCM),
+`level` y, si hay clave, `publicKey` en PEM, `publicKeyFormat: pem`, `algorithm`, `keySize`,
+`signatureAlgorithm: SHA256withECDSA` y `createdAt`; sin clave, `unavailableReason`
+(`no_screen_lock`, `not_supported` o `create_failed_<código>`). El servidor la guarda en
+`signing_keys/{employeeId}/keys/{keyId}`, que no se borra, y la refleja en
+`notification_tokens/{employeeId}/devices/{deviceId}.signingKey`, junto al token FCM.
+Registrar dos veces la misma clave no duplica nada, así que se manda en cada login. Si falla,
+el login sigue y se reintenta en el siguiente.
 
-`deviceId` es el identificador persistente que ya usa el token FCM (`DeviceInfoService`, que
-sobrevive a reinstalar). La firma se hace con `DeviceSigningKeyService.sign`, que pide huella,
-cara o código según el nivel y devuelve la firma en base64.
+### Dónde se firma
 
-### Dónde se firma (2026-10-09)
+Dos acuses van firmados cuando el móvil tiene clave. Sin clave, o si no se puede firmar (clave
+invalidada o bloqueada, o el servidor no da reto), siguen como antes. Si el trabajador cancela
+la huella o el código, no se confirma nada.
 
-Dos acuses van firmados cuando el móvil tiene clave; sin clave, o si la clave no sirve
-(invalidada, bloqueada), siguen como antes. Si el trabajador cancela la huella o el código, no
-se confirma nada.
+El flujo es el mismo en los dos (`SignAcknowledgement`):
 
-| Acuse | Qué se firma (`kind`) | Cómo va |
-|---|---|---|
-| Entrega de material («Mi material» → «Confirmar recepción») | `unit_assignment_acknowledgement`: `entityId`, `employeeId`, `assignmentId`, `unitId`, `itemId`, `documents` (`documentId` + `version` de cada uno), `text`, `signedAt` | `POST /inventory/assignments/:id/acknowledge` con `method: biometric_signature`. Mientras el servidor responda 400 `inventory/method_not_available`, la app repite como `device_credential` con la firma en el cuerpo: el trabajador se acaba de desbloquear, que es lo que ese método registra. Cuando el servidor lo acepte, no hay que tocar la app |
-| Acuse de recibo de un documento (Documentos → «Acusar recibo») | `document_acknowledgement`: `entityId`, `employeeId`, `documentId`, `documentVersion`, `signedAt` | `POST /documents/:id/ack` con la firma en el cuerpo; hoy el servidor ignora esos campos |
+1. ¿Tiene el móvil clave para el empleado? Si no, sin red ni diálogo, el acuse de siempre.
+2. `POST /auth/signing-challenges` con `purpose`, `entityId`, `employeeId` y `subject`.
+3. El móvil firma el **`payload` del reto, tal cual** (lo arma el servidor; la app no compone
+   nada), con huella, cara o código según el nivel de la clave.
+4. El acuse lleva `{ challengeId, signature }`.
 
-Lo firmado es un JSON con `v: 1` y las claves siempre en ese orden. Campos que se añaden al
-cuerpo del acuse (`AcknowledgementSignature.toBody`):
+| Acuse | `purpose` | `subject` | Acuse |
+|---|---|---|---|
+| Entrega de material («Mi material» → «Confirmar recepción») | `inventory.assignment_ack` | el que da `GET /inventory/assignments/:id/signing-subject` (la entrega y sus documentos con versión) | `POST /inventory/assignments/:id/acknowledge` con `method: biometric_signature`, `challengeId`, `signature`. El servidor comprueba la firma y escribe el método según el nivel de la clave (`biometric_signature` o `device_credential`), verificado. Una firma no válida responde 400 `inventory/signature_invalid` y la app lo muestra como error |
+| Acuse de recibo de un documento (Documentos → «Acusar recibo») | `documents.acknowledgement` | `{ documentId, version }`, la versión que el trabajador tiene delante | `POST /documents/:id/ack` con `challengeId` y `signature`. **El documental aún no comprueba la firma**: hoy ignora esos campos y el reto caduca sin usarse. Cuando lo haga, tiene que reconstruir este mismo `subject` |
 
-| Campo | Qué |
-|---|---|
-| `signature` | firma ECDSA en base64 sobre los bytes UTF-8 de `signedPayload` |
-| `signedPayload` | la cadena exacta firmada |
-| `signatureAlgorithm` | `SHA256withECDSA` |
-| `publicKeyId` | el alias de la clave (`cb360_sign_<employeeId>`) |
-| `publicKey` | la pública en PEM, para verificar aunque aún no haya registro propio |
-| `signingLevel` | `biometric` · `device_credential` |
+### Lo que queda
 
-El servidor, cuando toque: comprobar la firma con la pública **registrada** (no con la que llega
-en el cuerpo, que solo sirve de pista), comprobar que `signedPayload` habla de este acuse
-(`assignmentId` o `documentId`, empleado, documentos y versiones) y que `signedAt` es reciente,
-y guardar firma, lo firmado y el nivel con el acuse.
-
-### Lo que queda para el servidor
-
-- **Historial de claves.** Al cerrar sesión la app borra el documento del dispositivo
-  (`removeDeviceToken`), y con él `signingKey`; en el siguiente login se vuelve a vincular la
-  misma clave si sigue valiendo. Una firma antigua tiene que poder comprobarse aunque la clave
-  ya no esté ahí: el servidor debe copiar la pública a un registro propio que no se borre ni se
-  edite (o guardarla con cada acuse).
-- **Constancia del alta.** Hoy la escribe la propia app en Firestore con la sesión del
-  trabajador; para que valga como registro, las reglas deben impedir cambiar `signingKey` a
-  mano, o el alta pasar por `POST /employees/me/devices` como dice §Dónde encaja.
-- **Reto de un solo uso** emitido por el servidor (hoy lo firmado no lleva reto, solo la hora)
-  y comprobación de la firma en los dos acuses (arriba).
-- **Hash del fichero** en lo firmado, si se quiere: lo tiene que guardar y devolver el
-  documental; hoy se firma documento + versión.
+- **Reglas de Firestore** (encodeBiz-SAAS): cerrar `signing_keys/**`, `signing_challenges/**` y
+  `signingKey` del dispositivo al cliente.
+- **Comprobar la firma en el documental** (`verifySignedChallenge` en su acuse), con el
+  `subject` de arriba.
+- **Hash del fichero** en lo firmado, si se quiere: lo tiene que guardar el documental.
 
 ### Pendiente de comprobar en móviles reales
 
 Que crear la clave no muestre ningún diálogo en Android ni iOS; el comportamiento con solo PIN
-en Android (`useDeviceCredentials`); y móviles de gama baja sin StrongBox.
-
----
+en Android (`useDeviceCredentials`); que la firma del chip llegue en DER (la que comprueba el
+servidor) en los dos sistemas; y móviles de gama baja sin StrongBox.
 
 ## Lado del servidor (diseño, 2026-10-09)
 
@@ -285,13 +263,13 @@ de §4.5 del inventario no cambia.
 `notification_tokens/{e}/devices/{d}`: el cliente no puede escribir `signingKey`. Hasta que se
 desplieguen, el registro ya es del servidor; las reglas cierran el documento del dispositivo.
 
-### Qué tiene que cambiar la app
+### Qué tiene que cambiar la app — hecho el 2026-10-09
 
 Dejar de escribir `signingKey` y llamar a `POST /auth/signing-keys` en el mismo punto del
 login. Al confirmar una entrega con firma: pedir el reto con el `subject` de la entrega,
 firmar `payload` con `DeviceSigningKeyService.sign` y mandar `{ accepted: true, method,
-challengeId, signature, device }`. Mientras no lo haga, todo lo demás sigue funcionando como
-hasta hoy.
+challengeId, signature, device }`. Hecho tal cual, y lo mismo para el acuse de recibo de
+documentos (§Dónde se firma).
 
 ### Probado contra staging (2026-10-09, Cuidama, haciendo de móvil con una clave P-256 local)
 
