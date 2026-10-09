@@ -43,3 +43,15 @@ add-on: queda fuera del catálogo hasta que lo tenga.
 - FIR-03-11 · OP_WORKER · firma después de haber pulsado → `200` y el acuse sigue siendo `tap` (el primero manda).
 
 Limpieza: la prueba archiva las dos nóminas al terminar.
+
+## Firma dentro del PDF (`documents`, solo documentos dirigidos a un empleado) · FIR-04
+Fichero: `qa/tests/con-datos/fixtures/nomina-sintetica.pdf` (dos páginas, datos ficticios, tablas de referencias comprimidas: el caso difícil).
+- FIR-04-01 · PROP · sube la nómina en PDF (`scope: employee`, `single_employee`) → `201`.
+- FIR-04-02 · OP_WORKER · `POST /documents/:id/sign/prepare {entityId, keyId}` → `201 {challengeId, toSign, expiresAt, stamp}`; `toSign` decodificado empieza por `0x31` (SET OF de atributos CMS); `stamp` empieza por «Firmado electrónicamente por» y lleva el `challengeId`.
+- FIR-04-03 · OP_WORKER · firma **los bytes** de `toSign` y llama a `POST /documents/:id/ack {challengeId, signature}` → `200`; `ackStatus {method:"biometric_signature", verified:true, signedFile:true}`.
+- FIR-04-04 · OP_WORKER · la ficha dice `signed {by, challengeId, originalSha256}`; `GET /documents/:id/download` entrega **el PDF firmado** (SHA-256 = `signed.sha256`), con `/ETSI.CAdES.detached`, `/ByteRange` que cubre todo el fichero menos el hueco, y el certificado del trabajador dentro del CMS; el acta de ese reto existe.
+- FIR-04-05 · OP_WORKER · una nómina que no es PDF → `400 documents/not_pdf` (queda el acuse con acta).
+- FIR-04-06 · OP_WORKER · un documento de toda la sucursal (`branch_employees`) → `400 documents/not_addressed_to_one_employee`.
+- FIR-04-07 · OP_WORKER · con el acuse ya dado → `409 documents/already_acknowledged`.
+
+**27 de 27 en verde contra staging el 2026-10-09.**

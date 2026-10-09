@@ -13,7 +13,9 @@ staging; §El documental como segundo consumidor). Reglas de Firestore versionad
 desplegadas en dev (2026-10-09). Acta de firma hecha y probada en staging con una nómina (2026-10-09, §El acta):
 evidencia cerrada al firmar, PDF bajo demanda, comprobación independiente con OpenSSL en verde, y la descarga
 en la ficha del documento del panel.** **La app firma también el acuse de documentos con el `subject` que da el documental
-(2026-10-09, §Dónde se firma).** Falta probar en móviles reales y el pase a prod
+(2026-10-09, §Dónde se firma), y firma bytes exactos para la firma dentro del PDF (2026-10-09,
+[documental/08](../documental-service/08_firma-incrustada-en-el-pdf.md)); al documental le queda
+preparar y montar el PDF.** Falta probar en móviles reales y el pase a prod
 ([deployment-prod/2026-10](../../deployment-prod/2026-10-inventario-firma-back.md)). Jose, 2026-10-08: «esto es otro
 módulo, así que déjalo documentado y terminemos con lo de Inventario ahora».
 **Autor:** Jose Acevedo
@@ -142,6 +144,19 @@ El flujo es el mismo en los dos (`SignAcknowledgement`):
 |---|---|---|---|
 | Entrega de material («Mi material» → «Confirmar recepción») | `inventory.assignment_ack` | el que da `GET /inventory/assignments/:id/signing-subject` (la entrega y sus documentos con versión) | `POST /inventory/assignments/:id/acknowledge` con `method: biometric_signature`, `challengeId`, `signature`. El servidor comprueba la firma y escribe el método según el nivel de la clave (`biometric_signature` o `device_credential`), verificado. Una firma no válida responde 400 `inventory/signature_invalid` y la app lo muestra como error |
 | Acuse de recibo de un documento (Documentos → «He leído este documento») | `documents.acknowledgement` | el que da `GET /documents/:id/signing-subject` (`documentId`, `version`, `contentSha256` si el fichero lo tiene, `title`): lo firmado es el contenido, no solo el id | `POST /documents/:id/ack` con `challengeId` y `signature`. El documental comprueba la firma y escribe `method` según el nivel de la clave, `verified: true`. Una firma no válida responde 400 `documents/signature_invalid` y la app lo muestra como error («No se pudo comprobar la firma»), sin reintentar sin firma: un acuse pulsado no se sube a firmado después (app, 2026-10-09) |
+
+**PDF firmado por dentro (PAdES, [documental/08](../documental-service/08_firma-incrustada-en-el-pdf.md)).**
+Solo si el documento **va dirigido a un solo empleado** (`scope: employee`: nómina, amonestación,
+contrato; Jose, 2026-10-09: «eso es importantísimo»), es un PDF y el móvil tiene clave, la app pide
+antes `POST /documents/:id/sign/prepare`
+y firma **los bytes exactos** de `toSign` (`DeviceSigningKeyService.signBytes`, sin pasar por
+texto; el paquete los lleva al chip sin recodificar); el acuse es el mismo `POST /documents/:id/ack`
+con `{ challengeId, signature }`; el PDF firmado **sustituye** al fichero del documento (por eso
+solo los de una persona) y la app vuelve a pedir el documento tras el acuse. Si es de empresa o
+sucursal, no es PDF, el documental no puede
+(400 `not_pdf`, `pdf_not_signable`, el del ámbito) o aún no tiene `prepare`, se firma el `subject`
+como en la fila de arriba: el fichero de todos no lleva la firma de uno.
+Hecho en la app el 2026-10-09; el documental, pendiente.
 
 ### Lo que queda
 
@@ -380,11 +395,13 @@ sin firma)», «Contraseña, reautenticación verificada». Con el reto, para pe
 
 ### QA (2026-10-09)
 
-Catálogo [Qa/catalogo/firma.md](../../Qa/catalogo/firma.md) (FIR-01..03, 20 casos) y
+Catálogo [Qa/catalogo/firma.md](../../Qa/catalogo/firma.md) (FIR-01..04, 27 casos) y
 `qa/tests/con-datos/53-firma.spec.ts`: hace de móvil con una clave P-256 de Node, registra la
 clave y comprueba su certificado contra la CA publicada, pide retos, firma el acuse de una
 nómina y verifica la evidencia con `crypto` sin la plataforma; firma alterada, reto ajeno,
-acuse pulsado y permisos del acta. **20 de 20 en verde contra staging el 2026-10-09.** Corre en
+acuse pulsado y permisos del acta; y FIR-04, la firma dentro del PDF con una nómina sintética
+(prepara, firma bytes, el firmado sustituye al original y se descarga por la ruta de siempre; no PDF, varios
+destinatarios y acuse ya dado se rechazan). **27 de 27 en verde contra staging el 2026-10-09.** Corre en
 el CI tras cada despliegue de staging. Dos cosas que enseñó: Node rechazaba uno de cada ~128
 certificados por un número de serie con DER no mínimo (corregido), y tras un fallo Playwright
 sigue en otro proceso, así que cada bloque que firma reafirma su clave antes.
