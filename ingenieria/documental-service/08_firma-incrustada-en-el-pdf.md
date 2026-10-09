@@ -1,6 +1,6 @@
 # 08 — Firma incrustada en el PDF (PAdES) con certificado propio
 
-**Fecha:** 2026-10-09 · **Estado:** **auth hecho y probado en staging** (CA del entorno, certificado por clave al registrar, `GET /api/v1/checkinbiz/auth/signing-ca.crt`; la cadena verifica con OpenSSL y una firma de la clave se comprueba con su certificado); el documental (preparar, montar, PDF firmado) pendiente; **la app, hecha el 2026-10-09** (§Lo que tiene que cambiar la app) · **Decisionario:** Jose Acevedo
+**Fecha:** 2026-10-09 · **Estado:** **auth y documental hechos** (CA y certificado por clave; preparar, marca del margen, montar la firma y sustituir el original; probado en local con una nómina real y una sintética con tablas comprimidas, OpenSSL «CMS Verification successful»; en staging, QA FIR-04). Falta la app (firmar bytes); el panel no necesita nada: la descarga de siempre entrega el firmado · **Decisionario:** Jose Acevedo
 
 > Jose, 2026-10-09: «¿la nómina se firma en sí, o sería un documento con un acta de firma? La
 > idea es firmar el documento». Y después: «ojo, esto es solo para los documentos; lo del
@@ -77,20 +77,19 @@ de pedir «la cadena de certificados de esta clave» a `shared`.
 2. **Firmar** — la app firma **los bytes** de `toSign` con la clave del chip (SHA256withECDSA
    sobre esos bytes) y llama al **mismo** `POST /documents/:id/ack` con `{ challengeId,
    signature }`.
-3. **Montar** — el servidor verifica la firma sobre los atributos firmados con la clave vigente
-   (como hoy), monta el `SignedData` de CMS con el certificado del trabajador y la cadena de la
-   CA, lo incrusta en el hueco y **el PDF firmado sustituye al fichero del documento**. Jose,
-   2026-10-09: «el documento firmado, por ejemplo una nómina, debe ser reemplazado, y si es para
-   más de una persona esto es inviable»; de ahí la regla de arriba. Por fijar en el documental:
-   el original se guarda aparte (para la evidencia, cuyo `payload` es el base64 de los atributos
-   firmados, y para poder enseñar qué se firmó); sustituir **no cambia la versión ni vuelve a
-   pedir acuse** (es el mismo contenido, con la firma dentro); `contentSha256` pasa a ser el del
-   PDF firmado o se guarda el del original al lado. El acuse guarda `signature` y `evidence` como
-   hoy, y el acta se genera igual.
-4. **Descargar** — la descarga de siempre del documento (`GET /documents/:id/download`) ya da el
-   PDF firmado: no hace falta ruta ni botón aparte, ni en el panel ni en la app. La app, tras un
-   acuse firmado, vuelve a pedir ese documento (`GET /documents/:id`, que trae `ackStatus`) para
-   que la lista enseñe el fichero que hay ahora.
+3. **Montar y sustituir** — el servidor verifica la firma sobre los atributos firmados con la
+   clave vigente (como hoy), monta el `SignedData` de CMS con el certificado del trabajador y
+   la cadena de la CA, lo incrusta en el hueco y escribe el **PDF firmado** en
+   `documents/entities/{e}/signed/{documentId}/{employeeId}-v{version}.pdf` (una sola vez).
+   **El firmado sustituye al original** (Jose, 2026-10-09: «el documento firmado debe ser
+   reemplazado»): `storagePath` pasa a ser el firmado y el documento gana `signed { at, by,
+   challengeId, sha256, originalStoragePath, originalSha256 }`; el original no se borra porque
+   es lo que referencia la evidencia. El acuse guarda `signedFile { path, sha256 }` además de
+   `signature` y `evidence`; la evidencia y el acta se generan igual que hoy (el `payload` de
+   la evidencia es el base64 de los atributos firmados, y el acta lo dice).
+4. **Descargar** — la descarga de siempre (`GET /documents/:id/download`) entrega el firmado:
+   ni el panel ni la app necesitan una ruta nueva. Por eso solo documentos dirigidos a **un**
+   empleado: con varios firmantes harían falta varias copias y el documento dejaría de ser uno.
 
 Si el documento no es PDF, `prepare` responde 400 `documents/not_pdf` y la app usa el flujo de
 hoy (`signing-subject` + reto + `ack`): evidencia y acta.
@@ -99,6 +98,14 @@ hoy (`signing-subject` + reto + `ack`): evidencia y acta.
 pide un sello RFC 3161 a una autoridad de sellado externa y lo añade como atributo no firmado:
 la hora deja de depender de nosotros. Sin la variable, la firma lleva la hora del servidor
 (PAdES-B-B), que es lo que hay hoy en el acta.
+
+## La marca del margen
+
+Jose, 2026-10-09: «con que se firme en los márgenes listo; al final lo importante es la firma
+en los bytes; y en letra muy pequeña». Una línea en el margen inferior de cada página, 5,5 pt,
+gris: «Firmado electrónicamente por {nombre} · {fecha} · CheckBiz360 · verificación {keyId
+corto} · acta {challengeId}». Se dibuja **antes** de calcular el hueco, así la cubre la firma.
+Helvetica estándar, sin fuente incrustada; lo que no cabe en WinAnsi se sustituye.
 
 ## Lo que tiene que cambiar la app — hecho el 2026-10-09
 
