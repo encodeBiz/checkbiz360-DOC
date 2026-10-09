@@ -104,3 +104,12 @@ Si `format=pdf`, se construye la misma tabla con `pdfkit` reutilizando el estilo
 - `POST /api/reports/tasks` con `format=xlsx` devuelve un XLSX con la hoja "Tareas" y las columnas anteriores, subido a Storage, con su entrada de histórico.
 - Sin tareas → `204`.
 - Compila limpio en el pipeline del monorepo.
+
+---
+
+## Material del add-on de inventario (2026-10-08)
+
+Si la entidad tiene el add-on de inventario, el informe lleva además tres columnas en «Tareas»
+(Material, Sin cuadrar, Coste material) y una hoja «Material» con una fila por tarea y artículo.
+Sin el add-on, el fichero es exactamente el descrito arriba. La regla, las lecturas y las
+columnas están en [inventario/TDR-005](../../inventario/tdr/TDR-005-material-en-el-informe-de-tareas.md).

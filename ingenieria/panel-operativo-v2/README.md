@@ -65,7 +65,7 @@ enero de 2026.
 | [TDR-002](tdr/TDR-002-fragilidad-y-redundancia.md) | Concentración de cobertura (bus factor) y relevo por puesto |
 | [TDR-003](tdr/TDR-003-fiabilidad-normalizada-por-madurez.md) | Separación de `dataQuality` y `dataMaturity`; detección de señal muerta |
 | [TDR-004](tdr/TDR-004-contrato-api-panel.md) | Contrato del API: una llamada por vista, comparación y madurez incluidas |
-| [TDR-005](tdr/TDR-005-panel-analisis-cruce-de-ejes.md) | **Panel Análisis: el cruce de los cuatro ejes.** No descartar, clasificar |
+| [TDR-005](tdr/TDR-005-panel-analisis-cruce-de-ejes.md) | **Panel Análisis: el cruce de los cuatro ejes.** No descartar, clasificar. Revisado el 2026-10-09: quinto eje de material con el add-on de inventario (§9) |
 
 ---
 

@@ -85,6 +85,8 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 | [TDR-003](./tdr/TDR-003-operables-agenda-y-choque.md) | Operables: agenda, detección de choque y tablero | 3 | Diseño aprobado |
 | [TDR-004](./tdr/TDR-004-espejo-postgres-e-informes.md) | Espejo a Postgres desde `inventory`, migración 023 e informes | 4 | Diseño aprobado |
 | [TDR-005](./tdr/TDR-005-material-en-el-informe-de-tareas.md) | El material de cada tarea en el informe de tareas, solo con el add-on | — | Implementado, en staging |
+| [TDR-006](./tdr/TDR-006-material-en-el-panel-y-en-merlin.md) | El material en el panel operativo y en Merlin: motivos de centro, quinto eje de la persona, claves para el relato | — | Diseño aprobado, sin código |
+| [TDR-007](./tdr/TDR-007-importacion-masiva-por-plantilla.md) | Importación masiva por plantilla de almacén: dos modelos, dos ejemplos con `ELIMINAR`, propuesta antes de aplicar | — | Implementado en rama, sin fusionar |
 
 ---
 
@@ -99,6 +101,8 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 - [x] **Fase 5** — Avisos de mínimo y listado de discrepancias ✔ API y panel en `develop` (2026-09-29; las discrepancias son un filtro de Existencias con aviso, no una pestaña, desde el 2026-10-07)
 - [ ] **Fase 6** — Operables con papeles: documentos y revisiones del ejemplar (rojo y aviso, sin bloquear), entrega a personas con acuse, e informe «Equipos y EPIs» en Informes para la inspección. **Diseñada el 2026-10-07, corregida el 2026-10-08; 6a (entrega con acuse, «Mi material», informe Equipos y EPIs) hecha el 2026-10-08, API en staging** ([07](./07_operables-documentos-y-entregas.md), [ADR-007](./adr/ADR-007-entrega-es-asignacion-con-acuse.md)); el acuse, con biometría y escalera de alternativas (D8, decidida)
 - [x] **Material en el informe de tareas** — con el add-on, tres columnas más en «Tareas» y una hoja «Material»; sin él, el informe de siempre. **En `develop` y `staging` desde el 2026-10-08, desplegado en dev; pendiente de pase a producción** ([TDR-005](./tdr/TDR-005-material-en-el-informe-de-tareas.md))
+- [ ] **Material en el panel operativo y en Merlin** — el material como fuente para las tres preguntas del panel y quinto eje de la fiabilidad; sin add-on, nada. Prerrequisito: las tareas en Postgres. **Diseñado el 2026-10-09, sin código** ([TDR-006](./tdr/TDR-006-material-en-el-panel-y-en-merlin.md))
+- [ ] **Importación masiva de artículos** — plantilla por almacén y por tipo, dos ejemplos con `ELIMINAR`, propuesta fila a fila y confirmar. **Implementado el 2026-10-09 en `feat/inventario-importacion-masiva` (API y panel), probado contra dev, sin fusionar** ([TDR-007](./tdr/TDR-007-importacion-masiva-por-plantilla.md))
 
 **Lo que sale de otro repo:** las pantallas de la app —material de la tarea, selector de
 almacén, consumo precargado, paso de cuadre— y las del panel son el camino crítico de las

@@ -102,3 +102,5 @@ Una hoja **"Tareas"**, una fila por tarea:
 - **Valoración**: media de las valoraciones de la tarea (1–5).
 
 > El `Tiempo invertido` depende de que la app marque `startedAt`/`completedAt`. Si faltan, la tarea aparece igualmente pero sin tiempo.
+
+**Con el add-on de inventario activo**, la hoja «Tareas» lleva tres columnas más al final —`Material · Sin cuadrar · Coste material (€)`— y el fichero trae una segunda hoja **«Material»** con una fila por tarea y artículo (consumibles con sus cantidades y coste; operables con ejemplar, intervalo y uso). El formulario no cambia: se pide igual y se recibe más. Sin el add-on, el fichero es el de arriba. Detalle en [inventario/TDR-005](../inventario/tdr/TDR-005-material-en-el-informe-de-tareas.md).

@@ -88,7 +88,7 @@ declara— **con un suelo absoluto de GPS como guarda**: el móvil se equivoca e
 metros, no en porcentaje, y sin ese suelo toda la plantilla de un cliente con
 valla de 50 m sale infractora mientras uno con 500 m sale limpio haciendo lo mismo.
 
-### 4.4 Tareas — APLAZADO POR DECISIÓN (2026-07-29)
+### 4.4 Tareas — APLAZADO POR DECISIÓN (2026-07-29) · reapertura prevista, ver §9
 **No existe.** `avgTaskRating30d` está a 0 en 491 snapshots y `task_ratings_raw`
 tiene 1 fila. Se sospecha el mismo patrón que `experienceByJob`: un trigger que no
 dispara o un sync que no llega, y probablemente en Firebase Functions, no aquí.
@@ -172,3 +172,25 @@ con 14; lo que mejora es la señal, no el tamaño.
 - Cada persona del cruce tiene los cuatro ejes informados, aunque alguno sea
   `sin_evidencia`.
 - Verificado contra producción antes y después de escribir el código.
+
+---
+
+## 9. Revisión 2026-10-09 — cinco ejes
+
+El add-on de inventario añade un **quinto eje, el material**, detrás del de tareas, con los
+mismos principios de este TDR: hechos, no causas; `sin_evidencia` no penaliza; lo general es
+de la operación; lo estructural es aviso a administración. Valores: `declara`,
+`declaracion_irregular`, `no_declara`, `sin_evidencia`; excepción `consumo_sobre_asignacion`
+y aviso `asignacion_corta`. Solo existe para entidades con el add-on activo: sin él, el cruce
+es el de hoy.
+
+Dos consecuencias para este documento:
+
+- **El eje de tareas (§4.4) se reabre.** El material se mide sobre tareas cerradas, así que
+  necesita las tareas en Postgres (`tasks_raw`, escrito por `tasks` con su job de reespejo),
+  que es el mismo prerrequisito que tenía la reapertura del eje de tareas. Se paga una vez.
+- `axesInService` pasa de 3 a 5 cuando los dos estén en servicio; `deferredAxes` se
+  actualiza en consecuencia.
+
+El detalle —qué hecho produce cada clave, cómo entra en la fiabilidad y qué frases recibe
+Merlin— está en [inventario/TDR-006](../../inventario/tdr/TDR-006-material-en-el-panel-y-en-merlin.md).

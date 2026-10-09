@@ -127,7 +127,8 @@ falta tocar el paquete.
   tiene clave sin tocar la red: sin clave no se prepara ningún PDF ni se pide reto.
 - Al acusar recibo con clave en el móvil: si el documento va dirigido a un solo empleado
   (`scope: employee`) y es PDF (`mimeType`) —`ManagedDocument.canBeSignedInPdf`—, la app llama
-  a `POST /documents/:id/sign/prepare`, decodifica `toSign` una sola vez y firma esos bytes; el
+  a `POST /documents/:id/sign/prepare` con `{ entityId, deviceId }` (el `deviceId` es el mismo con
+  que la clave se registró en el login; desde el 2026-10-09), decodifica `toSign` una sola vez y firma esos bytes; el
   acuse es el de siempre, `POST /documents/:id/ack` con `{ challengeId, signature }`. Si no cumple
   la regla no pregunta; si el documental responde 400 (`not_pdf`, `pdf_not_signable`, el del
   ámbito) o aún no tiene `prepare` (404, 5xx), vuelve al flujo de hoy (`signing-subject` + reto +

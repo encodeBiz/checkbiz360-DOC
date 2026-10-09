@@ -70,6 +70,7 @@ La API de tareas pasa a un microservicio dedicado (`tasks`, puerto 3006). Firest
 | [TDR-003](./tdr/TDR-003-storage-evidencias-y-multipart.md) | Subida de evidencias: Storage y multipart | 1 | Diseño aprobado |
 | [TDR-004](./tdr/TDR-004-informe-tareas-xlsx.md) | Informe de tareas en Excel (servicio `reports`) | — | Implementado |
 | [TDR-005](./tdr/TDR-005-worksite-y-geocerca-de-tarea.md) | Lugar de trabajo de la tarea y geocerca al iniciarla | 5 | Diseño aprobado |
+| [TDR-006](./tdr/TDR-006-borrado-de-tarea.md) | Borrado de una tarea y de todo lo que cuelga de ella | — | Diseño aprobado |
 
 ---
 

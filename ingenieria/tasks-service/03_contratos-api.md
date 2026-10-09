@@ -44,6 +44,15 @@ Body: campos editables (`title`, `description`, `priority`, `scheduledStartAt`, 
 `workSite: null` borra la geocerca de la tarea.
 Efectos: `update` + actividad `updated`. `200` → `TaskDetail`.
 
+### `DELETE /:taskId` — eliminar tarea
+Permiso: `canManageTask`.
+Query o body: `entityId`.
+Sólo se puede eliminar una tarea en `draft` o `assigned`. Cualquier otro estado → `409 task/not_deletable` con `{status, error}`; el mensaje es distinto por caso y está pensado para enseñarse tal cual. El porqué de la línea, en [TDR-006](./tdr/TDR-006-borrado-de-tarea.md) §2.
+
+Efectos: borra el documento, las **siete** subcolecciones (`assignments`, `notes`, `resources`, `ratings`, `validations`, `activity`, `pauses`) y la carpeta de evidencias en Storage (`media/entities/{entityId}/checkinbiz/tasks/{taskId}/`). Evento `task.deleted`.
+
+`200` → `{taskId, deleted: {children, files}}`. No hay actividad que registrar: se va con la tarea.
+
 ### `PATCH /:taskId/status` — cambiar estado
 Permiso: `canOperateAssignedTask` (worker asignado puede iniciar/completar; supervisor+ según flujo).
 Body: `status` (`TaskStatus`) + campos de transición + `geo?` (`{lat, lng}`).
@@ -156,3 +165,4 @@ Body: `employeeId`, `rating` (1–5), `comment?`, `image?` (opcional, multipart)
 | `task/out_of_worksite` | 400 | Fuera del radio del lugar de trabajo de la tarea |
 | `task/worksite_invalid` | 400 | `workSite` mal formado o dirección no resoluble |
 | `task/worksite_imprecise` | 400 | Geocodificación con precisión `approximate` (no vale para una valla) |
+| `task/not_deletable` | 409 | Sólo se elimina una tarea en `draft` o `assigned` |
