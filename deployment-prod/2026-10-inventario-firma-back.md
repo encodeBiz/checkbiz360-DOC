@@ -184,6 +184,14 @@ cd encodebiz-api && firebase deploy --only firestore:rules --project encodebiz-s
 La app publicada hoy (1.2.0+47) **no escribe `signingKey`** (eso lo hace solo la versión aún no
 publicada, por API), así que estas reglas no le afectan.
 
+### 5.3b Storage — nada que crear, pero sí que saber
+
+La evidencia de cada firma se escribe en el bucket de `FIREBASE_STORAGE_BUCKET` bajo
+`signatures/evidence/{entityId}/{purpose}/{challengeId}.json` **una sola vez** (precondición de
+generación 0), y las actas bajo `checkbiz/reports/entities/{e}/acta_{challengeId}.pdf`. Ninguna
+regla de retención debe borrarlas: son la prueba. Conviene activar en el bucket la
+**retención** (o al menos el versionado) de `signatures/`, que hoy no está en ningún entorno.
+
 ### 5.4 Colecciones que se crean solas
 
 `signing_keys/{employeeId}/keys`, `signing_challenges`, `entities/{e}/inventory_notices`, y
@@ -236,9 +244,11 @@ informe de tareas sale idéntico al de siempre y los documentos siguen igual.
 | `NEXT_BACKEND_URI_CHECKINBIZ_INVENTORY_HANDLER` | `https://api.checkbiz360.com/api/v1/inventory` |
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_INVENTORY` | `https://api.checkbiz360.com/api/reports/inventory/consumption` |
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_EQUIPMENT` | `https://api.checkbiz360.com/api/reports/equipment` |
+| `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_SIGNATURES` | `https://api.checkbiz360.com/api/reports/signatures` |
 
-Sin la primera, toda la sección Inventario responde «el proxy rechazó la llamada»; sin las otras
-dos, los dos informes nuevos fallan al generar. Vercel solo tiene producción: no se tocan para
+Sin la primera, toda la sección Inventario responde «el proxy rechazó la llamada»; sin las dos
+siguientes, los dos informes nuevos fallan al generar; sin la última, «Descargar el acta de firma»
+en la ficha del documento no funciona. Vercel solo tiene producción: no se tocan para
 probar.
 
 ### 8.2 Promoción

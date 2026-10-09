@@ -84,6 +84,14 @@ Permiso: `canRead`; el documento debe requerir acuse. Query: `entityId`.
 `contentSha256` es el SHA-256 del fichero, calculado al subirlo (los documentos anteriores al 2026-10-09 no lo
 tienen y el `subject` lo omite): la firma queda atada al contenido, no solo al id.
 
+### El acta de una firma (servicio `reports`)
+Cada acuse firmado guarda `signature.challengeId` y `signature.evidence { path, sha256 }` (la evidencia cerrada en
+Storage al firmar). El acta se pide a `reports`, con el ID token de Firebase y asiento en la empresa:
+`GET /api/reports/signatures/acta?entityId&challengeId` → `{ url, expiresAt }` (PDF, URL firmada de 5 min) y
+`GET /api/reports/signatures/evidence?entityId&challengeId` → `{ url, expiresAt, sha256 }` (el JSON para un perito).
+En el panel: ficha del documento → confirmaciones → «Descargar el acta de firma». Diseño y contenido en
+[firma §El acta](../firma/README.md).
+
 ### `GET /:documentId/acks` — listar confirmaciones
 Permiso: **solo owner/admin** (`actor.isOwnerAdmin`); cualquier otro → `403`.
 Query: `entityId` (obligatorio).

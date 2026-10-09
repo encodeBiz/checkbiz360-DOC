@@ -10,7 +10,10 @@ servidor) en `checkinbiz/auth` y `shared`, en develop y staging de encodebiz-api
 adaptada al servidor el 2026-10-09** (registro por API, reto y acuse firmado; §Lo construido en
 la app). **El documental comprueba también la firma del acuse de recibo (2026-10-09, probado en
 staging; §El documental como segundo consumidor). Reglas de Firestore versionadas en `encodebiz-api` y
-desplegadas en dev (2026-10-09).** Falta probar en móviles reales y el pase a prod
+desplegadas en dev (2026-10-09). Acta de firma hecha y probada en staging con una nómina (2026-10-09, §El acta):
+evidencia cerrada al firmar, PDF bajo demanda, comprobación independiente con OpenSSL en verde, y la descarga
+en la ficha del documento del panel.** Falta que la app firme el acuse de documentos (hoy solo firma la entrega
+de equipos), probar en móviles reales y el pase a prod
 ([deployment-prod/2026-10](../../deployment-prod/2026-10-inventario-firma-back.md)). Jose, 2026-10-08: «esto es otro
 módulo, así que déjalo documentado y terminemos con lo de Inventario ahora».
 **Autor:** Jose Acevedo
@@ -299,8 +302,11 @@ acuse guarda `method`, `verified` y `signature`, igual que la entrega del invent
 completo en [documental-service/03](../documental-service/03_contratos-api.md#confirmación-de-lectura-acknowledgements).
 Probado en staging el 2026-10-09 con el trabajador de Cuidama: acuse firmado → `method:
 biometric_signature`, `verified: true`; firma alterada → 400 `signature_invalid`; reto de otro documento
-→ 400 `challenge_mismatch`; un acuse pulsado antes no se convierte en firmado después. El «no
-conforme» de las amonestaciones y el acta PDF siguen pendientes.
+→ 400 `challenge_mismatch`; un acuse pulsado antes no se convierte en firmado después. Con el
+acta (misma tarde, con «Nómina septiembre 2026 (prueba)»): acuse firmado → evidencia en Storage,
+acta PDF de una página, `sha256` del JSON coincide, `openssl dgst -verify` → «Verified OK», el
+`keyId` es el SHA-256 de la pública en DER, y el payload lleva el `contentSha256` de la nómina;
+el trabajador no puede pedir el acta (403). El «no conforme» de las amonestaciones sigue pendiente.
 
 ### El acta de firma: la prueba que se puede comprobar sin fiarse de nosotros (2026-10-09)
 
@@ -364,6 +370,12 @@ sin firma)», «Contraseña, reautenticación verificada». Con el reto, para pe
 - La base de datos la escribe el servidor (Admin SDK); al cliente la cierran las reglas
   (§Reglas). Por eso la evidencia sale **a Storage en el momento de firmar**, con su hash: una
   copia que no depende de que Firestore siga intacto.
+- **Lo que pasó el 2026-10-09 lo demuestra**: la clave de prueba registrada por la mañana había
+  desaparecido del registro por la tarde (quedaba solo la de un iPhone real registrada a las
+  15:03 por la sesión de la app). Las reglas no paran al Admin SDK ni a la consola. El registro
+  es «solo se añade» **por convención nuestra**: ningún script, limpieza ni prueba borra
+  `signing_keys`; si hay que invalidar una clave, se marca `supersededAt`. Una firma hecha con
+  una clave borrada ya no se puede volver a comprobar desde Firestore: solo desde su evidencia.
 
 ### Fuera de este paso
 
