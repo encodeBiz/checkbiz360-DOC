@@ -3,7 +3,8 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** checkinbiz — Firma (módulo propio, transversal)
 **Fecha de inicio:** 2026-10-08
-**Estado:** Idea anotada. Sin diseño detallado, sin código. Jose, 2026-10-08: «esto es otro
+**Estado:** Idea anotada. **App: clave creada en el login y vinculada al dispositivo (2026-10-09,
+rama `feat/firma-clave-en-dispositivo` de checkbiz360)**; servidor sin código. Jose, 2026-10-08: «esto es otro
 módulo, así que déjalo documentado y terminemos con lo de Inventario ahora».
 **Autor:** Jose Acevedo
 
@@ -60,3 +61,84 @@ inspector depende del caso y de la normativa aplicable, no de la herramienta.
 Diseño detallado (modelo, contratos, acta), ADR de la decisión «firma avanzada propia, no
 cualificada», prueba de `biometric_signature` en móviles reales de gama baja, y el ajuste por
 empresa para exigir el nivel 1.
+
+---
+
+## Lo construido en la app (2026-10-09)
+
+> Jose, 2026-10-09: «en el login si no existe la firma la creas y la vinculas a dispositivo junto
+> con el token de notificación», y «es importante tener en cuenta los dispositivos que no tienen
+> biometría activa o que no tienen biometría». La parte del servidor va después.
+
+Rama `feat/firma-clave-en-dispositivo` de checkbiz360, módulo `lib/features/signature`, paquete
+`biometric_signature` 13.2.0.
+
+### Cuándo y qué
+
+Al terminar el login —en el mismo punto donde se registra el token FCM, sin bloquear la
+entrada— la app asegura la clave de firma de **ese empleado en ese móvil**:
+
+1. Mira qué permite el móvil **hoy** (el nivel):
+   - **`biometric`**: hay huella o cara registradas. La clave solo se desbloquea con ellas y se
+     invalida si cambian las huellas o caras registradas.
+   - **`device_credential`**: no hay biometría, o la hay sin activar, pero sí bloqueo de
+     pantalla. La clave se desbloquea con el PIN, patrón o código del móvil.
+   - **`none`**: sin bloqueo de pantalla. **No se crea clave**: nada probaría que firmó la
+     persona. Al confirmar se sigue usando la contraseña de la cuenta (nivel 3).
+2. Si ya hay clave válida creada con ese mismo nivel, se reutiliza. Si no existe, ya no vale
+   (cambiaron las huellas) o el nivel ha cambiado (activó la huella, o la quitó), se borra y se
+   crea otra. El nivel con que se creó no lo dice el chip: se apunta en preferencias.
+3. La pública se vincula al dispositivo (abajo). Crear la clave no pide huella; firmar sí.
+
+Una clave por empleado y móvil, alias `cb360_sign_<employeeId>`: dos personas que comparten
+teléfono firman cada una con la suya.
+
+### Algoritmo
+
+ECDSA P-256; se firma el SHA-256 del contenido (`SHA256withECDSA`). Clave en el chip seguro:
+Secure Enclave en iOS; Keystore o StrongBox en Android (si StrongBox falla, el paquete reintenta
+en el TEE). La privada no sale nunca del móvil.
+
+### Dónde queda: junto al token de notificaciones
+
+`notification_tokens/{employeeId}/devices/{deviceId}`, el documento que ya guarda el token FCM
+del móvil, gana el campo `signingKey` (escrito con merge, nunca toca el token):
+
+| Campo | Qué |
+|---|---|
+| `level` | `biometric` · `device_credential` · `none` |
+| `keyAlias` | `cb360_sign_<employeeId>` |
+| `publicKey` | la pública en **PEM** (SubjectPublicKeyInfo), o `null` si no hay clave |
+| `publicKeyFormat` | `pem` |
+| `algorithm`, `keySize` | lo que informa el chip (`EC`, 256) |
+| `signatureAlgorithm` | `SHA256withECDSA` |
+| `createdAt` | cuándo se creó la clave en el móvil (ISO, UTC) |
+| `unavailableReason` | sin clave, por qué: `no_screen_lock`, `not_supported` (web/escritorio) o `create_failed_<código>` |
+| `uid`, `employeeId` | de quién es |
+| `updatedAt` | hora del servidor de la última vinculación (cada login) |
+
+`deviceId` es el identificador persistente que ya usa el token FCM (`DeviceInfoService`, que
+sobrevive a reinstalar). La firma se hace con `DeviceSigningKeyService.sign`, que pide huella,
+cara o código según el nivel y devuelve la firma en base64; aún no se usa en ninguna pantalla.
+
+### Lo que queda para el servidor
+
+- **Historial de claves.** Al cerrar sesión la app borra el documento del dispositivo
+  (`removeDeviceToken`), y con él `signingKey`; en el siguiente login se vuelve a vincular la
+  misma clave si sigue valiendo. Una firma antigua tiene que poder comprobarse aunque la clave
+  ya no esté ahí: el servidor debe copiar la pública a un registro propio que no se borre ni se
+  edite (o guardarla con cada acuse).
+- **Constancia del alta.** Hoy la escribe la propia app en Firestore con la sesión del
+  trabajador; para que valga como registro, las reglas deben impedir cambiar `signingKey` a
+  mano, o el alta pasar por `POST /employees/me/devices` como dice §Dónde encaja.
+- **Reto de un solo uso** emitido por el servidor y comprobación de la firma en el acuse
+  (`method: biometric_signature`, que hoy responde 400 `method_not_available`).
+- **Qué se firma en una entrega de material**: `assignmentId` + `documentId`/`version` de cada
+  documento entregado (inventario 6d) + hora + reto. El hash del fichero, si se quiere, lo tiene
+  que guardar el documental.
+
+### Pendiente de comprobar en móviles reales
+
+Que crear la clave no muestre ningún diálogo en Android ni iOS; el comportamiento con solo PIN
+en Android (`useDeviceCredentials`); y móviles de gama baja sin StrongBox.
+

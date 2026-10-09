@@ -367,8 +367,14 @@ de uso; un texto libre no prueba eso, un documento sí.
 - **El informe** «Equipos y EPIs» gana la columna «Documentos entregados» con título y versión.
 - **Postgres**: la entrega espejada lleva la frase, que ya nombra los documentos; la lista
   estructurada vive en Firestore. Una columna propia pediría migración y no hace falta hoy.
-- **Fuera de esta fase**: la app («Mi material» abriendo cada documento) la lleva otra sesión;
-  mientras, el trabajador ve los documentos nombrados en la frase y los abre en Documentos.
+- **La app (2026-10-09, `develop` de checkbiz360):** «Mi material» enseña en cada entrega el
+  bloque «Documentos de la entrega (n)», una fila por documento con título subrayado, versión y
+  «Abrir»; se abre con la descarga del documental de siempre. Si la entrega espera confirmación,
+  pide revisarlos antes. La frase sigue saliendo como «Lo que confirmas».
+- **Aviso de entrega en la app:** una entrega pendiente abre en Asistencia el mismo diálogo que
+  una actualización de jornada (no se cierra tocando fuera; «Revisar» lleva a «Mi material»). El
+  aviso in-app `unit_assignment_pending` solo dispara la recarga; lo pendiente lo dice la API,
+  porque confirmar no marca el aviso como leído.
 
 ## 7. Lo que exige cada entorno
 
