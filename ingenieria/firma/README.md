@@ -8,7 +8,8 @@ rama `feat/firma-clave-en-dispositivo` de checkbiz360)**. **Servidor: hecho el 2
 servidor) en `checkinbiz/auth` y `shared`, en develop y staging de encodebiz-api, probado contra staging**
 (registro, reto, acuse firmado y verificado; firma alterada y reto ajeno rechazados). **App
 adaptada al servidor el 2026-10-09** (registro por API, reto y acuse firmado; §Lo construido en
-la app). Faltan las reglas de Firestore, la comprobación en el documental y probar en móviles
+la app). **El documental comprueba también la firma del acuse de recibo (2026-10-09, probado en
+staging; §El documental como segundo consumidor).** Faltan las reglas de Firestore y probar en móviles
 reales. Jose, 2026-10-08: «esto es otro
 módulo, así que déjalo documentado y terminemos con lo de Inventario ahora».
 **Autor:** Jose Acevedo
@@ -289,9 +290,12 @@ dispositivo (`signingKey.keyId`) y los retos usados quedan en Firestore como se 
 el fichero, así que **lo firmado es el contenido**, como pedía §Lo que un documento exige. El
 acuse guarda `method`, `verified` y `signature`, igual que la entrega del inventario. Contrato
 completo en [documental-service/03](../documental-service/03_contratos-api.md#confirmación-de-lectura-acknowledgements).
-El «no conforme» de las amonestaciones y el acta PDF siguen pendientes.
+Probado en staging el 2026-10-09 con el trabajador de Cuidama: acuse firmado → `method:
+biometric_signature`, `verified: true`; firma alterada → 400 `signature_invalid`; reto de otro documento
+→ 400 `challenge_mismatch`; un acuse pulsado antes no se convierte en firmado después. El «no
+conforme» de las amonestaciones y el acta PDF siguen pendientes.
 
 ### Fuera de este paso
 
-Atestación del chip (el formato ya reserva el campo), acta de firma en PDF, hash del fichero
+Atestación del chip (el formato ya reserva el campo), acta de firma en PDF, «no conforme»
 en el documental, y el ajuste por empresa para exigir el nivel 1.
