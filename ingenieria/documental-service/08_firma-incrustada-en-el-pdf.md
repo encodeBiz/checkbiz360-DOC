@@ -41,6 +41,19 @@ desconocida» hasta que el cliente instale nuestra CA. La prueba criptográfica 
 **firma electrónica avanzada** (eIDAS art. 26), no cualificada. Para una nómina o una
 amonestación es lo habitual.
 
+## Dónde vive cada pieza
+
+> Jose, 2026-10-09: «¿o en auth?». Las dos, repartidas por lo que es cada una.
+
+| Pieza | Dónde | Por qué |
+|---|---|---|
+| La CA del entorno y la emisión del certificado de cada clave | **`checkinbiz/auth`** (al registrar la clave) con el código común en `shared/checkbiz/signature` | el certificado dice **de quién es la clave**: es identidad, va con el registro de claves, los retos y la comprobación, que ya están ahí. Vale para cualquier módulo que firme PDF mañana |
+| Preparar el PDF, montar la firma dentro, guardar y servir el PDF firmado | **`documents`** | es **el documento**: su fichero, sus versiones, sus acuses y sus permisos de lectura |
+| Evidencia y acta | como hoy: `shared` al verificar, `reports` para el PDF del acta | no cambian |
+
+Ningún servicio nuevo, nada duplicado: el documental no sabe de claves ni certificados más allá
+de pedir «la cadena de certificados de esta clave» a `shared`.
+
 ## El flujo, en el documental
 
 1. **Preparar** — `POST /documents/:id/sign/prepare` (el trabajador; el documento requiere
