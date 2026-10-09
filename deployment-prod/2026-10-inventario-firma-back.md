@@ -5,6 +5,8 @@
 2026-10-09 y aún no está en `main`: el servicio `inventory` (Fases 0–6d), el material en el
 informe de tareas (TDR-005), los documentos de los equipos y la entrega con documentos (6b, 6d),
 y el módulo de firma (registro de claves, retos, acuse firmado en inventario y documental).
+Se suman dos cambios de facturación del 2026-10-09 (§6.1): los despedidos que ficharon en el
+periodo se cobran, y el cliente recibe un correo cuando falla un cobro.
 **Cómo se usa:** se va completando; el día del pase se ejecuta en el orden de §10 y se anota
 aquí lo hecho, como en [2026-09-05-back.md](./2026-09-05-back.md).
 
@@ -216,6 +218,21 @@ node services/inventory/dist/scripts/mirror-dimensions.js --entity <entityId> --
 Solo hacen falta para datos que existieran antes del código que los indexa y espeja (en prod,
 ninguno): se anotan por si se importa un catálogo a mano.
 
+### 5.6 Plantillas de correo del cobro fallido — `emails_template`
+
+`PAYMENT_FAILED_es` y `PAYMENT_FAILED_en`, creadas en dev el 2026-10-09 con el mismo diseño que
+`INVOICE_*`. En prod **no existen**: hay que copiarlas desde dev (mismos ids, `type` y `locale`;
+con `create`, que falla si ya están). Sin ellas el correo sale igual, pero con el texto de
+respaldo del código, sin diseño. El hook bloquea `encodebiz-services`: lo ejecuta Jose.
+
+Comprobación: `emails_template where type == "PAYMENT_FAILED"` devuelve 2 documentos (`es`, `en`).
+
+### 5.7 Índice que usa el recuento de despedidos
+
+`checklogs (employeeId, status, timestamp)` — el mismo que ya usa `findOverlapInRange`, así que
+debería existir. En dev está `READY`; **en prod sin comprobar**. Si faltase, la cuenta de
+`invoice.upcoming` fallaría y la suscripción no se ajustaría antes de cobrar.
+
 ## 6. Stripe (cuenta en vivo)
 
 - **Precio del plan `standard` del inventario**: 29 €/mes hasta 50 empleados + 0,75 € por cada
@@ -226,6 +243,27 @@ ninguno): se anotan por si se importa un catálogo a mano.
   (son los que ponen la cantidad = plantilla antes de cobrar; sin ellos la primera factura del
   inventario saldría a 0 €, ver memoria «cobro al fin de la prueba»). **Sin comprobar en prod.**
 - `GetCountPayPerUse` ya cuenta plantilla para `inventory` igual que para `checkinbiz`.
+- Entre los eventos del webhook tiene que estar `invoice.payment_failed`: es el que dispara el
+  correo de §6.1. **Sin comprobar en prod.**
+
+### 6.1 Cambios de facturación que entran (billing)
+
+1. **Despedidos con actividad.** En `invoice.upcoming`, el borrador y la auditoría de la factura,
+   a la plantilla viva se suman los empleados en `fired` con **al menos 6 fichajes `valid`** en el
+   periodo de la factura (en `trial_will_end`, el de la prueba). Cubre a quien contrata gente
+   unos días y la despide antes del corte. `inactive` ya contaba y sigue igual. Alta y baja
+   cuentan solo la plantilla viva. Rama `feat/facturar-despedidos-con-fichajes`, en `staging`
+   desde el 2026-10-09.
+   Efecto en prod: la primera factura tras el pase puede subir respecto a la anterior en
+   entidades con bajas en el mes. No es un error; conviene saberlo si un cliente pregunta.
+2. **Correo al cliente cuando falla un cobro**, de cualquier servicio, una vez por intento
+   fallido, con el enlace de Stripe para pagar o cambiar la tarjeta. Registro en
+   `invoice_emails/{factura}_payment_failed_{intento}`. Pide las plantillas de §5.6. Rama
+   `feat/aviso-cobro-fallido`, en `develop` y `staging` desde el 2026-10-09.
+
+Comprobación tras el pase: en el siguiente `invoice.payment_failed` real, el documento en
+`invoice_emails` queda en `sent`; y en la próxima renovación, el log de billing
+`ajustada a N unidades` cuadra con plantilla + despedidos con actividad.
 
 ## 7. Servicios que cambian (ya desplegados por CI al fusionar `staging → main`)
 
@@ -236,6 +274,7 @@ ninguno): se anotan por si se importa un catálogo a mano.
 | `documents` | ámbitos `item`/`unit`, 8 tipos nuevos, `POST/DELETE /:id/links`, `contentSha256`, acuse firmado y `GET /:id/signing-subject` |
 | `checkinbiz` | `POST /auth/signing-keys`, `POST /auth/signing-challenges` |
 | `shared` | inventario, cumplimiento de papeles, firma, `internalSubscribers`, avisos `unit_*` |
+| `billing` | despedidos con actividad en el recuento; correo de cobro fallido (§6.1) |
 | `firebase_sdk` | sin cambios en este lote |
 
 Nada de esto rompe a quien no tiene el add-on: sin suscripción el inventario responde 403, el
@@ -288,6 +327,11 @@ Lo que pide en prod, cuando se quiera que emita certificados (sin esto arranca i
    staging (`./secrets/signing-ca.key:/secrets/signing-ca.key:ro` y `.crt`), en el mismo PR;
 4. `SIGNING_TSA_URL`, solo cuando llegue el sello de tiempo (documental, pendiente).
 
+**El cierre del add-on por impago tampoco entra.** Billing solo reacciona a
+`customer.subscription.deleted`; mientras Stripe deja la suscripción en `past_due`/`unpaid`, el
+documento sigue `active` y el inventario abierto. Falta decidir si se cierra al primer fallo o
+tras un margen (caso que lo destapó: Full Certificado, 2026-10-09).
+
 ## 9c. Aceptación antes de subir
 
 No se fusiona `staging → main` hasta pasar en staging el guion
@@ -306,7 +350,9 @@ se va a publicar. Tras el pase se repiten allí los pasos 1, 2 y 7 con una empre
    → 403 `inventory/not_subscribed` (no 502).
 5. Índices de `items` (§5.1).
 6. Reglas de Firestore (§5.3), con la copia del ruleset anterior guardada antes.
-7. Stripe: precio en vivo (§6) y `alta-servicio.js --stripe-price … --apply` (§5.2).
+7. Stripe: precio en vivo (§6) y `alta-servicio.js --stripe-price … --apply` (§5.2); que el
+   webhook tenga `invoice.payment_failed`.
+7b. Plantillas `PAYMENT_FAILED_es/en` copiadas de dev (§5.6) e índice de `checklogs` (§5.7).
 8. Vercel: las tres claves (§8.1) y el PR del panel (§8.2).
 9. Primera entidad: contratar desde Suscripciones; comprobar que nace `active` con 15 días de
    prueba y `quantity` = plantilla; abrir Existencias (índices), subir una entrada, generar el
