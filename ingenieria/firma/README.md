@@ -302,6 +302,69 @@ biometric_signature`, `verified: true`; firma alterada → 400 `signature_invali
 → 400 `challenge_mismatch`; un acuse pulsado antes no se convierte en firmado después. El «no
 conforme» de las amonestaciones y el acta PDF siguen pendientes.
 
+### El acta de firma: la prueba que se puede comprobar sin fiarse de nosotros (2026-10-09)
+
+> Jose, 2026-10-09: «en caso de inspección, ¿cómo demuestra mi cliente que se firmó
+> correctamente?». Y la lista de la sesión de la app: columna «Firma» en el informe, acta en
+> PDF por entrega, prueba verificable con OpenSSL, base de datos cerrada al cliente.
+
+Hoy el informe dice «verificada»: es la plataforma dando su palabra. Lo que convierte eso en
+prueba es que un tercero pueda repetir la comprobación con herramientas estándar. Para eso
+hacen falta cuatro cosas: la cadena exacta que se firmó, la firma, la clave pública con su
+fecha de registro, y la hora del servidor. Todo existe en Firestore; lo que faltaba era
+**sacarlo en el momento de firmar y dejarlo cerrado**.
+
+**1. La evidencia (JSON), al firmar.** `SigningChallenges.verify` escribe, en el mismo paso
+en que marca el reto usado, un fichero en Storage:
+`signatures/evidence/{entityId}/{purpose}/{challengeId}.json`, con su SHA-256. No se reescribe
+nunca (`create`, no `save` encima). Contenido:
+
+| Campo | Qué |
+|---|---|
+| `version` | `1` |
+| `purpose`, `entityId`, `employeeId`, `uid`, `challengeId` | de qué firma es y de quién |
+| `payload` | la cadena **exacta** que se firmó, tal cual (con el `subject` dentro: la entrega y sus documentos con versión, o el documento con su `contentSha256`) |
+| `signature`, `signatureAlgorithm`, `hashAlgorithm` | la firma en base64 (DER), `SHA256withECDSA`, `SHA-256` |
+| `key` | `keyId`, `level`, `publicKeyPem`, `algorithm` (`EC`), `curve` (`P-256`), `deviceId`, `createdAt` (móvil), `registeredAt` (servidor) |
+| `device` | lo que la app dijo del móvil al confirmar (id, modelo, SO, versión de la app), si lo dijo |
+| `verifiedAt`, `verifiedBy` | hora del servidor y qué servicio comprobó la firma |
+| `howToVerify` | los tres comandos de OpenSSL que reproducen la comprobación |
+
+El acuse guarda la referencia: `acknowledgement.signature.evidence = { path, sha256 }` (inventario)
+y `signature.evidence` (documental). El reto también (`signing_challenges/{id}.evidence`).
+
+**2. El acta (PDF), cuando se pide.** `reports` la dibuja a partir de la evidencia, con los
+nombres resueltos (persona, DNI, equipo y ejemplar o documento), y la sube a
+`checkbiz/reports/entities/{e}/acta_{challengeId}.pdf` la primera vez; después reutiliza el
+fichero. Una página: quién, cuándo, desde qué móvil y con qué nivel; qué se firmó (la entrega
+y cada documento con versión y hash, o el documento con su hash); el reto y la firma; la clave
+pública y su huella y fecha de registro; la ruta y el SHA-256 de la evidencia; cómo verificarla
+con OpenSSL; y la nota legal (firma electrónica avanzada según eIDAS, no cualificada).
+
+| Ruta (`reports`, ID token de Firebase, mismo permiso que el informe de equipos) | Responde |
+|---|---|
+| `GET /api/reports/signatures/acta?entityId&challengeId` | `{ url, expiresAt }` del PDF (URL firmada, 5 min) |
+| `GET /api/reports/signatures/evidence?entityId&challengeId` | `{ url, expiresAt, sha256 }` del JSON, para el perito |
+
+**3. El informe «Equipos y EPIs»** gana la columna **«Firma»**: «Verificada (huella o cara ·
+clave …)», «Verificada (desbloqueo del móvil · clave …)», «Declarada (desbloqueo del móvil,
+sin firma)», «Contraseña, reautenticación verificada». Con el reto, para pedir el acta.
+
+**4. Lo que el acta no prueba, y hay que decirle al cliente.**
+- Que la clave viva en el chip seguro y esté atada a la huella lo **relata** la app; lo
+  **probaría** la atestación del fabricante (reservado `key.attestation`). Siguiente mejora.
+- Que esa huella sea de esa persona: lo prueba la vinculación cuenta ↔ móvil ↔ registro de la
+  clave con la sesión del trabajador. Para que valga como firma, **el trabajador tiene que
+  haber aceptado que confirmar con huella es su firma**: consentimiento en contrato o al dar
+  de alta la app. Es del cliente; la app puede recogerlo en el primer inicio de sesión (pendiente,
+  otra sesión).
+- La hora es la del servidor, no un sello de tiempo cualificado. Suficiente para una
+  inspección de trabajo; si un cliente necesita firma cualificada, es otra pieza con un
+  prestador detrás.
+- La base de datos la escribe el servidor (Admin SDK); al cliente la cierran las reglas
+  (§Reglas). Por eso la evidencia sale **a Storage en el momento de firmar**, con su hash: una
+  copia que no depende de que Firestore siga intacto.
+
 ### Fuera de este paso
 
 Atestación del chip (el formato ya reserva el campo), acta de firma en PDF, «no conforme»
