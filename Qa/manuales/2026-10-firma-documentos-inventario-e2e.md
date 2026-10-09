@@ -1,5 +1,11 @@
 # Prueba de extremo a extremo — firma, documentos e inventario (octubre 2026)
 
+**Para qué:** es la **aceptación previa al pase a producción** de octubre
+([deployment-prod/2026-10](../../deployment-prod/2026-10-inventario-firma-back.md)). Se ejecuta
+entera en staging con la versión de la app que se va a publicar; no se sube nada a producción
+hasta que los pasos 1 a 8 estén en verde. Después del pase, se repiten en producción los pasos
+**1, 2 (hasta 2.6) y 7** con una empresa piloto y un móvil real, antes de anunciarlo a nadie.
+
 **Entorno:** staging (`api-staging.checkbiz360.com`, Firebase `dev-encodebiz`). Panel en local con
 `npm run start:dev`. App en sabor `development`.
 **Empresa de pruebas:** Cuidama Servicios. **Propietaria:** Marta (panel). **Trabajador:** Jose

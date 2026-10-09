@@ -282,6 +282,13 @@ Lo que pide en prod, cuando se quiera que emita certificados (sin esto arranca i
    staging (`./secrets/signing-ca.key:/secrets/signing-ca.key:ro` y `.crt`), en el mismo PR;
 4. `SIGNING_TSA_URL`, solo cuando llegue el sello de tiempo (documental, pendiente).
 
+## 9c. Aceptación antes de subir
+
+No se fusiona `staging → main` hasta pasar en staging el guion
+[Qa/manuales/2026-10-firma-documentos-inventario-e2e.md](../Qa/manuales/2026-10-firma-documentos-inventario-e2e.md)
+(panel → app → perito → informes → inventario → consumo → avisos) con la versión de la app que
+se va a publicar. Tras el pase se repiten allí los pasos 1, 2 y 7 con una empresa piloto.
+
 ## 10. Orden de ejecución el día del pase
 
 1. Migraciones 023 y 024 (§4), una a una.
