@@ -33,7 +33,7 @@ Validaciones clave:
 - Fichero: obligatorio; MIME en la allow-list; tamaño ≤ **10 MB**.
 - Existencia: `branchId`/`employeeId` deben existir en la entidad; para tipos no-RRHH, el empleado debe tener responsabilidad activa en la sucursal indicada.
 Efectos: sube el fichero a Storage (privado), crea el doc (`status: active`, `version: 1`, `uploadedBy`), lo indexa, registra actividad `created` y **espera** las notificaciones (`doc_uploaded` y, si aplica, `doc_ack_required`) antes de responder.
-`201` → `{ ok, document }` (sin `storagePath`). Errores: `400` (bad_request, invalid_scope, invalid_type, branch_required, employee_required, invalid_visibility_roles, invalid_acknowledgement_mode, file_required, invalid_mime_type, file_too_large, employee_not_in_branch), `404` (branch_not_found, employee_not_found), `403` (unauthorized), `401`.
+`201` → `{ ok, document }` (sin `storagePath`; desde el 2026-10-09 con `contentSha256`, el SHA-256 del fichero). Errores: `400` (bad_request, invalid_scope, invalid_type, branch_required, employee_required, invalid_visibility_roles, invalid_acknowledgement_mode, file_required, invalid_mime_type, file_too_large, employee_not_in_branch), `404` (branch_not_found, employee_not_found), `403` (unauthorized), `401`.
 
 ### `GET /:documentId` — detalle
 Permiso: `canRead(actor, document)`.
@@ -64,9 +64,25 @@ Efectos: genera una **signed URL de lectura con TTL 1 minuto** para `storagePath
 
 ### `POST /:documentId/ack` — confirmar lectura
 Permiso: `canAcknowledge` (el doc debe requerir ack; el actor debe poder leerlo y encajar en el `acknowledgementMode`).
-Body (JSON): `entityId` (obligatorio).
-Efectos: idempotente — si ya existe ack del empleado, lo devuelve; si no, crea `acks/{employeeId}` con `documentVersion` = versión actual y registra actividad `acknowledged`.
-`200` → `{ ok: true }`. `404` not_found. `400` acknowledgement_not_required. `403` acknowledgement_not_allowed / unauthorized (o actor sin `employeeId`).
+Body (JSON): `entityId` (obligatorio); **desde el 2026-10-09, opcionales `challengeId` y `signature`**: el acuse va
+firmado con la clave del móvil ([firma](../firma/README.md) §Lado del servidor). El reto se pide a
+`POST /api/v1/checkinbiz/auth/signing-challenges` con `purpose: "documents.acknowledgement"` y el `subject` que
+devuelve `GET /:documentId/signing-subject`.
+Efectos: idempotente — si ya existe ack del empleado, lo devuelve sin tocarlo (un acuse pulsado no se «sube» a firmado
+después); si no, crea `acks/{employeeId}` con `documentVersion` = versión actual y registra actividad `acknowledged`.
+Con reto y firma, el servidor **comprueba la firma** contra las claves del empleado vigentes al emitir el reto y guarda en
+el acuse `method` (`biometric_signature` | `device_credential`, según el nivel de la clave), `verified: true` y
+`signature { challengeId, keyId, level, signature }`. Sin firma, el acuse queda como hasta ahora (`method: "tap"`,
+`verified: false`).
+`200` → `{ ok: true }`. `404` not_found. `400` acknowledgement_not_required / **signature_invalid** (con `reason`:
+`challenge_not_found` | `challenge_expired` | `challenge_used` | `challenge_mismatch` | `no_signing_key` |
+`signature_invalid`). `403` acknowledgement_not_allowed / unauthorized (o actor sin `employeeId`).
+
+### `GET /:documentId/signing-subject` — qué se firma al acusar recibo
+Permiso: `canRead`; el documento debe requerir acuse. Query: `entityId`.
+`200` → `{ purpose: "documents.acknowledgement", subject: { documentId, version, contentSha256?, title } }`.
+`contentSha256` es el SHA-256 del fichero, calculado al subirlo (los documentos anteriores al 2026-10-09 no lo
+tienen y el `subject` lo omite): la firma queda atada al contenido, no solo al id.
 
 ### `GET /:documentId/acks` — listar confirmaciones
 Permiso: **solo owner/admin** (`actor.isOwnerAdmin`); cualquier otro → `403`.

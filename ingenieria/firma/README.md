@@ -279,6 +279,18 @@ Registrar (201; repetir, 200 con el mismo `keyId`; empleado ajeno, 403) → entr
 reto de otra entrega, 400 `challenge_mismatch`; sin reto, 400. El registro, el espejo en el
 dispositivo (`signingKey.keyId`) y los retos usados quedan en Firestore como se describe.
 
+### El documental como segundo consumidor (2026-10-09)
+
+> Jose, 2026-10-09: «que el servicio de documentos compruebe la firma, para el acuse de recibo».
+
+`POST /documents/:id/ack` admite `challengeId` + `signature` con `purpose:
+"documents.acknowledgement"`; el `subject` lo da `GET /documents/:id/signing-subject`:
+`{ documentId, version, contentSha256, title }`. El documental calcula `contentSha256` al subir
+el fichero, así que **lo firmado es el contenido**, como pedía §Lo que un documento exige. El
+acuse guarda `method`, `verified` y `signature`, igual que la entrega del inventario. Contrato
+completo en [documental-service/03](../documental-service/03_contratos-api.md#confirmación-de-lectura-acknowledgements).
+El «no conforme» de las amonestaciones y el acta PDF siguen pendientes.
+
 ### Fuera de este paso
 
 Atestación del chip (el formato ya reserva el campo), acta de firma en PDF, hash del fichero
