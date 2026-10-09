@@ -4,8 +4,10 @@
 **Dominio:** checkinbiz — Firma (módulo propio, transversal)
 **Fecha de inicio:** 2026-10-08
 **Estado:** **App: clave creada en el login y vinculada al dispositivo (2026-10-09,
-rama `feat/firma-clave-en-dispositivo` de checkbiz360)**. **Servidor: diseñado el 2026-10-09 (§Lado del
-servidor), en construcción en `checkinbiz/auth`**, rama `feat/firma-registro-de-claves` de encodebiz-api. Jose, 2026-10-08: «esto es otro
+rama `feat/firma-clave-en-dispositivo` de checkbiz360)**. **Servidor: hecho el 2026-10-09 (§Lado del
+servidor) en `checkinbiz/auth` y `shared`, en develop y staging de encodebiz-api, probado contra staging**
+(registro, reto, acuse firmado y verificado; firma alterada y reto ajeno rechazados). Falta que la
+app lo llame y las reglas de Firestore. Jose, 2026-10-08: «esto es otro
 módulo, así que déjalo documentado y terminemos con lo de Inventario ahora».
 **Autor:** Jose Acevedo
 
@@ -290,6 +292,14 @@ login. Al confirmar una entrega con firma: pedir el reto con el `subject` de la 
 firmar `payload` con `DeviceSigningKeyService.sign` y mandar `{ accepted: true, method,
 challengeId, signature, device }`. Mientras no lo haga, todo lo demás sigue funcionando como
 hasta hoy.
+
+### Probado contra staging (2026-10-09, Cuidama, haciendo de móvil con una clave P-256 local)
+
+Registrar (201; repetir, 200 con el mismo `keyId`; empleado ajeno, 403) → entregar → pedir el
+`signing-subject` → reto → firmar el `payload` → acuse: `method: biometric_signature`,
+`verified: true`, `signature.keyId`. Una firma alterada responde 400 `signature_invalid`; el
+reto de otra entrega, 400 `challenge_mismatch`; sin reto, 400. El registro, el espejo en el
+dispositivo (`signingKey.keyId`) y los retos usados quedan en Firestore como se describe.
 
 ### Fuera de este paso
 

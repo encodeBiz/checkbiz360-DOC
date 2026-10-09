@@ -43,7 +43,9 @@
 >   no dice cuál de los tres fue, y el registro lo llama así.
 > - El peldaño de **contraseña** se verifica de verdad: la app reautentica en Firebase y manda
 >   el acuse con ese ID token recién emitido; el servidor exige `auth_time` de menos de cinco
->   minutos. La firma biométrica responde 400 `method_not_available` hasta el módulo de firma.
+>   minutos. **Desde el 2026-10-09 el acuse también va firmado** con la clave del móvil (reto +
+>   firma; ver [firma](../firma/README.md) §Lado del servidor): `biometric_signature` y
+>   `device_credential` quedan **verificados** cuando hay firma.
 > - Al **devolver** dañado o no devuelto, el ejemplar queda `unavailable` con el motivo; **no**
 >   se retira solo (retirar es decisión de una persona, como en §4.2).
 > - Entregar con avisos (reservas futuras, no disponible) responde **200 `created:false` con
