@@ -119,7 +119,35 @@ del móvil, gana el campo `signingKey` (escrito con merge, nunca toca el token):
 
 `deviceId` es el identificador persistente que ya usa el token FCM (`DeviceInfoService`, que
 sobrevive a reinstalar). La firma se hace con `DeviceSigningKeyService.sign`, que pide huella,
-cara o código según el nivel y devuelve la firma en base64; aún no se usa en ninguna pantalla.
+cara o código según el nivel y devuelve la firma en base64.
+
+### Dónde se firma (2026-10-09)
+
+Dos acuses van firmados cuando el móvil tiene clave; sin clave, o si la clave no sirve
+(invalidada, bloqueada), siguen como antes. Si el trabajador cancela la huella o el código, no
+se confirma nada.
+
+| Acuse | Qué se firma (`kind`) | Cómo va |
+|---|---|---|
+| Entrega de material («Mi material» → «Confirmar recepción») | `unit_assignment_acknowledgement`: `entityId`, `employeeId`, `assignmentId`, `unitId`, `itemId`, `documents` (`documentId` + `version` de cada uno), `text`, `signedAt` | `POST /inventory/assignments/:id/acknowledge` con `method: biometric_signature`. Mientras el servidor responda 400 `inventory/method_not_available`, la app repite como `device_credential` con la firma en el cuerpo: el trabajador se acaba de desbloquear, que es lo que ese método registra. Cuando el servidor lo acepte, no hay que tocar la app |
+| Acuse de recibo de un documento (Documentos → «Acusar recibo») | `document_acknowledgement`: `entityId`, `employeeId`, `documentId`, `documentVersion`, `signedAt` | `POST /documents/:id/ack` con la firma en el cuerpo; hoy el servidor ignora esos campos |
+
+Lo firmado es un JSON con `v: 1` y las claves siempre en ese orden. Campos que se añaden al
+cuerpo del acuse (`AcknowledgementSignature.toBody`):
+
+| Campo | Qué |
+|---|---|
+| `signature` | firma ECDSA en base64 sobre los bytes UTF-8 de `signedPayload` |
+| `signedPayload` | la cadena exacta firmada |
+| `signatureAlgorithm` | `SHA256withECDSA` |
+| `publicKeyId` | el alias de la clave (`cb360_sign_<employeeId>`) |
+| `publicKey` | la pública en PEM, para verificar aunque aún no haya registro propio |
+| `signingLevel` | `biometric` · `device_credential` |
+
+El servidor, cuando toque: comprobar la firma con la pública **registrada** (no con la que llega
+en el cuerpo, que solo sirve de pista), comprobar que `signedPayload` habla de este acuse
+(`assignmentId` o `documentId`, empleado, documentos y versiones) y que `signedAt` es reciente,
+y guardar firma, lo firmado y el nivel con el acuse.
 
 ### Lo que queda para el servidor
 
@@ -131,11 +159,10 @@ cara o código según el nivel y devuelve la firma en base64; aún no se usa en 
 - **Constancia del alta.** Hoy la escribe la propia app en Firestore con la sesión del
   trabajador; para que valga como registro, las reglas deben impedir cambiar `signingKey` a
   mano, o el alta pasar por `POST /employees/me/devices` como dice §Dónde encaja.
-- **Reto de un solo uso** emitido por el servidor y comprobación de la firma en el acuse
-  (`method: biometric_signature`, que hoy responde 400 `method_not_available`).
-- **Qué se firma en una entrega de material**: `assignmentId` + `documentId`/`version` de cada
-  documento entregado (inventario 6d) + hora + reto. El hash del fichero, si se quiere, lo tiene
-  que guardar el documental.
+- **Reto de un solo uso** emitido por el servidor (hoy lo firmado no lleva reto, solo la hora)
+  y comprobación de la firma en los dos acuses (arriba).
+- **Hash del fichero** en lo firmado, si se quiere: lo tiene que guardar y devolver el
+  documental; hoy se firma documento + versión.
 
 ### Pendiente de comprobar en móviles reales
 
