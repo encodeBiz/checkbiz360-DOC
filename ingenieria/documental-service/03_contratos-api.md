@@ -88,13 +88,13 @@ tienen y el `subject` lo omite): la firma queda atada al contenido, no solo al i
 Permiso: `canAcknowledge`, y **solo si el documento va dirigido a un empleado** (`scope: employee`,
 `acknowledgementMode: single_employee`, y ese empleado es quien llama); si no, `400
 not_addressed_to_one_employee`. Jose, 2026-10-09: «el documento firmado debe ser reemplazado, y si es para
-más de una persona es inviable». Body: `entityId`, `keyId?` (la clave del móvil; sin él, la última registrada).
+más de una persona es inviable». Body: `entityId` y **`deviceId` o `keyId`** del móvil que va a firmar: su certificado es el que va dentro del PDF, así que tiene que ser exactamente la clave que firme. Sin ninguno, solo si el trabajador tiene una única clave vigente; con varias, `400 signing_key_required` (2026-10-09: con «la última registrada» el PDF salió con el certificado de otra clave y Acrobat lo dio por no válido).
 Efectos: dibuja la marca del margen (quién, cuándo, verificación, acta; 5,5 pt, gris), añade el hueco CAdES
 detached, guarda el PDF preparado en `signatures/pending/…` y emite un reto `documents.pades` cuyo `payload`
 son **bytes** en base64.
 `201` → `{ challengeId, toSign (base64 del DER de los atributos firmados), expiresAt, stamp }`.
 `400` not_pdf / pdf_not_signable (`detail`: `pdf_encrypted` | `pdf_already_signed` | `pdf_unreadable`) /
-not_addressed_to_one_employee / no_signing_key · `409` already_acknowledged · `503` ca_not_configured.
+not_addressed_to_one_employee / no_signing_key / signing_key_required · `409` already_acknowledged · `503` ca_not_configured. Al montar, si la firma es de otra clave del mismo trabajador: `400 signature_invalid` con `reason: signing_key_mismatch`, y no se guarda nada.
 
 El móvil firma **los bytes** de `toSign` y llama al `POST /:documentId/ack` de siempre con `{ challengeId,
 signature }`. El servidor comprueba la firma, monta el CMS con el certificado del trabajador y la CA, lo
