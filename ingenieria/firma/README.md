@@ -9,8 +9,9 @@ servidor) en `checkinbiz/auth` y `shared`, en develop y staging de encodebiz-api
 (registro, reto, acuse firmado y verificado; firma alterada y reto ajeno rechazados). **App
 adaptada al servidor el 2026-10-09** (registro por API, reto y acuse firmado; §Lo construido en
 la app). **El documental comprueba también la firma del acuse de recibo (2026-10-09, probado en
-staging; §El documental como segundo consumidor).** Faltan las reglas de Firestore y probar en móviles
-reales. Jose, 2026-10-08: «esto es otro
+staging; §El documental como segundo consumidor). Reglas de Firestore versionadas en `encodebiz-api` y
+desplegadas en dev (2026-10-09).** Falta probar en móviles reales y el pase a prod
+([deployment-prod/2026-10](../../deployment-prod/2026-10-inventario-firma-back.md)). Jose, 2026-10-08: «esto es otro
 módulo, así que déjalo documentado y terminemos con lo de Inventario ahora».
 **Autor:** Jose Acevedo
 
@@ -258,11 +259,17 @@ escrito: `biometric` → `biometric_signature`; `device_credential` → `device_
 ahora **verificado**, porque hay firma (hasta hoy ese método era solo declarado). La escalera
 de §4.5 del inventario no cambia.
 
-### Reglas de Firestore (repo encodeBiz-SAAS, pendiente)
+### Reglas de Firestore — hechas el 2026-10-09, en `encodebiz-api/firestore.rules`
 
-`signing_keys/**` y `signing_challenges/**`: sin lectura ni escritura desde el cliente. En
-`notification_tokens/{e}/devices/{d}`: el cliente no puede escribir `signingKey`. Hasta que se
-desplieguen, el registro ya es del servidor; las reglas cierran el documento del dispositivo.
+Viven en `encodebiz-api` (Jose: el repo del SaaS está deprecado; las reglas acompañan a quien
+escribe en Firestore con autoridad, que son los servicios de este repo). `firebase.json` las
+declara; despliegue solo con `firebase deploy --only firestore:rules --project <proyecto>`.
+Conservan el comodín abierto heredado y le quitan: `signing_keys/**` y `signing_challenges/**`
+sin acceso desde el cliente; en `notification_tokens/{e}/devices/{d}`, `signingKey` no se crea
+ni se cambia desde el cliente (se puede omitir en una escritura sin merge y borrar el documento
+al cerrar sesión: el registro es la fuente). Desplegadas en dev y comprobadas por la API REST
+de Firestore con la sesión del trabajador (403 a claves y retos; 403 al forjar `signingKey`;
+200 al actualizar el token). Para prod: [deployment-prod/2026-10](../../deployment-prod/2026-10-inventario-firma-back.md) §5.3.
 
 ### Qué tiene que cambiar la app — hecho el 2026-10-09
 
