@@ -334,6 +334,42 @@ de caducidad, y la vista por ejemplar del informe.
 **6c — La firma verificable (nivel 1 de §4.5)**: depende del módulo de [firma](../firma/README.md).
 En 6a el acuse nace ya con los niveles 2 y 3, que no necesitan nada nuevo en el móvil.
 
+### 6d — Documentos que van con la entrega (2026-10-09)
+
+> Jose, 2026-10-09: «cuando se entrega un operable, un equipo o un EPI —por ejemplo un casco—
+> debes poder adjuntarle documentos a esa entrega: modo de uso y empleo, responsabilidad con el
+> ítem… Ahora mismo me deja solo un texto; prefiero que pongas un archivo adjunto». Y sobre los
+> permisos: «sin parchear nada: que estos documentos de normativa adjuntos al equipo sean
+> visibles para todos, trabajadores, supervisores y el otro, por defecto».
+
+Para un EPI la norma pide entregar el folleto informativo del fabricante y las instrucciones
+de uso; un texto libre no prueba eso, un documento sí.
+
+- **Lo que se entrega son documentos del documental.** La entrega lleva `documents`: los
+  documentos que acompañaron al ejemplar, cada uno con `documentId`, `title`, `type`,
+  `version` y `filename` tal como estaban al entregar. El fichero de un documento no se
+  sustituye nunca (editar solo cambia datos y sube `version`), así que el par documento +
+  versión identifica lo que recibió el trabajador aunque luego se edite o se archive.
+- **Se configura una vez por equipo.** El artículo lleva `handoverDocumentIds`: los papeles
+  que «van con cada entrega». Al entregar salen preseleccionados; se pueden quitar, añadir
+  otros del equipo o subir uno en ese momento. `POST /units/:id/assign` admite `documentIds`;
+  si no llega, usa los del artículo.
+- **Visibles para todos, sin reglas nuevas.** Los papeles de un equipo nacen visibles para
+  trabajador, supervisor y manager, y solo un documento visible para trabajadores puede ir con
+  una entrega (si no, 400 `inventory/document_not_for_workers`). Así el trabajador lo abre con
+  los permisos de siempre; no hay excepción de lectura por entrega.
+- **La frase la escribe el sistema y nombra los documentos**: «He recibido Casco (CS-12) junto
+  con «Modo de uso» (v1) y «Compromiso de responsabilidad» (v1), y me comprometo…». El panel
+  deja de pedir texto libre; queda la nota opcional. La API sigue aceptando
+  `acknowledgementText` por compatibilidad.
+- **Tipo nuevo** `responsibility_commitment` («Compromiso de uso y responsabilidad»). El modo de
+  uso y el folleto del fabricante caben en `manual`.
+- **El informe** «Equipos y EPIs» gana la columna «Documentos entregados» con título y versión.
+- **Postgres**: la entrega espejada lleva la frase, que ya nombra los documentos; la lista
+  estructurada vive en Firestore. Una columna propia pediría migración y no hace falta hoy.
+- **Fuera de esta fase**: la app («Mi material» abriendo cada documento) la lleva otra sesión;
+  mientras, el trabajador ve los documentos nombrados en la frase y los abre en Documentos.
+
 ## 7. Lo que exige cada entorno
 
 Colección `unit_assignments` (Firestore, sin índice compuesto si las consultas son por
