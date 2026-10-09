@@ -43,7 +43,10 @@ Quando um registo fica no estado `failed`, o sistema associa um código de erro 
 |---|---|---|
 | `checklog/out_of_schedule` | O registo foi efetuado fora do turno ativo do funcionário. | Rever o horário atribuído ao funcionário. Se a presença estava correta, solicitar uma jornada manual. |
 | `checklog/out_of_radius` | O dispositivo encontrava-se fora do raio de registo da sucursal no momento do registo. | Rever as coordenadas GPS da sucursal e o valor do raio configurado. Se o raio não cobre a área de trabalho real, alargá-lo. |
-| `checklog/day_disabled` | O dia em que se tentou registar está desativado no calendário da sucursal ou do funcionário. | Rever a configuração do calendário. Se o dia deve estar ativo, ativá-lo no calendário efetivo correspondente. |
+| `checklog/day_disabled` | O dia em que se tentou registar está desativado no calendário da sucursal ou do funcionário, é feriado ou é um dia livre do funcionário. | Rever a configuração do calendário. Se o dia deve estar ativo, ativá-lo no calendário efetivo correspondente. Um feriado da entidade ou da sucursal não pode ser anulado para um só funcionário. Se o funcionário trabalhou, registar a jornada manual. |
+| `checklog/absence` | O funcionário tem registada uma ausência que abrange esse dia. | Se a ausência estiver correta, não há nada a fazer. Se não estiver, retirá-la do seu calendário e voltar a registar. |
+| `checklog/different_branches` | Tentou-se iniciar uma pausa ou registar a saída numa sucursal diferente da da entrada. Uma jornada não se reparte entre locais. | Registar a pausa ou a saída na mesma sucursal da entrada. Se o funcionário mudou de local, fechar a jornada no primeiro e abrir outra no segundo. |
+| `checklog_update/future_not_allowed` | Foi proposta uma correção com data ou hora futura. | Indicar uma hora que já tenha passado. |
 | `auth/untrusted_device` | O dispositivo a partir do qual se tentou registar não está registado como dispositivo de confiança. O funcionário tem ativada a autenticação de duplo fator. | Registar o dispositivo atual como dispositivo de confiança através do processo de 2FA. |
 | `employee/not_found` | O identificador do funcionário não corresponde a nenhum registo ativo no sistema. | Verificar que o funcionário está ativo na plataforma e corretamente atribuído à sucursal. |
 | `checklog/overlap_detected` | Já existe um registo para o intervalo horário em que se tenta criar o novo registo. Dois registos do mesmo tipo não podem sobrepor-se. | Rever os registos existentes do funcionário para essa data e resolver a sobreposição antes de criar um novo registo. |
@@ -59,7 +62,7 @@ A partir do backoffice, o responsável pode aceder ao detalhe de qualquer regist
 - Os dados técnicos da tentativa: coordenadas, distância ao raio, turno ativo no momento do registo, dispositivo utilizado.
 - O histórico completo de alterações.
 
-Os funcionários podem ver o estado dos seus registos a partir da secção de histórico de assiduidade na aplicação. No caso de registos falhados, a aplicação mostra uma descrição do motivo em linguagem compreensível.
+Os funcionários podem ver o estado dos seus registos a partir da secção de histórico de assiduidade na aplicação. No caso de registos falhados, a aplicação mostra uma descrição do motivo em linguagem compreensível. A partir da versão 1.3.2, a aplicação traduz também os códigos de dia não útil, calendário por resolver, sucursal sem localização, sobreposição, pedido duplicado e fecho de jornada, em vez de mostrar o código técnico; e quando o dia não é útil, explica que o funcionário pode pedir uma jornada manual se trabalhou.
 
 ---
 

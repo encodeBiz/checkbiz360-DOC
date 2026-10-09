@@ -1,6 +1,6 @@
 # Common problems and solutions
 
-This article gathers the twelve most frequent technical and operational situations in CheckBiz360, together with the recommended diagnostic and resolution steps. Consult this guide before opening an incident, since most of these problems can be solved directly with no need for support team intervention.
+This article gathers the fourteen most frequent technical and operational situations in CheckBiz360, together with the recommended diagnostic and resolution steps. Consult this guide before opening an incident, since most of these problems can be solved directly with no need for support team intervention.
 
 ---
 
@@ -169,6 +169,34 @@ This article gathers the twelve most frequent technical and operational situatio
 2. Check that your role has permissions to generate the selected report type. Cost and anomaly reports are restricted to Owner and Manager.
 3. Make sure the filters applied (branch, employee) do not exclude all the records available for that period.
 4. If the problem persists with a date range that should be within the retention period, open an incident with the exact range you are trying to consult.
+
+---
+
+## 13. The employee cannot clock in on a public holiday even though they have a shift
+
+**Symptom:** The employee has a custom schedule with a shift that day, but the clock-in is rejected with `checklog/day_disabled`. The app explains that today is not a working day.
+
+**Resolution steps:**
+
+1. Check whether that date is a public holiday at the employee's **organisation** or **branch**. Public holidays apply to all the employees within their scope, even if one of them has their own shift that day.
+2. If the whole branch works that day, remove the holiday from the branch (or from the organisation, and add it only at the branches that close).
+3. If only part of the workforce works, do not mark the day as a holiday at the branch and record an absence for those who have the day off. See [Public holidays and non-working days](../04-calendar-and-schedules/29-public-holidays-and-non-working-days.md#what-happens-if-the-company-works-on-public-holidays).
+4. For the workday already worked, record a manual workday.
+5. If there is no holiday, check that the employee does not have an absence recorded that day (`checklog/absence`).
+
+---
+
+## 14. A task cannot be started, resumed or completed
+
+**Symptom:** When starting, resuming or completing a task, an error appears and the task does not change.
+
+**Resolution steps:**
+
+1. `task/no_open_session`: the employee does not have an open workday. They must clock in and try again.
+2. `task/out_of_worksite`: the task has its own work site and the employee is outside its margin. The warning states the distance. If they are at the site and the margin is too narrow —a car park, a warehouse—, widen the margin on the task.
+3. `task/geo_required`: a task with its own work site has been attempted from the back office. Starting, resuming or completing it has to be done by the employee from the app.
+4. If the action is **resume** and `task/not_paused` appears, another assignee has already resumed it: refresh the task.
+5. If the task is rejected or validated and cannot be completed (`task/invalid_transition`), reopen it by returning it to *Assigned* from **Edit**.
 
 ---
 

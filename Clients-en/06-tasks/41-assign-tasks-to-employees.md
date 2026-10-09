@@ -24,6 +24,8 @@ If you need each person to carry out the work independently, create one task per
 
 A task always belongs to a branch, so employee selection is made from those who work at that site.
 
+> **Note:** the [teams](../02-employees/99-teams.md) in the Employees section are applied to branches, not to tasks. After applying a team to the branch, its members are selected in the task one by one, like the rest of the staff. Adding a whole team to a task at once is planned.
+
 ---
 
 ## Reassigning tasks
@@ -34,11 +36,15 @@ Circumstances change: an employee may be absent, change shift or turn out not to
 
 1. Sign in to the back office and open the **Tasks** list.
 2. Find the task you want to reassign and click on it to open the detail.
-3. In the **Assigned employee** field, remove the current employee and select the new recipient.
-4. If you think it appropriate, add an internal note explaining the reason for the change.
-5. Press **Save**. The new employee will receive a push notification and the change will be recorded in the history.
+3. Press **Edit**. In the assigned employees field, remove the current employee and select the new recipient.
+4. Press **Save**. On saving, whoever you have added is assigned and whoever you have removed is withdrawn. The new employee receives a push notification.
+5. If you think it appropriate, add a note explaining the reason for the change.
 
-> **Important:** On reassignment, the original employee stops seeing the task in their app. If they had already started the task or left comments, those entries are preserved in the history and are visible from the back office.
+You can also withdraw a person directly from the **Assigned team** block in the task detail.
+
+> **Important:** On reassignment, the original employee stops seeing the task in their app. If they had already started the task or left comments, those entries are preserved and are visible from the back office.
+
+> **Note:** a task's branch cannot be changed when editing it, so the employees you add have to work at that same branch.
 
 ---
 
@@ -51,10 +57,11 @@ Inside the task detail, the employee can consult:
 - The title and the complete description of the activity, with its formatting: lists, checklists, headings and links.
 - The priority assigned (critical, high, medium or low).
 - The deadline date and time, and the expected start date if one was given.
+- The work site, if the task has its own, with the **View in Maps** link.
 - The evidence already uploaded and the task notes.
-- The history of previous updates.
+- The time spent and the total of pauses, and the task history (from version 1.4.0 of the app).
 
-The employee can start the task, add progress notes, upload evidence and, when they finish, mark it as completed.
+The employee can start the task, pause and resume it, add progress notes, upload evidence and, when they finish, mark it as completed.
 
 ---
 
@@ -68,15 +75,11 @@ If the employee has push notifications disabled on their device, the task will s
 
 ---
 
-## Assignment history
+## Who has worked on the task
 
-Each task keeps a chronological record of every assignment it has had. This history is accessible from the task detail in the back office and includes:
+The **Assigned team** block in the task detail shows the people assigned. The **History** section tells the complete story —who created it, who started it, who paused or completed it— with the date and role of each action; it is described in [Tracking and updates](./43-tracking-and-updates.md#task-history).
 
-- The date and time of each assignment.
-- The name of the employee who received the task at each moment.
-- The back office user who made the assignment or reassignment.
-
-The history cannot be modified or deleted. It guarantees complete traceability of who was responsible for a task at each stage of its life cycle.
+None of this can be modified or deleted from the back office.
 
 ---
 

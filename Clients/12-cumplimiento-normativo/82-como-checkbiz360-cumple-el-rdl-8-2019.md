@@ -50,6 +50,8 @@ CheckBiz360 permite realizar estas correcciones, pero con una condición: **toda
 - La fecha y hora en que se realizó la corrección.
 - El motivo de la corrección, que el responsable debe introducir obligatoriamente.
 
+Además, una corrección sobre un fichaje existente **no se aplica hasta que el empleado la acepta**. Si la acepta, la hora corregida es la que figura en el informe de registro de jornada. Si la rechaza, el fichaje conserva su valor original —sigue contando en el registro— y el rechazo queda anotado con su motivo. Ninguna corrección puede llevar una fecha u hora futura.
+
 Esta trazabilidad satisface el requisito de integridad del registro que exige la normativa y que la Inspección de Trabajo verifica en sus actuaciones.
 
 ---

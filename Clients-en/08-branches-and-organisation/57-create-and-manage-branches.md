@@ -13,7 +13,7 @@ To create and manage branches you need to access the web back office with an **O
 When creating a branch you will have to complete the following fields:
 
 - **Name**: the branch's visible identifier throughout the system. Use a clear, unique name within your organisation (for example, "Madrid Centre" or "North Warehouse").
-- **Address**: the workplace's complete postal address. The system automatically geocodes this address to obtain the GPS coordinates that will be used as the central point of the clocking geofence. It is important that the address is accurate to guarantee the coordinates are exact.
+- **Address**: the workplace's complete postal address, chosen from the search box. From it the system obtains the GPS coordinates that will be used as the central point of the clocking geofence, and it fills in the **country** and the **postcode** automatically. There is no city field: the normalised address already includes it. It is important that the address is accurate to guarantee the coordinates are exact.
 - **Clocking radius**: distance in metres from the branch's central point within which the system considers a geolocated clock-in valid. A radius of 100 metres is the recommended value for offices in urban environments; it can be widened for industrial facilities or open spaces.
 - **Time zone**: it forms part of the address and determines how clocking times are interpreted and how workdays are calculated. It is especially relevant in organisations with sites in different countries or regions. If it is not stated, the branch inherits the organisation's time zone.
 
@@ -27,7 +27,7 @@ When creating a branch you will have to complete the following fields:
 ### Steps to create the first branch
 
 1. Go to the back office at `saas.encodebiz.com` and sign in with your credentials.
-2. In the side menu, inside CheckBiz, select **Branches**.
+2. In the side menu, select **Branches** (or whatever name your organisation gives its sites).
 3. Press the create branch button.
 4. Enter the branch name in the corresponding field.
 5. Type the complete postal address in the **Address** field. Select the suggestion that appears in the autocomplete dropdown to make sure the system obtains the correct coordinates.
@@ -38,6 +38,10 @@ When creating a branch you will have to complete the following fields:
 10. Press **Save**. The system will confirm the creation with a success message and the new branch will appear in the list.
 
 > **Warning:** If geocoding the address does not return precise coordinates, the system will indicate this with a warning. In that case, adjust the marker manually on the map before saving. Incorrect coordinates will generate unjustified clocking rejections for the employees assigned.
+
+> **Note:** the postcode accepts letters, spaces and hyphens, so sites outside Spain can be created ("EC2V 8AS", "3512 EN", "K1A 0B1"). The country is taken from the chosen address; if your site is in another country, search for it with the full address.
+
+> **Note:** when the service is set up, CheckBiz360 creates a first branch with the company details. Review it before creating others.
 
 ## Edit a branch
 
@@ -50,6 +54,10 @@ To modify an existing branch's details:
 5. Press **Save changes**.
 
 > **Warning:** Changes to the clocking radius or to the coordinates take effect immediately. Employees attempting to clock in at that moment may be temporarily affected.
+
+Editing only changes what you modify. In particular, if the branch has its **check zone disabled**, saving other changes does not re-enable it.
+
+If the branch was created by an integration (for example, a set-up imported from Rentman), its record shows a badge with the origin. You can edit it normally; the source data the integration stores is not lost when saving.
 
 ## Deactivate a branch
 

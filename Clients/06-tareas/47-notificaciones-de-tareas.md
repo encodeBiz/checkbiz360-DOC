@@ -64,6 +64,8 @@ Las notificaciones de tareas se distribuyen por dos canales:
 
 **Contenido:** Nombre del empleado, título de la tarea y naturaleza del cambio realizado.
 
+> **Nota:** pausar y reanudar una tarea no envía ninguna notificación. Es una acción rutinaria, y avisar de cada pausa haría que se ignoraran los avisos importantes. Las pausas se consultan en el historial de la tarea.
+
 ---
 
 ### Aviso de inicio tardío

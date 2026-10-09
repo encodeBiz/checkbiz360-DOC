@@ -64,6 +64,8 @@ As notificações de tarefas distribuem-se por dois canais:
 
 **Conteúdo:** nome do funcionário, título da tarefa e natureza da alteração efetuada.
 
+> **Nota:** pausar e retomar uma tarefa não envia qualquer notificação. É uma ação rotineira, e avisar de cada pausa faria com que os avisos importantes fossem ignorados. As pausas consultam-se no histórico da tarefa.
+
 ---
 
 ### Aviso de início tardio

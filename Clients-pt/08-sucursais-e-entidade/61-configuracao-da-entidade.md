@@ -11,13 +11,32 @@ Acede-se a partir de **Entidade** no menu lateral, e o ecrã está organizado em
 | Separador | O que contém |
 |---|---|
 | **Dados da Empresa** | Nome comercial, idioma principal, denominação social, NIF/CIF, email de faturação e morada |
-| **Identidade visual** | Logótipo e cores de marca da entidade |
+| **Ambiente de trabalho** | Como se chamam as coisas na sua organização: por exemplo, se os seus locais se chamam *Sucursal*, *Projeto* ou *Obra* |
 | **Configurar Faturação** | Métodos de pagamento da conta |
 | **Subscrições** | Plano contratado e o seu estado |
 | **Faturas** | Histórico de faturação |
 | **Colaboradores** | Utilizadores com acesso ao backoffice desta entidade |
 
-Os três primeiros mostram um aviso visual enquanto estiverem incompletos. Não é decorativo: **sem denominação social e sem método de pagamento não é possível contratar o plano**.
+**Dados da Empresa** e **Configurar Faturação** mostram um aviso visual enquanto estiverem incompletos. Não é decorativo: **sem denominação social e sem método de pagamento não é possível contratar o plano**.
+
+---
+
+## Ambiente de trabalho
+
+Antes chamava-se *Identidade visual*. Já não configura cores nem imagens: serve para adaptar o nome dos locais de trabalho ao vocabulário da sua organização. Se os seus locais forem projetos ou obras, o backoffice di-lo-á assim no menu, nas listagens e nas fichas —por exemplo, «Detalhes de Obra»—. Deixar o campo em branco usa o nome por omissão.
+
+---
+
+## Colaboradores
+
+Os colaboradores são as pessoas com acesso ao backoffice da entidade, cada uma com o seu perfil: **Proprietário** ou **Administrador**. São convidados por correio a partir do separador **Colaboradores**.
+
+- **Convite.** Enquanto a pessoa não entra, o seu convite figura como *Aceitação pendente*. Dá-se por aceite assim que inicia sessão com a entidade atribuída; não depende de premir nada nas boas-vindas.
+- **Quem gere.** Convidar, mudar o perfil ou retirar colaboradores cabe a proprietários e administradores com acesso **ativo**; um convite por aceitar ou um acesso desativado não permitem gerir ninguém.
+- **O escalão de proprietário.** Só um proprietário pode nomear outro proprietário ou retirá-lo.
+- **Nunca sem proprietário.** Não é possível retirar o **único proprietário ativo** da entidade: adicione antes outro proprietário.
+
+Retirar um colaborador elimina as suas permissões sobre a entidade e não pode ser desfeito; para lhe devolver o acesso é preciso convidá-lo de novo.
 
 ---
 
@@ -30,7 +49,7 @@ Os três primeiros mostram um aviso visual enquanto estiverem incompletos. Não 
 | **Denominação social** | Sim | Denominação legal. Necessária para contratar e para a documentação |
 | **NIF / CIF** | — | Identificação fiscal da entidade |
 | **Email de faturação** | — | Endereço para onde chegam as faturas |
-| **Morada** | Sim | Domicílio da empresa. Dela saem as coordenadas e o **fuso horário** |
+| **Morada** | Sim | Domicílio da empresa, escolhido na pesquisa de moradas. Dela saem as coordenadas e o **fuso horário**. Não há campo de cidade à parte: a morada normalizada já a inclui |
 
 Não existe um campo de «setor de atividade»: a plataforma não classifica a entidade por setor nem ajusta nada em função dele.
 
@@ -83,7 +102,7 @@ Os dados fiscais e a faturação não têm equivalente na sucursal: são estrita
 |---|---|---|
 | Âmbito | Toda a organização | Um único local de trabalho |
 | Acesso | Owner | Owner e Manager |
-| Parâmetros exclusivos | Dados fiscais, identidade visual, faturação e subscrição | Zona de verificação e o seu raio |
+| Parâmetros exclusivos | Dados fiscais, ambiente de trabalho, colaboradores, faturação e subscrição | Zona de verificação e o seu raio |
 | Herança | Valor por omissão | Substitui o da entidade |
 | Impacto de uma alteração | Toda a organização | Apenas esse local e os seus funcionários |
 
@@ -105,6 +124,10 @@ A regra é simples: o que afeta a empresa como um todo configura-se na entidade;
 > **Nota de perfil:** a configuração da entidade, e em particular a subscrição, compete ao **Owner**. Para delegar a gestão do dia a dia —sucursais, funcionários, tarefas e documentos— use o perfil **Manager**.
 
 ---
+
+## Assinatura eletrónica
+
+No separador **Ambiente de trabalho** há uma secção **Assinatura eletrónica** com o certificado do CheckBiz360 e os passos para o instalar no Acrobat Reader, para que os PDF assinados pelos seus trabalhadores apareçam a verde. Explica-se em [Confirmação de leitura e assinatura eletrónica](../05-gestao-documental/35-assinatura-eletronica.md).
 
 ## Artigos relacionados
 

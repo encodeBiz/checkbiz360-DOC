@@ -64,6 +64,8 @@ Task notifications are distributed through two channels:
 
 **Content:** Employee's name, task title and the nature of the change made.
 
+> **Note:** pausing and resuming a task does not send any notification. It is a routine action, and alerting on every pause would lead to the important alerts being ignored. Pauses can be consulted in the task history.
+
 ---
 
 ### Late-start warning

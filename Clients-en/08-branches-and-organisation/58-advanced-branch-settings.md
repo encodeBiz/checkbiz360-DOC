@@ -7,7 +7,7 @@ Each branch in CheckBiz360 supports settings that adapt the system's behaviour t
 A branch's advanced configuration is split across two places, depending on what you want to adjust:
 
 - **The branch record** (**Branches** in the side menu → edit) holds the site's details and the **operational configuration**: the check zone.
-- **The calendar** (**Calendar** in the side menu → **Branch** tab) holds the weekly schedule, the breaks, the workday mode and the break mode.
+- **The calendar** (in the branch record, or **Schedules** → **General settings** if it is inherited from the organisation) holds the weekly schedule, the breaks, the workday mode and the break mode.
 
 ## Parameter table
 

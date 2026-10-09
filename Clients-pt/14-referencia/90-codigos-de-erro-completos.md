@@ -16,7 +16,10 @@ Os erros mais frequentes na utilização diária. Salvo indicação em contrári
 |---|---|---|
 | `checklog/out_of_radius` | O funcionário não está dentro do raio de registo da sucursal selecionada | Verificar que está fisicamente no local de trabalho e que o GPS tem boa precisão. Se se repetir, rever coordenadas e raio da sucursal |
 | `checklog/out_of_schedule` | O registo cai fora do horário do turno atribuído | Rever o horário efetivo e o fuso horário da sucursal, e o turno atribuído ao funcionário |
-| `checklog/day_disabled` | O dia está desativado no calendário efetivo (feriado ou dia não útil) | Se o dia devia ser útil, corrigir o calendário. Caso contrário, registar as horas através de jornada manual |
+| `checklog/day_disabled` | O dia está desativado no calendário efetivo (feriado, dia livre do funcionário ou dia não útil) | Se o dia devia ser útil, corrigir o calendário. Caso contrário, registar as horas através de jornada manual |
+| `checklog/absence` | O funcionário tem registada uma ausência que abrange esse dia | Se a ausência não estiver correta, retirá-la do seu calendário e voltar a registar |
+| `checklog/different_branches` | Tenta-se registar a pausa ou a saída numa sucursal diferente da da entrada | Registar na sucursal da entrada; se houve mudança de local, fechar a jornada e abrir outra |
+| `checklog_update/future_not_allowed` | A correção proposta tem data ou hora futura | Indicar uma hora que já tenha passado |
 | `checklog/calendar_not_resolved` | Não há calendário efetivo resolvido para essa data | Rever o calendário da entidade, da sucursal e do funcionário para essa data. Entretanto, introduzir as horas manualmente |
 | `checklog/branch_geo_required` | A sucursal não tem localização configurada | O Owner ou Manager deve acrescentar as coordenadas da sucursal no backoffice |
 | `checklog/two_type_followed` | Tentou-se iniciar a jornada duas vezes seguidas | Fechar a jornada aberta antes de iniciar uma nova |
@@ -52,6 +55,8 @@ Os erros mais frequentes na utilização diária. Salvo indicação em contrári
 | `auth/network-request-failed` | Erro de rede | Verificar a ligação à internet e tentar de novo |
 | `auth/unauthorized` | Acesso não autorizado ao recurso, ou sessão caducada | Terminar sessão e voltar a entrar. Se a conta foi desativada, contactar o Owner |
 | `auth/untrusted_device` | O dispositivo não está autorizado e exige verificação adicional | O Owner ou Manager deve autorizar o dispositivo a partir do perfil do funcionário |
+| `employee/invalid_token` | A validação do funcionário caducou ou não é válida. Caduca ao fim de 30 dias, tal como a sessão do funcionário na aplicação | A aplicação volta a iniciar sessão por si só. Se o aviso persistir, terminar sessão na aplicação e entrar de novo |
+| `turnstile/failed` | Não foi possível confirmar que quem se regista ou recupera a palavra-passe é uma pessoa | Recarregar a página e repetir o desafio de verificação |
 
 ---
 
@@ -77,6 +82,15 @@ Os erros mais frequentes na utilização diária. Salvo indicação em contrári
 | `employee/branchId_required` | Falta a sucursal, que é obrigatória | Atribuir pelo menos uma sucursal antes de guardar |
 | `employee/bad_request` | Falta o identificador do funcionário na operação | Repetir a ação a partir da ficha do funcionário |
 | `branch/not_found` | A sucursal indicada não existe | Verificar que a sucursal existe e não foi eliminada |
+| `employee/fired` | O funcionário saiu da empresa e não pode ser adicionado a uma equipa | Escolher outra pessoa ou reativar a sua ficha |
+| `team/not_found` | A equipa já não existe | Atualizar a lista de equipas |
+| `team/name_taken` | Já existe uma equipa com esse nome (ignorando maiúsculas, acentos e espaços) | Escolher outro nome |
+| `team/member_exists` | Essa pessoa já está na equipa | Editar a sua função ou o seu valor em vez de a adicionar outra vez |
+| `team/member_not_found` | Essa pessoa já não está na equipa | Atualizar a ficha da equipa |
+| `team/branch_without_staff` | A sucursal não tem ninguém ativo para guardar como equipa | Adicionar pessoal à sucursal ou criar a equipa do zero |
+| `team/apply_conflict` | Alguém adicionou um dos membros a essa sucursal enquanto a equipa era aplicada; não se alterou nada | Voltar a aplicar a equipa: essa pessoa será ignorada |
+| `team/too_large` | São demasiadas pessoas para uma só operação | Dividir a equipa em duas e aplicá-las em separado |
+| `team/bad_request` | Os dados da equipa não são válidos | Rever o nome, a função e que o valor seja um número |
 
 ---
 
@@ -113,6 +127,19 @@ Os erros mais frequentes na utilização diária. Salvo indicação em contrári
 | `task/invalid_mime_type` | O formato do ficheiro anexado não é permitido | Carregar a evidência como foto ou vídeo num formato padrão |
 | `task/file_too_large` | O ficheiro ultrapassa o tamanho máximo permitido | Reduzir a resolução ou a duração do ficheiro |
 | `task/bad_request` | A informação da tarefa não é válida | Rever os campos obrigatórios: título, sucursal e prazo |
+| `task/no_open_session` | Para iniciar, retomar ou concluir a tarefa é preciso ter a jornada aberta | Registar a entrada e voltar a tentar |
+| `task/geo_required` | A tarefa tem local de trabalho próprio e é precisa a localização; o backoffice não a envia | Iniciar, retomar ou concluir a tarefa a partir da aplicação, estando no local |
+| `task/out_of_worksite` | O funcionário está fora da margem do local de trabalho da tarefa. O aviso indica a distância e a margem | Aproximar-se da morada da tarefa. Se a margem for demasiado estreita para esse local, alargá-la na tarefa |
+| `task/worksite_imprecise` | A morada do local de trabalho só foi localizada de forma aproximada (por exemplo, ao nível da cidade) | Acrescentar o número da porta e voltar a escolher a morada na pesquisa |
+| `task/worksite_invalid` | Não foi possível situar a morada no mapa | Escolher a morada na pesquisa em vez de a escrever à mão |
+| `task/not_in_progress` | Só se pode pausar uma tarefa em curso | Iniciar a tarefa antes de a pausar |
+| `task/already_paused` | A tarefa já está em pausa; é possível que outro atribuído a tenha pausado antes | Atualizar a tarefa |
+| `task/not_paused` | Tentou-se retomar uma tarefa que não está em pausa | Atualizar a tarefa |
+| `task/invalid_transition` | A mudança de estado não é permitida a partir do estado atual; por exemplo, concluir uma tarefa recusada | Reabrir a tarefa devolvendo-a a *Atribuída* a partir de **Editar** |
+| `task/invalid_status` | A ação exige outro estado; por exemplo, validar uma tarefa que não está concluída | Rever o estado da tarefa |
+| `task/invalid_employees` | Algum funcionário não pode ser atribuído: não trabalha na sucursal da tarefa ou não está ativo | Atribuí-lo a essa sucursal e confirmar que está ativo |
+| `task/branch_inactive` | A sucursal da tarefa está inativa e não admite tarefas novas nem cópias | Ativar a sucursal ou usar outra |
+| `task/source_config_invalid` | A tarefa que se tenta duplicar tem uma configuração que já não é válida | Abrir a tarefa original, guardá-la de novo e voltar a duplicá-la |
 
 ---
 
@@ -128,6 +155,7 @@ Os erros mais frequentes na utilização diária. Salvo indicação em contrári
 | `subscribe/not_found` | O serviço indicado não existe | Tentar de novo a partir do ecrã de planos |
 | `subscribe/invalid_entity_service` | A entidade ou o serviço não estão corretos | Verificar a entidade selecionada |
 | `subscribe/internal` | Erro interno do serviço de subscrições | Tentar mais tarde; se persistir, abrir incidência |
+| `subscribe/plan_not_available` | O plano escolhido não está disponível para contratar | Escolher outro dos planos que o ecrã de planos oferece |
 | `sub/bad_request` | Os dados enviados não são válidos | Rever o formulário e tentar de novo |
 | `sub/entity_not_found` | A entidade não existe | Verificar a entidade selecionada |
 | `payment/pending` | Há pagamentos pendentes na conta | Regularizar o pagamento a partir da secção de faturação |

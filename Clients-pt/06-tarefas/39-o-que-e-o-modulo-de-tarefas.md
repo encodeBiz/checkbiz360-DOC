@@ -39,6 +39,14 @@ Quando um funcionário deve concluir um módulo de formação, visualizar um doc
 
 Os objetivos de curto prazo —repor stock, contactar uma lista de clientes, concluir um relatório— podem ser decompostos em tarefas atribuídas às pessoas adequadas, com prioridade e prazo claramente definidos.
 
+### Serviços ao domicílio ou em casa do cliente
+
+Quando o trabalho muda de morada todos os dias —uma reparação, uma limpeza, uma visita técnica—, a tarefa pode levar o seu **próprio local de trabalho** sem criar uma sucursal por serviço. O funcionário só a pode iniciar estando nessa morada. Explica-se em [Criar uma tarefa](./40-criar-uma-tarefa.md#local-de-trabalho-próprio).
+
+### Trabalho que se repete
+
+Um trabalho que se repete com poucas variações não precisa de ser escrito de novo: a tarefa **duplica-se** a partir da listagem ou da sua ficha, e a cópia só pede título e datas. Explica-se em [Criar uma tarefa](./40-criar-uma-tarefa.md#duplicar-uma-tarefa).
+
 ---
 
 ## Perfis que interagem com o módulo
@@ -55,15 +63,19 @@ O seu âmbito decide-se **em cada tarefa**, e não no seu perfil. Toda a tarefa 
 
 ### Worker (funcionário)
 
-Recebe as tarefas atribuídas, consulta a sua descrição e as suas evidências, inicia o trabalho, adiciona notas de progresso, carrega evidências e marca a tarefa como concluída. Não pode criar nem atribuir tarefas a outros funcionários.
+Recebe as tarefas atribuídas, consulta a sua descrição e as suas evidências, inicia o trabalho, pausa-o e retoma-o quando tem de o interromper, adiciona notas de progresso, carrega evidências e marca a tarefa como concluída. Não pode criar nem atribuir tarefas a outros funcionários.
 
 ---
 
-## Independência face ao controlo de horários
+## Relação com o controlo de horários
 
-O módulo de tarefas funciona de forma autónoma. Um funcionário pode receber e concluir tarefas independentemente de ter ou não registado a entrada nesse dia. Do mesmo modo, uma tarefa pode ter prazo num feriado ou fora do horário habitual, se a operação do negócio assim o exigir.
+Tarefas e registos medem coisas distintas, mas não andam em separado: para **iniciar**, **retomar** ou **concluir** uma tarefa, o funcionário tem de ter a **jornada aberta**, ou seja, ter registado a entrada. Estar numa pausa conta como jornada aberta. Se não tiver registado a entrada, a ação é recusada com o erro `task/no_open_session`.
 
-Esta independência torna-o uma ferramenta flexível para todo o tipo de empresas, desde comércios com turnos fixos até equipas de campo com horários variáveis.
+**Pausar** não o exige: pausa-se precisamente no momento de sair.
+
+Os proprietários e administradores que atuam a partir do backoffice não têm jornada para abrir e ficam isentos; assim podem, por exemplo, fechar a tarefa de alguém que já saiu. Um supervisor ou manager que trabalha com a sua própria ficha de funcionário precisa, sim, de ter a jornada aberta.
+
+As datas, pelo contrário, são livres: uma tarefa pode ter o prazo num feriado ou fora do horário habitual, se a operação o exigir.
 
 ---
 
@@ -78,5 +90,6 @@ Esta independência torna-o uma ferramenta flexível para todo o tipo de empresa
 | [Criar uma tarefa](./40-criar-uma-tarefa.md) | Campos, passos e opções ao criar uma tarefa |
 | [Atribuir tarefas a funcionários](./41-atribuir-tarefas-a-funcionarios.md) | Atribuição individual e por equipa |
 | [Estados de uma tarefa](./42-estados-de-uma-tarefa.md) | Ciclo de vida completo de uma tarefa |
+| [Acompanhamento e atualizações](./43-acompanhamento-e-atualizacoes.md) | Iniciar, pausar, retomar e o histórico da tarefa |
 | [Validação de tarefas](./45-validacao-de-tarefas.md) | Fluxo de validação e permissões |
 | [Relatórios de tarefas](./48-relatorios-de-tarefas.md) | Métricas e exportação de dados |

@@ -1,32 +1,36 @@
-# Remote clocking in
+# Working off-site
 
-CheckBiz360 covers working scenarios outside the company's physical premises. Remote work mode lets employees record their attendance without having to be inside the branch geofence, while keeping the authentication and effective schedule validations in place.
+CheckBiz360 covers working scenarios outside the company's premises: set-ups, services at the customer's home, field work or teleworking. The **Works off-site** option lets an employee record their attendance without being inside a branch geofence, while keeping the authentication and effective schedule validations in place.
 
----
-
-## What remote work mode is
-
-Remote work in CheckBiz360 is an individual per-employee setting that disables geolocation validation when clocking in. When this mode is active, the system does not check whether the device is within the branch radius. All the other validations (schedule, trusted device and biometrics where applicable) continue to work normally.
-
-This mode is intended for employees who do their work regularly or occasionally away from the premises: teleworkers, geographically distributed teams, or employees on partial teleworking who alternate between the office and home.
+> **Note:** until September 2026 this option was called **Remote work**. The name changed, not the way it works: "remote" suggested teleworking from home, and the option is meant for anyone who does not clock in at a site.
 
 ---
 
-## How to enable remote work for an employee
+## What working off-site is
 
-Enabling remote work is an operation carried out by users with the **manager** or **owner** role from the employee's configuration panel in the back office.
+It is an individual per-employee setting that disables geolocation validation when clocking in. When it is active, the system does not check whether the device is within the branch radius. All the other validations (schedule, trusted device and biometrics where applicable) continue to work normally.
+
+It is intended for employees who work regularly or occasionally away from the premises: field teams, technicians who travel, set-up or event staff, and teleworkers too.
+
+---
+
+## How to enable it for an employee
+
+It is enabled by users with the **manager** or **owner** role from the employee's record in the back office.
 
 1. Go to the CheckBiz360 back office.
-2. Navigate to the **Employees** section and select the relevant employee.
-3. Open the attendance configuration or employment details tab.
-4. Enable the **Remote work** field.
+2. Navigate to the **Employees** section and open the employee's record.
+3. Press **Edit**.
+4. Enable **Works off-site** and complete the employee's address, which becomes required.
 5. Save the changes.
 
-From that moment on, the employee's clock records will not include geofence validation.
+From that moment on, the employee's clock records will not include geofence validation. On their record, the situation appears as **Works off-site**; if the option is disabled, as **Clocks in on site**.
+
+> **Tip:** if what you need is to check that the employee is at the location of a specific job —a customer's home, for example—, do not disable the geofence: give the task its own work site. See [Own work site](../06-tasks/40-create-a-task.md#own-work-site).
 
 ---
 
-## What changes when remote work is active
+## What changes when it is active
 
 ### Geolocation disabled
 
@@ -34,43 +38,43 @@ The system skips clocking radius validation entirely. The employee can record th
 
 ### The employee's time zone
 
-When remote work is active, the system uses the employee's time zone for schedule validations, instead of the branch's time zone. This is especially relevant for teams distributed across different countries or regions.
+When working off-site is active, the system uses the employee's time zone for schedule validations, instead of the branch's time zone. This is especially relevant for teams distributed across different countries or regions.
 
 If the employee's time zone is not configured, the system uses the organisation's time zone by default.
 
 ### Authentication unchanged
 
-Remote work does not alter the authentication requirements. If the employee has 2FA enabled, they must still clock in from a trusted device. If they have biometrics required, they must continue verifying their biometric identity before every clock-in.
+Working off-site does not alter the authentication requirements. If the employee has 2FA enabled, they must still clock in from a trusted device. If they have biometrics required, they must continue verifying their biometric identity before every clock-in.
 
 ---
 
 ## Common use cases
 
-**Full teleworking:** The employee works entirely from home. "Remote work" is enabled permanently and their time zone is configured correctly.
+**Travel and field work:** Employees who work at client premises or on the move. If the geofence is not applicable to their activity, working off-site avoids unnecessary failed clock records.
 
-**Partial teleworking:** The employee alternates between office and home depending on the day. In this case, the manager can enable or disable remote mode according to the agreed calendar, or keep it always active if the employee clocks in correctly in both environments.
+**Geographically distributed teams:** Companies with employees in different provinces or countries who are not assigned to a specific physical branch. The option makes it possible to centralise attendance control without creating virtual branches for each location.
 
-**Geographically distributed teams:** Companies with employees in different provinces or countries who are not assigned to a specific physical branch. Remote mode makes it possible to centralise attendance control without having to create virtual branches for each location.
+**Full teleworking:** The employee works entirely from home. **Works off-site** is enabled permanently and their time zone is configured correctly.
 
-**Travel and field work:** Employees who work at client premises or on the move. If the geofence is not applicable to their activity, remote mode avoids unnecessary failed clock records.
+**Partial teleworking:** The employee alternates between office and home depending on the day. The manager can enable or disable the option according to the agreed calendar, or keep it always active if the employee clocks in correctly in both environments.
 
 ---
 
 ## How it is reflected in reports
 
-Clock records made in remote mode are identified in the system as remote work records. From the back office, the manager can filter attendance reports by record type to obtain a separate view of on-site and remote workdays.
+Clock records made off-site are identified as such in the system. From the back office, the manager can filter attendance reports by record type to obtain a separate view of workdays at the site and those carried out off-site.
 
-This distinction is useful for tracking teleworking agreements, for complying with legal limits on remote working days established in collective agreements or internal arrangements, and for productivity analysis by working mode.
+This distinction is useful for tracking teleworking agreements, for complying with the limits on remote working days established in collective agreements or internal arrangements, and for productivity analysis by working mode.
 
 ---
 
-> **Configuration warning:** Enabling remote work without correctly configuring the employee's time zone can create discrepancies in the calculation of hours if the employee is in a different time zone from the branch. Always check the employee's time zone before enabling this mode.
+> **Configuration warning:** Enabling working off-site without correctly configuring the employee's time zone can create discrepancies in the calculation of hours if the employee is in a different time zone from the branch. Always check the employee's time zone before enabling this mode.
 
 ---
 
 ## Roles with access to this feature
 
-Enabling remote work mode requires the **manager** or **owner** role. The employee cannot enable or disable this mode themselves.
+Enabling working off-site requires the **manager** or **owner** role. The employee cannot enable or disable this mode themselves.
 
 ---
 

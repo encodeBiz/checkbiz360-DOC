@@ -13,19 +13,37 @@ Follow the ten steps in order. Each one builds on the previous one.
 
 ---
 
+## The back office onboarding guide
+
+In addition to this article, the back office itself walks you through the first time with an **onboarding guide narrated by Merlin**. It is not a separate tutorial: each step takes you to the real screen where the action is carried out and points to the specific control.
+
+The guide has five steps:
+
+1. **Activate your subscription**: the company's tax details, payment method and choice of plan, in that order. If something is missing, it takes you to the screen where it is completed.
+2. **The schedule**: considered done when the week has at least one shift.
+3. **The workplace**: the branch's address and check zone, with a suggestion of 100 to 200 metres.
+4. **The first employee**.
+5. **The clock-in test**: considered done as soon as a clock record exists; if you have already done it from the app, you can mark it as done.
+
+The first two steps are **blocking**: without an active subscription the CheckBiz360 screens do not open, and without a schedule there is no way of knowing whether someone arrived late or worked extra hours. While they are missing, a warning appears that cannot be closed, except on the screen where they are resolved. The remaining steps can be postponed and resumed from the progress indicator.
+
+The guide looks at the **real state** of the account, not at a counter: if the schedule already exists, that step does not appear; if someone deletes it, it comes back. Only the organisation's **owners** see it —not administrators— and never someone whose invitation is still pending. When it finishes, it says goodbye and suggests carrying on with tasks and documents.
+
+---
+
 ## The 10 steps
 
 ### Step 1. Create the account and the organisation
 
-Go to `saas.encodebiz.com` and register with your corporate email, your phone number and a password. When you submit the form, the system takes you straight to creating the organisation: **company name**, **legal name** and **address** are required; the tax ID and the billing email are optional.
+Go to `saas.encodebiz.com` and register with your corporate email, your phone number and a password, and pass the form's verification challenge. When you submit it, the system takes you straight to creating the organisation: **company name**, **legal name** and **address** are required; the tax ID and the billing email are optional.
 
 The time zone is resolved from the address and serves as the default for branches.
 
-> **Note:** to be able to subscribe to a plan you will need complete legal details and a payment method. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
+> **Note:** to be able to subscribe to a plan you will need complete legal details and a payment method. Adding the card does not generate a charge, and neither do the 15 days of the trial. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
 
 ### Step 2. Create the first branch with a geofence
 
-Go to **Branches** and create one:
+When the service is activated, a first branch is created with the company details: open its record and review the address and the check zone. If it does not appear, go to **Branches** and create one:
 
 - **Name** of the branch (for example, "Head Office").
 - Full **address** of the site; the coordinates and the time zone come from it.
@@ -35,12 +53,12 @@ Save the branch.
 
 ### Step 3. Configure the branch schedule
 
-Go to **Calendar** and open the **Branch** tab:
+Go to **Schedules** and open the **General settings** tab. The schedule you define there is inherited by every branch; if this branch needs a different one, it is configured afterwards in its record.
 
-1. Select the working days (for example, Monday to Friday).
+1. Switch on the working days (for example, Monday to Friday).
 2. Set the start and finish time for each day (for example, 09:00-17:00).
 3. Choose the **workday mode**: strict, if the official schedule governs; flexible, if the time actually worked governs.
-4. Save the calendar.
+4. Press **Save calendar**.
 
 This schedule is the reference against which the system validates every clock-in.
 
@@ -48,7 +66,7 @@ This schedule is the reference against which the system validates every clock-in
 
 ### Step 4. Create the first employee
 
-Go to **Employees** and create a new one with the required details: **full name**, **email address**, **phone** and **relationship type** (internal or contractor).
+Go to **Employees** and create a new one with the required details: **full name**, **email address**, **phone** and **relationship type** (staff or collaborator).
 
 Save. Then, from the employee's record, **link them to the branch**: that is where you choose their responsibility —for this set-up, *worker*—, their position and their hourly rate.
 

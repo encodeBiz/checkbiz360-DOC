@@ -26,7 +26,7 @@ Para validar una tarea, el responsable debe:
 4. Leer las notas del empleado y revisar las evidencias aportadas.
 5. Validar la tarea.
 
-Una vez validada, la tarea queda cerrada: el estado *validada* no se asigna ni se revierte a mano desde el formulario de edición. Si la valoración está habilitada, a continuación puede puntuar el trabajo del empleado.
+Una vez validada, la tarea queda cerrada: el estado *validada* no se asigna a mano desde el formulario de edición. Si hubiera que volver sobre ella, se **reabre** devolviéndola a *Asignada*, lo que retira la validación (ver [Reabrir una tarea](./42-estados-de-una-tarea.md#reabrir-una-tarea)). Si la valoración está habilitada, a continuación puede puntuar el trabajo del empleado.
 
 ---
 
@@ -54,7 +54,7 @@ Cuando una tarea es rechazada:
 - El indicador de cumplimiento temporal pasa a mostrar *Rechazada*, porque el cumplimiento del plazo deja de ser lo relevante.
 - El historial registra el rechazo, el motivo, el autor y la fecha, de modo que queda evidencia del ciclo completo.
 
-**Si el trabajo debe rehacerse**, el responsable edita la tarea y la devuelve al estado **asignada**, ajustando la fecha límite si procede. El empleado la recupera en su lista y el ciclo vuelve a empezar.
+**Si el trabajo debe rehacerse**, el responsable edita la tarea y la devuelve al estado **asignada**, ajustando la fecha límite si procede. Al hacerlo se retira el rechazo anterior, aunque sigue constando en el historial. El empleado la recupera en su lista y el ciclo vuelve a empezar.
 
 ---
 

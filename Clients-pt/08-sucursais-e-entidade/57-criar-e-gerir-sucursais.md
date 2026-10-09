@@ -13,7 +13,7 @@ Para criar e gerir sucursais precisa de aceder ao backoffice web com um perfil d
 Ao criar uma sucursal terá de preencher os seguintes campos:
 
 - **Nome**: identificador visível da sucursal em todo o sistema. Utilize um nome claro e único dentro da sua organização (por exemplo, «Lisboa Centro» ou «Armazém Norte»).
-- **Morada**: morada postal completa do local de trabalho. O sistema geocodifica automaticamente esta morada para obter as coordenadas GPS que serão utilizadas como ponto central da geocerca de registo. É importante que a morada seja precisa para garantir a exatidão das coordenadas.
+- **Morada**: morada postal completa do local de trabalho, escolhida na pesquisa. O sistema obtém dela as coordenadas GPS que serão utilizadas como ponto central da geocerca de registo, e preenche automaticamente o **país** e o **código postal**. Não há campo de cidade: a morada normalizada já a inclui. É importante que a morada seja precisa para garantir a exatidão das coordenadas.
 - **Raio de registo**: distância em metros a partir do ponto central da sucursal dentro da qual o sistema considera válido um registo por geolocalização. Um raio de 100 metros é o valor recomendado para escritórios em ambientes urbanos; pode ser alargado para instalações industriais ou espaços abertos.
 - **Fuso horário**: faz parte da morada e determina como se interpretam as horas de registo e como se calculam as jornadas. É especialmente relevante em organizações com locais em diferentes países ou regiões. Se não for indicado, a sucursal herda o fuso horário da entidade.
 
@@ -27,7 +27,7 @@ Ao criar uma sucursal terá de preencher os seguintes campos:
 ### Passos para criar a primeira sucursal
 
 1. Aceda ao backoffice em `saas.encodebiz.com` e inicie sessão com as suas credenciais.
-2. No menu lateral, dentro do CheckBiz, selecione **Sucursais**.
+2. No menu lateral, selecione **Sucursais** (ou o nome que a sua entidade dê aos seus locais).
 3. Prima o botão de criar sucursal.
 4. Introduza o nome da sucursal no campo correspondente.
 5. Escreva a morada postal completa no campo **Morada**. Selecione a sugestão que aparece na lista de preenchimento automático para se assegurar de que o sistema obtém as coordenadas corretas.
@@ -38,6 +38,10 @@ Ao criar uma sucursal terá de preencher os seguintes campos:
 10. Prima **Guardar**. O sistema confirmará a criação com uma mensagem de sucesso e a nova sucursal aparecerá na listagem.
 
 > **Aviso:** se a geocodificação da morada não devolver coordenadas precisas, o sistema indicá-lo-á com uma advertência. Nesse caso, ajuste o marcador manualmente no mapa antes de guardar. Coordenadas incorretas gerarão recusas de registo injustificadas para os funcionários atribuídos.
+
+> **Nota:** o código postal admite letras, espaços e hífenes, de modo que é possível criar locais fora de Espanha («EC2V 8AS», «3512 EN», «K1A 0B1»). O país é retirado da morada escolhida; se o seu local estiver noutro país, procure-o com a morada completa.
+
+> **Nota:** ao ativar o serviço, o CheckBiz360 cria uma primeira sucursal com os dados da empresa. Reveja-a antes de criar outras.
 
 ## Editar uma sucursal
 
@@ -50,6 +54,10 @@ Para modificar os dados de uma sucursal existente:
 5. Prima **Guardar alterações**.
 
 > **Aviso:** as alterações no raio de registo ou nas coordenadas produzem efeito imediato. Os funcionários que estejam a tentar registar nesse momento podem ser afetados transitoriamente.
+
+Editar só altera o que modificar. Em particular, se a sucursal tiver a **zona de verificação desativada**, guardar outras alterações não a volta a ativar.
+
+Se a sucursal tiver sido criada por uma integração (por exemplo, uma montagem importada do Rentman), a sua ficha mostra um distintivo com a origem. Pode editá-la normalmente; os dados de proveniência que a integração guarda não se perdem ao guardar.
 
 ## Desativar uma sucursal
 

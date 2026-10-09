@@ -18,7 +18,7 @@ Existem duas situações principais em que um registo entra no estado `pending-e
 
 **Pedido de jornada manual:** quando um manager ou supervisor cria uma jornada em nome do funcionário (Modo A ou Modo B), o sistema atribui automaticamente este estado até que o funcionário responda. Consulte o artigo [Solicitar jornada manual](19-solicitar-jornada-manual.md) para mais detalhe.
 
-**Correção do gestor:** quando um responsável modifica um registo existente do funcionário (por exemplo, ajusta a hora de entrada ou de saída), o sistema pode exigir que o funcionário valide a alteração antes de a aplicar de forma definitiva, consoante a configuração da entidade.
+**Correção do gestor:** quando um responsável propõe corrigir um registo existente do funcionário (por exemplo, ajusta a hora de entrada ou de saída), a alteração não é aplicada até que o funcionário a aceite. Entretanto, o registo fica pendente de validação. A hora proposta não pode ser futura: o formulário não o permite e o servidor recusa-a com `checklog_update/future_not_allowed`.
 
 ---
 
@@ -37,13 +37,18 @@ O ecrã de revisão está disponível na rota `/notifications/checklog-update/:i
 
 ## O que acontece se o funcionário aceitar
 
-O registo passa ao estado `valid`. A partir desse momento, conta como tempo trabalhado e fica incorporado no cálculo de horas da jornada. O sistema regista a ação de validação no histórico de auditoria com a data, a hora e o identificador do funcionário que a realizou.
+O registo passa ao estado `valid`. A partir desse momento, conta como tempo trabalhado e fica incorporado no cálculo de horas da jornada; no caso de uma correção, a hora corrigida é a que figura no relatório de registo de jornada. O sistema regista a ação de validação no histórico de auditoria com a data, a hora e o identificador do funcionário que a realizou.
 
 ---
 
 ## O que acontece se o funcionário recusar
 
-O registo fica marcado com o estado `failed` e é guardado o motivo da recusa. O registo permanece no sistema para auditoria, mas não conta como horas trabalhadas. O responsável recebe uma notificação da recusa e pode iniciar um novo pedido corrigido ou resolver a incidência manualmente.
+O resultado depende do que é recusado:
+
+- **Uma correção de um registo existente.** O registo **volta a ficar como estava antes da proposta**: a hora original não é tocada e recupera o seu estado anterior, pelo que continua a contar no registo de jornada. A recusa, com o seu motivo, fica anotada no histórico de alterações do registo.
+- **Uma jornada manual.** Como o registo não existia antes da proposta, fica marcado com o estado `failed` e o motivo da recusa. Permanece no sistema para auditoria, mas não conta como horas trabalhadas.
+
+Em ambos os casos, o responsável pode iniciar uma nova proposta corrigida ou resolver a incidência manualmente.
 
 ---
 

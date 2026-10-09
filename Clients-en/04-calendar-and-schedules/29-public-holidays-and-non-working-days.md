@@ -30,6 +30,17 @@ This category covers any date the company decides to block for its own reasons: 
 
 ---
 
+## Employee absences
+
+A specific person's holidays, leave and days off are recorded as **absences** in their calendar. They are added from the employee's record or from the [availability board](98-availability-board.md), and can also be consulted in the **Employee non-working days** tab in **Schedules**.
+
+- **Date range.** An absence can cover several consecutive days. In the lists it appears as a single row with its start, its end and the number of days (for example, "1 – 15 Sep · 15 days"), which expands to view or remove individual days.
+- **Paid.** Each employee absence carries a **Paid** box with three possible values: *paid*, *unpaid* or *not set*. *Not set* means it is not recorded —for example, in absences recorded before the box existed— and is displayed differently from *unpaid* so as not to confuse missing data with a "no". Organisation or branch public holidays do not carry this mark.
+
+A day of absence blocks that person's clock-in just like a public holiday.
+
+---
+
 ## How CheckBiz360 blocks clock-ins on non-working days
 
 When an employee tries to record their entry or exit on a date marked as non-working in their effective calendar, the system returns the error code `checklog/day_disabled` and rejects the clock-in.
@@ -44,26 +55,22 @@ Clock-in attempts on non-working days are recorded in the history with their tim
 
 There are sectors in which working on public holidays is the norm: retail, hospitality, transport and emergency services operate normally on days that are non-working for other companies.
 
-CheckBiz360 allows a holiday to be disabled on a one-off basis so that the employees affected can clock in normally that day.
+A configured public holiday applies to **all** the employees within its scope: there is no way to cancel it for just one branch or just one person. Not even a custom schedule with a shift that day gets round it; the clock-in is rejected with `checklog/day_disabled`. That is why the way to work on a public holiday is not to mark as a holiday what does not close.
 
-### Disabling a holiday on a one-off basis for the whole branch
+### The whole branch works that day
 
-1. Sign in to the back office with the owner or manager role.
-2. Navigate to **Branches** and select the branch that works that day.
-3. Go to **Calendar** in the side menu.
-4. Find the holiday's date in the list of non-working days.
-5. Select the entry and press **Disable for this date**.
-6. Confirm the action. The date stops being blocked for that branch's employees.
+- If the holiday is at the **branch**, delete it from its days off. The date stops being blocked for that branch's employees.
+- If the holiday is at the **organisation**, it affects every branch. Remove it from the organisation and add it as a local holiday only at the branches that do close.
 
-### Disabling a holiday only for specific employees
+### Only part of the workforce works that day
 
-If only some of the employees work on the holiday (for example, customer service staff but not administration), the most precise way of handling this is through individual exceptions:
+If only some of them work (for example, customer service staff but not administration):
 
-1. Go to the record of each employee who works that day.
-2. Create a one-off exception for that date marking the day as a working day and defining the corresponding shift.
-3. Employees with an exception will be able to clock in that day. The rest will continue with the holiday block.
+1. Do not mark the day as a holiday at the branch: treat it as a working day.
+2. Record an **absence** that day for those who have the day off, from their record or from the [availability board](98-availability-board.md).
+3. Those who work clock in normally; those with the absence are blocked.
 
-> **Warning:** Remember that individual exceptions take priority over the branch calendar. An individual exception marking a holiday as a working day allows the employee to clock in even if that holiday is active at organisation or branch level.
+> **Warning:** organisation, branch and employee holidays **add up**; they do not cancel each other out. The inheritance in which the employee's level prevails is that of the weekly schedule, not that of public holidays.
 
 ---
 
@@ -102,4 +109,5 @@ Configuring the holiday calendar at the start of each calendar year, or sufficie
 - [Schedule exceptions](25-schedule-exceptions.md)
 - [Configuration inheritance](26-configuration-inheritance.md)
 - [Rotating shifts](27-rotating-shifts.md) — not available in the current version; alternatives
+- [Availability board](98-availability-board.md)
 - [Statuses and error codes](../03-time-tracking/22-statuses-and-error-codes.md)

@@ -26,7 +26,7 @@ Para validar uma tarefa, o responsável deve:
 4. Ler as notas do funcionário e rever as evidências apresentadas.
 5. Validar a tarefa.
 
-Uma vez validada, a tarefa fica encerrada: o estado *validada* não se atribui nem se reverte à mão a partir do formulário de edição. Se a avaliação estiver ativada, pode em seguida pontuar o trabalho do funcionário.
+Uma vez validada, a tarefa fica encerrada: o estado *validada* não se atribui à mão a partir do formulário de edição. Se for preciso voltar a ela, **reabre-se** devolvendo-a a *Atribuída*, o que retira a validação (ver [Reabrir uma tarefa](./42-estados-de-uma-tarefa.md#reabrir-uma-tarefa)). Se a avaliação estiver ativada, pode em seguida pontuar o trabalho do funcionário.
 
 ---
 
@@ -54,7 +54,7 @@ Quando uma tarefa é recusada:
 - O indicador de cumprimento temporal passa a mostrar *Recusada*, porque o cumprimento do prazo deixa de ser o relevante.
 - O histórico regista a recusa, o motivo, o autor e a data, de modo que fica evidência do ciclo completo.
 
-**Se o trabalho tiver de ser refeito**, o responsável edita a tarefa e devolve-a ao estado **atribuída**, ajustando o prazo se for caso disso. O funcionário recupera-a na sua lista e o ciclo recomeça.
+**Se o trabalho tiver de ser refeito**, o responsável edita a tarefa e devolve-a ao estado **atribuída**, ajustando o prazo se for caso disso. Ao fazê-lo, a recusa anterior é retirada, embora continue a constar do histórico. O funcionário recupera-a na sua lista e o ciclo recomeça.
 
 ---
 

@@ -24,6 +24,8 @@ O relatório de conformidade legal contém os seguintes dados por cada registo d
 - **Estado de validação:** indica se o registo foi validado automaticamente, está pendente de revisão ou foi corrigido manualmente.
 - **Rastreabilidade de correções:** se um registo foi modificado manualmente por um responsável, o relatório indica quem efetuou a modificação, em que data e o motivo registado.
 
+> **Importante:** o registo de jornada é obrigatório para a relação laboral, pelo que o relatório reúne o **pessoal** da empresa e deixa de fora os funcionários marcados como **colaboradores** (trabalhadores independentes ou externos que faturam à empresa). Antes de o apresentar, confirme que o tipo de relação de cada pessoa é o correto: vê-se na sua ficha, junto ao estado.
+
 ### Dados da entidade
 
 O cabeçalho do relatório inclui:

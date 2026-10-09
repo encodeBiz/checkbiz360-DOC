@@ -18,7 +18,7 @@ Existen dos situaciones principales en las que un registro entra en estado `pend
 
 **Solicitud de jornada manual:** Cuando un manager o supervisor crea una jornada en nombre del empleado (Modo A o Modo B), el sistema asigna automáticamente este estado hasta que el empleado responda. Consulte el artículo [Solicitar jornada manual](19-solicitar-jornada-manual.md) para más detalle.
 
-**Corrección de gestor:** Cuando un responsable modifica un fichaje existente del empleado (por ejemplo, ajusta la hora de entrada o salida), el sistema puede requerir que el empleado valide el cambio antes de aplicarlo de forma definitiva, según la configuración de la entidad.
+**Corrección de gestor:** Cuando un responsable propone corregir un fichaje existente del empleado (por ejemplo, ajusta la hora de entrada o salida), el cambio no se aplica hasta que el empleado lo acepta. Mientras tanto, el fichaje queda pendiente de validación. La hora propuesta no puede ser futura: el formulario no lo permite y el servidor lo rechaza con `checklog_update/future_not_allowed`.
 
 ---
 
@@ -37,13 +37,18 @@ La pantalla de revisión está disponible en la ruta `/notifications/checklog-up
 
 ## Qué ocurre si el empleado acepta
 
-El fichaje pasa a estado `valid`. A partir de ese momento, el registro computa como tiempo trabajado y queda incorporado al cálculo de horas de la jornada. El sistema registra la acción de validación en el historial de auditoría con la fecha, hora y el identificador del empleado que la realizó.
+El fichaje pasa a estado `valid`. A partir de ese momento, el registro computa como tiempo trabajado y queda incorporado al cálculo de horas de la jornada; en el caso de una corrección, la hora corregida es la que figura en el informe de registro de jornada. El sistema registra la acción de validación en el historial de auditoría con la fecha, hora y el identificador del empleado que la realizó.
 
 ---
 
 ## Qué ocurre si el empleado rechaza
 
-El fichaje queda marcado con estado `failed` y se almacena el motivo del rechazo. El registro permanece en el sistema para auditoría, pero no computa como horas trabajadas. El responsable recibe una notificación del rechazo y puede iniciar una nueva solicitud corregida o resolver la incidencia de forma manual.
+El resultado depende de qué se rechaza:
+
+- **Una corrección de un fichaje existente.** El fichaje **vuelve a estar como antes de la propuesta**: la hora original no se toca y recupera su estado anterior, así que sigue computando en el registro de jornada. El rechazo, con su motivo, queda anotado en el historial de cambios del fichaje.
+- **Una jornada manual.** Como el registro no existía antes de la propuesta, queda marcado con estado `failed` y el motivo del rechazo. Permanece en el sistema para auditoría, pero no computa como horas trabajadas.
+
+En los dos casos, el responsable puede iniciar una nueva propuesta corregida o resolver la incidencia de forma manual.
 
 ---
 

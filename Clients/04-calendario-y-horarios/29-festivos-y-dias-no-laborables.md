@@ -30,6 +30,17 @@ Esta categoría cubre cualquier fecha que la empresa decida bloquear por motivos
 
 ---
 
+## Ausencias de un empleado
+
+Las vacaciones, los permisos y los días libres de una persona concreta se registran como **ausencias** en su calendario. Se añaden desde la ficha del empleado o desde el [tablero de disponibilidad](98-tablero-de-disponibilidad.md), y se consultan también en la pestaña **No laborables de empleados** de **Horarios**.
+
+- **Rango de fechas.** Una ausencia puede cubrir varios días seguidos. En las listas aparece como una sola fila con su inicio, su fin y el número de días (por ejemplo, «1 – 15 sep · 15 días»), que se despliega para ver o quitar días sueltos.
+- **Retribuida.** Cada ausencia de empleado lleva una casilla **Retribuida** con tres valores posibles: *retribuida*, *no retribuida* o *sin definir*. *Sin definir* significa que no consta —por ejemplo, en las ausencias registradas antes de que existiera la casilla— y se muestra distinto de *no retribuida* para no confundir un dato que falta con un «no». Los festivos de la entidad o de la sucursal no llevan esta marca.
+
+Un día de ausencia bloquea el fichaje de esa persona igual que un festivo.
+
+---
+
 ## Cómo CheckBiz360 bloquea fichajes en días no laborables
 
 Cuando un empleado intenta registrar su entrada o salida en una fecha marcada como no laborable en su calendario efectivo, el sistema devuelve el código de error `checklog/day_disabled` y rechaza el fichaje.
@@ -44,26 +55,22 @@ Los intentos de fichaje en días no laborables quedan registrados en el historia
 
 Existen sectores en los que trabajar en festivo es la norma: el comercio minorista, la hostelería, el transporte o los servicios de emergencia operan con normalidad en días que para otras empresas son no laborables.
 
-CheckBiz360 permite deshabilitar un festivo puntualmente para que los empleados afectados puedan fichar con normalidad ese día.
+Un festivo configurado se aplica a **todos** los empleados de su ámbito: no hay forma de anularlo solo para una sucursal o solo para una persona. Ni siquiera un horario personalizado con turno ese día lo salta; el fichaje se rechaza con `checklog/day_disabled`. Por eso, la forma de trabajar en festivo es no marcar como festivo lo que no cierra.
 
-### Deshabilitar un festivo de forma puntual para toda la sucursal
+### Toda la sucursal trabaja ese día
 
-1. Acceda al backoffice con rol owner o manager.
-2. Navegue a **Sucursales** y seleccione la sucursal que trabaja ese día.
-3. Acceda a **Calendario** en el menú lateral.
-4. Localice la fecha del festivo en la lista de días no laborables.
-5. Seleccione la entrada y pulse **Desactivar para esta fecha**.
-6. Confirme la acción. La fecha deja de estar bloqueada para los empleados de esa sucursal.
+- Si el festivo está en la **sucursal**, elimínelo de sus días libres. La fecha deja de estar bloqueada para los empleados de esa sucursal.
+- Si el festivo está en la **entidad**, afecta a todas las sucursales. Retírelo de la entidad y añádalo como festivo local solo en las sucursales que sí cierran.
 
-### Deshabilitar un festivo solo para empleados concretos
+### Solo una parte de la plantilla trabaja ese día
 
-Si solo una parte de los empleados trabaja en el festivo (por ejemplo, el personal de atención al cliente pero no el de administración), la forma más precisa de gestionar esto es mediante excepciones individuales:
+Si solo trabaja una parte (por ejemplo, el personal de atención al cliente pero no el de administración):
 
-1. Acceda a la ficha de cada empleado que trabaja ese día.
-2. Cree una excepción puntual para esa fecha que marque el día como laborable y defina el turno correspondiente.
-3. Los empleados con excepción podrán fichar ese día. Los demás continuarán con el bloqueo del festivo.
+1. No marque el día como festivo en la sucursal: trátelo como laborable.
+2. Registre una **ausencia** ese día a quienes libran, desde su ficha o desde el [tablero de disponibilidad](98-tablero-de-disponibilidad.md).
+3. Quienes trabajan fichan con normalidad; quienes tienen la ausencia quedan bloqueados.
 
-> **Aviso:** Recuerde que las excepciones individuales tienen prioridad sobre el calendario de la sucursal. Una excepción individual que marque un festivo como laborable permite al empleado fichar aunque ese festivo esté activo a nivel de entidad o sucursal.
+> **Aviso:** los festivos de entidad, sucursal y empleado **se suman**; no se anulan entre sí. La herencia en la que el nivel del empleado prevalece es la del horario semanal, no la de los festivos.
 
 ---
 
@@ -102,4 +109,5 @@ Se recomienda configurar el calendario de festivos al inicio de cada año natura
 - [Excepciones de horario](25-excepciones-de-horario.md)
 - [Herencia de configuración](26-herencia-de-configuracion.md)
 - [Turnos rotativos](27-turnos-rotativos.md) — no disponible en la versión actual; alternativas
+- [Tablero de disponibilidad](98-tablero-de-disponibilidad.md)
 - [Estados y códigos de error](../03-control-horario/22-estados-y-codigos-de-error.md)

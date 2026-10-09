@@ -53,6 +53,16 @@ Se o seu utilizador estiver associado a mais do que uma organização ou entidad
 
 ---
 
+## O seu telemóvel como assinatura
+
+Ao entrar, a aplicação cria no chip seguro do seu telemóvel uma chave que só se desbloqueia com a impressão digital, o rosto ou o código de desbloqueio. Com ela assinará as confirmações de leitura de documentos e as entregas de equipamentos. Não tem de fazer nada: acontece ao iniciar sessão.
+
+- Se o telemóvel tiver **impressão digital ou rosto** configurados, usam-se esses.
+- Se só tiver **código, padrão ou PIN**, usa-se esse.
+- Se **não tiver bloqueio de ecrã**, não se cria chave e, ao confirmar, a aplicação pedirá a palavra-passe da conta. Configure um bloqueio de ecrã: é mais cómodo e a assinatura vale mais.
+
+A chave nunca sai do telemóvel. Se mudar de telemóvel, a aplicação cria outra ao entrar.
+
 ## Resolução de problemas frequentes
 
 ### O correio de boas-vindas não chegou
@@ -69,8 +79,14 @@ Se introduziu corretamente a palavra-passe durante a ativação mas o sistema a 
 1. Prima a opção **Esqueceu-se da palavra-passe?** ou **Recuperar palavra-passe** no ecrã de início de sessão.
 2. Introduza o seu endereço de correio eletrónico.
 3. Prima **Enviar**.
-4. Receberá um correio com uma ligação para repor a palavra-passe. Siga as instruções do correio para definir uma nova palavra-passe.
+4. Receberá um correio, no seu idioma, com uma ligação para repor a palavra-passe. Siga as instruções do correio para definir uma nova palavra-passe.
 5. Concluído o processo, tente iniciar sessão de novo com a nova palavra-passe.
+
+> **Nota:** por segurança, a recuperação responde sempre da mesma forma, exista ou não uma conta com esse correio: assim ninguém a pode usar para descobrir que endereços estão registados. Se o correio não chegar, confirme com o seu responsável que o endereço é o correto. São admitidos até **3 pedidos a cada 15 minutos**; ultrapassado esse limite, aguarde antes de voltar a pedi-lo.
+
+### A aplicação pede-me para voltar a iniciar sessão
+
+Por segurança, a sessão do funcionário com a qual a aplicação regista caduca ao fim de **30 dias**, tal como a validação enviada com o correio de boas-vindas. Normalmente a aplicação renova-a sem que o funcionário se aperceba. Se alguma vez lhe voltar a pedir o correio e a palavra-passe, não é uma falha da conta: volte a iniciar sessão.
 
 ### Não me lembro de que endereço de correio usaram para me registar
 

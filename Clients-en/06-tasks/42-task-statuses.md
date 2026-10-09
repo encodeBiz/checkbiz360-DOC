@@ -14,6 +14,8 @@ The usual path is:
 
 With two possible detours: the manager can **reject** a completed task, or **cancel** the task at any time before it closes.
 
+While it is *in progress*, the task can be **paused** once or several times. The pause is not one more status: it is explained in [Paused task](#paused-task).
+
 ---
 
 ## Status table
@@ -28,7 +30,7 @@ With two possible detours: the manager can **reject** a completed task, or **can
 | **Rejected** | The manager has reviewed the completed task and returned it with a mandatory reason. | Manager, or owner or supervisor with validation permission |
 | **Cancelled** | The task is annulled because it no longer applies. It requires a reason and does not count as non-compliance. | Manager or owner from the back office |
 
-The *Validated*, *Rejected* and *Cancelled* statuses cannot be assigned by hand when creating or editing a task: they are the result of a life-cycle action (validate, reject, cancel).
+The *Validated*, *Rejected* and *Cancelled* statuses cannot be assigned by hand when creating or editing a task: they are the result of a life-cycle action (validate, reject, cancel). The only way out of them is **reopening** the task, as explained below.
 
 ---
 
@@ -57,11 +59,11 @@ Whoever creates the task saves it with *Assigned* status, or edits a draft task 
 
 ### From assigned to in progress
 
-The employee opens the task in the app and presses start. The back office reflects the change and, if the task had the late-start warning enabled, that warning stops being pending.
+The employee opens the task in the app and presses start. They need an open workday and, if the task has its own work site, to be within its margin. The back office reflects the change and, if the task had the late-start warning enabled, that warning stops being pending.
 
 ### From in progress to completed
 
-The employee presses finish in the app. If the task has the evidence requirement enabled, the system does not allow it to be closed without at least one photo or video attached, and returns the error `task/evidence_required`.
+The employee presses finish in the app. If the task has the evidence requirement enabled, the system does not allow it to be closed without at least one photo or video attached, and returns the error `task/evidence_required`. If the task was paused, the pause is closed at that moment.
 
 ### From completed to validated
 
@@ -73,7 +75,28 @@ The manager reviews the work and returns it stating a **mandatory reason**, visi
 
 ### Cancellation
 
-A task that no longer applies is cancelled by stating a reason. It is an administrative closure: it does not count as non-compliance by the employee.
+A task that no longer applies is cancelled by stating a reason. It is an administrative closure: it does not count as non-compliance by the employee. The reason is saved on the task and appears in its history; if there was an open pause, it is closed.
+
+> **Note:** cancellations made from the back office before 11 September 2026 did not keep their reason, even though the dialog asked for one. Later ones do keep it.
+
+### Reopening a task
+
+A validated, rejected or cancelled task is reopened from **Edit**, by changing its status to **Assigned** or **Draft**. Owners and managers can do this. To return to *Assigned*, the task has to have at least one employee assigned.
+
+On reopening:
+
+- The previous validation, rejection or cancellation is withdrawn, with its reasons, so that the task does not carry the sign-off of the past execution.
+- Time compliance goes back to *Not started*. Review the deadline if it has already passed.
+- The pause counters go back to zero.
+- The history keeps everything that happened before reopening.
+
+---
+
+## Paused task
+
+A task *in progress* can be **paused** and **resumed** as many times as needed, from the app or from the task detail in the back office. The steps and conditions are explained in [Tracking and updates](./43-tracking-and-updates.md#pausing-and-resuming-a-task).
+
+The pause **is not a status**: the task remains *in progress* for all purposes —filters, reports, time compliance— and the status label shows **Paused** while it lasts. The deadline is not extended because the task is paused.
 
 ---
 
@@ -108,7 +131,7 @@ From the task list you can filter by status and by priority. This lets the manag
 - Identify overdue or at-risk tasks through the time-compliance indicator.
 - Check the progress of active tasks at a branch or for a particular employee.
 
-Each task shows two colour labels: one for the status and one for time compliance. The colour code is consistent across the platform: grey for what has not yet started (draft, cancelled, not started), blue for what is under way or awaiting review (assigned, completed), amber for what needs attention (in progress, at risk, completed late), green for what is correct (validated, on time, completed on time) and red for what has failed (rejected, overdue).
+Each task shows two colour labels: one for the status and one for time compliance. The colour code is consistent across the platform: grey for what has not yet started or is stopped (draft, cancelled, not started, paused), blue for what is under way or awaiting review (assigned, completed), amber for what needs attention (in progress, at risk, completed late), green for what is correct (validated, on time, completed on time) and red for what has failed (rejected, overdue).
 
 ---
 
@@ -117,7 +140,7 @@ Each task shows two colour labels: one for the status and one for time complianc
 | Article | Description |
 |---|---|
 | [Create a task](./40-create-a-task.md) | Fields and options when creating a task |
-| [Tracking and updates](./43-tracking-and-updates.md) | How the employee updates progress |
+| [Tracking and updates](./43-tracking-and-updates.md) | How progress is updated, pauses and the history |
 | [Priorities and deadlines](./44-priorities-and-deadlines.md) | Configuring deadlines and alerts |
 | [Task validation](./45-task-validation.md) | Validation flow and permissions |
 | [Task notifications](./47-task-notifications.md) | Automatic alerts on status change |

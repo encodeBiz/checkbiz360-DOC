@@ -50,7 +50,7 @@ When a contract is extended or the terms of employment change, archive the previ
 
 For partial amendments —such as an annex changing working hours or a pay rise— you can upload the annex as a separate document with the **Contract** type and state in the description which main contract it refers to.
 
-> **Important:** CheckBiz360 **does not sign contracts**. What it offers today is traceable distribution and a read receipt: there is a record that the employee accessed the document, when, and on which version. The contract has to be signed through your usual channel —on paper or with an external electronic signature service— and uploaded here already signed. Advanced electronic signature inside the platform is on the roadmap.
+> **Important:** a payslip, a written warning or a contract uploaded **to the employee** with a read receipt is **signed by them inside the PDF** when they confirm from the app, with an advanced electronic signature and a signature record (see [Read receipt and electronic signature](35-electronic-signature.md)). It is the worker's signature: if a procedure also requires the company's with a qualified certificate, do that through your usual channel and upload the result here.
 
 ## Document retention and legal obligations
 

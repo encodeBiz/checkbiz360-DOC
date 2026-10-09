@@ -30,6 +30,10 @@ You can also assign employees directly from the branch record:
 3. Press **Assign employee** and enter the employee's name or email address in the search box.
 4. Select the role and the calendar and press **Confirm**.
 
+### Add a whole team at once
+
+If the same crew works on several projects, there is no need to link each person separately. In the employee list of the branch record, **Apply team** adds all the members of a team at once, each with their responsibility, job and rate, and skips anyone who was already there. **Save as team** does the opposite: it turns the branch's staff into a reusable team. See [Teams](../02-employees/99-teams.md).
+
 ## Multi-branch: one employee at several branches
 
 CheckBiz360 supports the same employee being assigned to several branches at once, with different roles at each. This feature is designed to cover cases such as:
@@ -82,6 +86,7 @@ To unlink an employee from a branch:
 ## Related articles
 
 - [Create and manage branches](57-create-and-manage-branches.md)
+- [Teams](../02-employees/99-teams.md)
 - [Branch statuses](59-branch-statuses.md)
 - [Organisation configuration](61-organisation-settings.md)
 - [Multi-branch global view](62-multi-branch-global-view.md)

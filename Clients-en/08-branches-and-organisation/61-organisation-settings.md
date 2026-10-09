@@ -11,13 +11,32 @@ It is reached from **Organisation** in the side menu, and the screen is organise
 | Tab | What it contains |
 |---|---|
 | **Company details** | Trading name, primary language, legal name, tax ID, billing email and address |
-| **Visual identity** | The organisation's logo and brand colours |
+| **Workspace** | What things are called in your organisation: for example, whether your sites are called *Branch*, *Project* or *Site* |
 | **Billing setup** | The account's payment methods |
 | **Subscriptions** | The plan contracted and its status |
 | **Invoices** | Billing history |
 | **Collaborators** | Users with access to this organisation's back office |
 
-The first three show a visual warning while they are incomplete. It is not decorative: **without a legal name and a payment method you cannot subscribe to a plan**.
+**Company details** and **Billing setup** show a visual warning while they are incomplete. It is not decorative: **without a legal name and a payment method you cannot subscribe to a plan**.
+
+---
+
+## Workspace
+
+It used to be called *Visual identity*. It no longer configures colours or images: it is used to adapt the name of the workplaces to your organisation's vocabulary. If your sites are projects or building sites, the back office will say so in the menu, in the lists and in the records —for example, "Site details"—. Leaving the field blank uses the default name.
+
+---
+
+## Collaborators
+
+Collaborators are the people with access to the organisation's back office, each with their role: **Owner** or **Administrator**. They are invited by email from the **Collaborators** tab.
+
+- **Invitation.** Until the person signs in, their invitation shows as *Pending acceptance*. It is considered accepted as soon as they sign in with the organisation assigned; it does not depend on pressing anything on the welcome screen.
+- **Who manages.** Inviting, changing the role of or removing collaborators is done by owners and administrators with **active** access; an unaccepted invitation or a deactivated access does not allow anyone to be managed.
+- **The owner tier.** Only an owner can appoint or remove another owner.
+- **Never without an owner.** The organisation's **only active owner** cannot be removed: add another owner first.
+
+Removing a collaborator deletes their permissions over the organisation and cannot be undone; to give them access again they have to be invited again.
 
 ---
 
@@ -30,7 +49,7 @@ The first three show a visual warning while they are incomplete. It is not decor
 | **Legal name** | Yes | Legal denomination. Required to subscribe and for documentation |
 | **Tax ID (NIF / CIF)** | — | Tax identification of the organisation |
 | **Billing email** | — | Address the invoices arrive at |
-| **Address** | Yes | Company address. The coordinates and the **time zone** come from it |
+| **Address** | Yes | Company address, chosen from the address search box. The coordinates and the **time zone** come from it. There is no separate city field: the normalised address already includes it |
 
 There is no "sector of activity" field: the platform does not classify the organisation by sector and does not adjust anything based on it.
 
@@ -83,7 +102,7 @@ Tax details and billing have no branch equivalent: they are strictly global.
 |---|---|---|
 | Scope | The whole organisation | A single workplace |
 | Access | Owner | Owner and Manager |
-| Exclusive parameters | Tax details, visual identity, billing and subscription | Check zone and its radius |
+| Exclusive parameters | Tax details, workspace, collaborators, billing and subscription | Check zone and its radius |
 | Inheritance | Default value | Overrides the organisation's |
 | Impact of a change | The whole organisation | Only that site and its employees |
 
@@ -105,6 +124,10 @@ The rule is simple: what affects the company as a whole is configured at the org
 > **Role note:** organisation configuration, and in particular the subscription, is the **Owner's** responsibility. To delegate day-to-day management —branches, employees, tasks and documents— use the **Manager** role.
 
 ---
+
+## Electronic signature
+
+The **Workspace** tab has an **Electronic signature** section with the CheckBiz360 certificate and the steps to install it in Acrobat Reader, so that the PDFs signed by your workers show in green. See [Read receipt and electronic signature](../05-document-management/35-electronic-signature.md).
 
 ## Related articles
 

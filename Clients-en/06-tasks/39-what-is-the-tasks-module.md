@@ -39,6 +39,14 @@ When an employee has to complete a training module, view a corporate document or
 
 Short-term objectives —restocking, contacting a list of customers, completing a report— can be broken down into tasks assigned to the right people, with priority and deadline clearly defined.
 
+### Home services or work at the customer's premises
+
+When the work changes address every day —a repair, a cleaning job, a technical visit—, the task can carry its **own work site** without setting up a branch for each job. The employee can only start it while at that address. This is explained in [Create a task](./40-create-a-task.md#own-work-site).
+
+### Recurring work
+
+A job that is repeated with few variations does not need to be written again: the task is **duplicated** from the list or from its record, and the copy only asks for a title and dates. This is explained in [Create a task](./40-create-a-task.md#duplicating-a-task).
+
 ---
 
 ## Roles that interact with the module
@@ -55,15 +63,19 @@ Their scope is decided **on each task**, not on their profile. Every task includ
 
 ### Worker (employee)
 
-Receives the assigned tasks, consults their description and evidence, starts the work, adds progress notes, uploads evidence and marks the task as completed. They cannot create or assign tasks to other employees.
+Receives the assigned tasks, consults their description and evidence, starts the work, pauses and resumes it when they have to interrupt it, adds progress notes, uploads evidence and marks the task as completed. They cannot create or assign tasks to other employees.
 
 ---
 
-## Independence from time tracking
+## Relationship with time tracking
 
-The tasks module works autonomously. An employee can receive and complete tasks regardless of whether they have clocked in that day. Likewise, a task can have a deadline on a public holiday or outside normal hours, if the business operation requires it.
+Tasks and clock records measure different things, but they do not run separately: to **start**, **resume** or **complete** a task, the employee has to have an **open workday**, that is, to have clocked in. Being on a break counts as an open workday. If they have not clocked in, the action is rejected with the error `task/no_open_session`.
 
-This independence makes it a flexible tool for all kinds of companies, from shops with fixed shifts to field teams with variable schedules.
+**Pausing** does not require it: a task is paused right at the moment of leaving.
+
+Owners and administrators acting from the back office have no workday to open and are exempt; that way they can, for example, close the task of someone who has already left. A supervisor or manager working with their own employee record does need an open workday.
+
+Dates, on the other hand, are free: a task can have its deadline on a public holiday or outside normal hours if the operation requires it.
 
 ---
 
@@ -78,5 +90,6 @@ This independence makes it a flexible tool for all kinds of companies, from shop
 | [Create a task](./40-create-a-task.md) | Fields, steps and options when creating a task |
 | [Assign tasks to employees](./41-assign-tasks-to-employees.md) | Individual and team assignment |
 | [Task statuses](./42-task-statuses.md) | Complete life cycle of a task |
+| [Tracking and updates](./43-tracking-and-updates.md) | Starting, pausing, resuming and the task history |
 | [Task validation](./45-task-validation.md) | Validation flow and permissions |
 | [Task reports](./48-task-reports.md) | Metrics and data export |

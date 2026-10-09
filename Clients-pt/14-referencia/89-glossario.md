@@ -10,7 +10,10 @@ Este glossário reúne os termos operacionais mais relevantes do CheckBiz360, po
 Conceito que **não se aplica** na versão atual: o registo guarda sempre a hora real e não é arredondado. O que decide se o tempo trabalhado fora da faixa oficial é contabilizado é a modalidade de *jornada estrita ou flexível* do calendário.
 
 ### Assistente de IA (Merlin)
-Componente de inteligência artificial que interpreta os dados operacionais e os expõe como um relato acionável no painel operacional, no detalhe de sucursal e no detalhe de funcionário. Narra e prioriza sobre os números que o ecrã já mostra: não recalcula nem gera dados próprios, de forma que a sua leitura não pode contradizer os painéis.
+Componente de inteligência artificial que interpreta os dados operacionais e os expõe como um relato acionável no painel operacional, no detalhe de sucursal e no detalhe de funcionário. Narra e prioriza sobre os números que o ecrã já mostra: não recalcula nem gera dados próprios, de forma que a sua leitura não pode contradizer os painéis. Também narra o guia inicial do backoffice.
+
+### Ausência
+Dia ou intervalo de dias não úteis próprios de um funcionário: férias, licenças, dias livres. Soma-se aos feriados da sua entidade e da sua sucursal, bloqueia o seu registo nesses dias e pode ser marcada como *remunerada*, *não remunerada* ou *por definir*.
 
 ---
 
@@ -21,6 +24,9 @@ Configuração que define os dias úteis e feriados para uma sucursal ou para um
 
 ### Código de erro
 Identificador alfanumérico que o sistema devolve quando uma operação não pode ser concluída. Os códigos de erro seguem o formato `modulo/tipo_de_erro` (por exemplo, `checklog/out_of_radius`). Permitem identificar a causa exata de uma falha sem necessidade de interpretar mensagens de texto. Veja o artigo [Códigos de erro completos](./90-codigos-de-erro-completos.md).
+
+### Colaborador (tipo de relação)
+Pessoa externa que trabalha para a empresa sem pertencer ao quadro de pessoal: um trabalhador independente, um freelancer ou um prestador de serviços. Indica-se na ficha do funcionário, por oposição a *Pessoal*. Os colaboradores não aparecem no relatório de registo de jornada. Não deve ser confundido com os *colaboradores* da entidade, que são os utilizadores com acesso ao backoffice.
 
 ### Confirmação de leitura
 Confirmação explícita de que um funcionário acedeu a um documento que a exige. Fica registada com a data e a versão concreta do documento que foi lida, de modo que uma versão posterior não herda a confirmação da anterior. Não é uma assinatura eletrónica: a assinatura com validade eIDAS está no roadmap.
@@ -34,6 +40,9 @@ Indicador que acompanha cada tarefa e reflete a sua situação face ao prazo, in
 
 ### Dependência
 Indicador que mede quanta parte da operação de um local recai sobre poucas pessoas. Lê-se de forma direta —*metade da operação depende de 1 pessoa*, *depende de 2 pessoas*, *distribuição saudável*— e é complementado pela vista de substituição por função.
+
+### Disponibilidade (quadro)
+Separador de **Horários** que mostra, por sucursal e dia, quantas pessoas estão disponíveis sobre o total, com a respetiva percentagem de cobertura, e permite ver quem falta e porquê. Distingue a cinzento os dias em que ninguém deveria trabalhar (feriado ou encerramento) e a vermelho as lacunas de cobertura. Veja [Quadro de disponibilidade](../04-calendario-e-horarios/98-quadro-de-disponibilidade.md).
 
 ### Dispositivo de confiança
 Dispositivo móvel autorizado explicitamente pelo Owner ou pelo Manager para que um funcionário concreto possa efetuar registos a partir dele. A plataforma pode ser configurada para recusar registos provenientes de dispositivos não registados como de confiança.
@@ -50,6 +59,9 @@ A unidade organizativa raiz do CheckBiz360. Corresponde a uma empresa ou cliente
 
 ### Entrada / Saída (checkin / checkout)
 Registo da hora de entrada (checkin) e de saída (checkout) de um funcionário na sua jornada de trabalho. São os eventos fundamentais do controlo de horários. Uma entrada sem a saída correspondente gera uma jornada incompleta. Veja também: Registo / Checklog.
+
+### Equipa
+Modelo de pessoas que trabalham juntas, cada uma com a sua responsabilidade, função e valor por hora, mas sem sucursal. Aplicá-lo a uma sucursal adiciona todos os membros de uma vez e ignora quem já lá estava. Alterar a equipa não modifica as sucursais onde já foi aplicada. Ver [Equipas](../02-funcionarios/99-equipas.md).
 
 ### Evidência
 Foto ou vídeo que um funcionário anexa a uma tarefa para comprovar o trabalho realizado. Se a tarefa tiver ativada a exigência de evidência, o sistema não permite concluí-la sem pelo menos um ficheiro anexado e devolve o código `task/evidence_required`.
@@ -100,6 +112,13 @@ Correção retroativa de um registo efetuada por um Owner ou Manager a partir do
 
 ---
 
+## L
+
+### Local de trabalho (de uma tarefa)
+Morada própria de uma tarefa, com uma margem em metros, para trabalhos que não se fazem na sucursal. Iniciá-la ou retomá-la exige estar dentro da margem, e iniciá-la, retomá-la ou concluí-la só pode ser feito a partir da aplicação. Veja [Criar uma tarefa](../06-tarefas/40-criar-uma-tarefa.md#local-de-trabalho-próprio).
+
+---
+
 ## M
 
 ### Manager
@@ -107,6 +126,9 @@ Perfil de utilizador com capacidade para gerir funcionários, sucursais, documen
 
 ### Merlin
 Veja *Assistente de IA (Merlin)*.
+
+### Modelo de horário
+Cópia guardada de um horário semanal que se aplica depois a outra sucursal, a um funcionário ou à entidade, para não o configurar dia a dia. Antes chamava-se *predefinição de calendário*.
 
 ### Módulo documental
 Conjunto de funcionalidades do CheckBiz360 que permite carregar, organizar e distribuir documentos laborais (contratos, recibos de vencimento, comunicados, políticas de empresa, protocolos e prevenção de riscos), com visibilidade por perfil e confirmação de leitura do funcionário. Está incluído na subscrição, independentemente do plano. A assinatura eletrónica avançada não faz parte da versão atual: o que existe hoje é a confirmação de leitura.
@@ -133,7 +155,13 @@ Perfil com acesso completo a todas as funcionalidades de uma entidade no CheckBi
 Ecrã do backoffice que consolida a atividade do período em três vistas: a comparação entre sucursais, o detalhe por funcionário e a análise do período. É o ponto de entrada para a inteligência operacional e onde surge o relato do assistente de IA.
 
 ### Pausa (`restin` / `restout`)
-Registo do início (`restin`) e fim (`restout`) de uma pausa dentro da jornada de trabalho. As pausas serão ou não descontadas do tempo trabalhado consoante a configuração da sucursal. Tal como a entrada e a saída, as pausas exigem que o funcionário esteja dentro da geocerca, se assim estiver configurado.
+Registo do início (`restin`) e fim (`restout`) de uma pausa dentro da jornada de trabalho. As pausas serão ou não descontadas do tempo trabalhado consoante a configuração da sucursal. Tal como a entrada e a saída, as pausas exigem que o funcionário esteja dentro da geocerca, se assim estiver configurado. Não confundir com a *pausa de uma tarefa*.
+
+### Pausa de uma tarefa
+Interrupção de uma tarefa em curso, que se pausa e se retoma tantas vezes quantas forem necessárias. Não é um estado: a tarefa continua *em curso* e mostra a etiqueta *Em pausa*. O tempo em pausa é somado à parte no relatório de tarefas. Veja [Acompanhamento e atualizações](../06-tarefas/43-acompanhamento-e-atualizacoes.md#pausar-e-retomar-uma-tarefa).
+
+### Pendente (estado do funcionário)
+Estado de uma ficha de funcionário à qual falta algum dado para poder trabalhar, normalmente o correio eletrónico. Não recebe acesso, não é faturada e sai desse estado ao completar o dado.
 
 ### Perfil
 Nível de acesso e permissões de um utilizador dentro do CheckBiz360. Os perfis disponíveis são: Owner, Manager, Supervisor e Worker. Cada perfil tem um conjunto definido de ações que pode realizar no backoffice e na aplicação móvel.
@@ -175,13 +203,13 @@ Perfil intermédio entre Manager e Worker. O Supervisor pode rever os registos e
 ## T
 
 ### Tarefa
-Unidade de trabalho atribuída a um ou vários funcionários de uma sucursal, com prazo e, opcionalmente, data prevista de início. Percorre sete estados —rascunho, atribuída, em curso, concluída, validada, recusada e cancelada— e leva associado um indicador de cumprimento temporal independente do estado.
+Unidade de trabalho atribuída a um ou vários funcionários de uma sucursal, com prazo e, opcionalmente, data prevista de início e local de trabalho próprio. Percorre sete estados —rascunho, atribuída, em curso, concluída, validada, recusada e cancelada—, pode ser pausada enquanto está em curso e leva associado um indicador de cumprimento temporal independente do estado.
 
 ### Token de validação
-Código temporário gerado pelo sistema para verificar a identidade de um utilizador em operações sensíveis, como o primeiro início de sessão, a reposição de palavra-passe ou a autorização de um novo dispositivo. Os tokens de validação caducam ao fim de um determinado tempo.
+Código temporário gerado pelo sistema para verificar a identidade de um utilizador em operações sensíveis, como o primeiro início de sessão, a reposição de palavra-passe ou a autorização de um novo dispositivo. Os tokens de validação caducam ao fim de um determinado tempo; o do funcionário, ao fim de 30 dias.
 
-### Trabalho remoto
-Configuração que permite a um funcionário efetuar registos a partir de uma localização diferente da geocerca da sua sucursal. Quando está ativa, o sistema aceita registos fora do raio habitual sem gerar o erro `checklog/out_of_radius`. Deve ser ativada explicitamente pelo Owner ou pelo Manager.
+### Trabalho fora do centro
+Configuração que permite a um funcionário efetuar registos a partir de uma localização diferente da geocerca da sua sucursal. Quando está ativa, o sistema aceita registos fora do raio habitual sem gerar o erro `checklog/out_of_radius`. Deve ser ativada explicitamente pelo Owner ou pelo Manager. Antes chamava-se *Trabalho remoto*.
 
 ### Turno
 Faixa horária atribuída a um funcionário para uma jornada concreta, que define a sua hora de início e de fim de trabalho esperadas. Os turnos configuram-se no backoffice e associam-se ao calendário efetivo do funcionário ou da sucursal.

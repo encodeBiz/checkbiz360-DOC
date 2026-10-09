@@ -24,6 +24,8 @@ The regulatory compliance report contains the following data for each record in 
 - **Validation status:** indicates whether the record was validated automatically, is pending review or has been corrected manually.
 - **Traceability of corrections:** if a record was modified manually by a manager, the report states who made the modification, on what date and the reason recorded.
 
+> **Important:** the working-time record is mandatory for the employment relationship, so the report gathers **staff** personnel and leaves out employees marked as **collaborators** (self-employed or external workers who invoice the company). Before presenting it, check that each person's relationship type is correct: it is shown on their record, next to their status.
+
 ### Organisation details
 
 The report header includes:

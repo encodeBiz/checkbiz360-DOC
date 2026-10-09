@@ -37,7 +37,7 @@ To disable the geofence at a specific branch, enable the "disable geofence valid
 
 With this option active, the system skips the distance check for every employee assigned to that branch. The other validations (schedule, device, biometrics) continue to apply normally.
 
-> **Note:** This option is different from per-employee remote work mode. "Disable geofence validation" affects every employee at the branch, whereas "remote work" is an individual setting.
+> **Note:** This option is different from **working off-site**. "Disable geofence validation" affects every employee at the branch, whereas working off-site is an individual setting for each employee.
 
 ---
 
@@ -85,6 +85,6 @@ Configuring geofences and the clocking radius requires the **manager** or **owne
 ## Related articles
 
 - [How clocking in works](13-how-clocking-in-works.md)
-- [Remote clocking in](15-remote-clocking-in.md)
+- [Working off-site](15-remote-clocking-in.md)
 - [Statuses and error codes](22-statuses-and-error-codes.md)
 - [Check-in and check-out from the app](14-check-in-and-check-out-from-the-app.md)

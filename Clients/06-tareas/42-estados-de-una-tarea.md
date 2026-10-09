@@ -14,6 +14,8 @@ El recorrido habitual es:
 
 Con dos desvíos posibles: el responsable puede **rechazar** una tarea completada, o **cancelar** la tarea en cualquier momento antes de su cierre.
 
+Mientras está *en progreso*, la tarea puede quedar **en pausa** una o varias veces. La pausa no es un estado más: se explica en [Tarea en pausa](#tarea-en-pausa).
+
 ---
 
 ## Tabla de estados
@@ -28,7 +30,7 @@ Con dos desvíos posibles: el responsable puede **rechazar** una tarea completad
 | **Rechazada** | El responsable ha revisado la tarea completada y la ha devuelto con un motivo obligatorio. | Manager, u owner o supervisor con permiso de validación |
 | **Cancelada** | La tarea se anula porque ya no procede. Requiere motivo y no computa como incumplimiento. | Manager u owner desde el backoffice |
 
-Los estados *Validada*, *Rechazada* y *Cancelada* no pueden asignarse a mano al crear o editar una tarea: son resultado de una acción del ciclo de vida (validar, rechazar, cancelar).
+Los estados *Validada*, *Rechazada* y *Cancelada* no pueden asignarse a mano al crear o editar una tarea: son resultado de una acción del ciclo de vida (validar, rechazar, cancelar). De ellos solo se sale **reabriendo** la tarea, como se explica más abajo.
 
 ---
 
@@ -57,11 +59,11 @@ Quien crea la tarea la guarda con estado *Asignada*, o edita una tarea en borrad
 
 ### De asignada a en progreso
 
-El empleado abre la tarea en la app y pulsa iniciar. El backoffice refleja el cambio y, si la tarea tenía activado el aviso de inicio tardío, ese aviso deja de estar pendiente.
+El empleado abre la tarea en la app y pulsa iniciar. Necesita tener la jornada abierta y, si la tarea tiene lugar de trabajo propio, estar dentro de su margen. El backoffice refleja el cambio y, si la tarea tenía activado el aviso de inicio tardío, ese aviso deja de estar pendiente.
 
 ### De en progreso a completada
 
-El empleado pulsa finalizar en la app. Si la tarea tiene activada la exigencia de evidencia, el sistema no permite cerrarla sin al menos una foto o vídeo adjuntos, y devuelve el error `task/evidence_required`.
+El empleado pulsa finalizar en la app. Si la tarea tiene activada la exigencia de evidencia, el sistema no permite cerrarla sin al menos una foto o vídeo adjuntos, y devuelve el error `task/evidence_required`. Si la tarea estaba en pausa, la pausa se cierra en ese momento.
 
 ### De completada a validada
 
@@ -73,7 +75,28 @@ El responsable revisa el trabajo y lo devuelve indicando un **motivo obligatorio
 
 ### Cancelación
 
-Una tarea que ya no procede se cancela indicando un motivo. Es un cierre administrativo: no se contabiliza como incumplimiento del empleado.
+Una tarea que ya no procede se cancela indicando un motivo. Es un cierre administrativo: no se contabiliza como incumplimiento del empleado. El motivo queda guardado en la tarea y aparece en su historial; si había una pausa abierta, se cierra.
+
+> **Nota:** las cancelaciones hechas desde el backoffice antes del 11 de septiembre de 2026 no conservaron su motivo, aunque el diálogo lo pidiera. Las posteriores sí lo conservan.
+
+### Reabrir una tarea
+
+Una tarea validada, rechazada o cancelada se reabre desde **Editar**, cambiando su estado a **Asignada** o a **Borrador**. Pueden hacerlo owners y managers. Para volver a *Asignada* la tarea tiene que tener al menos un empleado asignado.
+
+Al reabrir:
+
+- Se retiran la validación, el rechazo o la cancelación anteriores, con sus motivos, de modo que la tarea no arrastra la firma de la ejecución pasada.
+- El cumplimiento temporal vuelve a *Sin iniciar*. Revise la fecha límite si ya ha pasado.
+- Los contadores de pausa vuelven a cero.
+- El historial conserva todo lo ocurrido antes de reabrir.
+
+---
+
+## Tarea en pausa
+
+Una tarea *en progreso* se puede **pausar** y **reanudar** tantas veces como haga falta, desde la app o desde el detalle de la tarea en el backoffice. Los pasos y las condiciones se explican en [Seguimiento y actualizaciones](./43-seguimiento-y-actualizaciones.md#pausar-y-reanudar-una-tarea).
+
+La pausa **no es un estado**: la tarea sigue *en progreso* a todos los efectos —filtros, informes, cumplimiento temporal— y la etiqueta de estado muestra **En pausa** mientras dura. La fecha límite no se amplía por estar en pausa.
 
 ---
 
@@ -108,7 +131,7 @@ Desde el listado de tareas se puede filtrar por estado y por prioridad. Esto per
 - Identificar tareas vencidas o en riesgo a través del indicador de cumplimiento temporal.
 - Comprobar el avance de las tareas activas en una sucursal o para un empleado concreto.
 
-Cada tarea muestra dos etiquetas de color: una para el estado y otra para el cumplimiento temporal. El código de color es coherente en toda la plataforma: gris para lo que aún no ha arrancado (borrador, cancelada, sin iniciar), azul para lo que está en curso o a la espera de revisión (asignada, completada), ámbar para lo que requiere atención (en progreso, en riesgo, completada tarde), verde para lo correcto (validada, a tiempo, completada a tiempo) y rojo para lo que ha fallado (rechazada, vencida).
+Cada tarea muestra dos etiquetas de color: una para el estado y otra para el cumplimiento temporal. El código de color es coherente en toda la plataforma: gris para lo que aún no ha arrancado o está detenido (borrador, cancelada, sin iniciar, en pausa), azul para lo que está en curso o a la espera de revisión (asignada, completada), ámbar para lo que requiere atención (en progreso, en riesgo, completada tarde), verde para lo correcto (validada, a tiempo, completada a tiempo) y rojo para lo que ha fallado (rechazada, vencida).
 
 ---
 
@@ -117,7 +140,7 @@ Cada tarea muestra dos etiquetas de color: una para el estado y otra para el cum
 | Artículo | Descripción |
 |---|---|
 | [Crear una tarea](./40-crear-una-tarea.md) | Campos y opciones al crear una tarea |
-| [Seguimiento y actualizaciones](./43-seguimiento-y-actualizaciones.md) | Cómo el empleado actualiza el progreso |
+| [Seguimiento y actualizaciones](./43-seguimiento-y-actualizaciones.md) | Cómo se actualiza el progreso, las pausas y el historial |
 | [Prioridades y fechas límite](./44-prioridades-y-fechas-limite.md) | Configuración de plazos y alertas |
 | [Validación de tareas](./45-validacion-de-tareas.md) | Flujo de validación y permisos |
 | [Notificaciones de tareas](./47-notificaciones-de-tareas.md) | Avisos automáticos por cambio de estado |

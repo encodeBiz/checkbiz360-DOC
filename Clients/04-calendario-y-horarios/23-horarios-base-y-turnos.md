@@ -33,6 +33,8 @@ Un ejemplo típico sería el turno de mañana de 09:00 a 14:00 y el turno de tar
 
 El sistema evalúa el fichaje contra el turno cuya franja horaria corresponde al momento del registro. Si el empleado ficha a las 09:05, el sistema lo vincula al turno de mañana. Si ficha a las 16:00, lo vincula al turno de tarde.
 
+La salida sigue la misma regla: se atribuye al turno que contiene la hora de salida y, si ya han terminado todos, al último que empezó, que es el que se está cerrando tarde. Con jornada estricta, una salida a las 20:10 en un día de 09:00–14:00 y 16:00–20:00 se ajusta al fin del turno de tarde, no al de mañana.
+
 ---
 
 ## Cómo el sistema selecciona el turno activo
@@ -53,15 +55,23 @@ Para cada día de la semana es posible indicar si está activo o desactivado. Un
 
 ### Configurar los días de la semana
 
-La configuración de días laborables se realiza desde el backoffice, en la sección de horarios de la entidad o la sucursal:
+La configuración de días laborables se realiza desde el backoffice:
 
 1. Acceda al backoffice con un rol con permisos de edición (owner o manager).
-2. Navegue a la sección **Configuración** de la entidad o sucursal correspondiente.
-3. Acceda al apartado **Horarios**.
-4. Para cada día de la semana, marque si el día está activo o desactivado.
-5. Guarde los cambios.
+2. Para el horario de la entidad, abra **Horarios** en el menú lateral y la pestaña **Configuración general**. Para una sucursal o un empleado, abra su ficha: el horario se hereda mientras esté activado **Usar horario base**, y al desactivarlo puede definir un **horario personalizado**.
+3. En el **Horario semanal**, active o desactive cada día. Un día apagado muestra «No hay turnos definidos».
+4. Añada los turnos de los días activos.
+5. Pulse **Guardar calendario**. Se pide confirmación, y en ese mismo paso puede guardar el horario también como plantilla (ver [Plantillas de horario](#plantillas-de-horario)).
 
 Los cambios en los días laborables tienen efecto inmediato sobre el calendario efectivo de todos los empleados que hereden ese horario.
+
+### Si todavía no hay ningún horario
+
+El registro de jornada es una obligación legal y no puede fallar porque aún no se haya configurado el horario. Por eso, **mientras no exista ningún horario en ningún nivel** —ni en la entidad, ni en la sucursal, ni en el empleado, o no haya un solo turno en toda la semana—, el fichaje se acepta con una franja abierta de 00:00 a 23:59.
+
+Es solo una red de seguridad para los primeros días: sin horario no se puede saber si alguien llegó tarde o hizo horas de más. La guía inicial del backoffice pide configurarlo antes que nada.
+
+En cuanto hay un horario definido, manda ese horario: una semana configurada con todos los días apagados **cierra** esos días y el fichaje se rechaza con `checklog/day_disabled`.
 
 > **Aviso importante:** Desactivar un día laborable afecta a todos los empleados que hereden el horario de esa entidad o sucursal. Si necesita desactivar un día solo para un empleado concreto, utilice las excepciones individuales de horario descritas en el artículo [Excepciones de horario](25-excepciones-de-horario.md).
 
@@ -88,13 +98,15 @@ Cómo se computen esas pausas —con la duración fija configurada o con el tiem
 
 ---
 
-## Presets de calendario
+## Plantillas de horario
 
-Configurar el horario semanal centro a centro es repetitivo cuando varias sucursales comparten el mismo patrón. Para evitarlo, el calendario permite **guardar la configuración como preset** y aplicarla después donde haga falta.
+Configurar el horario semanal centro a centro es repetitivo cuando varias sucursales comparten el mismo patrón. Para evitarlo, un horario puede **guardarse como plantilla** y aplicarse después donde haga falta.
 
-- **Guardar configuración** almacena el horario actual con el nombre que le dé.
-- **Aplicar** vuelca un preset guardado sobre el calendario que esté editando.
-- Los presets que dejen de usarse pueden eliminarse.
+- **Guardar una plantilla.** En la configuración general, pulse **Guardar calendario**; en la confirmación, marque **Guardar como plantilla** y dele un nombre. En la ficha de una sucursal o de un empleado, use el botón **Guardar como plantilla**.
+- **Aplicar una plantilla.** En **Selecciona una plantilla**, elija la que quiera: al elegirla se vuelca sobre el horario que está editando. Revise el resultado y guarde.
+- Las plantillas que dejen de usarse pueden eliminarse.
+
+La plantilla es una copia del **horario ya guardado**, no de lo que haya en pantalla. Por eso, al dar de alta una sucursal o un empleado, **Guardar como plantilla** está deshabilitado hasta que el registro existe: guarde primero y cree la plantilla después.
 
 Es la vía práctica para dar de alta una sucursal nueva con el horario de las demás sin rehacerlo día por día.
 
@@ -108,3 +120,4 @@ Es la vía práctica para dar de alta una sucursal nueva con el horario de las d
 - [Turnos rotativos](27-turnos-rotativos.md) — no disponible en la versión actual; alternativas
 - [Jornada estricta y jornada flexible](28-horario-flexible.md)
 - [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md)
+- [Tablero de disponibilidad](98-tablero-de-disponibilidad.md)

@@ -11,13 +11,32 @@ Se accede desde **Entidad** en el menú lateral, y la pantalla está organizada 
 | Pestaña | Qué contiene |
 |---|---|
 | **Datos de la Empresa** | Nombre comercial, idioma principal, razón social, NIF/CIF, email de facturación y dirección |
-| **Identidad visual** | Logotipo y colores de marca de la entidad |
+| **Entorno de trabajo** | Cómo se llaman las cosas en su organización: por ejemplo, si sus centros se llaman *Sucursal*, *Proyecto* u *Obra* |
 | **Configurar Facturación** | Métodos de pago de la cuenta |
 | **Suscripciones** | Plan contratado y su estado |
 | **Facturas** | Historial de facturación |
 | **Colaboradores** | Usuarios con acceso al backoffice de esta entidad |
 
-Las tres primeras muestran un aviso visual mientras estén incompletas. No es decorativo: **sin razón social y sin método de pago no se puede contratar el plan**.
+**Datos de la Empresa** y **Configurar Facturación** muestran un aviso visual mientras estén incompletas. No es decorativo: **sin razón social y sin método de pago no se puede contratar el plan**.
+
+---
+
+## Entorno de trabajo
+
+Antes se llamaba *Identidad visual*. Ya no configura colores ni imágenes: sirve para adaptar el nombre de los centros de trabajo al vocabulario de su organización. Si sus centros son proyectos u obras, el backoffice lo dirá así en el menú, en los listados y en las fichas —por ejemplo, «Detalles de Obra»—. Dejar el campo en blanco usa el nombre por defecto.
+
+---
+
+## Colaboradores
+
+Los colaboradores son las personas con acceso al backoffice de la entidad, cada una con su rol: **Propietario** o **Administrador**. Se invitan por correo desde la pestaña **Colaboradores**.
+
+- **Invitación.** Mientras la persona no entra, su invitación figura como *Pendiente a aceptar*. Se da por aceptada en cuanto inicia sesión con la entidad asignada; no depende de pulsar nada en la bienvenida.
+- **Quién gestiona.** Invitar, cambiar el rol o retirar colaboradores lo hacen propietarios y administradores con acceso **activo**; una invitación sin aceptar o un acceso desactivado no permiten gestionar a nadie.
+- **El escalón de propietario.** Solo un propietario puede nombrar a otro propietario o retirarlo.
+- **Nunca sin propietario.** No se puede retirar al **único propietario activo** de la entidad: añada antes a otro propietario.
+
+Retirar a un colaborador elimina sus permisos sobre la entidad y no se puede deshacer; para devolverle el acceso hay que invitarle de nuevo.
 
 ---
 
@@ -30,7 +49,7 @@ Las tres primeras muestran un aviso visual mientras estén incompletas. No es de
 | **Razón social** | Sí | Denominación legal. Necesaria para contratar y para la documentación |
 | **NIF / CIF** | — | Identificación fiscal de la entidad |
 | **Email de facturación** | — | Dirección a la que llegan las facturas |
-| **Dirección** | Sí | Domicilio de la empresa. De ella salen las coordenadas y la **zona horaria** |
+| **Dirección** | Sí | Domicilio de la empresa, elegido del buscador de direcciones. De ella salen las coordenadas y la **zona horaria**. No hay campo de ciudad aparte: la dirección normalizada ya la incluye |
 
 No existe un campo de "sector de actividad": la plataforma no clasifica la entidad por sector ni ajusta nada en función de él.
 
@@ -83,7 +102,7 @@ Los datos fiscales y la facturación no tienen equivalente en la sucursal: son e
 |---|---|---|
 | Alcance | Toda la organización | Un único centro de trabajo |
 | Acceso | Owner | Owner y Manager |
-| Parámetros exclusivos | Datos fiscales, identidad visual, facturación y suscripción | Zona de chequeo y su radio |
+| Parámetros exclusivos | Datos fiscales, entorno de trabajo, colaboradores, facturación y suscripción | Zona de chequeo y su radio |
 | Herencia | Valor por defecto | Sobrescribe el de la entidad |
 | Impacto de un cambio | Toda la organización | Solo ese centro y sus empleados |
 
@@ -105,6 +124,10 @@ La regla es sencilla: lo que afecta a la empresa como conjunto se configura en l
 > **Nota de rol:** la configuración de entidad, y en particular la suscripción, corresponde al **Owner**. Para delegar la gestión del día a día —sucursales, empleados, tareas y documentos— use el rol **Manager**.
 
 ---
+
+## Firma electrónica
+
+En la pestaña **Entorno de trabajo** hay un apartado **Firma electrónica** con el certificado de CheckBiz360 y los pasos para instalarlo en Acrobat Reader, para que los PDF firmados por sus trabajadores se vean en verde. Se explica en [Acuse de recibo y firma electrónica](../05-gestion-documental/35-firma-electronica.md).
 
 ## Artículos relacionados
 

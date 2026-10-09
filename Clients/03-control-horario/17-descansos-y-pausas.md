@@ -27,6 +27,10 @@ La distinción es importante para el cálculo de horas:
 
 Si el empleado registra un `checkout` sin haber cerrado una pausa activa con `restout`, el sistema puede marcar la jornada como incompleta o con incidencia, según la configuración de la sucursal.
 
+Los descansos y la salida pertenecen a la **jornada abierta**, y una jornada no se reparte entre centros: iniciar un descanso o fichar la salida en una sucursal distinta de la de la entrada se rechaza con `checklog/different_branches`. Si el empleado cambia de centro a mitad del día, debe cerrar la jornada en el primero y abrir otra en el segundo.
+
+> **Nota:** las pausas de este artículo son las de la **jornada** (control horario). Las pausas de una **tarea** son otra cosa: se explican en [Seguimiento y actualizaciones de tareas](../06-tareas/43-seguimiento-y-actualizaciones.md#pausar-y-reanudar-una-tarea).
+
 ---
 
 ## Cómo registrar una pausa desde la app
@@ -43,6 +47,8 @@ Si el empleado registra un `checkout` sin haber cerrado una pausa activa con `re
 2. La app confirmará la reanudación de la jornada y mostrará el tiempo de pausa transcurrido.
 
 La pantalla principal de asistencia refleja en todo momento si el empleado está en jornada activa o en pausa.
+
+En la tarjeta de información laboral, el descanso se muestra según la modalidad: con **descanso estricto** aparecen los minutos que se descuentan; con **descanso flexible** aparece «Flexible», porque se computa lo que el empleado marque (desde la versión 1.3.2 de la app).
 
 ---
 

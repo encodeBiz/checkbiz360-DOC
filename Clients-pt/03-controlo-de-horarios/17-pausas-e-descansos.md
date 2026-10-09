@@ -27,6 +27,10 @@ A distinção é importante para o cálculo de horas:
 
 Se o funcionário registar um `checkout` sem ter fechado uma pausa ativa com `restout`, o sistema pode marcar a jornada como incompleta ou com incidência, consoante a configuração da sucursal.
 
+As pausas e a saída pertencem à **jornada aberta**, e uma jornada não se reparte entre locais: iniciar uma pausa ou registar a saída numa sucursal diferente da da entrada é recusado com `checklog/different_branches`. Se o funcionário mudar de local a meio do dia, deve fechar a jornada no primeiro e abrir outra no segundo.
+
+> **Nota:** as pausas deste artigo são as da **jornada** (controlo de horários). As pausas de uma **tarefa** são outra coisa: são explicadas em [Acompanhamento e atualizações de tarefas](../06-tarefas/43-acompanhamento-e-atualizacoes.md#pausar-e-retomar-uma-tarefa).
+
 ---
 
 ## Como registar uma pausa a partir da aplicação
@@ -43,6 +47,8 @@ Se o funcionário registar um `checkout` sem ter fechado uma pausa ativa com `re
 2. A aplicação confirmará a retoma da jornada e mostrará o tempo de pausa decorrido.
 
 O ecrã principal de assiduidade reflete a todo o momento se o funcionário está em jornada ativa ou em pausa.
+
+No cartão de informação laboral, o descanso é mostrado consoante a modalidade: com **descanso estrito** aparecem os minutos que são descontados; com **descanso flexível** aparece «Flexível», porque se contabiliza o que o funcionário marcar (a partir da versão 1.3.2 da aplicação).
 
 ---
 

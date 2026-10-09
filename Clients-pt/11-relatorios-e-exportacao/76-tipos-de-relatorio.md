@@ -2,7 +2,7 @@
 
 O CheckBiz360 centraliza a informação operacional da sua empresa de duas formas distintas, e convém não as confundir:
 
-- **Relatórios descarregáveis**, que se geram a pedido a partir da secção **Relatórios**, ficam arquivados no histórico e são descarregados como ficheiro. Hoje são dois: o **relatório de assiduidade** (PDF ou Excel) e o **relatório de tarefas** (Excel).
+- **Relatórios descarregáveis**, que se geram a pedido a partir da secção **Relatórios**, ficam arquivados no histórico e são descarregados como ficheiro. São três: o **relatório de assiduidade** (PDF ou Excel), o **relatório de tarefas** (Excel) e o relatório **«Equipamentos e EPI»** (Excel, com o complemento de inventário). Com o inventário contratado, o de tarefas inclui também o material de cada tarefa, e o inventário tem o seu próprio **relatório de consumo**.
 - **Análises no ecrã**, que se consultam no painel operacional e nas fichas de sucursal e de funcionário: pontualidade, custos e anomalias. Não geram ficheiro descarregável na versão atual.
 
 Este guia descreve cada um e os perfis que têm acesso.
@@ -19,6 +19,10 @@ O relatório de assiduidade é o documento base do módulo. Reúne os dados de p
 - Horas trabalhadas totais por funcionário no período selecionado.
 - Desagregação por turno, sucursal ou período.
 - Estado de cada jornada: completa, ausência justificada, ausência não justificada, jornada parcial.
+
+> **Importante:** o relatório reúne o **pessoal** da empresa. Os funcionários marcados como **colaboradores** não aparecem, porque o registo de horários é uma obrigação da relação laboral e não se aplica a um trabalhador independente que fatura à empresa. Os funcionários sem tipo de relação registado continuam a ser incluídos. Consulte [Perfis e níveis de responsabilidade](../02-funcionarios/07-perfis-e-niveis-de-responsabilidade.md#tipo-de-relação-interno-face-a-colaborador).
+
+Se não houver nenhum registo que cumpra os filtros, o sistema indica-o e não gera o ficheiro.
 
 ### Para que serve
 
@@ -64,8 +68,11 @@ O relatório de tarefas reúne as tarefas do período com o seu estado e o seu c
 ### O que inclui
 
 - As tarefas cujo **prazo** cai dentro do período selecionado, com o seu estado e o seu cumprimento temporal.
+- O tempo de cada tarefa: tempo investido, tempo em pausa, número de pausas e tempo investido sem pausas. Explicam-se em [Relatórios de tarefas](../06-tarefas/48-relatorios-de-tarefas.md#o-que-contém).
 - Filtros por sucursal e por estado da tarefa.
 - Os dados necessários para calcular na folha de cálculo o que for preciso: concluídas face a atribuídas, vencidas, recusadas.
+
+- Com o [inventário](../16-inventario/100-o-que-e-o-inventario.md) contratado: o material consumido por tarefa, o seu custo e o que ficou por acertar, mais uma folha de detalhe por artigo. Ver [Relatórios de tarefas](../06-tarefas/48-relatorios-de-tarefas.md#material-de-cada-tarefa).
 
 > **Nota:** as métricas agregadas já calculadas —percentagem de conclusão, tempo médio de resolução, avaliação média— estão no roadmap. Hoje o relatório entrega o detalhe e o cálculo faz-se na folha.
 
@@ -84,9 +91,19 @@ Complementa o controlo de presenças com dados sobre a atividade real realizada 
 
 ---
 
+## Relatório de consumo (inventário)
+
+Exclusivo do complemento de inventário. Responde a **para onde vai o material e quanto custa**: agrupa o consumo de um período por artigo, tarefa, funcionário, sucursal ou armazém, valorizado ao custo de cada artigo, e exporta-se para CSV juntamente com o livro de movimentos. Abre-se na secção Inventário. Ver [Relatório de consumo e movimentos](../16-inventario/103-relatorio-de-consumo-e-movimentos.md).
+
+---
+
 > **Nota:** as análises de custos e de anomalias contêm informação especialmente sensível. Certifique-se de que apenas os perfis com acesso autorizado têm credenciais ativas na plataforma. Reveja periodicamente os utilizadores com perfil de Manager ou Owner na secção de gestão de equipa.
 
 ---
+
+## Relatório «Equipamentos e EPI»
+
+Aparece sempre em Relatórios; sem o complemento de inventário surge a vermelho e explica o que é e como o ativar. É a prova para uma inspeção do trabalho, em duas folhas: **Entregas** (o que foi entregue a cada trabalhador, com que documentos e versão, quem o entregou, como confirmou e se a assinatura foi verificada, quando e como o devolveu) e **Equipamentos e inspeções** (cada exemplar com o seu estado, quem o tem e cada documento com o seu resultado e validade). Ver [Equipamentos: documentos, inspeções e entregas](../16-inventario/104-equipamentos-documentos-inspecoes-e-entregas.md).
 
 ## Artigos relacionados
 

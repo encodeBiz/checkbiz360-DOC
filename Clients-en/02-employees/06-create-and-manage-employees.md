@@ -13,7 +13,7 @@ This article explains how to create an employee from scratch, which fields are r
 - **Full name** — First name and surnames as they should appear in the records.
 - **Email address** — Unique address on the platform. It is the employee's identifier and the address the initial access is sent to. **It cannot be changed once the profile has been created.**
 - **Phone** — Contact number, with international dialling code.
-- **Relationship type** — *Internal* (payroll) or *Contractor* (external, freelance or service provider).
+- **Relationship type** — *Staff* (company personnel) or *Collaborator* (external, freelance or service provider). It appears on the record next to the status, and it is not a minor detail: collaborators **are not included in the working-time record report**, which is mandatory for the employment relationship. See [Roles and responsibility levels](07-roles-and-responsibility-levels.md#relationship-type-internal-versus-contractor).
 
 > **Important:** the responsibility level —worker, supervisor, manager or owner— **is not assigned at creation**. It is defined when linking the employee to a branch, because the same person can hold different responsibilities at each site. See [Assign employees to branches](../08-branches-and-organisation/60-assign-employees-to-branches.md).
 
@@ -41,14 +41,14 @@ Three options are enabled or disabled per employee:
 |---|---|
 | **Two-step verification (2FA)** | Requires a temporary code in addition to the password |
 | **Biometrics required** | The employee must authenticate with a fingerprint or facial recognition before their clock-in is accepted |
-| **Remote work** | Allows clocking in outside the branch geofence. When enabled, **the employee's address becomes required**, because it is the reference against which the remote clock-in is validated |
+| **Works off-site** | Allows clocking in outside the branch geofence (it used to be called *Remote work*). When enabled, **the employee's address becomes required**, because it is the reference against which the clock-in is validated. See [Working off-site](../03-time-tracking/15-remote-clocking-in.md) |
 
 ---
 
 ## Other fields
 
 - **Identity document** — Useful for audits and HR exports.
-- **Address** — Optional, unless remote work is enabled.
+- **Address** — Optional, unless working off-site is enabled. It is chosen from the address search box; there is no separate city field, because the normalised address already includes it.
 - **Employee calendar** — Their own schedule and exceptions, when they differ from their branch's. If it is not configured, the employee inherits the branch calendar.
 - **Additional data** — Free key/value fields for information specific to your organisation (employee number, collective agreement, cost centre, etc.).
 
@@ -58,10 +58,11 @@ Linking the employee to a branch also defines their **responsibility** at that s
 
 ## Employee statuses
 
-CheckBiz360 covers seven employment statuses:
+CheckBiz360 covers seven employment statuses, plus the **Pending** status for records that are only partly completed:
 
 | Status | Description |
 |---|---|
+| **Pending** | The record exists but the person cannot work yet, usually because the email address is missing (common in records imported from an integration). They receive no access and no welcome email, and **are not billed**. The record leaves this status when the email is completed. It is not assigned by hand. |
 | **Active** | The employee is working normally and has access to the platform. |
 | **Inactive** | The employee is not operational. This is the status used when the employment relationship ends: the profile and its history are retained. |
 | **Holiday** | The employee is on holiday. |
@@ -70,7 +71,9 @@ CheckBiz360 covers seven employment statuses:
 | **Paternity leave** | The employee is on paternity leave. |
 | **Maternity leave** | The employee is on maternity leave. |
 
-To change the status, open the employee's profile, press **Edit** and select the new status.
+To change the status, open the employee's profile, press **Edit** and select the new status. The status filter in the employee list includes **Pending**, to locate the records still to be completed.
+
+> **Important:** for billing purposes, every employee who is neither pending nor deleted counts. An **Inactive** employee, or one on leave, is still part of the workforce and **is billed**.
 
 > **Note:** the absence statuses (holiday, sick leave, career break) can also be managed as **absences with dates** from the calendar, which allows them to be planned in advance instead of changing the status by hand on the day they start.
 
@@ -112,3 +115,4 @@ Profile management is available to **manager** (level 3) and **owner** (level 4)
 - [Two-factor authentication](09-two-factor-authentication.md)
 - [Assign employees to branches](../08-branches-and-organisation/60-assign-employees-to-branches.md)
 - [Export the employee list](12-export-employee-list.md)
+- [Teams](99-teams.md)

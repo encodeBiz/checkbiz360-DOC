@@ -30,6 +30,10 @@ También puede asignar empleados directamente desde la ficha de la sucursal:
 3. Pulse **Asignar empleado** e introduzca el nombre o el correo electrónico del empleado en el buscador.
 4. Seleccione el rol y el calendario y pulse **Confirmar**.
 
+### Dar de alta a un equipo entero
+
+Si la misma cuadrilla trabaja en varios proyectos, no hace falta vincular a cada persona por separado. En la lista de empleados de la ficha de la sucursal, **Aplicar equipo** da de alta de una vez a todos los miembros de un equipo, cada uno con su responsabilidad, su puesto y su precio, y salta a quien ya estaba. **Guardar como equipo** hace lo contrario: convierte la plantilla de la sucursal en un equipo reutilizable. Consulte [Equipos](../02-empleados/99-equipos.md).
+
 ## Multi-sucursal: un empleado en varias sucursales
 
 CheckBiz360 admite que un mismo empleado esté asignado a varias sucursales simultáneamente, con roles distintos en cada una. Esta funcionalidad está diseñada para cubrir casos como:
@@ -82,6 +86,7 @@ Para desvincular un empleado de una sucursal:
 ## Artículos relacionados
 
 - [Crear y gestionar sucursales](57-crear-y-gestionar-sucursales.md)
+- [Equipos](../02-empleados/99-equipos.md)
 - [Estados de una sucursal](59-estados-de-una-sucursal.md)
 - [Configuración de entidad](61-configuracion-de-entidad.md)
 - [Vista global multi-sucursal](62-vista-global-multi-sucursal.md)

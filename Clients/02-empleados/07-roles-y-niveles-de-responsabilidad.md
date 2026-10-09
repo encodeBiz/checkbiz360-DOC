@@ -38,8 +38,10 @@ El owner tiene acceso absoluto a la plataforma, incluyendo la configuración glo
 
 Independientemente del nivel de rol asignado, cada empleado tiene un tipo de relación con la empresa:
 
-- **Interno** — Empleado de plantilla con contrato laboral vigente. Forma parte de la estructura habitual de la organización.
+- **Plantilla** — Empleado con contrato laboral vigente. Forma parte de la estructura habitual de la organización.
 - **Colaborador** — Persona externa que trabaja para la empresa de forma puntual o recurrente sin pertenecer a la plantilla. Puede ser un freelance, un proveedor de servicios o un autónomo.
+
+El tipo de relación aparece en la ficha del empleado, junto a su estado, y tiene una consecuencia legal: el **informe de registro de jornada deja fuera a los colaboradores**, porque el registro horario es obligatorio para la relación laboral y no para un autónomo que factura a la empresa. Los colaboradores sí siguen apareciendo en los paneles de análisis y en las tareas. Los empleados anteriores a esta distinción, que no tienen tipo registrado, se incluyen en el informe como hasta ahora.
 
 Ambos tipos pueden tener cualquier nivel de rol, aunque en la práctica los colaboradores suelen operar como workers o supervisores con un alcance limitado.
 

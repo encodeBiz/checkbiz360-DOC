@@ -32,11 +32,10 @@ Com a jornada flexível, **manda o que o funcionário registou**:
 
 ## Como se configura
 
-1. Aceda a **Calendário** no menu lateral.
-2. Escolha o âmbito sobre o qual quer trabalhar: **Configuração geral** (entidade), **Sucursal** ou **Funcionário**.
-3. Por baixo do horário semanal, localize o interruptor de **Jornada estrita / Jornada flexível**.
-4. Ative-o ou desative-o. O quadro que aparece por baixo resume as regras de cômputo que ficam aplicadas, para que não haja dúvidas sobre o que se está a escolher.
-5. Guarde o calendário.
+1. Abra o horário que pretende ajustar: o da entidade em **Horários** → **Configurações gerais**, ou o de uma sucursal ou de um funcionário a partir da sua ficha.
+2. Em **Regras de jornada e descanso**, localize o cartão da jornada.
+3. Escolha **Dia estrito** ou **Jornada flexível**. O texto do cartão resume as regras de cômputo que ficam aplicadas, para que não haja dúvidas sobre o que se está a escolher.
+4. Guarde o calendário.
 
 Sendo parte do calendário, segue a mesma **herança** que o resto da configuração: o que se define na entidade desce às sucursais, e o que se define numa sucursal desce aos seus funcionários, salvo se esse nível tiver a sua própria configuração. Consulte [Herança de configuração](./26-heranca-de-configuracao.md).
 

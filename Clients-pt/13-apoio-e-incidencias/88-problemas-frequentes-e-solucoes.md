@@ -1,6 +1,6 @@
 # Problemas frequentes e soluções
 
-Este artigo reúne as doze situações técnicas e operacionais mais habituais no CheckBiz360, juntamente com os passos de diagnóstico e resolução recomendados. Consulte este guia antes de abrir uma incidência, uma vez que a maioria destes problemas tem solução direta sem necessidade de intervenção da equipa de apoio.
+Este artigo reúne as catorze situações técnicas e operacionais mais habituais no CheckBiz360, juntamente com os passos de diagnóstico e resolução recomendados. Consulte este guia antes de abrir uma incidência, uma vez que a maioria destes problemas tem solução direta sem necessidade de intervenção da equipa de apoio.
 
 ---
 
@@ -169,6 +169,34 @@ Este artigo reúne as doze situações técnicas e operacionais mais habituais n
 2. Confirme que o seu perfil tem permissões para gerar relatórios do tipo selecionado. Os relatórios de custos e de anomalias estão restritos a Owner e Manager.
 3. Certifique-se de que os filtros aplicados (sucursal, funcionário) não excluem todos os registos disponíveis para esse período.
 4. Se o problema persistir com um intervalo de datas que deveria estar dentro do período de retenção, abra uma incidência com o intervalo exato que está a tentar consultar.
+
+---
+
+## 13. O funcionário não consegue registar num feriado embora tenha turno
+
+**Sintoma:** o funcionário tem um horário personalizado com turno nesse dia, mas o registo é recusado com `checklog/day_disabled`. A aplicação explica que hoje não é dia útil.
+
+**Passos de resolução:**
+
+1. Verifique se essa data é feriado na **entidade** ou na **sucursal** do funcionário. Os feriados aplicam-se a todos os funcionários do seu âmbito, mesmo que algum tenha turno próprio nesse dia.
+2. Se nesse dia trabalhar toda a sucursal, retire o feriado da sucursal (ou da entidade, e adicione-o apenas nas sucursais que fecham).
+3. Se só trabalhar uma parte do quadro de pessoal, não marque o dia como feriado na sucursal e registe uma ausência a quem folga. Consulte [Feriados e dias não úteis](../04-calendario-e-horarios/29-feriados-e-dias-nao-uteis.md#o-que-acontece-se-a-empresa-trabalha-em-feriado).
+4. Para a jornada já trabalhada, registe uma jornada manual.
+5. Se não houver feriado, verifique se o funcionário não tem uma ausência registada nesse dia (`checklog/absence`).
+
+---
+
+## 14. Não é possível iniciar, retomar ou concluir uma tarefa
+
+**Sintoma:** ao iniciar, retomar ou concluir uma tarefa aparece um erro e a tarefa não muda.
+
+**Passos de resolução:**
+
+1. `task/no_open_session`: o funcionário não tem a jornada aberta. Deve registar a entrada e voltar a tentar.
+2. `task/out_of_worksite`: a tarefa tem local de trabalho próprio e o funcionário está fora da sua margem. O aviso indica a distância. Se estiver no local e a margem for demasiado estreita —uma garagem, um pavilhão—, alargue a margem na tarefa.
+3. `task/geo_required`: tentou-se a partir do backoffice uma tarefa com local de trabalho próprio. Iniciá-la, retomá-la ou concluí-la tem de ser feito pelo funcionário a partir da aplicação.
+4. Se a ação for **retomar** e aparecer `task/not_paused`, outro atribuído já a retomou: atualize a tarefa.
+5. Se a tarefa estiver recusada ou validada e não admitir ser concluída (`task/invalid_transition`), reabra-a devolvendo-a a *Atribuída* a partir de **Editar**.
 
 ---
 

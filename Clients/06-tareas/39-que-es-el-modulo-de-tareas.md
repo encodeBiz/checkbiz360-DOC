@@ -39,6 +39,14 @@ Cuando un empleado debe completar un módulo de formación, visualizar un docume
 
 Los objetivos de corto plazo —llenar un stock, contactar con una lista de clientes, completar un informe— pueden descomponerse en tareas asignadas a las personas adecuadas, con prioridad y fecha límite claramente definidas.
 
+### Servicios a domicilio o en casa del cliente
+
+Cuando el trabajo cambia de dirección cada día —una reparación, una limpieza, una visita técnica—, la tarea puede llevar su **propio lugar de trabajo** sin dar de alta una sucursal por encargo. El empleado solo puede iniciarla estando en esa dirección. Se explica en [Crear una tarea](./40-crear-una-tarea.md#lugar-de-trabajo-propio).
+
+### Trabajo que se repite
+
+Un encargo que se repite con pocas variaciones no hace falta escribirlo de nuevo: la tarea se **duplica** desde el listado o desde su ficha, y la copia solo pide título y fechas. Se explica en [Crear una tarea](./40-crear-una-tarea.md#duplicar-una-tarea).
+
 ---
 
 ## Roles que interactúan con el módulo
@@ -55,15 +63,19 @@ Su alcance se decide **en cada tarea**, no en su perfil. Toda tarea incluye dos 
 
 ### Worker (empleado)
 
-Recibe las tareas asignadas, consulta su descripción y sus evidencias, inicia el trabajo, añade notas de progreso, sube evidencias y marca la tarea como completada. No puede crear ni asignar tareas a otros empleados.
+Recibe las tareas asignadas, consulta su descripción y sus evidencias, inicia el trabajo, lo pausa y lo reanuda cuando tiene que interrumpirlo, añade notas de progreso, sube evidencias y marca la tarea como completada. No puede crear ni asignar tareas a otros empleados.
 
 ---
 
-## Independencia respecto al control horario
+## Relación con el control horario
 
-El módulo de tareas funciona de forma autónoma. Un empleado puede recibir y completar tareas con independencia de si ha fichado entrada ese día. Del mismo modo, una tarea puede tener fecha límite en un día festivo o fuera del horario habitual, si así lo requiere la operativa del negocio.
+Tareas y fichajes miden cosas distintas, pero no van por separado: para **iniciar**, **reanudar** o **completar** una tarea, el empleado tiene que tener la **jornada abierta**, es decir, haber fichado la entrada. Estar en un descanso cuenta como jornada abierta. Si no ha fichado, la acción se rechaza con el error `task/no_open_session`.
 
-Esta independencia lo convierte en una herramienta flexible para todo tipo de empresas, desde comercios con turnos fijos hasta equipos de campo con horarios variables.
+**Pausar** no lo exige: se pausa justo en el momento de irse.
+
+Los propietarios y administradores que actúan desde el backoffice no tienen jornada que abrir y quedan exentos; así pueden, por ejemplo, cerrar la tarea de alguien que ya se ha marchado. Un supervisor o manager que trabaja con su propia ficha de empleado sí necesita tener la jornada abierta.
+
+Las fechas, en cambio, son libres: una tarea puede tener la fecha límite en un día festivo o fuera del horario habitual si la operativa lo requiere.
 
 ---
 
@@ -78,5 +90,6 @@ Esta independencia lo convierte en una herramienta flexible para todo tipo de em
 | [Crear una tarea](./40-crear-una-tarea.md) | Campos, pasos y opciones al crear una tarea |
 | [Asignar tareas a empleados](./41-asignar-tareas-a-empleados.md) | Asignación individual y por equipo |
 | [Estados de una tarea](./42-estados-de-una-tarea.md) | Ciclo de vida completo de una tarea |
+| [Seguimiento y actualizaciones](./43-seguimiento-y-actualizaciones.md) | Iniciar, pausar, reanudar y el historial de la tarea |
 | [Validación de tareas](./45-validacion-de-tareas.md) | Flujo de validación y permisos |
 | [Informes de tareas](./48-informes-de-tareas.md) | Métricas y exportación de datos |

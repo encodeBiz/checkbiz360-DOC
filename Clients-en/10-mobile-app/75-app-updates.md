@@ -15,6 +15,29 @@ Each new version of CheckBiz360 may include:
 
 ---
 
+## What's new in recent versions
+
+Some features depend on the version installed. If an employee cannot see one of them, the first thing to check is that their app is up to date.
+
+### Version 1.4.0
+
+- **Pausing and resuming tasks** from the task record. Pause appears once the workday has been clocked in; resume requires the same as starting.
+- The task record shows the **time spent** (excluding pauses) and the total of pauses, and it updates while the task is in progress.
+- **Task history** in the app: its life cycle, pauses included.
+
+### Versions 1.3.2 and 1.3.3
+
+- **Tasks' own work site**: the app sends the position when starting and completing, warns of the distance before you press, and links the address with **View in Maps**.
+- **Non-working day explained**: if today is a public holiday or a day off, the app says so instead of showing the error code, and reminds you that a manual workday can be requested. A branch public holiday counts even if the employee has their own schedule that day.
+- Clocking error codes appear translated.
+- The non-working day label says "Non-working", because it may be due to a public holiday, an absence or the branch being closed.
+- The flexible break is shown as "Flexible", and the day's shifts appear one per line.
+- Redesigned main screen, with workday and break timers, and a reorganised side menu.
+- Confirmation and error messages are distinguished by colour (green, red, amber) and are no longer confused with the navigation bar.
+- Notifications show the CheckBiz360 name correctly, and the notification of an answered incident appears in the employee's language.
+
+---
+
 ## How to update on iOS
 
 ### Manual update

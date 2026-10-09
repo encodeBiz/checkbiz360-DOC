@@ -53,6 +53,16 @@ Si su usuario está vinculado a más de una organización o entidad dentro de Ch
 
 ---
 
+## Su móvil como firma
+
+Al entrar, la app crea en el chip seguro de su móvil una clave que solo se desbloquea con su huella, su cara o el código de desbloqueo. Con ella firmará los acuses de recibo de documentos y las entregas de equipos. No tiene que hacer nada: ocurre al iniciar sesión.
+
+- Si su móvil tiene **huella o cara** configuradas, se usan ellas.
+- Si solo tiene **código, patrón o PIN**, se usa ese.
+- Si **no tiene bloqueo de pantalla**, no se crea clave y, al confirmar, la app le pedirá la contraseña de su cuenta. Configure un bloqueo de pantalla: es más cómodo y la firma vale más.
+
+La clave nunca sale del móvil. Si cambia de teléfono, la app crea otra al entrar.
+
 ## Solución de problemas frecuentes
 
 ### El correo de bienvenida no llegó
@@ -69,8 +79,14 @@ Si introdujo correctamente la contraseña durante la activación pero el sistema
 1. Pulse la opción **¿Olvidó su contraseña?** o **Recuperar contraseña** en la pantalla de inicio de sesión.
 2. Introduzca su dirección de correo electrónico.
 3. Pulse **Enviar**.
-4. Recibirá un correo con un enlace para restablecer la contraseña. Siga las instrucciones del correo para establecer una contraseña nueva.
+4. Recibirá un correo, en su idioma, con un enlace para restablecer la contraseña. Siga las instrucciones del correo para establecer una contraseña nueva.
 5. Una vez completado el proceso, intente iniciar sesión de nuevo con la nueva contraseña.
+
+> **Nota:** por seguridad, la recuperación responde siempre lo mismo, exista o no una cuenta con ese correo: así nadie puede usarla para averiguar qué direcciones están registradas. Si el correo no llega, compruebe con su responsable que la dirección es la correcta. Se admiten hasta **3 solicitudes cada 15 minutos**; pasado ese límite, espere antes de volver a pedirlo.
+
+### La app me pide volver a iniciar sesión
+
+Por seguridad, la sesión del empleado con la que la app ficha caduca a los **30 días**, y la validación que se envía con el correo de bienvenida también. Normalmente la app la renueva sin que el empleado lo note. Si alguna vez le pide de nuevo el correo y la contraseña, no es un fallo de la cuenta: vuelva a iniciar sesión.
 
 ### No recuerdo qué dirección de correo utilizaron para registrarme
 

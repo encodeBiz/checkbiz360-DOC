@@ -14,7 +14,7 @@ O sistema obtém as coordenadas GPS do dispositivo no momento do registo e compa
 
 A distância real entre o funcionário e o centro da geocerca fica gravada no sistema para análise posterior. Isto permite ao responsável verificar se o raio está bem dimensionado ou se existe um padrão de tentativas de registo a partir de localizações incorretas.
 
-Se o funcionário trabalhar em regime de teletrabalho e tiver ativado o campo «trabalho remoto», esta camada de validação é omitida por completo. A geocerca não se aplica em ambientes de trabalho remoto.
+Se o funcionário tiver ativada a opção **Trabalha fora do centro** (antes chamada *Trabalho remoto*), esta camada de validação é omitida por completo: a geocerca não se aplica a essa pessoa.
 
 ### Camada 2 — Horário efetivo
 
@@ -70,6 +70,6 @@ A configuração das camadas de validação (zona de verificação, biometria, 2
 ## Artigos relacionados
 
 - [Entrada e saída na aplicação](14-entrada-e-saida-na-aplicacao.md)
-- [Registo em teletrabalho](15-registo-em-teletrabalho.md)
+- [Trabalho fora do centro](15-registo-em-teletrabalho.md)
 - [Geocercas e raio de registo](16-geocercas-e-raio-de-registo.md)
 - [Estados e códigos de erro](22-estados-e-codigos-de-erro.md)

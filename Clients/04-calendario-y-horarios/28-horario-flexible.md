@@ -32,11 +32,10 @@ Es la opción adecuada cuando el horario es una referencia y lo que se quiere me
 
 ## Cómo se configura
 
-1. Acceda a **Calendario** en el menú lateral.
-2. Elija el ámbito sobre el que quiere trabajar: **Configuración general** (entidad), **Sucursal** o **Empleado**.
-3. Bajo el horario semanal, localice el interruptor de **Jornada estricta / Jornada flexible**.
-4. Actívelo o desactívelo. El recuadro que aparece debajo resume las reglas de cómputo que quedan aplicadas, para que no haya duda de lo que se está eligiendo.
-5. Guarde el calendario.
+1. Abra el horario que quiere ajustar: el de la entidad en **Horarios** → **Configuración general**, o el de una sucursal o un empleado desde su ficha.
+2. En **Reglas de jornada y descanso**, localice la tarjeta de la jornada.
+3. Elija **Jornada estricta** o **Jornada flexible**. El texto de la tarjeta resume las reglas de cómputo que quedan aplicadas, para que no haya duda de lo que se está eligiendo.
+4. Guarde el calendario.
 
 Al ser parte del calendario, sigue la misma **herencia** que el resto de la configuración: lo que se define en la entidad baja a las sucursales, y lo que se define en una sucursal baja a sus empleados, salvo que ese nivel tenga su propia configuración. Consulte [Herencia de configuración](./26-herencia-de-configuracion.md).
 

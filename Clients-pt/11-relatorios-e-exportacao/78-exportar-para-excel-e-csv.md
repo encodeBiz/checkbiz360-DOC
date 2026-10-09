@@ -43,6 +43,8 @@ Escolha o formato consoante a utilização: **PDF** para apresentar ou arquivar 
 | Horas trabalhadas | Total de horas e minutos da jornada registada |
 | Estado | Completa, ausência justificada, ausência não justificada, jornada parcial |
 
+O relatório inclui o pessoal da empresa e deixa de fora os funcionários marcados como colaboradores; os que não têm tipo de relação registado são incluídos.
+
 ---
 
 ## Descarregar o relatório de tarefas (Excel)
@@ -50,6 +52,8 @@ Escolha o formato consoante a utilização: **PDF** para apresentar ou arquivar 
 O relatório de tarefas é gerado da mesma forma que o de assiduidade, selecionando o tipo *Relatório de tarefas*. Só é produzido em **Excel (XLSX)**.
 
 Admite filtros por **sucursal** e por **estado** da tarefa. O período aplica-se ao **prazo** de cada tarefa, e não à sua data de criação: um relatório de julho reúne as tarefas que venciam em julho, ainda que tenham sido criadas antes.
+
+Além dos dados de cada tarefa, o Excel inclui as colunas **Tempo investido (h)**, **Em pausa (h)**, **N.º de pausas** e **Tempo investido sem pausas (h)**. O que mede cada uma explica-se em [Relatórios de tarefas](../06-tarefas/48-relatorios-de-tarefas.md#o-que-contém).
 
 Se nenhuma tarefa cumprir os filtros, o sistema indica-o e não gera um ficheiro vazio.
 

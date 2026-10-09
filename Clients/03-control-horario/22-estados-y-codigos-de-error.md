@@ -43,7 +43,10 @@ Cuando un fichaje queda en estado `failed`, el sistema asocia un código de erro
 |---|---|---|
 | `checklog/out_of_schedule` | El fichaje se realizó fuera del turno activo del empleado. | Revisar el horario asignado al empleado. Si la presencia era correcta, solicitar una jornada manual. |
 | `checklog/out_of_radius` | El dispositivo se encontraba fuera del radio de fichaje de la sucursal en el momento del registro. | Revisar las coordenadas GPS de la sucursal y el valor del radio configurado. Si el radio no cubre el área de trabajo real, ampliarlo. |
-| `checklog/day_disabled` | El día en que se intentó fichar está desactivado en el calendario de la sucursal o del empleado. | Revisar la configuración del calendario. Si el día debe estar habilitado, activarlo en el calendario efectivo correspondiente. |
+| `checklog/day_disabled` | El día en que se intentó fichar está desactivado en el calendario de la sucursal o del empleado, es festivo o es un día libre del empleado. | Revisar la configuración del calendario. Si el día debe estar habilitado, activarlo en el calendario efectivo correspondiente. Un festivo de la entidad o de la sucursal no se puede anular para un solo empleado. Si el empleado trabajó, registrar la jornada manual. |
+| `checklog/absence` | El empleado tiene registrada una ausencia que cubre ese día. | Si la ausencia es correcta, no hay nada que hacer. Si no lo es, retirarla de su calendario y volver a fichar. |
+| `checklog/different_branches` | Se intentó iniciar un descanso o fichar la salida en una sucursal distinta de la de la entrada. Una jornada no se reparte entre centros. | Fichar el descanso o la salida en la misma sucursal de la entrada. Si el empleado cambió de centro, cerrar la jornada en el primero y abrir otra en el segundo. |
+| `checklog_update/future_not_allowed` | Se propuso una corrección con fecha u hora futura. | Indicar una hora que ya haya pasado. |
 | `auth/untrusted_device` | El dispositivo desde el que se intentó fichar no está registrado como dispositivo de confianza. El empleado tiene activada la autenticación de doble factor. | Registrar el dispositivo actual como dispositivo de confianza a través del proceso de 2FA. |
 | `employee/not_found` | El identificador del empleado no corresponde a ningún registro activo en el sistema. | Verificar que el empleado está activo en la plataforma y asignado correctamente a la sucursal. |
 | `checklog/overlap_detected` | Ya existe un fichaje para el rango horario en el que se intenta crear el nuevo registro. Dos fichajes del mismo tipo no pueden solaparse. | Revisar los fichajes existentes del empleado para esa fecha y resolver el solapamiento antes de crear un nuevo registro. |
@@ -59,7 +62,7 @@ Desde el backoffice, el responsable puede acceder al detalle de cualquier fichaj
 - Los datos técnicos del intento: coordenadas, distancia al radio, turno activo en el momento del fichaje, dispositivo utilizado.
 - El historial completo de cambios.
 
-Los empleados pueden ver el estado de sus fichajes desde la sección de historial de asistencia en la app. En caso de fichajes fallidos, la app muestra una descripción del motivo en lenguaje comprensible.
+Los empleados pueden ver el estado de sus fichajes desde la sección de historial de asistencia en la app. En caso de fichajes fallidos, la app muestra una descripción del motivo en lenguaje comprensible. Desde la versión 1.3.2, la app traduce también los códigos de día no laborable, calendario sin resolver, sucursal sin ubicación, solapamiento, solicitud duplicada y cierre de jornada, en lugar de mostrar el código técnico; y cuando el día no es laborable, explica que el empleado puede pedir una jornada manual si trabajó.
 
 ---
 

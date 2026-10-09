@@ -43,6 +43,8 @@ Elija el formato según el uso: **PDF** para presentar o archivar —es el que c
 | Horas trabajadas | Total de horas y minutos de la jornada registrada |
 | Estado | Completa, ausencia justificada, ausencia no justificada, jornada parcial |
 
+El informe incluye al personal de plantilla y deja fuera a los empleados marcados como colaboradores; los que no tienen tipo de relación registrado se incluyen.
+
 ---
 
 ## Descargar el informe de tareas (Excel)
@@ -50,6 +52,8 @@ Elija el formato según el uso: **PDF** para presentar o archivar —es el que c
 El informe de tareas se genera igual que el de asistencia, seleccionando el tipo *Informe de tareas*. Solo se produce en **Excel (XLSX)**.
 
 Admite filtros por **sucursal** y por **estado** de la tarea. El periodo se aplica sobre la **fecha límite** de cada tarea, no sobre su fecha de creación: un informe de julio recoge las tareas que vencían en julio, aunque se crearan antes.
+
+Además de los datos de cada tarea, el Excel incluye las columnas **Tiempo invertido (h)**, **En pausa (h)**, **Nº pausas** y **Tiempo invertido sin pausas (h)**. Qué mide cada una se explica en [Informes de tareas](../06-tareas/48-informes-de-tareas.md#qué-contiene).
 
 Si ninguna tarea cumple los filtros, el sistema lo indica y no genera un fichero vacío.
 

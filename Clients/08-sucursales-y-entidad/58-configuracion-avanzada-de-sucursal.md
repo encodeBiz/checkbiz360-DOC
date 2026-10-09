@@ -7,7 +7,7 @@ Cada sucursal en CheckBiz360 admite ajustes que adaptan el comportamiento del si
 La configuración avanzada de una sucursal está repartida en dos sitios, según lo que se quiera ajustar:
 
 - **La ficha de la sucursal** (**Sucursales** en el menú lateral → editar) contiene los datos del centro y la **configuración operativa**: la zona de chequeo.
-- **El calendario** (**Calendario** en el menú lateral → pestaña **Sucursal**) contiene el horario semanal, las pausas, la modalidad de jornada y la de descanso.
+- **El calendario** (en la ficha de la sucursal, o **Horarios** → **Configuración general** si se hereda de la entidad) contiene el horario semanal, las pausas, la modalidad de jornada y la de descanso.
 
 ## Tabla de parámetros
 

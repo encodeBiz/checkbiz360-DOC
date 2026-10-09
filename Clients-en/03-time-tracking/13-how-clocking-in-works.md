@@ -14,7 +14,7 @@ The system obtains the device's GPS coordinates at the moment of the clock-in an
 
 The actual distance between the employee and the centre of the geofence is recorded in the system for later analysis. This lets the manager review whether the radius is correctly sized or whether there is a pattern of clock-in attempts from incorrect locations.
 
-If the employee works in teleworking mode and has the "remote work" field enabled, this validation layer is skipped entirely. The geofence does not apply in remote working environments.
+If the employee has the **Works off-site** option enabled (formerly called *Remote work*), this validation layer is skipped entirely: the geofence does not apply to that person.
 
 ### Layer 2 — Effective schedule
 
@@ -70,6 +70,6 @@ The configuration of the validation layers (check zone, biometrics, 2FA) is mana
 ## Related articles
 
 - [Check-in and check-out from the app](14-check-in-and-check-out-from-the-app.md)
-- [Remote clocking in](15-remote-clocking-in.md)
+- [Working off-site](15-remote-clocking-in.md)
 - [Geofences and clocking radius](16-geofences-and-clocking-radius.md)
 - [Statuses and error codes](22-statuses-and-error-codes.md)

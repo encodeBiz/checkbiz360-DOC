@@ -31,6 +31,8 @@ Each record in the change history contains the following fields:
 |---|---|
 | `created` | Creation of the original clock record by the employee |
 | `updated` | Modification of a clock record field by a manager |
+| `edited` | Correction proposed by a manager, pending the employee's acceptance |
+| `rejected` | The employee rejected a proposed correction; it includes the reason, and the clock record keeps its previous data |
 | `manual_request_created` | Creation of a full manual workday (Mode A) |
 | `manual_checkout_created` | Creation of a manual checkout on an open checkin (Mode B) |
 
@@ -66,7 +68,7 @@ With CheckBiz360, the manager can access the history of any clock record and sho
 
 - Who originally recorded the clock-in and from which device.
 - Whether a manager made any subsequent modification, when and for what reason.
-- Whether the employee validated or rejected any manual workday.
+- Whether the employee validated or rejected any manual workday or any correction, and for what reason.
 - What data the record held before and after any change.
 
 This complete traceability covers the retention and transparency requirements demanded by the time-recording regulations in force.

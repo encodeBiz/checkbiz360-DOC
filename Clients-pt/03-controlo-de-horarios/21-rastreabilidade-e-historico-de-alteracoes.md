@@ -31,6 +31,8 @@ Cada registo no histórico de alterações contém os seguintes campos:
 |---|---|
 | `created` | Criação do registo original pelo funcionário |
 | `updated` | Modificação de um dado do registo por um responsável |
+| `edited` | Proposta de correção de um responsável, pendente de que o funcionário a aceite |
+| `rejected` | O funcionário recusou uma proposta de correção; inclui o motivo, e o registo conserva os seus dados anteriores |
 | `manual_request_created` | Criação de jornada completa manual (Modo A) |
 | `manual_checkout_created` | Criação de saída manual sobre entrada em aberto (Modo B) |
 
@@ -66,7 +68,7 @@ Com o CheckBiz360, o responsável pode aceder ao histórico de qualquer registo 
 
 - Quem registou originalmente e a partir de que dispositivo.
 - Se um responsável efetuou alguma modificação posterior, quando e com que motivo.
-- Se o funcionário validou ou recusou alguma jornada manual.
+- Se o funcionário validou ou recusou alguma jornada manual ou alguma correção, e com que motivo.
 - Que dados tinha o registo antes e depois de qualquer alteração.
 
 Esta rastreabilidade completa cobre os requisitos de conservação e transparência exigidos pela regulamentação de registo de horários em vigor.

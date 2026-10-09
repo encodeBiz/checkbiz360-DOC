@@ -38,9 +38,11 @@ Cada sucursal puede tener su propio calendario de días no laborables adicionale
 
 ### Nivel empleado
 
-Un empleado concreto puede tener excepciones individuales que marquen días específicos como no laborables (o, por el contrario, como laborables si la sucursal los tiene marcados como festivos). Las excepciones individuales tienen la mayor prioridad en la jerarquía.
+Un empleado concreto puede tener sus propios días no laborables: vacaciones, permisos o cualquier ausencia. Se suman a los festivos de la entidad y de su sucursal y solo le afectan a él.
 
-> **Nota:** La resolución jerárquica sigue la regla de que la configuración más cercana al empleado prevalece sobre la más general. Si una fecha es festivo en la entidad pero el empleado tiene una excepción individual que la marca como laborable, el empleado podrá fichar ese día.
+> **Importante:** los festivos **se suman** entre niveles; no se anulan. Un festivo de la entidad o de la sucursal se aplica a todos sus empleados aunque alguno tenga un horario personalizado con turno ese día: el fichaje se rechaza igualmente con `checklog/day_disabled`. La herencia en la que manda el nivel más cercano al empleado es la del **horario semanal**, no la de los festivos. Si en su organización solo una parte de la plantilla trabaja un festivo, consulte [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md#qué-ocurre-si-la-empresa-trabaja-en-festivo).
+
+Cada día no laborable indica de qué nivel viene —entidad, sucursal o empleado—, de modo que en la ficha del empleado se distingue lo que cierra la empresa de lo que es una ausencia propia.
 
 ---
 
@@ -51,18 +53,18 @@ Para añadir un festivo al calendario laboral, siga estos pasos:
 **A nivel entidad:**
 
 1. Acceda al backoffice con rol owner.
-2. Navegue a **Calendario** y sitúese en la pestaña **Configuración general**.
-3. Pulse el botón **Añadir día no laborable**.
-4. Seleccione la fecha en el selector de calendario.
-5. Indique el tipo (festivo nacional, puente, cierre interno, etc.) y, opcionalmente, añada una descripción.
-6. Guarde el registro.
+2. Abra **Horarios** en el menú lateral y sitúese en la pestaña **Configuración general**.
+3. En **Festivos de la entidad**, pulse **Añadir festivo**.
+4. Escriba el nombre del festivo y seleccione la fecha; si lo desea, añada una descripción.
+5. Pulse **Guardar festivo**.
 
 **A nivel sucursal:**
 
 1. Acceda al backoffice con rol owner o manager.
-2. Navegue a **Sucursales** y seleccione la sucursal correspondiente.
-3. Acceda a **Calendario** y sitúese en la pestaña **Sucursal**.
-4. Siga los pasos 3 a 6 del procedimiento anterior.
+2. Abra la ficha de la sucursal correspondiente.
+3. En el bloque de **días libres** de la sucursal, añada el festivo con los mismos datos.
+
+**A nivel empleado:** las ausencias de una persona se registran desde su ficha o directamente desde el [tablero de disponibilidad](98-tablero-de-disponibilidad.md). La pestaña **No laborables de empleados** de **Horarios** permite buscar a un empleado y consultar sus días no laborables con su origen. Una ausencia puede cubrir un **rango de fechas** y llevar la marca **Retribuida**; se explica en [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md#ausencias-de-un-empleado).
 
 Los cambios son efectivos de forma inmediata. Una vez guardado el festivo, cualquier intento de fichaje en esa fecha por parte de los empleados afectados será bloqueado.
 
@@ -80,6 +82,10 @@ Este error queda registrado en el historial del empleado con su timestamp y los 
 | Fichaje en festivo de entidad | `checklog/day_disabled`. Fichaje rechazado. |
 | Fichaje en festivo de sucursal | `checklog/day_disabled`. Fichaje rechazado. |
 | Fichaje en día desactivado en el horario base | `checklog/day_disabled`. Fichaje rechazado. |
+| Fichaje en un día no laborable propio del empleado (vacaciones, permiso) | `checklog/day_disabled`. Fichaje rechazado. |
+| Fichaje con una ausencia registrada que cubre ese día | `checklog/absence`. Fichaje rechazado. |
+
+Desde la versión 1.3.2, la app no se limita a mostrar el código: explica en un diálogo que ese día no es laborable y que, si el empleado trabajó, puede [solicitar una jornada manual](../03-control-horario/19-solicitar-jornada-manual.md). En la tarjeta del día distingue además un **festivo** de un **día libre**.
 
 > **Aviso:** Si su empresa trabaja habitualmente en festivos (por ejemplo, sectores de retail u hostelería), debe revisar la configuración del calendario para no bloquear fichajes válidos. Consulte el artículo [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md) para conocer cómo gestionar este caso.
 
@@ -89,11 +95,11 @@ Este error queda registrado en el historial del empleado con su timestamp y los 
 
 Desde el backoffice, el responsable puede consultar qué días están marcados como no laborables para un empleado concreto:
 
-1. Acceda a **Empleados** y seleccione el empleado.
-2. Abra la sección **Calendario efectivo**.
-3. El sistema muestra el calendario mensual con los días laborables, festivos heredados de la entidad y sucursal, y las excepciones individuales del empleado.
+1. Acceda a **Empleados** y abra la ficha del empleado.
+2. Abra la pestaña de horarios.
+3. Junto a su horario, la ficha muestra sus días no laborables separados por origen: **Heredados de la entidad**, **heredados de su sucursal** y **propias del empleado**. Las ausencias de varios días seguidos aparecen agrupadas en una sola fila con su rango.
 
-Esta vista es especialmente útil para depurar situaciones en las que un empleado reporta que no pudo fichar en una fecha determinada.
+Esta vista es especialmente útil para depurar situaciones en las que un empleado reporta que no pudo fichar en una fecha determinada. Para ver de un vistazo quién está disponible cada día en toda una sucursal, use el [tablero de disponibilidad](98-tablero-de-disponibilidad.md).
 
 ---
 
@@ -103,4 +109,5 @@ Esta vista es especialmente útil para depurar situaciones en las que un emplead
 - [Excepciones de horario](25-excepciones-de-horario.md)
 - [Herencia de configuración](26-herencia-de-configuracion.md)
 - [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md)
+- [Tablero de disponibilidad](98-tablero-de-disponibilidad.md)
 - [Estados y códigos de error](../03-control-horario/22-estados-y-codigos-de-error.md)

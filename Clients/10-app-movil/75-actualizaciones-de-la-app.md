@@ -15,6 +15,29 @@ Cada nueva versión de CheckBiz360 puede incluir:
 
 ---
 
+## Novedades de las últimas versiones
+
+Algunas funciones dependen de la versión instalada. Si un empleado no ve una de ellas, lo primero es comprobar que tiene la app actualizada.
+
+### Versión 1.4.0
+
+- **Pausar y reanudar tareas** desde la ficha de la tarea. Pausar aparece con la jornada fichada; reanudar pide lo mismo que iniciar.
+- La ficha de la tarea muestra el **tiempo invertido** (descontando pausas) y el total de pausas, y se actualiza mientras la tarea está en curso.
+- **Historial de la tarea** en la app: su ciclo de vida, pausas incluidas.
+
+### Versiones 1.3.2 y 1.3.3
+
+- **Lugar de trabajo propio de las tareas**: la app envía la posición al iniciar y completar, avisa de la distancia antes de pulsar y enlaza la dirección con **Ver en Maps**.
+- **Día no laborable explicado**: si hoy es festivo o día libre, la app lo dice en lugar de mostrar el código de error, y recuerda que se puede pedir una jornada manual. Un festivo de la sucursal cuenta aunque el empleado tenga horario propio ese día.
+- Los códigos de error del fichaje aparecen traducidos.
+- La etiqueta del día no laborable dice «No laborable», porque puede deberse a un festivo, a una ausencia o al cierre de la sucursal.
+- El descanso flexible se muestra como «Flexible», y los turnos del día aparecen uno por línea.
+- Pantalla principal rediseñada, con cronómetros de jornada y descanso, y menú lateral reorganizado.
+- Los avisos de confirmación y de error se distinguen por color (verde, rojo, ámbar) y dejan de confundirse con la barra de navegación.
+- Las notificaciones muestran bien el nombre CheckBiz360, y la de incidencia respondida aparece en el idioma del empleado.
+
+---
+
 ## Cómo actualizar en iOS
 
 ### Actualización manual

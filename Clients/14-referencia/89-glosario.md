@@ -13,7 +13,10 @@ Confirmación explícita de que un empleado ha accedido a un documento que lo re
 Concepto que **no aplica** en la versión actual: el fichaje guarda siempre la hora real y no se redondea. Lo que decide si el tiempo trabajado fuera de la franja oficial se computa es la modalidad de *jornada estricta o flexible* del calendario.
 
 ### Asistente de IA (Merlin)
-Componente de inteligencia artificial que interpreta los datos operativos y los expone como un relato accionable en el panel operativo, en el detalle de sucursal y en el detalle de empleado. Narra y prioriza sobre las cifras que ya muestra la pantalla: no recalcula ni genera datos propios, de forma que su lectura no puede contradecir a los paneles.
+Componente de inteligencia artificial que interpreta los datos operativos y los expone como un relato accionable en el panel operativo, en el detalle de sucursal y en el detalle de empleado. Narra y prioriza sobre las cifras que ya muestra la pantalla: no recalcula ni genera datos propios, de forma que su lectura no puede contradecir a los paneles. También narra la guía inicial del backoffice.
+
+### Ausencia
+Día o rango de días no laborables propios de un empleado: vacaciones, permisos, días libres. Se suma a los festivos de su entidad y su sucursal, bloquea su fichaje esos días y puede marcarse como *retribuida*, *no retribuida* o *sin definir*.
 
 ---
 
@@ -35,6 +38,9 @@ Registro de la hora de entrada (checkin) y de salida (checkout) de un empleado e
 ### Cumplimiento temporal
 Indicador que acompaña a cada tarea y refleja su situación frente a la fecha límite, con independencia de su estado. Sus valores son: sin iniciar, a tiempo, en riesgo, vencida, completada a tiempo y completada tarde. Una tarea vencida sigue estando en su estado de trabajo (por ejemplo, "en progreso"); el vencimiento se refleja en este indicador, no en el estado.
 
+### Colaborador (tipo de relación)
+Persona externa que trabaja para la empresa sin pertenecer a la plantilla: un autónomo, un freelance o un proveedor. Se indica en la ficha del empleado frente a *Plantilla*. Los colaboradores no aparecen en el informe de registro de jornada. No debe confundirse con los *colaboradores* de la entidad, que son los usuarios con acceso al backoffice.
+
 ### Código de error
 Identificador alfanumérico que el sistema devuelve cuando una operación no puede completarse. Los códigos de error siguen el formato `modulo/tipo_de_error` (por ejemplo, `checklog/out_of_radius`). Permiten identificar la causa exacta de un fallo sin necesidad de interpretar mensajes de texto. Véase el artículo [Códigos de error completos](./90-codigos-de-error-completos.md).
 
@@ -44,6 +50,9 @@ Identificador alfanumérico que el sistema devuelve cuando una operación no pue
 
 ### Dependencia
 Indicador que mide cuánta parte de la operación de un centro recae en pocas personas. Se lee de forma directa —*media operación depende de 1 persona*, *depende de 2 personas*, *reparto saludable*— y se complementa con la vista de relevo por puesto.
+
+### Disponibilidad (tablero)
+Pestaña de **Horarios** que muestra, por sucursal y día, cuántas personas están disponibles sobre el total, con su porcentaje de cobertura, y permite ver quién falta y por qué. Distingue en gris los días en que nadie debería trabajar (festivo o cierre) y en rojo los huecos de cobertura. Véase [Tablero de disponibilidad](../04-calendario-y-horarios/98-tablero-de-disponibilidad.md).
 
 ### Dispositivo de confianza
 Dispositivo móvil autorizado explícitamente por el Owner o el Manager para que un empleado concreto pueda realizar fichajes desde él. La plataforma puede configurarse para rechazar fichajes procedentes de dispositivos no registrados como de confianza.
@@ -63,6 +72,9 @@ Foto o vídeo que un empleado adjunta a una tarea para acreditar el trabajo real
 
 ### Entidad / Entity
 La unidad organizativa raíz de CheckBiz360. Corresponde a una empresa o cliente que ha contratado la plataforma. Cada entidad puede tener múltiples sucursales, empleados y configuraciones propias. El Owner es el responsable máximo de la entidad.
+
+### Equipo
+Plantilla de personas que trabajan juntas, cada una con su responsabilidad, su puesto y su precio por hora, pero sin sucursal. Aplicarla a una sucursal da de alta a todos sus miembros de una vez y salta a quien ya estaba. Cambiar el equipo no modifica las sucursales donde ya se aplicó. Véase [Equipos](../02-empleados/99-equipos.md).
 
 ---
 
@@ -110,6 +122,13 @@ Corrección retroactiva de un fichaje realizada por un Owner o Manager desde el 
 
 ---
 
+## L
+
+### Lugar de trabajo (de una tarea)
+Dirección propia de una tarea, con un margen en metros, para trabajos que no se hacen en la sucursal. Iniciarla o reanudarla exige estar dentro del margen, e iniciarla, reanudarla o completarla solo se puede hacer desde la app. Véase [Crear una tarea](../06-tareas/40-crear-una-tarea.md#lugar-de-trabajo-propio).
+
+---
+
 ## M
 
 ### Manager
@@ -140,7 +159,16 @@ Rol con acceso completo a todas las funcionalidades de una entidad en CheckBiz36
 ## P
 
 ### Pausa (`restin` / `restout`)
-Registro del inicio (`restin`) y fin (`restout`) de una pausa dentro de la jornada laboral. Las pausas se descontarán o no del tiempo trabajado según la configuración de la sucursal. Al igual que el checkin y checkout, las pausas requieren que el empleado esté dentro de la geocerca si así está configurado.
+Registro del inicio (`restin`) y fin (`restout`) de una pausa dentro de la jornada laboral. Las pausas se descontarán o no del tiempo trabajado según la configuración de la sucursal. Al igual que el checkin y checkout, las pausas requieren que el empleado esté dentro de la geocerca si así está configurado. No confundir con la *pausa de una tarea*.
+
+### Pausa de una tarea
+Interrupción de una tarea en progreso, que se pausa y se reanuda tantas veces como haga falta. No es un estado: la tarea sigue *en progreso* y muestra la etiqueta *En pausa*. El tiempo en pausa se suma aparte en el informe de tareas. Véase [Seguimiento y actualizaciones](../06-tareas/43-seguimiento-y-actualizaciones.md#pausar-y-reanudar-una-tarea).
+
+### Pendiente (estado del empleado)
+Estado de una ficha de empleado a la que le falta algún dato para poder trabajar, normalmente el correo electrónico. No recibe acceso, no se factura y sale de ese estado al completar el dato.
+
+### Plantilla de horario
+Copia guardada de un horario semanal que se aplica después a otra sucursal, a un empleado o a la entidad, para no configurarlo día por día. Antes se llamaba *preset de calendario*.
 
 ### Panel operativo
 Pantalla del backoffice que consolida la actividad del periodo en tres vistas: la comparativa entre sucursales, el detalle por empleado y el análisis del periodo. Es el punto de entrada a la inteligencia operativa y donde aparece el relato del asistente de IA.
@@ -182,13 +210,13 @@ Rol intermedio entre Manager y Worker. El Supervisor puede revisar los fichajes 
 ## T
 
 ### Tarea
-Unidad de trabajo asignada a uno o varios empleados de una sucursal, con fecha límite y, opcionalmente, fecha prevista de inicio. Recorre siete estados —borrador, asignada, en progreso, completada, validada, rechazada y cancelada— y lleva asociado un indicador de cumplimiento temporal independiente del estado.
+Unidad de trabajo asignada a uno o varios empleados de una sucursal, con fecha límite y, opcionalmente, fecha prevista de inicio y lugar de trabajo propio. Recorre siete estados —borrador, asignada, en progreso, completada, validada, rechazada y cancelada—, puede pausarse mientras está en progreso y lleva asociado un indicador de cumplimiento temporal independiente del estado.
 
 ### Token de validación
-Código temporal generado por el sistema para verificar la identidad de un usuario en operaciones sensibles, como el primer inicio de sesión, el restablecimiento de contraseña o la autorización de un nuevo dispositivo. Los tokens de validación caducan pasado un tiempo determinado.
+Código temporal generado por el sistema para verificar la identidad de un usuario en operaciones sensibles, como el primer inicio de sesión, el restablecimiento de contraseña o la autorización de un nuevo dispositivo. Los tokens de validación caducan pasado un tiempo determinado; el del empleado, a los 30 días.
 
-### Trabajo remoto
-Configuración que permite a un empleado realizar fichajes desde una ubicación diferente a la geocerca de su sucursal. Cuando está activa, el sistema acepta fichajes fuera del radio habitual sin generar el error `checklog/out_of_radius`. Debe activarse explícitamente por el Owner o Manager.
+### Trabajo fuera del centro
+Configuración que permite a un empleado realizar fichajes desde una ubicación diferente a la geocerca de su sucursal. Cuando está activa, el sistema acepta fichajes fuera del radio habitual sin generar el error `checklog/out_of_radius`. Debe activarse explícitamente por el Owner o Manager. Antes se llamaba *Trabajo remoto*.
 
 ### Turno
 Franja horaria asignada a un empleado para una jornada concreta, que define su hora de inicio y fin de trabajo esperados. Los turnos se configuran en el backoffice y se asocian al calendario efectivo del empleado o la sucursal.

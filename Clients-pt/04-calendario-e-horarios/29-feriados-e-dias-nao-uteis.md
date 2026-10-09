@@ -30,6 +30,17 @@ Esta categoria cobre qualquer data que a empresa decida bloquear por motivos pr�
 
 ---
 
+## Ausências de um funcionário
+
+As férias, as licenças e os dias livres de uma pessoa concreta registam-se como **ausências** no seu calendário. Adicionam-se a partir da ficha do funcionário ou a partir do [quadro de disponibilidade](98-quadro-de-disponibilidade.md), e consultam-se também no separador **Dias não úteis dos funcionários** de **Horários**.
+
+- **Intervalo de datas.** Uma ausência pode abranger vários dias seguidos. Nas listas aparece como uma só linha com o seu início, o seu fim e o número de dias (por exemplo, «1 – 15 set · 15 dias»), que se expande para ver ou retirar dias soltos.
+- **Remunerada.** Cada ausência de funcionário tem uma caixa **Remunerada** com três valores possíveis: *remunerada*, *não remunerada* ou *por definir*. *Por definir* significa que não consta —por exemplo, nas ausências registadas antes de a caixa existir— e é mostrado de forma diferente de *não remunerada* para não confundir um dado em falta com um «não». Os feriados da entidade ou da sucursal não levam esta marca.
+
+Um dia de ausência bloqueia o registo dessa pessoa tal como um feriado.
+
+---
+
 ## Como o CheckBiz360 bloqueia registos em dias não úteis
 
 Quando um funcionário tenta registar a sua entrada ou saída numa data marcada como não útil no seu calendário efetivo, o sistema devolve o código de erro `checklog/day_disabled` e recusa o registo.
@@ -44,26 +55,22 @@ As tentativas de registo em dias não úteis ficam gravadas no histórico com o 
 
 Existem setores em que trabalhar em feriado é a norma: o comércio a retalho, a restauração, os transportes ou os serviços de emergência operam com normalidade em dias que para outras empresas são não úteis.
 
-O CheckBiz360 permite desativar um feriado pontualmente para que os funcionários afetados possam registar com normalidade nesse dia.
+Um feriado configurado aplica-se a **todos** os funcionários do seu âmbito: não há forma de o anular só para uma sucursal ou só para uma pessoa. Nem sequer um horário personalizado com turno nesse dia o contorna; o registo é recusado com `checklog/day_disabled`. Por isso, a forma de trabalhar em feriado é não marcar como feriado o que não fecha.
 
-### Desativar um feriado de forma pontual para toda a sucursal
+### Toda a sucursal trabalha nesse dia
 
-1. Aceda ao backoffice com perfil owner ou manager.
-2. Navegue até **Sucursais** e selecione a sucursal que trabalha nesse dia.
-3. Aceda a **Calendário** no menu lateral.
-4. Localize a data do feriado na lista de dias não úteis.
-5. Selecione a entrada e prima **Desativar para esta data**.
-6. Confirme a ação. A data deixa de estar bloqueada para os funcionários dessa sucursal.
+- Se o feriado estiver na **sucursal**, elimine-o dos seus dias de folga. A data deixa de estar bloqueada para os funcionários dessa sucursal.
+- Se o feriado estiver na **entidade**, afeta todas as sucursais. Retire-o da entidade e adicione-o como feriado local apenas nas sucursais que fecham.
 
-### Desativar um feriado apenas para funcionários concretos
+### Só uma parte do quadro de pessoal trabalha nesse dia
 
-Se apenas uma parte dos funcionários trabalha no feriado (por exemplo, o pessoal de apoio ao cliente mas não o da administração), a forma mais precisa de gerir isto é através de exceções individuais:
+Se só trabalhar uma parte (por exemplo, o pessoal de apoio ao cliente mas não o da administração):
 
-1. Aceda à ficha de cada funcionário que trabalha nesse dia.
-2. Crie uma exceção pontual para essa data que marque o dia como útil e defina o turno correspondente.
-3. Os funcionários com exceção poderão registar nesse dia. Os restantes continuarão com o bloqueio do feriado.
+1. Não marque o dia como feriado na sucursal: trate-o como útil.
+2. Registe uma **ausência** nesse dia a quem folga, a partir da sua ficha ou a partir do [quadro de disponibilidade](98-quadro-de-disponibilidade.md).
+3. Quem trabalha regista com normalidade; quem tem a ausência fica bloqueado.
 
-> **Aviso:** recorde que as exceções individuais têm prioridade sobre o calendário da sucursal. Uma exceção individual que marque um feriado como útil permite ao funcionário registar mesmo que esse feriado esteja ativo ao nível da entidade ou da sucursal.
+> **Aviso:** os feriados de entidade, sucursal e funcionário **somam-se**; não se anulam entre si. A herança em que o nível do funcionário prevalece é a do horário semanal, e não a dos feriados.
 
 ---
 
@@ -102,4 +109,5 @@ Recomenda-se configurar o calendário de feriados no início de cada ano civil o
 - [Exceções de horário](25-excecoes-de-horario.md)
 - [Herança de configuração](26-heranca-de-configuracao.md)
 - [Turnos rotativos](27-turnos-rotativos.md) — não disponível na versão atual; alternativas
+- [Quadro de disponibilidade](98-quadro-de-disponibilidade.md)
 - [Estados e códigos de erro](../03-controlo-de-horarios/22-estados-e-codigos-de-erro.md)

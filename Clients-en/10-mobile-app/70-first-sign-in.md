@@ -53,6 +53,16 @@ If your user is linked to more than one organisation within CheckBiz360, the app
 
 ---
 
+## Your phone as your signature
+
+On signing in, the app creates in your phone's secure chip a key that only unlocks with your fingerprint, your face or the unlock code. You will use it to sign document read receipts and equipment handovers. There is nothing to do: it happens when you sign in.
+
+- If your phone has **fingerprint or face** set up, those are used.
+- If it only has a **code, pattern or PIN**, that is used.
+- If it has **no screen lock**, no key is created and, when confirming, the app will ask for your account password. Set up a screen lock: it is more convenient and the signature is worth more.
+
+The key never leaves the phone. If you change phones, the app creates another one when you sign in.
+
 ## Troubleshooting common problems
 
 ### The welcome email did not arrive
@@ -69,8 +79,14 @@ If you entered the password correctly during activation but the system rejects i
 1. Press the **Forgotten your password?** or **Recover password** option on the sign-in screen.
 2. Enter your email address.
 3. Press **Send**.
-4. You will receive an email with a link to reset the password. Follow the instructions in the email to set a new password.
+4. You will receive an email, in your language, with a link to reset the password. Follow the instructions in the email to set a new password.
 5. Once the process is complete, try signing in again with the new password.
+
+> **Note:** for security reasons, password recovery always gives the same response, whether or not an account exists with that email: that way nobody can use it to find out which addresses are registered. If the email does not arrive, check with your manager that the address is the correct one. Up to **3 requests every 15 minutes** are allowed; once that limit is reached, wait before requesting it again.
+
+### The app asks me to sign in again
+
+For security reasons, the employee session the app uses to clock in expires after **30 days**, and so does the validation sent with the welcome email. Normally the app renews it without the employee noticing. If it ever asks you for your email and password again, it is not a fault with the account: sign in again.
 
 ### I do not remember which email address was used to register me
 

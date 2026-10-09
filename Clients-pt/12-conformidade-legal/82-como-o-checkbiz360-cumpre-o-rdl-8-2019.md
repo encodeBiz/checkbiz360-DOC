@@ -50,6 +50,8 @@ O CheckBiz360 permite efetuar estas correções, mas com uma condição: **toda 
 - A data e hora em que a correção foi efetuada.
 - O motivo da correção, que o responsável tem obrigatoriamente de introduzir.
 
+Além disso, uma correção sobre um registo existente **não é aplicada até que o funcionário a aceite**. Se a aceitar, a hora corrigida é a que figura no relatório de registo de jornada. Se a recusar, o registo conserva o seu valor original —continua a contar no registo de jornada— e a recusa fica anotada com o seu motivo. Nenhuma correção pode ter uma data ou hora futura.
+
 Esta rastreabilidade satisfaz o requisito de integridade do registo que a regulamentação exige e que a Inspeção do Trabalho verifica nas suas atuações.
 
 ---

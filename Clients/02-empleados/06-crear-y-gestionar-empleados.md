@@ -13,7 +13,7 @@ Este artículo explica cómo crear un empleado desde cero, qué campos son oblig
 - **Nombre completo** — Nombre y apellidos tal como deben aparecer en los registros.
 - **Correo electrónico** — Dirección única en la plataforma. Es el identificador del empleado y la dirección a la que se envía el acceso inicial. **No puede modificarse una vez creado el perfil.**
 - **Teléfono** — Número de contacto, con prefijo internacional.
-- **Tipo de relación** — *Interno* (plantilla) o *Colaborador* (externo, freelance o proveedor de servicios).
+- **Tipo de relación** — *Plantilla* (personal de la empresa) o *Colaborador* (externo, freelance o proveedor de servicios). Aparece en la ficha junto al estado, y no es un dato menor: los colaboradores **no se incluyen en el informe de registro de jornada**, que es obligatorio para la relación laboral. Ver [Roles y niveles de responsabilidad](07-roles-y-niveles-de-responsabilidad.md#tipo-de-relación-interno-frente-a-colaborador).
 
 > **Importante:** el nivel de responsabilidad —worker, supervisor, manager u owner— **no se asigna en el alta**. Se define al vincular al empleado con una sucursal, porque una misma persona puede tener responsabilidades distintas en cada centro. Consulte [Asignar empleados a sucursales](../08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md).
 
@@ -41,14 +41,14 @@ Tres opciones se activan o desactivan por empleado:
 |---|---|
 | **Verificación en dos pasos (2FA)** | Exige un código temporal además de la contraseña |
 | **Biometría requerida** | El empleado debe autenticarse con huella o reconocimiento facial antes de que se acepte su fichaje |
-| **Trabajo remoto** | Permite fichar fuera de la geocerca de la sucursal. Al activarlo, **la dirección del empleado pasa a ser obligatoria**, porque es la referencia con la que se valida el fichaje remoto |
+| **Trabajo fuera del centro** | Permite fichar fuera de la geocerca de la sucursal (antes se llamaba *Trabajo remoto*). Al activarlo, **la dirección del empleado pasa a ser obligatoria**, porque es la referencia con la que se valida el fichaje. Ver [Trabajo fuera del centro](../03-control-horario/15-fichaje-en-remoto.md) |
 
 ---
 
 ## Otros campos
 
 - **Documento de identidad** — Útil para auditorías y exportaciones de RRHH.
-- **Dirección** — Opcional, salvo que se active el trabajo remoto.
+- **Dirección** — Opcional, salvo que se active el trabajo fuera del centro. Se elige del buscador de direcciones; no hay campo de ciudad aparte, porque la dirección normalizada ya la incluye.
 - **Calendario del empleado** — Horario propio y excepciones, cuando difieren de los de su sucursal. Si no se configura, el empleado hereda el calendario de la sucursal.
 - **Datos adicionales** — Campos libres en formato clave/valor para información propia de su organización (número de empleado, convenio, centro de coste…).
 
@@ -58,10 +58,11 @@ Al vincular al empleado con una sucursal se definen además su **responsabilidad
 
 ## Estados del empleado
 
-CheckBiz360 contempla siete estados laborales:
+CheckBiz360 contempla siete estados laborales, más el estado **Pendiente** para las fichas a medio completar:
 
 | Estado | Descripción |
 |---|---|
+| **Pendiente** | La ficha existe pero todavía no puede trabajar, normalmente porque le falta el correo electrónico (es habitual en fichas importadas desde una integración). No recibe acceso ni correo de bienvenida, y **no se factura**. Sale de este estado al completar el correo. No se asigna a mano. |
 | **Activo** | El empleado trabaja con normalidad y tiene acceso a la plataforma. |
 | **Inactivo** | El empleado no está operativo. Es el estado que se usa al finalizar la relación laboral: el perfil y su historial se conservan. |
 | **Vacaciones** | El empleado se encuentra de vacaciones. |
@@ -70,7 +71,9 @@ CheckBiz360 contempla siete estados laborales:
 | **Permiso de paternidad** | El empleado está en permiso de paternidad. |
 | **Permiso de maternidad** | La empleada está en permiso de maternidad. |
 
-Para cambiar el estado, abra el perfil del empleado, pulse **Editar** y seleccione el nuevo estado.
+Para cambiar el estado, abra el perfil del empleado, pulse **Editar** y seleccione el nuevo estado. El filtro de estado del listado de empleados incluye **Pendiente**, para localizar las fichas que faltan por completar.
+
+> **Importante:** a efectos de facturación, cuenta todo empleado que no esté pendiente ni eliminado. Un empleado **Inactivo** o de baja sigue formando parte de la plantilla y **sí se factura**.
 
 > **Nota:** los estados de ausencia (vacaciones, bajas, excedencia) también pueden gestionarse como **ausencias con fechas** desde el calendario, lo que permite planificarlas por adelantado en lugar de cambiar el estado a mano el día que empiezan.
 
@@ -112,3 +115,4 @@ La gestión de perfiles está disponible para **manager** (nivel 3) y **owner** 
 - [Autenticación en dos factores](09-autenticacion-dos-factores.md)
 - [Asignar empleados a sucursales](../08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md)
 - [Exportar el listado de empleados](12-exportar-empleados-csv.md)
+- [Equipos](99-equipos.md)

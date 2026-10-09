@@ -33,6 +33,8 @@ A typical example would be a morning shift from 09:00 to 14:00 and an afternoon 
 
 The system evaluates the clock-in against the shift whose time window corresponds to the moment of the record. If the employee clocks in at 09:05, the system links it to the morning shift. If they clock in at 16:00, it links it to the afternoon shift.
 
+The exit follows the same rule: it is attributed to the shift that contains the exit time and, if all of them have already ended, to the last one that started, which is the one being closed late. With a strict workday, an exit at 20:10 on a day of 09:00–14:00 and 16:00–20:00 is adjusted to the end of the afternoon shift, not the morning one.
+
 ---
 
 ## How the system selects the active shift
@@ -53,15 +55,23 @@ For each day of the week it is possible to indicate whether it is enabled or dis
 
 ### Configuring the days of the week
 
-Configuring working days is done from the back office, in the schedules section of the organisation or the branch:
+Configuring working days is done from the back office:
 
 1. Sign in to the back office with a role that has editing permissions (owner or manager).
-2. Navigate to the **Configuration** section of the relevant organisation or branch.
-3. Go to the **Schedules** section.
-4. For each day of the week, mark whether the day is enabled or disabled.
-5. Save the changes.
+2. For the organisation's schedule, open **Schedules** in the side menu and the **General settings** tab. For a branch or an employee, open their record: the schedule is inherited while **Use base schedule** is enabled, and when you disable it you can define a **Custom schedule**.
+3. In the **Weekly schedule**, switch each day on or off. A day that is switched off shows "No shifts defined".
+4. Add the shifts for the active days.
+5. Press **Save calendar**. You are asked to confirm, and in that same step you can also save the schedule as a template (see [Schedule templates](#schedule-templates)).
 
 Changes to working days take effect immediately on the effective calendar of every employee who inherits that schedule.
+
+### If there is no schedule yet
+
+The working-time record is a legal obligation and cannot fail because the schedule has not been configured yet. That is why, **while no schedule exists at any level** —not at the organisation, not at the branch and not at the employee, or there is not a single shift in the whole week—, the clock-in is accepted with an open window from 00:00 to 23:59.
+
+It is only a safety net for the first few days: without a schedule there is no way of knowing whether someone arrived late or worked extra hours. The back office onboarding guide asks for it to be configured before anything else.
+
+As soon as a schedule is defined, that schedule governs: a week configured with every day switched off **closes** those days, and the clock-in is rejected with `checklog/day_disabled`.
 
 > **Important warning:** Disabling a working day affects every employee who inherits the schedule from that organisation or branch. If you need to disable a day for one specific employee only, use the individual schedule exceptions described in the article [Schedule exceptions](25-schedule-exceptions.md).
 
@@ -88,13 +98,15 @@ How those breaks are counted —with the fixed duration configured or with the a
 
 ---
 
-## Calendar presets
+## Schedule templates
 
-Configuring the weekly schedule site by site is repetitive when several branches share the same pattern. To avoid this, the calendar allows you to **save the configuration as a preset** and apply it later wherever it is needed.
+Configuring the weekly schedule site by site is repetitive when several branches share the same pattern. To avoid this, a schedule can be **saved as a template** and applied later wherever it is needed.
 
-- **Save configuration** stores the current schedule under the name you give it.
-- **Apply** loads a saved preset onto the calendar you are editing.
-- Presets that fall out of use can be deleted.
+- **Saving a template.** In the general settings, press **Save calendar**; in the confirmation, tick **Save as template** and give it a name. In a branch's or an employee's record, use the **Save as template** button.
+- **Applying a template.** In **Select a template**, choose the one you want: when you choose it, it is loaded onto the schedule you are editing. Review the result and save.
+- Templates that fall out of use can be deleted.
+
+The template is a copy of the **schedule already saved**, not of what is on screen. That is why, when creating a branch or an employee, **Save as template** is disabled until the record exists: save first and create the template afterwards.
 
 It is the practical way to set up a new branch with the same schedule as the others without redoing it day by day.
 
@@ -108,3 +120,4 @@ It is the practical way to set up a new branch with the same schedule as the oth
 - [Rotating shifts](27-rotating-shifts.md) — not available in the current version; alternatives
 - [Strict and flexible workday](28-flexible-schedule.md)
 - [Public holidays and non-working days](29-public-holidays-and-non-working-days.md)
+- [Availability board](98-availability-board.md)

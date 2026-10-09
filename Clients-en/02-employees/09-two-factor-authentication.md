@@ -15,6 +15,8 @@ When the employee activates 2FA, every time they sign in to CheckBiz360 they mus
 
 The code is valid for a short interval (generally 30 seconds) and regenerates automatically. This design guarantees that even if somebody obtains the password, they cannot get in without also having the employee's physical device.
 
+> **Note:** in the back office, the screen where the code is requested has a **cross in the top right-hand corner** that signs you out and returns you to the sign-in screen. It lets you sign in with another account, or leave if you do not have your phone to hand, without getting stuck on the verification step.
+
 ---
 
 ## Setting up 2FA from the application

@@ -16,7 +16,10 @@ Los errores más frecuentes en el uso diario. Salvo indicación contraria, los v
 |---|---|---|
 | `checklog/out_of_radius` | El empleado no está dentro del radio de fichaje de la sucursal seleccionada | Comprobar que está físicamente en el centro de trabajo y que el GPS tiene buena precisión. Si se repite, revisar coordenadas y radio de la sucursal |
 | `checklog/out_of_schedule` | El fichaje cae fuera del horario del turno asignado | Revisar el horario efectivo y la zona horaria de la sucursal, y el turno asignado al empleado |
-| `checklog/day_disabled` | El día está deshabilitado en el calendario efectivo (festivo o no laborable) | Si el día debía ser laborable, corregir el calendario. Si no, registrar las horas mediante jornada manual |
+| `checklog/day_disabled` | El día está deshabilitado en el calendario efectivo (festivo, día libre del empleado o no laborable) | Si el día debía ser laborable, corregir el calendario. Si no, registrar las horas mediante jornada manual |
+| `checklog/absence` | El empleado tiene registrada una ausencia que cubre ese día | Si la ausencia no es correcta, retirarla de su calendario y volver a fichar |
+| `checklog/different_branches` | El descanso o la salida se intentan fichar en una sucursal distinta de la de la entrada | Fichar en la sucursal de la entrada; si hubo cambio de centro, cerrar la jornada y abrir otra |
+| `checklog_update/future_not_allowed` | La corrección propuesta tiene fecha u hora futura | Indicar una hora que ya haya pasado |
 | `checklog/calendar_not_resolved` | No hay calendario efectivo resuelto para esa fecha | Revisar el calendario de la entidad, la sucursal y el empleado para esa fecha. Mientras tanto, introducir las horas manualmente |
 | `checklog/branch_geo_required` | La sucursal no tiene ubicación configurada | El Owner o Manager debe añadir las coordenadas de la sucursal en el backoffice |
 | `checklog/two_type_followed` | Se ha intentado iniciar jornada dos veces seguidas | Cerrar la jornada abierta antes de iniciar una nueva |
@@ -52,6 +55,8 @@ Los errores más frecuentes en el uso diario. Salvo indicación contraria, los v
 | `auth/network-request-failed` | Error de red | Comprobar la conexión a internet y reintentar |
 | `auth/unauthorized` | Acceso no autorizado al recurso, o sesión caducada | Cerrar sesión y volver a entrar. Si la cuenta fue desactivada, contactar con el Owner |
 | `auth/untrusted_device` | El dispositivo no está autorizado y requiere verificación adicional | El Owner o Manager debe autorizar el dispositivo desde el perfil del empleado |
+| `employee/invalid_token` | La validación del empleado ha caducado o no es válida. Caduca a los 30 días, igual que la sesión del empleado en la app | La app vuelve a iniciar sesión por sí sola. Si el aviso persiste, cerrar sesión en la app y entrar de nuevo |
+| `turnstile/failed` | No se ha podido comprobar que quien se registra o recupera la contraseña es una persona | Recargar la página y repetir el reto de verificación |
 
 ---
 
@@ -77,6 +82,15 @@ Los errores más frecuentes en el uso diario. Salvo indicación contraria, los v
 | `employee/branchId_required` | Falta la sucursal, que es obligatoria | Asignar al menos una sucursal antes de guardar |
 | `employee/bad_request` | Falta el identificador del empleado en la operación | Repetir la acción desde la ficha del empleado |
 | `branch/not_found` | La sucursal indicada no existe | Verificar que la sucursal existe y no ha sido eliminada |
+| `employee/fired` | El empleado está dado de baja y no se puede añadir a un equipo | Elegir a otra persona o reactivar su ficha |
+| `team/not_found` | El equipo ya no existe | Refrescar la lista de equipos |
+| `team/name_taken` | Ya hay un equipo con ese nombre (sin distinguir mayúsculas, tildes ni espacios) | Elegir otro nombre |
+| `team/member_exists` | Esa persona ya está en el equipo | Editar su puesto o su precio en lugar de volver a añadirla |
+| `team/member_not_found` | Esa persona ya no está en el equipo | Refrescar la ficha del equipo |
+| `team/branch_without_staff` | La sucursal no tiene a nadie activo que guardar como equipo | Dar de alta al personal en la sucursal o crear el equipo desde cero |
+| `team/apply_conflict` | Alguien dio de alta a uno de los miembros en esa sucursal mientras se aplicaba el equipo; no se ha cambiado nada | Volver a aplicar el equipo: esa persona se saltará |
+| `team/too_large` | Son demasiadas personas para una sola operación | Dividir el equipo en dos y aplicarlos por separado |
+| `team/bad_request` | Los datos del equipo no son válidos | Revisar el nombre, el puesto y que el precio sea un número |
 
 ---
 
@@ -113,6 +127,19 @@ Los errores más frecuentes en el uso diario. Salvo indicación contraria, los v
 | `task/invalid_mime_type` | El formato del archivo adjunto no está permitido | Subir la evidencia como foto o vídeo en un formato estándar |
 | `task/file_too_large` | El archivo supera el tamaño máximo permitido | Reducir la resolución o la duración del archivo |
 | `task/bad_request` | La información de la tarea no es válida | Revisar los campos obligatorios: título, sucursal y fecha límite |
+| `task/no_open_session` | Para iniciar, reanudar o completar la tarea hace falta tener la jornada abierta | Fichar la entrada y volver a intentarlo |
+| `task/geo_required` | La tarea tiene lugar de trabajo propio y hace falta la ubicación; el backoffice no la envía | Iniciar, reanudar o completar la tarea desde la app, estando en el lugar |
+| `task/out_of_worksite` | El empleado está fuera del margen del lugar de trabajo de la tarea. El aviso indica la distancia y el margen | Acercarse a la dirección de la tarea. Si el margen es demasiado estrecho para ese lugar, ampliarlo en la tarea |
+| `task/worksite_imprecise` | La dirección del lugar de trabajo solo se ha localizado de forma aproximada (por ejemplo, a nivel de ciudad) | Añadir el número de portal y volver a elegir la dirección en el buscador |
+| `task/worksite_invalid` | No se ha podido situar la dirección en el mapa | Elegir la dirección del buscador en lugar de escribirla a mano |
+| `task/not_in_progress` | Solo se puede pausar una tarea en progreso | Iniciar la tarea antes de pausarla |
+| `task/already_paused` | La tarea ya está en pausa; puede que otro asignado la haya pausado antes | Refrescar la tarea |
+| `task/not_paused` | Se intentó reanudar una tarea que no está en pausa | Refrescar la tarea |
+| `task/invalid_transition` | El cambio de estado no está permitido desde el estado actual; por ejemplo, completar una tarea rechazada | Reabrir la tarea devolviéndola a *Asignada* desde **Editar** |
+| `task/invalid_status` | La acción exige otro estado; por ejemplo, validar una tarea que no está completada | Revisar el estado de la tarea |
+| `task/invalid_employees` | Algún empleado no se puede asignar: no trabaja en la sucursal de la tarea o no está activo | Asignarlo a esa sucursal y comprobar que está activo |
+| `task/branch_inactive` | La sucursal de la tarea está inactiva y no admite tareas nuevas ni copias | Activar la sucursal o usar otra |
+| `task/source_config_invalid` | La tarea que se intenta duplicar tiene una configuración que ya no es válida | Abrir la tarea original, guardarla de nuevo y volver a duplicarla |
 
 ---
 
@@ -128,6 +155,7 @@ Los errores más frecuentes en el uso diario. Salvo indicación contraria, los v
 | `subscribe/not_found` | El servicio indicado no existe | Reintentar desde la pantalla de planes |
 | `subscribe/invalid_entity_service` | La entidad o el servicio no son correctos | Verificar la entidad seleccionada |
 | `subscribe/internal` | Error interno del servicio de suscripciones | Reintentar más tarde; si persiste, abrir incidencia |
+| `subscribe/plan_not_available` | El plan elegido no está disponible para contratar | Elegir otro de los planes que ofrece la pantalla de planes |
 | `sub/bad_request` | Los datos enviados no son válidos | Revisar el formulario y reintentar |
 | `sub/entity_not_found` | La entidad no existe | Verificar la entidad seleccionada |
 | `payment/pending` | Hay pagos pendientes en la cuenta | Regularizar el pago desde la sección de facturación |

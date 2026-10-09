@@ -37,7 +37,7 @@ Para desativar a geocerca numa sucursal concreta, ative a opção «desativar va
 
 Com esta opção ativa, o sistema omite a verificação de distância para todos os funcionários atribuídos a essa sucursal. As restantes validações (horário, dispositivo, biometria) continuam a aplicar-se normalmente.
 
-> **Nota:** esta opção é diferente do modo de trabalho remoto por funcionário. «Desativar validação de geocerca» afeta todos os funcionários da sucursal, ao passo que «trabalho remoto» é uma configuração individual.
+> **Nota:** esta opção é diferente do **trabalho fora do centro**. «Desativar validação de geocerca» afeta todos os funcionários da sucursal, ao passo que o trabalho fora do centro é uma configuração individual de cada funcionário.
 
 ---
 
@@ -85,6 +85,6 @@ A configuração de geocercas e do raio de registo exige perfil **manager** ou *
 ## Artigos relacionados
 
 - [Como funciona o registo de ponto](13-como-funciona-o-registo-de-ponto.md)
-- [Registo em teletrabalho](15-registo-em-teletrabalho.md)
+- [Trabalho fora do centro](15-registo-em-teletrabalho.md)
 - [Estados e códigos de erro](22-estados-e-codigos-de-erro.md)
 - [Entrada e saída na aplicação](14-entrada-e-saida-na-aplicacao.md)

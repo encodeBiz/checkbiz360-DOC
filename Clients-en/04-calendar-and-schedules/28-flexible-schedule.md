@@ -32,11 +32,10 @@ This is the right option when the schedule is a reference and what you want to m
 
 ## How it is configured
 
-1. Go to **Calendar** in the side menu.
-2. Choose the scope you want to work on: **General configuration** (organisation), **Branch** or **Employee**.
-3. Below the weekly schedule, find the **Strict workday / Flexible workday** switch.
-4. Turn it on or off. The box that appears below summarises the counting rules that will apply, so there is no doubt about what is being chosen.
-5. Save the calendar.
+1. Open the schedule you want to adjust: the organisation's in **Schedules** → **General settings**, or a branch's or an employee's from their record.
+2. Under **Working day and break rules**, find the workday card.
+3. Choose **Strict schedule** or **Flexible working day**. The card's text summarises the counting rules that will apply, so there is no doubt about what is being chosen.
+4. Save the calendar.
 
 Being part of the calendar, it follows the same **inheritance** as the rest of the configuration: what is defined at the organisation flows down to the branches, and what is defined at a branch flows down to its employees, unless that level has its own configuration. See [Configuration inheritance](./26-configuration-inheritance.md).
 

@@ -32,6 +32,37 @@ O relatório de tarefas é gerado a partir da secção **Relatórios** do backof
 
 > **Importante:** o período do relatório aplica-se ao **prazo** de cada tarefa, não à sua data de criação. Um relatório de julho inclui as tarefas que venciam em julho, ainda que tenham sido criadas em junho.
 
+### O que contém
+
+Uma linha por tarefa, com estas colunas: Empresa, Local, Título, Estado, Prioridade, Início, Fim, **Tempo investido (h)**, **Em pausa (h)**, **N.º de pausas**, **Tempo investido sem pausas (h)**, Equipa, Avaliação e N.º de evidências.
+
+Convém ler bem as colunas de tempo:
+
+| Coluna | O que mede |
+|---|---|
+| **Tempo investido (h)** | O tempo decorrido entre o início e o fim da tarefa. Não é tempo trabalhado: uma tarefa que se começa na sexta-feira e se termina na segunda-feira inclui o fim de semana. |
+| **Em pausa (h)** | A soma das pausas da tarefa. |
+| **N.º de pausas** | Quantas vezes foi pausada. |
+| **Tempo investido sem pausas (h)** | O tempo investido menos o tempo em pausa. Desconta as pausas que alguém registou, não as interrupções que ninguém marcou. |
+
+Uma tarefa que ainda não foi iniciada deixa as colunas de pausa vazias. Se uma tarefa estiver em pausa ao gerar o relatório, a pausa aberta conta até esse momento.
+
+### Material de cada tarefa
+
+Se a sua empresa tiver o [inventário](../16-inventario/100-o-que-e-o-inventario.md) contratado (ou em experiência), o relatório responde também a uma pergunta que a folha de trabalho raramente responde: **que material se gastou em cada serviço e quanto custou**.
+
+A folha de tarefas ganha três colunas no fim:
+
+| Coluna | O que é |
+|---|---|
+| **Material** | O consumido na tarefa: cada artigo com a sua quantidade, e os equipamentos pelo seu exemplar. |
+| **Por acertar** | O que saiu e ninguém declarou nem devolveu. É o que convém rever antes de validar. |
+| **Custo do material (€)** | O consumido pelo seu custo unitário. Vazio se nenhum artigo tiver custo na ficha. |
+
+E o ficheiro traz mais uma folha, **Material**, com uma linha por tarefa e artigo ou exemplar: armazém de onde saiu, quantidades reservada, saída, consumida, devolvida e por acertar, custo, e para os equipamentos o seu período de reserva e o seu uso. É a folha para filtrar ou fazer tabelas dinâmicas.
+
+Sem o inventário, o relatório é exatamente o de sempre.
+
 ### Se não houver resultados
 
 Se nenhuma tarefa cumprir os filtros selecionados, o sistema indica-o e não gera um ficheiro vazio. Alargue o período ou reveja os filtros de sucursal e estado.

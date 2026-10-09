@@ -14,6 +14,8 @@ O percurso habitual é:
 
 Com dois desvios possíveis: o responsável pode **recusar** uma tarefa concluída, ou **cancelar** a tarefa em qualquer momento antes do seu encerramento.
 
+Enquanto está *em curso*, a tarefa pode ficar **em pausa** uma ou várias vezes. A pausa não é mais um estado: explica-se em [Tarefa em pausa](#tarefa-em-pausa).
+
 ---
 
 ## Tabela de estados
@@ -28,7 +30,7 @@ Com dois desvios possíveis: o responsável pode **recusar** uma tarefa concluí
 | **Recusada** | O responsável reviu a tarefa concluída e devolveu-a com um motivo obrigatório. | Manager, ou owner ou supervisor com permissão de validação |
 | **Cancelada** | A tarefa é anulada porque já não se aplica. Exige motivo e não conta como incumprimento. | Manager ou owner a partir do backoffice |
 
-Os estados *Validada*, *Recusada* e *Cancelada* não podem ser atribuídos à mão ao criar ou editar uma tarefa: são resultado de uma ação do ciclo de vida (validar, recusar, cancelar).
+Os estados *Validada*, *Recusada* e *Cancelada* não podem ser atribuídos à mão ao criar ou editar uma tarefa: são resultado de uma ação do ciclo de vida (validar, recusar, cancelar). Deles só se sai **reabrindo** a tarefa, como se explica mais abaixo.
 
 ---
 
@@ -57,11 +59,11 @@ Quem cria a tarefa guarda-a com estado *Atribuída*, ou edita uma tarefa em rasc
 
 ### De atribuída a em curso
 
-O funcionário abre a tarefa na aplicação e prime iniciar. O backoffice reflete a alteração e, se a tarefa tinha ativado o aviso de início tardio, esse aviso deixa de estar pendente.
+O funcionário abre a tarefa na aplicação e prime iniciar. Precisa de ter a jornada aberta e, se a tarefa tiver local de trabalho próprio, de estar dentro da sua margem. O backoffice reflete a alteração e, se a tarefa tinha ativado o aviso de início tardio, esse aviso deixa de estar pendente.
 
 ### De em curso a concluída
 
-O funcionário prime finalizar na aplicação. Se a tarefa tiver ativada a exigência de evidência, o sistema não permite fechá-la sem pelo menos uma foto ou vídeo anexados, e devolve o erro `task/evidence_required`.
+O funcionário prime finalizar na aplicação. Se a tarefa tiver ativada a exigência de evidência, o sistema não permite fechá-la sem pelo menos uma foto ou vídeo anexados, e devolve o erro `task/evidence_required`. Se a tarefa estava em pausa, a pausa é fechada nesse momento.
 
 ### De concluída a validada
 
@@ -73,7 +75,28 @@ O responsável revê o trabalho e devolve-o indicando um **motivo obrigatório**
 
 ### Cancelamento
 
-Uma tarefa que já não se aplica é cancelada indicando um motivo. É um encerramento administrativo: não é contabilizado como incumprimento do funcionário.
+Uma tarefa que já não se aplica é cancelada indicando um motivo. É um encerramento administrativo: não é contabilizado como incumprimento do funcionário. O motivo fica guardado na tarefa e aparece no seu histórico; se havia uma pausa aberta, é fechada.
+
+> **Nota:** os cancelamentos feitos a partir do backoffice antes de 11 de setembro de 2026 não conservaram o seu motivo, embora o diálogo o pedisse. Os posteriores conservam-no.
+
+### Reabrir uma tarefa
+
+Uma tarefa validada, recusada ou cancelada reabre-se a partir de **Editar**, mudando o seu estado para **Atribuída** ou para **Rascunho**. Podem fazê-lo owners e managers. Para voltar a *Atribuída*, a tarefa tem de ter pelo menos um funcionário atribuído.
+
+Ao reabrir:
+
+- São retiradas a validação, a recusa ou o cancelamento anteriores, com os respetivos motivos, de modo que a tarefa não arrasta a assinatura da execução passada.
+- O cumprimento temporal volta a *Por iniciar*. Reveja o prazo se já tiver passado.
+- Os contadores de pausa voltam a zero.
+- O histórico conserva tudo o que aconteceu antes de reabrir.
+
+---
+
+## Tarefa em pausa
+
+Uma tarefa *em curso* pode ser **pausada** e **retomada** tantas vezes quantas forem necessárias, a partir da aplicação ou do detalhe da tarefa no backoffice. Os passos e as condições explicam-se em [Acompanhamento e atualizações](./43-acompanhamento-e-atualizacoes.md#pausar-e-retomar-uma-tarefa).
+
+A pausa **não é um estado**: a tarefa continua *em curso* para todos os efeitos —filtros, relatórios, cumprimento temporal— e a etiqueta de estado mostra **Em pausa** enquanto dura. O prazo não é alargado por a tarefa estar em pausa.
 
 ---
 
@@ -108,7 +131,7 @@ A partir da lista de tarefas é possível filtrar por estado e por prioridade. I
 - Identificar tarefas vencidas ou em risco através do indicador de cumprimento temporal.
 - Verificar o avanço das tarefas ativas numa sucursal ou para um funcionário concreto.
 
-Cada tarefa mostra duas etiquetas de cor: uma para o estado e outra para o cumprimento temporal. O código de cor é coerente em toda a plataforma: cinzento para o que ainda não arrancou (rascunho, cancelada, por iniciar), azul para o que está em curso ou à espera de revisão (atribuída, concluída), âmbar para o que exige atenção (em curso, em risco, concluída tarde), verde para o que está correto (validada, a tempo, concluída a tempo) e vermelho para o que falhou (recusada, vencida).
+Cada tarefa mostra duas etiquetas de cor: uma para o estado e outra para o cumprimento temporal. O código de cor é coerente em toda a plataforma: cinzento para o que ainda não arrancou ou está parado (rascunho, cancelada, por iniciar, em pausa), azul para o que está em curso ou à espera de revisão (atribuída, concluída), âmbar para o que exige atenção (em curso, em risco, concluída tarde), verde para o que está correto (validada, a tempo, concluída a tempo) e vermelho para o que falhou (recusada, vencida).
 
 ---
 
@@ -117,7 +140,7 @@ Cada tarefa mostra duas etiquetas de cor: uma para o estado e outra para o cumpr
 | Artigo | Descrição |
 |---|---|
 | [Criar uma tarefa](./40-criar-uma-tarefa.md) | Campos e opções ao criar uma tarefa |
-| [Acompanhamento e atualizações](./43-acompanhamento-e-atualizacoes.md) | Como o funcionário atualiza o progresso |
+| [Acompanhamento e atualizações](./43-acompanhamento-e-atualizacoes.md) | Como se atualiza o progresso, as pausas e o histórico |
 | [Prioridades e prazos](./44-prioridades-e-prazos.md) | Configuração de prazos e alertas |
 | [Validação de tarefas](./45-validacao-de-tarefas.md) | Fluxo de validação e permissões |
 | [Notificações de tarefas](./47-notificacoes-de-tarefas.md) | Avisos automáticos por mudança de estado |

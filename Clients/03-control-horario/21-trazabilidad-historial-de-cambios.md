@@ -31,6 +31,8 @@ Cada registro en el historial de cambios contiene los siguientes campos:
 |---|---|
 | `created` | Creación del fichaje original por el empleado |
 | `updated` | Modificación de un dato del fichaje por un responsable |
+| `edited` | Propuesta de corrección de un responsable, pendiente de que el empleado la acepte |
+| `rejected` | El empleado rechazó una propuesta de corrección; incluye el motivo, y el fichaje conserva sus datos anteriores |
 | `manual_request_created` | Creación de jornada completa manual (Modo A) |
 | `manual_checkout_created` | Creación de checkout manual sobre checkin abierto (Modo B) |
 
@@ -66,7 +68,7 @@ Con CheckBiz360, el responsable puede acceder al historial de cualquier fichaje 
 
 - Quién registró el fichaje originalmente y desde qué dispositivo.
 - Si un responsable realizó alguna modificación posterior, cuándo y con qué motivo.
-- Si el empleado validó o rechazó alguna jornada manual.
+- Si el empleado validó o rechazó alguna jornada manual o alguna corrección, y con qué motivo.
 - Qué datos tenía el registro antes y después de cualquier cambio.
 
 Esta trazabilidad completa cubre los requisitos de conservación y transparencia exigidos por la normativa de registro horario vigente.

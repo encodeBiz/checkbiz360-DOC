@@ -15,6 +15,8 @@ Cuando el empleado activa el 2FA, cada vez que inicia sesión en CheckBiz360 deb
 
 El código es válido durante un intervalo de tiempo breve (generalmente 30 segundos) y se regenera automáticamente. Este diseño garantiza que, aunque alguien obtenga la contraseña, no pueda acceder sin tener también el dispositivo físico del empleado.
 
+> **Nota:** en el backoffice, la pantalla donde se pide el código tiene una **cruz arriba a la derecha** que cierra la sesión y vuelve al inicio de sesión. Sirve para entrar con otra cuenta o para salir si no tiene el móvil a mano, sin quedarse atrapado en la verificación.
+
 ---
 
 ## Configurar el 2FA desde la aplicación

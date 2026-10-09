@@ -50,6 +50,8 @@ CheckBiz360 allows these corrections, but with one condition: **every manual cor
 - The date and time the correction was made.
 - The reason for the correction, which the manager has to enter as a mandatory field.
 
+In addition, a correction to an existing clock record **is not applied until the employee accepts it**. If they accept it, the corrected time is the one that appears in the working-time record report. If they reject it, the record keeps its original value —it still counts in the record— and the rejection is noted with its reason. No correction can carry a future date or time.
+
 This traceability satisfies the record integrity requirement the regulations demand and which the Labour Inspectorate verifies in its actions.
 
 ---

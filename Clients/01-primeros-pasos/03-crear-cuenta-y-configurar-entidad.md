@@ -30,9 +30,12 @@ El registro se hace en el propio backoffice, en `saas.encodebiz.com`.
    - **Teléfono**
    - **Contraseña** y su **confirmación**
 4. Acepte los términos y la política de privacidad.
-5. Envíe el formulario.
+5. Complete el **reto de verificación** que aparece en el formulario. Es una comprobación automática de Cloudflare que confirma que quien se registra es una persona; el botón de envío se activa al superarla.
+6. Envíe el formulario.
 
 No hay paso intermedio de verificación por correo: al completar el registro, el sistema le lleva **directamente a la pantalla de creación de la entidad**.
+
+> **Nota:** el reto de verificación caduca a los pocos minutos. Si tarda en enviar el formulario y aparece el aviso `turnstile/failed`, recargue la página y vuelva a intentarlo. El mismo reto se pide al recuperar la contraseña.
 
 > **Nota:** use una dirección de correo corporativa. Esa dirección queda vinculada como Owner de la cuenta y es a la que llegan las comunicaciones administrativas. Si el correo ya está en uso, el sistema lo indica con el error `auth/email-already-in-use`.
 
@@ -57,34 +60,36 @@ Guarde para continuar.
 
 ---
 
-## Paso 3. Activar CheckBiz
+## Paso 3. Activar CheckBiz360
 
-Con la entidad creada, hay que activar el servicio. En el menú lateral, entre en **CheckBiz** y revise los planes disponibles.
+Con la entidad creada, hay que activar el servicio. En el menú lateral, entre en **CheckBiz360** y revise los planes disponibles.
 
 Antes de contratar, el sistema comprueba dos requisitos y avisa si falta alguno, enlazando a la pantalla correspondiente:
 
 - **Datos de la empresa** completos.
-- **Método de pago** configurado.
+- **Método de pago** configurado. **Sin método de pago no se puede activar el servicio.**
 
-Recuerde que la primera suscripción incluye **15 días de prueba**. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
+Añadir la tarjeta no genera ningún cargo, y tampoco hay cargo durante la prueba: la primera suscripción incluye **15 días de prueba**, y si antes de que terminen decide no seguir, cancela la suscripción y no se le cobra nada. La tarjeta sirve también para confirmar que detrás de la cuenta hay una persona. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
+
+Una vez activado el servicio, las secciones de CheckBiz360 —Empleados, Sucursales, Horarios, Tareas, Documentos, Informes…— aparecen directamente en el menú lateral.
 
 ---
 
 ## Paso 4. Crear la primera sucursal
 
-En el menú lateral, dentro de CheckBiz, entre en **Sucursales** y cree una.
+Al activar el servicio, CheckBiz360 crea una primera sucursal con los datos de la empresa. Revise su dirección y su zona de chequeo desde su ficha. Si su cuenta no la tiene, o necesita más centros, en el menú lateral entre en **Sucursales** y cree una.
 
 | Campo | Obligatorio | Descripción |
 |---|---|---|
 | **Nombre** | Sí | Identificador de la unidad operativa: "Tienda Centro", "Oficina Madrid" |
-| **Dirección** | Sí | El sistema la geocodifica para obtener las coordenadas y la zona horaria del centro |
+| **Dirección** | Sí | Se elige del buscador. El sistema obtiene las coordenadas y la zona horaria del centro, y rellena el país y el código postal |
 | **Zona de chequeo en metros** | Sí | El radio dentro del cual se acepta un fichaje. Entre 50 y 200 metros según el tamaño del centro |
 | **NIF** | — | Solo si el centro tiene identificación fiscal propia |
 | **Estado** | — | Activa por defecto |
 
 > **Nota:** la zona de chequeo es lo que impide fichar desde fuera del centro. Un radio demasiado amplio la vuelve inútil; uno demasiado estrecho genera rechazos por imprecisión del GPS. Para la mayoría de oficinas y tiendas, **100 metros** es un buen punto de partida, y se ajusta después con los datos de las primeras semanas.
 
-Guarde. Después podrá configurar su horario semanal desde **Calendario**.
+Guarde. Después podrá configurar su horario semanal desde **Horarios**.
 
 ---
 
@@ -92,7 +97,7 @@ Guarde. Después podrá configurar su horario semanal desde **Calendario**.
 
 En **Empleados**, cree uno nuevo.
 
-1. Rellene los datos obligatorios: **nombre completo**, **correo electrónico**, **teléfono** y **tipo de relación** (interno o colaborador).
+1. Rellene los datos obligatorios: **nombre completo**, **correo electrónico**, **teléfono** y **tipo de relación** (plantilla o colaborador).
 2. Guarde. El sistema crea el perfil y **envía automáticamente el correo de bienvenida** con las instrucciones de activación.
 3. Abra la ficha del empleado y **vincúlelo con la sucursal** que acaba de crear. Es en esa vinculación donde se define su **responsabilidad** —worker, supervisor, manager u owner—, su **puesto** y su **tarifa horaria**.
 

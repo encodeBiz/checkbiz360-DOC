@@ -33,6 +33,8 @@ Um exemplo típico seria o turno da manhã das 09:00 às 14:00 e o turno da tard
 
 O sistema avalia o registo face ao turno cuja faixa horária corresponde ao momento do registo. Se o funcionário registar às 09:05, o sistema associa-o ao turno da manhã. Se registar às 16:00, associa-o ao turno da tarde.
 
+A saída segue a mesma regra: é atribuída ao turno que contém a hora de saída e, se já tiverem terminado todos, ao último que começou, que é o que está a ser fechado tarde. Com jornada estrita, uma saída às 20:10 num dia de 09:00–14:00 e 16:00–20:00 é ajustada ao fim do turno da tarde, e não ao da manhã.
+
 ---
 
 ## Como o sistema seleciona o turno ativo
@@ -53,15 +55,23 @@ Para cada dia da semana é possível indicar se está ativo ou desativado. Um di
 
 ### Configurar os dias da semana
 
-A configuração de dias úteis realiza-se a partir do backoffice, na secção de horários da entidade ou da sucursal:
+A configuração de dias úteis realiza-se a partir do backoffice:
 
 1. Aceda ao backoffice com um perfil com permissões de edição (owner ou manager).
-2. Navegue até à secção **Configuração** da entidade ou sucursal correspondente.
-3. Aceda à área **Horários**.
-4. Para cada dia da semana, marque se o dia está ativo ou desativado.
-5. Guarde as alterações.
+2. Para o horário da entidade, abra **Horários** no menu lateral e o separador **Configurações gerais**. Para uma sucursal ou um funcionário, abra a sua ficha: o horário é herdado enquanto estiver ativado **Usar cronograma base**, e ao desativá-lo pode definir uma **Agenda personalizada**.
+3. Na **Programação semanal**, ative ou desative cada dia. Um dia desligado mostra «Sem turnos definidos».
+4. Adicione os turnos dos dias ativos.
+5. Prima **Salvar calendário**. É pedida confirmação, e nesse mesmo passo pode guardar o horário também como modelo (ver [Modelos de horário](#modelos-de-horário)).
 
 As alterações nos dias úteis produzem efeito imediato sobre o calendário efetivo de todos os funcionários que herdem esse horário.
+
+### Se ainda não existe nenhum horário
+
+O registo de jornada é uma obrigação legal e não pode falhar por ainda não ter sido configurado o horário. Por isso, **enquanto não existir nenhum horário em nenhum nível** —nem na entidade, nem na sucursal, nem no funcionário, ou não houver um único turno em toda a semana—, o registo é aceite com uma faixa aberta das 00:00 às 23:59.
+
+É apenas uma rede de segurança para os primeiros dias: sem horário não é possível saber se alguém chegou tarde ou fez horas a mais. O guia inicial do backoffice pede que o configure antes de tudo.
+
+Assim que houver um horário definido, manda esse horário: uma semana configurada com todos os dias desligados **fecha** esses dias e o registo é recusado com `checklog/day_disabled`.
 
 > **Aviso importante:** desativar um dia útil afeta todos os funcionários que herdem o horário dessa entidade ou sucursal. Se precisar de desativar um dia apenas para um funcionário concreto, utilize as exceções individuais de horário descritas no artigo [Exceções de horário](25-excecoes-de-horario.md).
 
@@ -88,13 +98,15 @@ Como se contabilizam essas pausas —com a duração fixa configurada ou com o t
 
 ---
 
-## Predefinições de calendário
+## Modelos de horário
 
-Configurar o horário semanal local a local é repetitivo quando várias sucursais partilham o mesmo padrão. Para o evitar, o calendário permite **guardar a configuração como predefinição** e aplicá-la depois onde for preciso.
+Configurar o horário semanal local a local é repetitivo quando várias sucursais partilham o mesmo padrão. Para o evitar, um horário pode ser **guardado como modelo** e aplicado depois onde for preciso.
 
-- **Guardar configuração** armazena o horário atual com o nome que lhe der.
-- **Aplicar** carrega uma predefinição guardada sobre o calendário que estiver a editar.
-- As predefinições que deixem de ser usadas podem ser eliminadas.
+- **Guardar um modelo.** Na configuração geral, prima **Salvar calendário**; na confirmação, marque **Guardar como modelo** e dê-lhe um nome. Na ficha de uma sucursal ou de um funcionário, use o botão **Guardar como modelo**.
+- **Aplicar um modelo.** Em **Seleciona um modelo**, escolha o que pretende: ao escolhê-lo, é carregado sobre o horário que estiver a editar. Reveja o resultado e guarde.
+- Os modelos que deixem de ser usados podem ser eliminados.
+
+O modelo é uma cópia do **horário já guardado**, e não do que estiver no ecrã. Por isso, ao criar uma sucursal ou um funcionário, **Guardar como modelo** está desativado até que a sucursal ou o funcionário existam: guarde primeiro e crie o modelo depois.
 
 É a via prática para criar uma sucursal nova com o horário das restantes sem o refazer dia a dia.
 
@@ -108,3 +120,4 @@ Configurar o horário semanal local a local é repetitivo quando várias sucursa
 - [Turnos rotativos](27-turnos-rotativos.md) — não disponível na versão atual; alternativas
 - [Jornada estrita e jornada flexível](28-horario-flexivel.md)
 - [Feriados e dias não úteis](29-feriados-e-dias-nao-uteis.md)
+- [Quadro de disponibilidade](98-quadro-de-disponibilidade.md)

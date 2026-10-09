@@ -32,6 +32,37 @@ El informe de tareas se genera desde la sección **Informes** del backoffice y s
 
 > **Importante:** el periodo del informe se aplica sobre la **fecha límite** de cada tarea, no sobre su fecha de creación. Un informe de julio incluye las tareas que vencían en julio, aunque se crearan en junio.
 
+### Qué contiene
+
+Una fila por tarea, con estas columnas: Empresa, Centro, Título, Estado, Prioridad, Inicio, Fin, **Tiempo invertido (h)**, **En pausa (h)**, **Nº pausas**, **Tiempo invertido sin pausas (h)**, Equipo, Valoración y Nº evidencias.
+
+Conviene leer bien las columnas de tiempo:
+
+| Columna | Qué mide |
+|---|---|
+| **Tiempo invertido (h)** | El tiempo transcurrido entre el inicio y el fin de la tarea. No es tiempo trabajado: una tarea que se empieza el viernes y se termina el lunes incluye el fin de semana. |
+| **En pausa (h)** | La suma de las pausas de la tarea. |
+| **Nº pausas** | Cuántas veces se pausó. |
+| **Tiempo invertido sin pausas (h)** | El tiempo invertido menos el tiempo en pausa. Descuenta las pausas que alguien registró, no las interrupciones que nadie marcó. |
+
+Una tarea que todavía no se ha iniciado deja las columnas de pausa vacías. Si una tarea está en pausa al generar el informe, la pausa abierta cuenta hasta ese momento.
+
+### Material de cada tarea
+
+Si su empresa tiene contratado el [inventario](../16-inventario/100-que-es-el-inventario.md) (o lo está probando), el informe responde además a una pregunta que el parte de trabajo no suele contestar: **qué material se gastó en cada servicio y cuánto costó**.
+
+La hoja de tareas gana tres columnas al final:
+
+| Columna | Qué es |
+|---|---|
+| **Material** | Lo consumido en la tarea: cada artículo con su cantidad, y los equipos por su ejemplar. |
+| **Sin cuadrar** | Lo que salió y nadie ha declarado ni devuelto. Es lo que conviene revisar antes de validar. |
+| **Coste material (€)** | Lo consumido por su coste unitario. Vacío si ningún artículo tiene coste en su ficha. |
+
+Y el fichero trae una hoja más, **Material**, con una fila por tarea y artículo o ejemplar: almacén de donde salió, cantidades reservada, salida, consumida, devuelta y sin cuadrar, coste, y para los equipos su tramo de reserva y su uso. Es la hoja para filtrar o hacer tablas dinámicas.
+
+Sin el inventario, el informe es exactamente el de siempre.
+
 ### Si no hay resultados
 
 Si ninguna tarea cumple los filtros seleccionados, el sistema lo indica y no genera un fichero vacío. Amplíe el periodo o revise los filtros de sucursal y estado.

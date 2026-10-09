@@ -37,7 +37,7 @@ Para deshabilitar la geocerca en una sucursal concreta, active la opción "desac
 
 Con esta opción activa, el sistema omite la comprobación de distancia para todos los empleados asignados a esa sucursal. El resto de validaciones (horario, dispositivo, biometría) continúan aplicándose con normalidad.
 
-> **Nota:** Esta opción es diferente al modo de trabajo remoto por empleado. "Desactivar validación de geocerca" afecta a todos los empleados de la sucursal, mientras que "trabajo en remoto" es una configuración individual.
+> **Nota:** Esta opción es diferente del **trabajo fuera del centro**. "Desactivar validación de geocerca" afecta a todos los empleados de la sucursal, mientras que el trabajo fuera del centro es una configuración individual de cada empleado.
 
 ---
 
@@ -85,6 +85,6 @@ La configuración de geocercas y radio de fichaje requiere rol **manager** u **o
 ## Artículos relacionados
 
 - [Cómo funciona el fichaje](13-como-funciona-el-fichaje.md)
-- [Fichaje en remoto](15-fichaje-en-remoto.md)
+- [Trabajo fuera del centro](15-fichaje-en-remoto.md)
 - [Estados y códigos de error](22-estados-y-codigos-de-error.md)
 - [Check-in y check-out desde la app](14-checkin-checkout-desde-app.md)

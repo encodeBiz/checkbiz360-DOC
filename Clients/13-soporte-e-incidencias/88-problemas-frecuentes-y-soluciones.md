@@ -1,6 +1,6 @@
 # Problemas frecuentes y soluciones
 
-Este artículo recoge las doce situaciones técnicas y operativas más habituales en CheckBiz360, junto con los pasos de diagnóstico y resolución recomendados. Consulte esta guía antes de abrir una incidencia, ya que la mayoría de estos problemas tienen solución directa sin necesidad de intervención del equipo de soporte.
+Este artículo recoge las catorce situaciones técnicas y operativas más habituales en CheckBiz360, junto con los pasos de diagnóstico y resolución recomendados. Consulte esta guía antes de abrir una incidencia, ya que la mayoría de estos problemas tienen solución directa sin necesidad de intervención del equipo de soporte.
 
 ---
 
@@ -169,6 +169,34 @@ Este artículo recoge las doce situaciones técnicas y operativas más habituale
 2. Compruebe que su rol tiene permisos para generar informes del tipo seleccionado. Los informes de costes y anomalías están restringidos a Owner y Manager.
 3. Asegúrese de que los filtros aplicados (sucursal, empleado) no excluyen todos los registros disponibles para ese periodo.
 4. Si el problema persiste con un rango de fechas que debería estar dentro del periodo de retención, abra una incidencia con el rango exacto que está intentando consultar.
+
+---
+
+## 13. El empleado no puede fichar en un festivo aunque tiene turno
+
+**Síntoma:** El empleado tiene un horario personalizado con turno ese día, pero el fichaje se rechaza con `checklog/day_disabled`. La app explica que hoy no es día laborable.
+
+**Pasos de resolución:**
+
+1. Compruebe si esa fecha es festivo en la **entidad** o en la **sucursal** del empleado. Los festivos se aplican a todos los empleados de su ámbito, aunque alguno tenga turno propio ese día.
+2. Si ese día trabaja toda la sucursal, retire el festivo de la sucursal (o de la entidad, y añádalo solo en las sucursales que cierran).
+3. Si solo trabaja una parte de la plantilla, no marque el día como festivo en la sucursal y registre una ausencia a quienes libran. Consulte [Festivos y días no laborables](../04-calendario-y-horarios/29-festivos-y-dias-no-laborables.md#qué-ocurre-si-la-empresa-trabaja-en-festivo).
+4. Para la jornada ya trabajada, registre una jornada manual.
+5. Si no hay festivo, compruebe que el empleado no tiene una ausencia registrada ese día (`checklog/absence`).
+
+---
+
+## 14. No se puede iniciar, reanudar o completar una tarea
+
+**Síntoma:** Al iniciar, reanudar o completar una tarea aparece un error y la tarea no cambia.
+
+**Pasos de resolución:**
+
+1. `task/no_open_session`: el empleado no tiene la jornada abierta. Debe fichar la entrada y volver a intentarlo.
+2. `task/out_of_worksite`: la tarea tiene lugar de trabajo propio y el empleado está fuera de su margen. El aviso indica la distancia. Si está en el sitio y el margen es demasiado estrecho —un garaje, una nave—, amplíe el margen en la tarea.
+3. `task/geo_required`: se ha intentado desde el backoffice una tarea con lugar de trabajo propio. Iniciarla, reanudarla o completarla tiene que hacerlo el empleado desde la app.
+4. Si la acción es **reanudar** y aparece `task/not_paused`, otro asignado ya la reanudó: refresque la tarea.
+5. Si la tarea está rechazada o validada y no admite completarse (`task/invalid_transition`), reábrala devolviéndola a *Asignada* desde **Editar**.
 
 ---
 

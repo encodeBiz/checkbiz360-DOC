@@ -24,6 +24,8 @@ Se precisar de que cada pessoa execute o trabalho de forma independente, crie um
 
 Uma tarefa pertence sempre a uma sucursal, pelo que a seleção de funcionários se faz sobre os que trabalham nesse local.
 
+> **Nota:** as [equipas](../02-funcionarios/99-equipas.md) da secção Funcionários aplicam-se a sucursais, não a tarefas. Depois de aplicar uma equipa à sucursal, os seus membros selecionam-se na tarefa um a um, como o resto do pessoal. Adicionar uma equipa inteira a uma tarefa de uma vez está planeado.
+
 ---
 
 ## Reatribuição de tarefas
@@ -34,11 +36,15 @@ As circunstâncias mudam: um funcionário pode ausentar-se, mudar de turno ou re
 
 1. Aceda ao backoffice e abra a lista de **Tarefas**.
 2. Localize a tarefa que pretende reatribuir e clique nela para abrir o detalhe.
-3. No campo **Funcionário atribuído**, remova o funcionário atual e selecione o novo destinatário.
-4. Se o considerar oportuno, acrescente uma nota interna a explicar o motivo da alteração.
-5. Prima **Guardar**. O novo funcionário receberá uma notificação push e a alteração ficará registada no histórico.
+3. Prima **Editar**. No campo de funcionários atribuídos, retire o funcionário atual e selecione o novo destinatário.
+4. Prima **Guardar**. Ao guardar, a tarefa é atribuída às pessoas que adicionou e retirada às que removeu. O novo funcionário recebe uma notificação push.
+5. Se o considerar oportuno, acrescente uma nota a explicar o motivo da alteração.
 
-> **Importante:** ao reatribuir, o funcionário original deixa de ver a tarefa na sua aplicação. Se já tinha iniciado a tarefa ou deixado comentários, essas anotações conservam-se no histórico e são visíveis a partir do backoffice.
+Também pode retirar uma pessoa diretamente a partir do bloco **Equipa atribuída** do detalhe da tarefa.
+
+> **Importante:** ao reatribuir, o funcionário original deixa de ver a tarefa na sua aplicação. Se já tinha iniciado a tarefa ou deixado comentários, essas anotações conservam-se e são visíveis a partir do backoffice.
+
+> **Nota:** a sucursal de uma tarefa não pode ser alterada ao editá-la, pelo que os funcionários que se adicionem têm de trabalhar nessa mesma sucursal.
 
 ---
 
@@ -51,10 +57,11 @@ Dentro do detalhe da tarefa, o funcionário pode consultar:
 - O título e a descrição completa da atividade, com a sua formatação: listas, listas de verificação, títulos e ligações.
 - A prioridade atribuída (crítica, alta, média ou baixa).
 - A data e hora limite, e a data prevista de início, se tiver sido indicada.
+- O local de trabalho, se a tarefa tiver um próprio, com a ligação **Ver no Maps**.
 - As evidências já carregadas e as notas da tarefa.
-- O histórico de atualizações anteriores.
+- O tempo investido e o total de pausas, e o histórico da tarefa (a partir da versão 1.4.0 da aplicação).
 
-O funcionário pode iniciar a tarefa, acrescentar notas de progresso, carregar evidências e, quando terminar, marcá-la como concluída.
+O funcionário pode iniciar a tarefa, pausá-la e retomá-la, acrescentar notas de progresso, carregar evidências e, quando terminar, marcá-la como concluída.
 
 ---
 
@@ -68,15 +75,11 @@ Se o funcionário tiver as notificações push desativadas no seu dispositivo, a
 
 ---
 
-## Histórico de atribuições
+## Quem trabalhou na tarefa
 
-Cada tarefa mantém um registo cronológico de todas as atribuições que teve. Este histórico é acessível a partir do detalhe da tarefa no backoffice e reúne:
+O bloco **Equipa atribuída** do detalhe da tarefa mostra as pessoas atribuídas. A secção **Histórico** conta o percurso completo —quem a criou, quem a iniciou, quem a pausou ou a concluiu— com a data e o perfil de cada atuação; é descrita em [Acompanhamento e atualizações](./43-acompanhamento-e-atualizacoes.md#histórico-da-tarefa).
 
-- A data e hora de cada atribuição.
-- O nome do funcionário que recebeu a tarefa em cada momento.
-- O utilizador do backoffice que realizou a atribuição ou reatribuição.
-
-O histórico não pode ser modificado nem eliminado. Garante a rastreabilidade completa de quem foi responsável por uma tarefa em cada etapa do seu ciclo de vida.
+Nada disto pode ser modificado nem eliminado a partir do backoffice.
 
 ---
 

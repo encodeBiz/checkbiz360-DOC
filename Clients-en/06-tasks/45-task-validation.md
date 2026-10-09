@@ -26,7 +26,7 @@ To validate a task, the manager has to:
 4. Read the employee's notes and review the evidence provided.
 5. Validate the task.
 
-Once validated, the task is closed: the *validated* status is neither assigned nor reverted by hand from the edit form. If rating is enabled, you can then score the employee's work.
+Once validated, the task is closed: the *validated* status is not assigned by hand from the edit form. If it has to be revisited, it is **reopened** by returning it to *Assigned*, which withdraws the validation (see [Reopening a task](./42-task-statuses.md#reopening-a-task)). If rating is enabled, you can then score the employee's work.
 
 ---
 
@@ -54,7 +54,7 @@ When a task is rejected:
 - The time-compliance indicator changes to show *Rejected*, because meeting the deadline stops being what matters.
 - The history records the rejection, the reason, the author and the date, so that there is evidence of the complete cycle.
 
-**If the work has to be redone**, the manager edits the task and returns it to **assigned** status, adjusting the deadline where appropriate. The employee gets it back in their list and the cycle starts again.
+**If the work has to be redone**, the manager edits the task and returns it to **assigned** status, adjusting the deadline where appropriate. Doing so withdraws the previous rejection, although it still appears in the history. The employee gets it back in their list and the cycle starts again.
 
 ---
 

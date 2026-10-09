@@ -13,19 +13,37 @@ Siga os dez passos por ordem. Cada um assenta no anterior.
 
 ---
 
+## O guia inicial do backoffice
+
+Além deste artigo, o próprio backoffice acompanha-o da primeira vez com um **guia inicial narrado pelo Merlin**. Não é um tutorial à parte: cada passo leva-o ao ecrã real onde se faz a ação e assinala-lhe o controlo concreto.
+
+O guia tem cinco passos:
+
+1. **Ative a sua subscrição**: dados fiscais da empresa, forma de pagamento e escolha do plano, por esta ordem. Se faltar alguma coisa, leva-o ao ecrã onde se completa.
+2. **O horário**: dá-se por feito quando a semana tem pelo menos um turno.
+3. **O local de trabalho**: morada e zona de verificação da sucursal, com uma sugestão de 100 a 200 metros.
+4. **O primeiro funcionário**.
+5. **O teste de registo**: dá-se por feito assim que existe um registo; se já o fez a partir da aplicação, pode marcá-lo como feito.
+
+Os dois primeiros passos **bloqueiam**: sem subscrição ativa os ecrãs do CheckBiz360 não abrem, e sem horário não é possível saber se alguém chegou tarde ou fez horas a mais. Enquanto faltarem, aparece um aviso que não se pode fechar, exceto no ecrã onde se resolvem. Os restantes passos podem ser adiados e retomados a partir do indicador de progresso.
+
+O guia olha para o **estado real** da conta, não para um contador: se o horário já existir, esse passo não aparece; se alguém o apagar, volta. Só o veem os **proprietários** da entidade —não os administradores— e nunca quem ainda tem um convite por aceitar. No fim, despede-se e propõe-lhe continuar com tarefas e documentos.
+
+---
+
 ## Os 10 passos
 
 ### Passo 1. Criar conta e entidade
 
-Aceda a `saas.encodebiz.com` e registe-se com o seu correio empresarial, o seu telefone e uma palavra-passe. Ao submeter o formulário, o sistema leva-o diretamente à criação da entidade: **nome da empresa**, **denominação social** e **morada** são obrigatórios; o NIF e o email de faturação, opcionais.
+Aceda a `saas.encodebiz.com` e registe-se com o seu correio empresarial, o seu telefone e uma palavra-passe, e supere o desafio de verificação do formulário. Ao submetê-lo, o sistema leva-o diretamente à criação da entidade: **nome da empresa**, **denominação social** e **morada** são obrigatórios; o NIF e o email de faturação, opcionais.
 
 O fuso horário é resolvido a partir da morada e serve de valor por omissão para as sucursais.
 
-> **Nota:** para poder contratar o plano será necessário ter os dados legais completos e um método de pagamento. Consulte [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md).
+> **Nota:** para poder contratar o plano será necessário ter os dados legais completos e um método de pagamento. Adicionar o cartão não gera cobrança, nem os 15 dias de experiência. Consulte [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md).
 
 ### Passo 2. Criar a primeira sucursal com geocerca
 
-Entre em **Sucursais** e crie uma:
+Ao ativar o serviço é criada uma primeira sucursal com os dados da empresa: abra a sua ficha e reveja a morada e a zona de verificação. Se não aparecer, entre em **Sucursais** e crie uma:
 
 - **Nome** da sucursal (por exemplo, «Escritório Principal»).
 - **Morada** completa do local; dela saem as coordenadas e o fuso horário.
@@ -35,12 +53,12 @@ Guarde a sucursal.
 
 ### Passo 3. Configurar o horário da sucursal
 
-Vá a **Calendário** e coloque-se no separador **Sucursal**:
+Vá a **Horários** e coloque-se no separador **Configurações gerais**. O horário que definir aí é herdado por todas as sucursais; se esta sucursal precisar de um diferente, configura-se depois na sua ficha.
 
-1. Selecione os dias úteis (por exemplo, de segunda a sexta-feira).
+1. Ative os dias úteis (por exemplo, de segunda a sexta-feira).
 2. Estabeleça a hora de entrada e a de saída de cada dia (por exemplo, 09:00-17:00).
 3. Escolha a **modalidade de jornada**: estrita, se manda o horário oficial; flexível, se manda o tempo realmente trabalhado.
-4. Guarde o calendário.
+4. Prima **Salvar calendário**.
 
 Este horário é a referência contra a qual o sistema valida cada registo.
 
@@ -48,7 +66,7 @@ Este horário é a referência contra a qual o sistema valida cada registo.
 
 ### Passo 4. Criar o primeiro funcionário
 
-Entre em **Funcionários** e crie um novo com os dados obrigatórios: **nome completo**, **correio eletrónico**, **telefone** e **tipo de relação** (interno ou colaborador).
+Entre em **Funcionários** e crie um novo com os dados obrigatórios: **nome completo**, **correio eletrónico**, **telefone** e **tipo de relação** (pessoal ou colaborador).
 
 Guarde. Depois, a partir da ficha do funcionário, **associe-o à sucursal**: é aí que se escolhe a sua responsabilidade —para este arranque, *worker*—, a sua função e a sua tarifa horária.
 

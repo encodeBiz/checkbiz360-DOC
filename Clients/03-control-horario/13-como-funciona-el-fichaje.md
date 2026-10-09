@@ -14,7 +14,7 @@ El sistema obtiene las coordenadas GPS del dispositivo en el momento del fichaje
 
 La distancia real entre el empleado y el centro de la geocerca queda registrada en el sistema para análisis posterior. Esto permite al responsable revisar si el radio está bien dimensionado o si existe un patrón de intentos de fichaje desde ubicaciones incorrectas.
 
-Si el empleado trabaja en modalidad de teletrabajo y tiene activado el campo "trabajo en remoto", esta capa de validación se omite por completo. La geocerca no aplica en entornos de trabajo remoto.
+Si el empleado tiene activada la opción **Trabajo fuera del centro** (antes llamada *Trabajo remoto*), esta capa de validación se omite por completo: la geocerca no se aplica a esa persona.
 
 ### Capa 2 — Horario efectivo
 
@@ -70,6 +70,6 @@ La configuración de las capas de validación (zona de chequeo, biometría, 2FA)
 ## Artículos relacionados
 
 - [Check-in y check-out desde la app](14-checkin-checkout-desde-app.md)
-- [Fichaje en remoto](15-fichaje-en-remoto.md)
+- [Trabajo fuera del centro](15-fichaje-en-remoto.md)
 - [Geocercas y radio de fichaje](16-geocercas-radio-de-fichaje.md)
 - [Estados y códigos de error](22-estados-y-codigos-de-error.md)

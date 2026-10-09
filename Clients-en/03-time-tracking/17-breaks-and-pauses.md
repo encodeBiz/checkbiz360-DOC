@@ -27,6 +27,10 @@ The distinction matters for calculating hours:
 
 If the employee records a `checkout` without having closed an active break with `restout`, the system may mark the workday as incomplete or flagged, depending on the branch configuration.
 
+Breaks and the exit belong to the **open workday**, and a workday is not split across sites: starting a break or clocking out at a branch other than the one where the employee clocked in is rejected with `checklog/different_branches`. If the employee changes site partway through the day, they must close the workday at the first one and open another at the second.
+
+> **Note:** the pauses in this article are **workday** pauses (time tracking). Pauses of a **task** are something else: they are explained in [Task tracking and updates](../06-tasks/43-tracking-and-updates.md#pausing-and-resuming-a-task).
+
 ---
 
 ## How to record a break from the app
@@ -43,6 +47,8 @@ If the employee records a `checkout` without having closed an active break with 
 2. The app will confirm that the workday has resumed and show the break time elapsed.
 
 The main attendance screen reflects at all times whether the employee is on an active workday or on a break.
+
+On the work information card, the break is shown according to its mode: with a **strict break**, the minutes deducted are shown; with a **flexible break**, "Flexible" is shown, because what counts is what the employee clocks (from version 1.3.2 of the app).
 
 ---
 

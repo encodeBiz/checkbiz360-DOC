@@ -16,7 +16,10 @@ The most frequent errors in daily use. Unless stated otherwise, they are seen by
 |---|---|---|
 | `checklog/out_of_radius` | The employee is not within the selected branch's clocking radius | Check they are physically at the workplace and that the GPS has good accuracy. If it recurs, review the branch's coordinates and radius |
 | `checklog/out_of_schedule` | The clock record falls outside the assigned shift's schedule | Review the effective schedule and the branch's time zone, and the shift assigned to the employee |
-| `checklog/day_disabled` | The day is disabled in the effective calendar (public holiday or non-working day) | If the day should have been a working day, correct the calendar. If not, record the hours through a manual workday |
+| `checklog/day_disabled` | The day is disabled in the effective calendar (public holiday, employee's day off or non-working day) | If the day should have been a working day, correct the calendar. If not, record the hours through a manual workday |
+| `checklog/absence` | The employee has an absence recorded that covers that day | If the absence is not correct, remove it from their calendar and clock in again |
+| `checklog/different_branches` | An attempt is made to clock the break or the exit at a branch other than the one where the employee clocked in | Clock in at the branch of the entry; if there was a change of site, close the workday and open another |
+| `checklog_update/future_not_allowed` | The proposed correction has a future date or time | Enter a time that has already passed |
 | `checklog/calendar_not_resolved` | There is no effective calendar resolved for that date | Review the calendar of the organisation, the branch and the employee for that date. In the meantime, enter the hours manually |
 | `checklog/branch_geo_required` | The branch has no location configured | The Owner or Manager has to add the branch's coordinates in the back office |
 | `checklog/two_type_followed` | An attempt was made to start the workday twice in a row | Close the open workday before starting a new one |
@@ -52,6 +55,8 @@ The most frequent errors in daily use. Unless stated otherwise, they are seen by
 | `auth/network-request-failed` | Network error | Check the internet connection and retry |
 | `auth/unauthorized` | Unauthorised access to the resource, or expired session | Sign out and back in. If the account was deactivated, contact the Owner |
 | `auth/untrusted_device` | The device is not authorised and requires additional verification | The Owner or Manager has to authorise the device from the employee's profile |
+| `employee/invalid_token` | The employee's validation has expired or is not valid. It expires after 30 days, like the employee's session in the app | The app signs in again on its own. If the warning persists, sign out of the app and sign in again |
+| `turnstile/failed` | It has not been possible to check that the person registering or recovering the password is a human | Reload the page and repeat the verification challenge |
 
 ---
 
@@ -77,6 +82,15 @@ The most frequent errors in daily use. Unless stated otherwise, they are seen by
 | `employee/branchId_required` | The branch is missing, and it is required | Assign at least one branch before saving |
 | `employee/bad_request` | The employee identifier is missing from the operation | Repeat the action from the employee's record |
 | `branch/not_found` | The branch stated does not exist | Verify that the branch exists and has not been deleted |
+| `employee/fired` | The employee has left the company and cannot be added to a team | Choose another person or reactivate their record |
+| `team/not_found` | The team no longer exists | Refresh the list of teams |
+| `team/name_taken` | There is already a team with that name (capitals, accents and spaces are ignored) | Choose another name |
+| `team/member_exists` | That person is already in the team | Edit their job or rate instead of adding them again |
+| `team/member_not_found` | That person is no longer in the team | Refresh the team page |
+| `team/branch_without_staff` | The branch has nobody active to save as a team | Add staff to the branch or create the team from scratch |
+| `team/apply_conflict` | Someone added one of the members to that branch while the team was being applied; nothing was changed | Apply the team again: that person will be skipped |
+| `team/too_large` | Too many people for a single operation | Split the team in two and apply them separately |
+| `team/bad_request` | The team data is not valid | Check the name, the job and that the rate is a number |
 
 ---
 
@@ -113,6 +127,19 @@ The most frequent errors in daily use. Unless stated otherwise, they are seen by
 | `task/invalid_mime_type` | The attached file's format is not permitted | Upload the evidence as a photo or video in a standard format |
 | `task/file_too_large` | The file exceeds the maximum size permitted | Reduce the file's resolution or duration |
 | `task/bad_request` | The task's information is not valid | Review the required fields: title, branch and deadline |
+| `task/no_open_session` | Starting, resuming or completing the task requires an open workday | Clock in and try again |
+| `task/geo_required` | The task has its own work site and the location is needed; the back office does not send it | Start, resume or complete the task from the app, while at the site |
+| `task/out_of_worksite` | The employee is outside the margin of the task's work site. The warning states the distance and the margin | Get closer to the task's address. If the margin is too narrow for that site, widen it on the task |
+| `task/worksite_imprecise` | The work site address has only been located approximately (for example, at city level) | Add the street number and choose the address again in the search box |
+| `task/worksite_invalid` | It has not been possible to place the address on the map | Choose the address from the search box instead of typing it by hand |
+| `task/not_in_progress` | Only a task in progress can be paused | Start the task before pausing it |
+| `task/already_paused` | The task is already paused; another assignee may have paused it first | Refresh the task |
+| `task/not_paused` | An attempt was made to resume a task that is not paused | Refresh the task |
+| `task/invalid_transition` | The status change is not allowed from the current status; for example, completing a rejected task | Reopen the task by returning it to *Assigned* from **Edit** |
+| `task/invalid_status` | The action requires a different status; for example, validating a task that is not completed | Review the task's status |
+| `task/invalid_employees` | Some employee cannot be assigned: they do not work at the task's branch or are not active | Assign them to that branch and check that they are active |
+| `task/branch_inactive` | The task's branch is inactive and does not accept new tasks or copies | Activate the branch or use another one |
+| `task/source_config_invalid` | The task you are trying to duplicate has a configuration that is no longer valid | Open the original task, save it again and duplicate it again |
 
 ---
 
@@ -128,6 +155,7 @@ The most frequent errors in daily use. Unless stated otherwise, they are seen by
 | `subscribe/not_found` | The service stated does not exist | Retry from the plans screen |
 | `subscribe/invalid_entity_service` | The organisation or the service is not correct | Verify the organisation selected |
 | `subscribe/internal` | Internal error in the subscriptions service | Retry later; if it persists, open an incident |
+| `subscribe/plan_not_available` | The plan chosen is not available to subscribe to | Choose another of the plans offered on the plans screen |
 | `sub/bad_request` | The data sent is not valid | Review the form and retry |
 | `sub/entity_not_found` | The organisation does not exist | Verify the organisation selected |
 | `payment/pending` | There are outstanding payments on the account | Settle the payment from the billing section |

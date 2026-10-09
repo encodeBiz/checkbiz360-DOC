@@ -6,8 +6,14 @@ This glossary gathers CheckBiz360's most relevant operational terms, in alphabet
 
 ## A
 
+### Absence
+A day or range of days that are an employee's own non-working days: holidays, leave, days off. It is added to the public holidays of their organisation and their branch, blocks their clock-in on those days and can be marked as *paid*, *unpaid* or *not set*.
+
 ### AI assistant (Merlin)
-Artificial intelligence component that interprets the operational data and presents it as an actionable narrative in the operations dashboard, in the branch detail and in the employee detail. It narrates and prioritises using the figures the screen already shows: it does not recalculate or generate data of its own, so its reading cannot contradict the dashboards.
+Artificial intelligence component that interprets the operational data and presents it as an actionable narrative in the operations dashboard, in the branch detail and in the employee detail. It narrates and prioritises using the figures the screen already shows: it does not recalculate or generate data of its own, so its reading cannot contradict the dashboards. It also narrates the back office onboarding guide.
+
+### Availability (board)
+Tab in **Schedules** that shows, by branch and day, how many people are available out of the total, with their coverage percentage, and lets you see who is missing and why. It shows in grey the days on which nobody should be working (public holiday or closure) and in red the coverage gaps. See [Availability board](../04-calendar-and-schedules/98-availability-board.md).
 
 ---
 
@@ -20,7 +26,7 @@ Setting that obliges an employee to authenticate with a fingerprint or facial re
 Organisational unit within an organisation representing a workplace, a delegation or any geographical or functional grouping of employees. Each branch has its own coordinates, clocking radius, schedules, effective calendar and time control configuration.
 
 ### Break (`restin` / `restout`)
-Record of the start (`restin`) and end (`restout`) of a break within the working day. Breaks are or are not deducted from time worked depending on the branch configuration. Like check-in and check-out, breaks require the employee to be within the geofence if it is configured that way.
+Record of the start (`restin`) and end (`restout`) of a break within the working day. Breaks are or are not deducted from time worked depending on the branch configuration. Like check-in and check-out, breaks require the employee to be within the geofence if it is configured that way. Not to be confused with a *task pause*.
 
 ---
 
@@ -31,6 +37,9 @@ Record of an employee's entry (check-in) and exit (check-out) time in their work
 
 ### Clock record / Checklog
 Individual record of a time control action carried out by an employee. A checklog includes: event type (checkin, checkout, restin, restout), GPS coordinates, timestamp, device used and validation status. It is the smallest unit of data in the time control module.
+
+### Collaborator (relationship type)
+External person who works for the company without being part of the staff: a self-employed professional, a freelancer or a supplier. It is indicated on the employee's record, as opposed to *Staff*. Collaborators do not appear in the working-time record report. Not to be confused with the organisation's *collaborators*, who are the users with access to the back office.
 
 ### Configuration inheritance
 Mechanism by which employees or branches automatically adopt the configuration defined at a higher level of the hierarchy (for example, from the organisation to the branch, or from the branch to the employee). If a parameter is not explicitly configured at the lower level, the system uses the higher level's value.
@@ -108,6 +117,9 @@ Role with complete access to all of an organisation's features in CheckBiz360. T
 
 ## P
 
+### Pending (employee status)
+Status of an employee record that is missing some detail needed to be able to work, usually the email address. It receives no access, is not billed and leaves that status when the detail is completed.
+
 ### Promotion score
 Single index that would combine reliability, efficiency and ratings into one figure comparable between employees. **It does not exist in the current version**: what does exist is the *operational assessment of the employee*, a diagnosis of their pattern including the promotion-candidate signal. See [Operational assessment of the employee](../07-operational-intelligence/53-promotion-score.md).
 
@@ -127,9 +139,6 @@ Explicit confirmation that an employee has accessed a document that requires it.
 ### Reliability index
 Indicator of the quality of the behaviour observed, **separated from how long it has been measured**: somebody who has been with the company a short time does not carry a low reliability because of that. It is one of the three main indices of the Operations dashboard, alongside site effect and dependency.
 
-### Remote work
-Setting that allows an employee to make clock records from a location other than their branch's geofence. When it is active, the system accepts clock records outside the usual radius without generating the error `checklog/out_of_radius`. It has to be enabled explicitly by the Owner or Manager.
-
 ### Responsibilities (`responsibilities`)
 Employee configuration field defining the working areas or specific functions assigned to them within the organisation. Responsibilities can be used for task assignment and as a filtering criterion in reports.
 
@@ -142,6 +151,9 @@ A user's level of access and permissions within CheckBiz360. The roles available
 
 ### Schedule adjustment
 Concept that **does not apply** in the current version: the clock record always stores the real time and is not rounded. What decides whether time worked outside the official window counts is the calendar's *strict or flexible workday* mode.
+
+### Schedule template
+Saved copy of a weekly schedule that is then applied to another branch, to an employee or to the organisation, so as not to configure it day by day. It used to be called a *calendar preset*.
 
 ### Shift
 Time window assigned to an employee for a particular workday, defining their expected start and finish times. Shifts are configured in the back office and associated with the employee's or the branch's effective calendar.
@@ -163,7 +175,13 @@ Intermediate role between Manager and Worker. The Supervisor can review the cloc
 ## T
 
 ### Task
-Unit of work assigned to one or several employees at a branch, with a deadline and, optionally, an expected start date. It runs through seven statuses —draft, assigned, in progress, completed, validated, rejected and cancelled— and carries a time-compliance indicator independent of the status.
+Unit of work assigned to one or several employees at a branch, with a deadline and, optionally, an expected start date and its own work site. It runs through seven statuses —draft, assigned, in progress, completed, validated, rejected and cancelled—, can be paused while it is in progress and carries a time-compliance indicator independent of the status.
+
+### Task pause
+Interruption of a task in progress, which is paused and resumed as many times as needed. It is not a status: the task remains *in progress* and shows the *Paused* label. Time paused is added up separately in the task report. See [Tracking and updates](../06-tasks/43-tracking-and-updates.md#pausing-and-resuming-a-task).
+
+### Team
+Template of people who work together, each with their responsibility, job and hourly rate, but no branch. Applying it to a branch adds all its members at once and skips anyone who was already there. Changing the team does not modify the branches where it was already applied. See [Teams](../02-employees/99-teams.md).
 
 ### Time compliance
 Indicator accompanying each task and reflecting its situation against the deadline, independently of its status. Its values are: not started, on time, at risk, overdue, completed on time and completed late. An overdue task remains in its work status (for example, "in progress"); the overrun is reflected in this indicator, not in the status.
@@ -176,14 +194,20 @@ Mobile device explicitly authorised by the Owner or the Manager so that a partic
 ## V
 
 ### Validation token
-Temporary code generated by the system to verify a user's identity in sensitive operations, such as the first sign-in, a password reset or the authorisation of a new device. Validation tokens expire after a given time.
+Temporary code generated by the system to verify a user's identity in sensitive operations, such as the first sign-in, a password reset or the authorisation of a new device. Validation tokens expire after a given time; the employee's one, after 30 days.
 
 ---
 
 ## W
 
+### Work site (of a task)
+A task's own address, with a margin in metres, for jobs that are not done at the branch. Starting or resuming it requires being within the margin, and starting, resuming or completing it can only be done from the app. See [Create a task](../06-tasks/40-create-a-task.md#own-work-site).
+
 ### Worker
 Base user role in CheckBiz360, corresponding to an operational employee. Workers can clock in from the app, consult their own attendance data, see their documents and manage their tasks. They have no access to the back office unless they are granted a higher role.
+
+### Working off-site
+Setting that allows an employee to make clock records from a location other than their branch's geofence. When it is active, the system accepts clock records outside the usual radius without generating the error `checklog/out_of_radius`. It has to be enabled explicitly by the Owner or Manager. It used to be called *Remote work*.
 
 ### Working-time record
 The set of all the clocking events (checkin, restin, restout, checkout) that make up an employee's complete working day. The working-time record is the unit of analysis for calculating hours, regulatory compliance and report generation.

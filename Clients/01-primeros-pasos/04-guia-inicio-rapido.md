@@ -13,19 +13,37 @@ Siga los diez pasos en orden. Cada uno construye sobre el anterior.
 
 ---
 
+## La guía inicial del backoffice
+
+Además de este artículo, el propio backoffice le acompaña la primera vez con una **guía inicial narrada por Merlin**. No es un tutorial aparte: cada paso le lleva a la pantalla real donde se hace la acción y le señala el control concreto.
+
+La guía tiene cinco pasos:
+
+1. **Activa tu suscripción**: datos fiscales de la empresa, forma de pago y elección del plan, en ese orden. Si falta algo, le lleva a la pantalla donde se completa.
+2. **El horario**: se da por hecho cuando la semana tiene al menos un turno.
+3. **El centro de trabajo**: dirección y zona de chequeo de la sucursal, con una sugerencia de 100 a 200 metros.
+4. **El primer empleado**.
+5. **La prueba de fichaje**: se da por hecha en cuanto existe un fichaje; si ya la hizo desde la app, puede marcarla como hecha.
+
+Los dos primeros pasos **bloquean**: sin suscripción activa las pantallas de CheckBiz360 no se abren, y sin horario no se sabe si alguien llegó tarde o hizo horas de más. Mientras falten, aparece un aviso que no se puede cerrar, salvo en la pantalla donde se resuelven. El resto de pasos se pueden posponer y retomar desde el indicador de progreso.
+
+La guía mira el **estado real** de la cuenta, no un contador: si el horario ya existe, ese paso no aparece; si alguien lo borra, vuelve. Solo la ven los **propietarios** de la entidad —no los administradores— y nunca quien todavía tiene una invitación sin aceptar. Al terminar, se despide y le propone seguir con tareas y documentos.
+
+---
+
 ## Los 10 pasos
 
 ### Paso 1. Crear cuenta y entidad
 
-Acceda a `saas.encodebiz.com` y regístrese con su correo corporativo, su teléfono y una contraseña. Al enviar el formulario, el sistema le lleva directamente a la creación de la entidad: **nombre de la empresa**, **razón social** y **dirección** son obligatorios; el NIF y el email de facturación, opcionales.
+Acceda a `saas.encodebiz.com` y regístrese con su correo corporativo, su teléfono y una contraseña, y supere el reto de verificación del formulario. Al enviarlo, el sistema le lleva directamente a la creación de la entidad: **nombre de la empresa**, **razón social** y **dirección** son obligatorios; el NIF y el email de facturación, opcionales.
 
 La zona horaria se resuelve a partir de la dirección y sirve como valor por defecto para las sucursales.
 
-> **Nota:** para poder contratar el plan hará falta tener completos los datos legales y un método de pago. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
+> **Nota:** para poder contratar el plan hará falta tener completos los datos legales y un método de pago. Añadir la tarjeta no genera cargo, ni tampoco los 15 días de prueba. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
 
 ### Paso 2. Crear la primera sucursal con geocerca
 
-Entre en **Sucursales** y cree una:
+Al activar el servicio se crea una primera sucursal con los datos de la empresa: abra su ficha y revise la dirección y la zona de chequeo. Si no aparece, entre en **Sucursales** y cree una:
 
 - **Nombre** de la sucursal (por ejemplo, "Oficina Principal").
 - **Dirección** completa del centro; de ella salen las coordenadas y la zona horaria.
@@ -35,12 +53,12 @@ Guarde la sucursal.
 
 ### Paso 3. Configurar el horario de la sucursal
 
-Vaya a **Calendario** y sitúese en la pestaña **Sucursal**:
+Vaya a **Horarios** y sitúese en la pestaña **Configuración general**. El horario que defina ahí lo heredan todas las sucursales; si esta sucursal necesita uno distinto, se configura después en su ficha.
 
-1. Seleccione los días laborables (por ejemplo, lunes a viernes).
+1. Active los días laborables (por ejemplo, lunes a viernes).
 2. Establezca la hora de entrada y la de salida de cada día (por ejemplo, 09:00-17:00).
 3. Elija la **modalidad de jornada**: estricta, si manda el horario oficial; flexible, si manda el tiempo realmente trabajado.
-4. Guarde el calendario.
+4. Pulse **Guardar calendario**.
 
 Este horario es la referencia contra la que el sistema valida cada fichaje.
 
@@ -48,7 +66,7 @@ Este horario es la referencia contra la que el sistema valida cada fichaje.
 
 ### Paso 4. Crear el primer empleado
 
-Entre en **Empleados** y cree uno nuevo con los datos obligatorios: **nombre completo**, **correo electrónico**, **teléfono** y **tipo de relación** (interno o colaborador).
+Entre en **Empleados** y cree uno nuevo con los datos obligatorios: **nombre completo**, **correo electrónico**, **teléfono** y **tipo de relación** (plantilla o colaborador).
 
 Guarde. Después, desde la ficha del empleado, **vincúlelo con la sucursal**: es ahí donde se elige su responsabilidad —para este arranque, *worker*—, su puesto y su tarifa horaria.
 

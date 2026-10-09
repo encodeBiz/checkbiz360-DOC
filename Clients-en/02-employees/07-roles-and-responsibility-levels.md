@@ -38,10 +38,12 @@ The owner has absolute access to the platform, including the organisation's glob
 
 Regardless of the role level assigned, every employee has a type of relationship with the company:
 
-- **Internal** — Payroll employee with a current employment contract. Part of the organisation's regular structure.
-- **Contractor** — External person who works for the company on a one-off or recurring basis without being on the payroll. This may be a freelancer, a service provider or a self-employed professional.
+- **Staff** — Employee with a current employment contract. Part of the organisation's regular structure.
+- **Collaborator** — External person who works for the company on a one-off or recurring basis without being on the payroll. This may be a freelancer, a service provider or a self-employed professional.
 
-Both types can hold any role level, although in practice contractors usually operate as workers or supervisors with a limited scope.
+The relationship type appears on the employee's record, next to their status, and it has a legal consequence: the **working-time record report leaves collaborators out**, because time recording is mandatory for the employment relationship and not for a self-employed professional who invoices the company. Collaborators do still appear in the analysis dashboards and in tasks. Employees created before this distinction existed, who have no type recorded, are included in the report as before.
+
+Both types can hold any role level, although in practice collaborators usually operate as workers or supervisors with a limited scope.
 
 ---
 

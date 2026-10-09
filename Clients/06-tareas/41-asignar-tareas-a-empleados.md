@@ -24,6 +24,8 @@ Si necesita que cada persona ejecute el trabajo de forma independiente, cree una
 
 Una tarea pertenece siempre a una sucursal, así que la selección de empleados se hace sobre los que trabajan en ese centro.
 
+> **Nota:** los [equipos](../02-empleados/99-equipos.md) de la sección Empleados se aplican a sucursales, no a tareas. Después de aplicar un equipo a la sucursal, sus miembros se seleccionan en la tarea uno a uno, como el resto de la plantilla. Añadir un equipo entero a una tarea de una vez está pendiente de desarrollo.
+
 ---
 
 ## Reasignación de tareas
@@ -34,11 +36,15 @@ Las circunstancias cambian: un empleado puede ausentarse, cambiar de turno o res
 
 1. Acceda al backoffice y abra el listado de **Tareas**.
 2. Localice la tarea que desea reasignar y pulse sobre ella para abrir el detalle.
-3. En el campo **Empleado asignado**, elimine el empleado actual y seleccione el nuevo destinatario.
-4. Si lo considera oportuno, añada una nota interna explicando el motivo del cambio.
-5. Pulse **Guardar**. El nuevo empleado recibirá una notificación push y el cambio quedará registrado en el historial.
+3. Pulse **Editar**. En el campo de empleados asignados, quite al empleado actual y seleccione al nuevo destinatario.
+4. Pulse **Guardar**. Al guardar, se asigna a quien ha añadido y se retira a quien ha quitado. El nuevo empleado recibe una notificación push.
+5. Si lo considera oportuno, añada una nota explicando el motivo del cambio.
 
-> **Importante:** Al reasignar, el empleado original deja de ver la tarea en su app. Si ya había iniciado la tarea o dejado comentarios, esas anotaciones se conservan en el historial y son visibles desde el backoffice.
+También puede retirar a una persona directamente desde el bloque **Equipo asignado** del detalle de la tarea.
+
+> **Importante:** Al reasignar, el empleado original deja de ver la tarea en su app. Si ya había iniciado la tarea o dejado comentarios, esas anotaciones se conservan y son visibles desde el backoffice.
+
+> **Nota:** la sucursal de una tarea no se puede cambiar al editarla, así que los empleados que se añadan tienen que trabajar en esa misma sucursal.
 
 ---
 
@@ -51,10 +57,11 @@ Dentro del detalle de la tarea, el empleado puede consultar:
 - El título y la descripción completa de la actividad, con su formato: listas, listas de comprobación, títulos y enlaces.
 - La prioridad asignada (crítica, alta, media o baja).
 - La fecha y hora límite, y la fecha prevista de inicio si se indicó.
+- El lugar de trabajo, si la tarea tiene uno propio, con el enlace **Ver en Maps**.
 - Las evidencias ya subidas y las notas de la tarea.
-- El historial de actualizaciones previas.
+- El tiempo invertido y el total de pausas, y el historial de la tarea (desde la versión 1.4.0 de la app).
 
-El empleado puede iniciar la tarea, añadir notas de progreso, subir evidencias y, cuando finalice, marcarla como completada.
+El empleado puede iniciar la tarea, pausarla y reanudarla, añadir notas de progreso, subir evidencias y, cuando finalice, marcarla como completada.
 
 ---
 
@@ -68,15 +75,11 @@ Si el empleado tiene las notificaciones push desactivadas en su dispositivo, la 
 
 ---
 
-## Historial de asignaciones
+## Quién ha trabajado en la tarea
 
-Cada tarea mantiene un registro cronológico de todas las asignaciones que ha tenido. Este historial es accesible desde el detalle de la tarea en el backoffice y recoge:
+El bloque **Equipo asignado** del detalle de la tarea muestra a las personas asignadas. La sección **Historial** cuenta el recorrido completo —quién la creó, quién la inició, quién la pausó o la completó— con fecha y rol de cada actuación; se describe en [Seguimiento y actualizaciones](./43-seguimiento-y-actualizaciones.md#historial-de-la-tarea).
 
-- La fecha y hora de cada asignación.
-- El nombre del empleado que recibió la tarea en cada momento.
-- El usuario del backoffice que realizó la asignación o reasignación.
-
-El historial no se puede modificar ni eliminar. Garantiza la trazabilidad completa de quién fue responsable de una tarea en cada etapa de su ciclo de vida.
+Nada de esto se puede modificar ni eliminar desde el backoffice.
 
 ---
 

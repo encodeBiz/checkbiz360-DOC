@@ -2,7 +2,7 @@
 
 Welcome to the CheckBiz360 documentation, the digital attendance control platform by EncodeBiz. This documentation gathers the complete material aimed at the end customer: account owners, human resources leads, area managers and team supervisors.
 
-The articles are organised into 14 thematic sections. Each section covers a module or functional area of the platform and contains independent articles that can be read one at a time or as a sequence.
+The articles are organised into 16 thematic sections. Each section covers a module or functional area of the platform and contains independent articles that can be read one at a time or as a sequence.
 
 ---
 
@@ -30,6 +30,8 @@ Introduction to the platform, how it differs from other systems, and the initial
 | Account registration and organisation set-up | **Available** | Complete process available from the back office. |
 | Branch configuration | **Available** | Creating, editing and deactivating branches. |
 | Quick start guide | **Available** | A 10-step flow to the first validated clock-in. |
+| Back office onboarding guide, narrated by Merlin | **Available** | Five steps based on the real state of the account: subscription, schedule, workplace, employee and clock-in test. |
+| Anti-bot verification at registration and password recovery | **Available** | Cloudflare challenge built into the form. |
 | Organisation → branch → employee hierarchy | **Available** | Fully operational in V1. |
 
 | Article | Description |
@@ -48,7 +50,9 @@ Creating, configuring and securing employees on the platform, and their roles.
 
 | Feature | Status | Comment |
 |---|---|---|
-| Creating, editing and deactivating employees | **Available** | Full CRUD with employment statuses. |
+| Creating, editing and deactivating employees | **Available** | Full CRUD with employment statuses, and a *pending* status —not billed— for records that are only partly completed. |
+| Relationship type: staff or collaborator | **Available** | Visible on the record; collaborators are left out of the working-time record report. |
+| Teams (templates of people with job and rate) | **Available** | Applied to a branch to add the whole crew at once. Adding a whole team to a task: planned. |
 | Roles and responsibility levels (worker, supervisor, manager, owner) | **Available** | Four levels with differentiated permissions. |
 | Two-factor authentication (2FA) | **Available** | Compatible with TOTP apps (Google Authenticator, Authy). |
 | Biometric verification and trusted devices | **Available** | Configurable per employee from the app. |
@@ -65,6 +69,7 @@ Creating, configuring and securing employees on the platform, and their roles.
 | [Biometrics and trusted devices](02-employees/10-biometrics-and-trusted-devices.md) | Biometric verification and management of authorised devices |
 | [Multi-organisation employees](02-employees/11-multi-organisation-employees.md) | One employee in several organisations, organisation picker |
 | [Export the employee list](02-employees/12-export-employee-list.md) | Status of the feature, available alternatives and GDPR |
+| [Teams](02-employees/99-teams.md) | Create teams, apply them to a branch and save a branch as a team |
 
 ---
 
@@ -76,11 +81,11 @@ How the clock-in system works: validations, record types, geofences and workday 
 |---|---|---|
 | Clock-in with geofence, schedule and device validation | **Available** | Three validation layers applied simultaneously on every clock-in. |
 | Check-in and check-out from the mobile app | **Available** | Complete process operational on iOS and Android. |
-| Remote clocking in (teleworking) | **Available** | Enabled per employee with time-zone validation. |
+| Working off-site (formerly "remote clocking in") | **Available** | Enabled per employee with time-zone validation. |
 | Breaks and pauses (restin/restout) | **Available** | Automatic deduction configurable per branch. |
 | QR validation before clocking in | **Available** | Mechanism configurable per branch, not mandatory. |
 | Manual workday request (Mode A and Mode B) | **Available** | Requires manager approval. |
-| Review and approval of clock records by a manager | **Available** | Approval, rejection and resolution flow. |
+| Review and approval of clock records by a manager | **Available** | Approval, rejection and resolution flow; a rejected correction leaves the clock record as it was. |
 | Traceability and immutable change history | **Available** | Requests and changes recorded with an audit trail. |
 | Suspicious clock-in detection | **Available** | Automatic indicator based on anomalous patterns. |
 
@@ -88,7 +93,7 @@ How the clock-in system works: validations, record types, geofences and workday 
 |---|---|
 | [How clocking in works](03-time-tracking/13-how-clocking-in-works.md) | The three validation layers: geofence, schedule and device |
 | [Check-in and check-out from the app](03-time-tracking/14-check-in-and-check-out-from-the-app.md) | Step by step through clocking in from the mobile app |
-| [Remote clocking in](03-time-tracking/15-remote-clocking-in.md) | Teleworking, activation and the employee's time zone |
+| [Working off-site](03-time-tracking/15-remote-clocking-in.md) | Clocking in without a geofence: field work, teleworking, activation and time zone |
 | [Geofences and clocking radius](03-time-tracking/16-geofences-and-clocking-radius.md) | Configuring the radius, disabling it and recommended values |
 | [Breaks and pauses](03-time-tracking/17-breaks-and-pauses.md) | Restin/restout, automatic deduction and per-branch configuration |
 | [Employee validation by QR](03-time-tracking/18-employee-validation-qr.md) | QR token, supervisor flow and system warm-up |
@@ -110,7 +115,9 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | Individual schedule exceptions | **Available** | One-off and recurring exceptions. |
 | Strict or flexible workday | **Available** | Decides whether the official schedule or the time actually worked is counted. |
 | Strict or flexible break | **Available** | A fixed duration deducted, or pauses marked by the employee. |
-| Calendar presets | **Available** | Save a weekly schedule and apply it to other branches. |
+| Schedule templates | **Available** | Save a weekly schedule and apply it to other branches. |
+| Employee absences by date range, with a paid mark | **Available** | Paid, unpaid or not set. |
+| Availability board | **Available** | Coverage by branch and day, who is missing and why, and adding days off from the board. |
 | Cascading configuration inheritance | **Available** | Priority algorithm used to calculate the effective calendar. |
 | Rotating shifts (automatic A/B alternation) | **Planned** | Covered today with one branch per shift or with an employee-specific schedule. |
 
@@ -122,7 +129,8 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | [Configuration inheritance](04-calendar-and-schedules/26-configuration-inheritance.md) | The cascade algorithm and debugging the effective calendar |
 | [Rotating shifts](04-calendar-and-schedules/27-rotating-shifts.md) | Not available in V1: how to cover rotation with branches or employee schedules |
 | [Strict and flexible workday](04-calendar-and-schedules/28-flexible-schedule.md) | How hours and breaks are counted under each mode |
-| [Public holidays and non-working days](04-calendar-and-schedules/29-public-holidays-and-non-working-days.md) | Holiday types, blocking clock-ins, sectors that work on holidays |
+| [Public holidays and non-working days](04-calendar-and-schedules/29-public-holidays-and-non-working-days.md) | Holiday types, employee absences, blocking clock-ins, sectors that work on holidays |
+| [Availability board](04-calendar-and-schedules/98-availability-board.md) | Coverage by branch and day, breakdown of who is missing and days off from the board |
 
 ---
 
@@ -138,7 +146,7 @@ Uploading, organising, acknowledging and controlling access to employment docume
 | Read receipt (reading confirmation) | **Available** | The employee confirms they have read it; this is recorded in the system. |
 | Individual document download | **Available** | Signed link per document, with expiry. |
 | Logical archiving of documents (no permanent deletion) | **Available** | Archived documents stop being visible but are retained. |
-| Advanced electronic signature (eIDAS) | **Planned** | What is available today is the read receipt, which is not a signature. |
+| Confirmation signed from the phone | **Available** | Downloadable signature record and signed PDF for PDF documents addressed to a single employee. |
 | Automatic version history | **Planned** | Planned for a future version. |
 | Bulk document download (ZIP) | **Planned** | Planned for a future version. |
 
@@ -149,7 +157,7 @@ Uploading, organising, acknowledging and controlling access to employment docume
 | [Payslips and contracts](05-document-management/32-payslips-and-contracts.md) | Monthly flow, notification, access from the app and legal retention |
 | [Private documents](05-document-management/33-private-documents.md) | Visibility by role, access table and use cases |
 | [Document notifications](05-document-management/34-document-notifications.md) | Push payload, direct navigation to the document from the notification |
-| [Read receipt and electronic signature](05-document-management/35-electronic-signature.md) | Read receipt in V1; advanced electronic signature on the roadmap |
+| [Read receipt and electronic signature](05-document-management/35-electronic-signature.md) | Confirmation signed with the phone, signature record and signed PDF for single-person documents |
 | [Version history](05-document-management/36-version-history.md) | Manual flow available in V1; automatic history on the roadmap |
 | [Document access permissions](05-document-management/37-document-access-permissions.md) | Permission table by role: upload, view, confirm, archive |
 | [Export documents](05-document-management/38-export-documents.md) | Individual download in V1; bulk download on the roadmap |
@@ -162,7 +170,11 @@ Creating, assigning, tracking and rating operational tasks.
 
 | Feature | Status | Comment |
 |---|---|---|
-| Create and assign tasks to employees | **Available** | Individual and bulk assignment with push notification. |
+| Create and assign tasks to employees | **Available** | Individual and bulk assignment with push notification; editing the task assigns and withdraws employees. |
+| Own work site per task | **Available** | Its own address and margin; starting requires being there, from the app. |
+| Duplicate a task | **Available** | Copies the job, unassigned and as a draft; asks for the dates again. |
+| Pause and resume tasks | **Available** | From the back office and from app 1.4.0; time paused appears in the report. |
+| Task history | **Available** | Who created, started, paused, completed, validated or cancelled it, with date and role. |
 | Formatted description (lists, checklists, links) | **Available** | Editor with a formatting bar and preview. |
 | Photo and video evidence | **Available** | Photo (JPG, PNG, WEBP) up to 5 MB; video up to 25 MB from the app. |
 | Task statuses: draft, assigned, in progress, completed, validated, rejected, cancelled | **Available** | Seven statuses with full traceability. |
@@ -171,7 +183,7 @@ Creating, assigning, tracking and rating operational tasks.
 | Expected start date and late-start warning | **Available** | Notification after 15 minutes, configurable per task. |
 | Task validation and rating by the manager | **Available** | Delegable to the supervisor per task; rejection requires a reason. |
 | Task push notifications | **Available** | Assignment, validation, rejection, late start and overdue. |
-| Exportable task report | **Available** | Excel (XLSX), filterable by branch, status and due period. |
+| Exportable task report | **Available** | Excel (XLSX), filterable by branch, status and due period, with time spent and time paused; with inventory subscribed, also each task's material. |
 | Document-type attachments (PDF, Word, Excel) | **Planned** | Evidence currently accepts photo and video. |
 | Automatic "overdue" status once the deadline passes | **Planned** | Today the deadline is reflected in the time-compliance indicator. |
 | Configuring how far in advance due warnings are sent | **Planned** | The warnings are issued; their lead time is not configurable. |
@@ -180,15 +192,15 @@ Creating, assigning, tracking and rating operational tasks.
 | Article | Description |
 |---|---|
 | [What the tasks module is](06-tasks/39-what-is-the-tasks-module.md) | What it is for and how it differs from attendance control |
-| [Create a task](06-tasks/40-create-a-task.md) | Fields, priority, deadline and photo/video attachments |
+| [Create a task](06-tasks/40-create-a-task.md) | Fields, own work site, duplicating a task and photo/video attachments |
 | [Assign tasks to employees](06-tasks/41-assign-tasks-to-employees.md) | Individual and bulk assignment, reassignment, notification |
-| [Task statuses](06-tasks/42-task-statuses.md) | Life cycle in V1 and the time-compliance indicator |
-| [Tracking and updates](06-tasks/43-tracking-and-updates.md) | Comments, immutable history, real-time tracking |
+| [Task statuses](06-tasks/42-task-statuses.md) | Life cycle, reopening a task, paused task and the time-compliance indicator |
+| [Tracking and updates](06-tasks/43-tracking-and-updates.md) | Starting, pausing and resuming, notes and the task history |
 | [Priorities and deadlines](06-tasks/44-priorities-and-deadlines.md) | The priority system and the time-compliance indicator |
 | [Task validation](06-tasks/45-task-validation.md) | Validation flow, acceptance and rejection with a reason |
 | [Employee rating](06-tasks/46-employee-rating.md) | Rating scale and its impact on the efficiency index |
 | [Task notifications](06-tasks/47-task-notifications.md) | Events notified in V1; reminders on the roadmap |
-| [Task reports](06-tasks/48-task-reports.md) | Metrics visible in the back office in V1; export on the roadmap |
+| [Task reports](06-tasks/48-task-reports.md) | Metrics in the back office and the Excel report, with its time columns |
 
 ---
 
@@ -235,6 +247,7 @@ Creating and configuring branches, assigning employees and the multi-branch glob
 | Advanced branch configuration (geofence, breaks, tolerance) | **Available** | All operational parameters configurable. |
 | Assign employees to branches with responsibilities | **Available** | Multi-branch with an effective calendar per assignment. |
 | Organisation configuration (tax details, time zone) | **Available** | Changes propagated to dependent branches. |
+| Back office collaborators (owner and administrator) | **Available** | Invitation, role change and removal; the organisation is never left without an active owner. |
 | Multi-branch global view with consolidated KPIs | **Available** | Branch comparison dashboard in the back office. |
 
 | Article | Description |
@@ -243,7 +256,7 @@ Creating and configuring branches, assigning employees and the multi-branch glob
 | [Advanced branch configuration](08-branches-and-organisation/58-advanced-branch-settings.md) | Advanced parameters: geofence, breaks, tolerance, timestamp adjustment |
 | [Branch statuses](08-branches-and-organisation/59-branch-statuses.md) | Active/inactive, impact on clock-ins and history |
 | [Assign employees to branches](08-branches-and-organisation/60-assign-employees-to-branches.md) | Multi-branch, responsibilities and the effective calendar |
-| [Organisation configuration](08-branches-and-organisation/61-organisation-settings.md) | Tax details, global time zone and propagation of changes |
+| [Organisation configuration](08-branches-and-organisation/61-organisation-settings.md) | Tax details, workspace, collaborators, global time zone and propagation of changes |
 | [Multi-branch global view](08-branches-and-organisation/62-multi-branch-global-view.md) | Consolidated dashboard, global KPIs and branch comparisons |
 
 ---
@@ -283,6 +296,8 @@ Downloading, installing, navigating and using the CheckBiz360 app for employees.
 | Clocking in from the app with all three validations | **Available** | Geofence, schedule and device validated in real time. |
 | Viewing your own attendance history | **Available** | Filters by period and detail of each record. |
 | Access to documents and tasks from the app | **Available** | Navigation from the notification to the resource; task descriptions are shown with formatting. |
+| Pausing and resuming tasks, time spent and history in the app | **Available** | From version 1.4.0. |
+| Task work site with a link to Maps | **Available** | From version 1.3.2. |
 | Profile, 2FA and biometrics configuration | **Available** | Managed from the app's profile section. |
 | Viewing cached data offline | **Partially available** | Read-only for previously loaded data; clocking in and updating tasks require a connection. |
 | Offline mode with a clock-in sync queue | **Planned** | Planned for a future version. |
@@ -295,7 +310,7 @@ Downloading, installing, navigating and using the CheckBiz360 app for employees.
 | [Profile settings in the app](10-mobile-app/72-profile-settings-in-the-app.md) | Personal details, password, 2FA and biometrics from the app |
 | [My attendance records](10-mobile-app/73-my-attendance-records.md) | Your own history, filters, detail and correction requests |
 | [Offline use](10-mobile-app/74-offline-use.md) | What data is available offline and what requires connectivity |
-| [App updates](10-mobile-app/75-app-updates.md) | How to update and the consequences of outdated versions |
+| [App updates](10-mobile-app/75-app-updates.md) | What's new by version, how to update and the consequences of outdated versions |
 
 ---
 
@@ -305,8 +320,8 @@ Generating, filtering and exporting attendance, cost and compliance reports.
 
 | Feature | Status | Comment |
 |---|---|---|
-| Attendance report in PDF or Excel (XLSX) | **Available** | Generated on demand, with a report history. |
-| Task report in Excel (XLSX) | **Available** | Filterable by branch, status and due period. |
+| Attendance report in PDF or Excel (XLSX) | **Available** | Generated on demand, with a report history; it gathers staff personnel, not collaborators. |
+| Task report in Excel (XLSX) | **Available** | Filterable by branch, status and due period; includes time paused and, with inventory subscribed, material and its cost. |
 | Employee directory export | **Planned** | The list is viewed and filtered on screen, with no downloadable file. |
 | RDL 8/2019 compliance report for inspections | **Available** | Generated from the back office. |
 | Export of the operational intelligence dashboards | **Planned** | Costs, anomalies and comparisons are consulted on screen. |
@@ -360,7 +375,7 @@ How to create and manage incidents and how to contact the support team.
 | [Create an incident](13-support-and-incidents/85-create-an-incident.md) | The organisation's internal channel: types, fields and creation |
 | [Incident tracking and resolution](13-support-and-incidents/86-incident-tracking-and-resolution.md) | The three statuses, the reply thread and the history |
 | [Contact technical support](13-support-and-incidents/87-contact-technical-support.md) | Channels, indicative times and what information to include |
-| [Common problems and solutions](13-support-and-incidents/88-common-problems-and-solutions.md) | The 12 most frequent situations with diagnostic steps |
+| [Common problems and solutions](13-support-and-incidents/88-common-problems-and-solutions.md) | The 14 most frequent situations with diagnostic steps |
 
 ---
 
@@ -377,7 +392,7 @@ Glossary, error codes, plans and frequently asked questions.
 
 | Article | Description |
 |---|---|
-| [Glossary](14-reference/89-glossary.md) | Definitions of the 33 main platform terms |
+| [Glossary](14-reference/89-glossary.md) | Definitions of the main platform terms |
 | [Complete error codes](14-reference/90-complete-error-codes.md) | Table of every error code with cause and solution |
 | [Plans, prices and features](14-reference/91-plans-and-features.md) | Price of each plan, trial period, included modules and roadmap |
 | [Frequently asked questions](14-reference/92-frequently-asked-questions.md) | 20 questions and answers for customers evaluating the platform |
@@ -403,6 +418,35 @@ Add-ons that connect CheckBiz360 with other software your company already uses, 
 | [What gets imported and what stays pending](15-integrations/97-import-and-pending.md) | People, sites, responsibilities and tasks; and what to do with pending items |
 | [Posted hours and alerts](15-integrations/96-posted-hours-and-alerts.md) | Reading the panel, discrepancies and FAQs |
 
+
+---
+
+### 16. Inventory
+
+Paid add-on: material tied to the task, the person, the place and the time.
+
+| Feature | Status | Comment |
+|---|---|---|
+| Warehouses linked to branches | **Available** | Every warehouse serves at least one branch. |
+| Consumable and operable items, with units | **Available** | The item is created on its first receipt. |
+| Stock with status, minimums and discrepancies | **Available** | Managers are alerted when stock drops below the minimum. |
+| Material assigned when creating the task and tracked in its detail | **Available** | Reserve, issue, consume and settle on validation. |
+| Issue and consumption from the app | **Available** | Preloaded with what was reserved and what is pending. |
+| Unit calendar with clash warning | **Available** | Per unit, in the item record. |
+| Consumption report and movement ledger | **Available** | Grouped by item, task, employee, branch or warehouse; CSV. |
+| Material in the task report | **Available** | Only with the add-on subscribed. |
+| Documents and inspections for each machine | **Available** | Expiry alert and red flag, without blocking. |
+| PPE delivery confirmed by the worker | **Available** | With fingerprint or face from the app. |
+| "Equipment and PPE" report for inspections | **Available** | Delivery record and dossier per machine. |
+
+| Article | Description |
+|---|---|
+| [What is inventory](16-inventory/100-what-is-inventory.md) | What problems it solves, how it works and how to subscribe |
+| [Stock, warehouses and receipts](16-inventory/101-stock-warehouses-and-receipts.md) | Adding material and controlling stock |
+| [Material on tasks](16-inventory/102-material-on-tasks.md) | Reserve, issue, declare and settle |
+| [Consumption report and movements](16-inventory/103-consumption-report-and-movements.md) | Where material goes and what it costs |
+| [Equipment: documents, inspections and handovers](16-inventory/104-equipment-documents-inspections-and-handovers.md) | Each machine's paperwork, PPE handovers and the inspection report |
+
 ---
 
 ## File structure
@@ -411,9 +455,9 @@ Add-ons that connect CheckBiz360 with other software your company already uses, 
 DOCS/Clients-en/
 ├── README.md                           (this index)
 ├── 01-getting-started/                 (5 articles)
-├── 02-employees/                       (7 articles)
+├── 02-employees/                       (8 articles)
 ├── 03-time-tracking/                   (10 articles)
-├── 04-calendar-and-schedules/          (7 articles)
+├── 04-calendar-and-schedules/          (8 articles)
 ├── 05-document-management/             (9 articles)
 ├── 06-tasks/                           (10 articles)
 ├── 07-operational-intelligence/        (8 articles)
@@ -424,7 +468,8 @@ DOCS/Clients-en/
 ├── 12-regulatory-compliance/           (4 articles)
 ├── 13-support-and-incidents/           (4 articles)
 ├── 14-reference/                       (4 articles)
-└── 15-integrations/                    (5 articles)
+├── 15-integrations/                    (5 articles)
+└── 16-inventory/                       (5 articles)
 ```
 
-**Total: 97 articles**
+**Total: 104 articles**

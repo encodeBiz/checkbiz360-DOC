@@ -43,7 +43,10 @@ When a clock record ends up in `failed` status, the system associates an error c
 |---|---|---|
 | `checklog/out_of_schedule` | The clock-in took place outside the employee's active shift. | Review the schedule assigned to the employee. If the attendance was correct, request a manual workday. |
 | `checklog/out_of_radius` | The device was outside the branch's clocking radius at the moment of the record. | Review the branch's GPS coordinates and the configured radius value. If the radius does not cover the actual working area, widen it. |
-| `checklog/day_disabled` | The day on which the clock-in was attempted is disabled in the branch's or the employee's calendar. | Review the calendar configuration. If the day should be enabled, activate it in the relevant effective calendar. |
+| `checklog/day_disabled` | The day on which the clock-in was attempted is disabled in the branch's or the employee's calendar, is a public holiday or is one of the employee's days off. | Review the calendar configuration. If the day should be enabled, activate it in the relevant effective calendar. An organisation or branch public holiday cannot be overridden for a single employee. If the employee worked, record the manual workday. |
+| `checklog/absence` | The employee has an absence recorded that covers that day. | If the absence is correct, there is nothing to do. If it is not, remove it from their calendar and clock in again. |
+| `checklog/different_branches` | An attempt was made to start a break or clock out at a branch other than the one where the employee clocked in. A workday is not split across sites. | Clock the break or the exit at the same branch as the entry. If the employee changed site, close the workday at the first one and open another at the second. |
+| `checklog_update/future_not_allowed` | A correction was proposed with a future date or time. | Enter a time that has already passed. |
 | `auth/untrusted_device` | The device the clock-in was attempted from is not registered as a trusted device. The employee has two-factor authentication enabled. | Register the current device as a trusted device through the 2FA process. |
 | `employee/not_found` | The employee identifier does not correspond to any active record in the system. | Check that the employee is active on the platform and correctly assigned to the branch. |
 | `checklog/overlap_detected` | A clock record already exists for the time range in which the new record is being created. Two records of the same type cannot overlap. | Review the employee's existing records for that date and resolve the overlap before creating a new record. |
@@ -59,7 +62,7 @@ From the back office, the manager can access the detail of any clock record and 
 - The technical data of the attempt: coordinates, distance to the radius, active shift at the moment of the record, device used.
 - The complete change history.
 
-Employees can see the status of their clock records from the attendance history section in the app. For failed records, the app shows a description of the reason in plain language.
+Employees can see the status of their clock records from the attendance history section in the app. For failed records, the app shows a description of the reason in plain language. From version 1.3.2, the app also translates the codes for non-working day, unresolved calendar, branch without a location, overlap, duplicate request and workday closure, instead of showing the technical code; and when the day is not a working day, it explains that the employee can request a manual workday if they worked.
 
 ---
 

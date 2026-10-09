@@ -24,6 +24,8 @@ El informe de cumplimiento normativo contiene los siguientes datos por cada regi
 - **Estado de validación:** indica si el registro ha sido validado automáticamente, está pendiente de revisión o ha sido corregido manualmente.
 - **Trazabilidad de correcciones:** si un registro fue modificado manualmente por un responsable, el informe indica quién realizó la modificación, en qué fecha y el motivo registrado.
 
+> **Importante:** el registro de jornada es obligatorio para la relación laboral, así que el informe recoge al personal de **plantilla** y deja fuera a los empleados marcados como **colaboradores** (autónomos o externos que facturan a la empresa). Antes de presentarlo, compruebe que el tipo de relación de cada persona es el correcto: se ve en su ficha, junto al estado.
+
 ### Datos de la entidad
 
 El encabezado del informe incluye:

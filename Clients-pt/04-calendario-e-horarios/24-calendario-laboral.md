@@ -38,9 +38,11 @@ Cada sucursal pode ter o seu próprio calendário de dias não úteis adicionais
 
 ### Nível funcionário
 
-Um funcionário concreto pode ter exceções individuais que marquem dias específicos como não úteis (ou, pelo contrário, como úteis se a sucursal os tiver marcados como feriados). As exceções individuais têm a prioridade mais alta na hierarquia.
+Um funcionário concreto pode ter os seus próprios dias não úteis: férias, licenças ou qualquer ausência. Somam-se aos feriados da entidade e da sua sucursal e só o afetam a ele.
 
-> **Nota:** a resolução hierárquica segue a regra de que a configuração mais próxima do funcionário prevalece sobre a mais geral. Se uma data for feriado na entidade mas o funcionário tiver uma exceção individual que a marque como útil, o funcionário poderá registar nesse dia.
+> **Importante:** os feriados **somam-se** entre níveis; não se anulam. Um feriado da entidade ou da sucursal aplica-se a todos os seus funcionários mesmo que algum tenha um horário personalizado com turno nesse dia: o registo é recusado na mesma com `checklog/day_disabled`. A herança em que manda o nível mais próximo do funcionário é a do **horário semanal**, e não a dos feriados. Se na sua organização só uma parte do quadro de pessoal trabalha num feriado, consulte [Feriados e dias não úteis](29-feriados-e-dias-nao-uteis.md#o-que-acontece-se-a-empresa-trabalha-em-feriado).
+
+Cada dia não útil indica de que nível vem —entidade, sucursal ou funcionário—, de modo que na ficha do funcionário se distingue o que a empresa fecha do que é uma ausência própria.
 
 ---
 
@@ -51,18 +53,18 @@ Para adicionar um feriado ao calendário laboral, siga estes passos:
 **Ao nível da entidade:**
 
 1. Aceda ao backoffice com perfil owner.
-2. Navegue até **Calendário** e coloque-se no separador **Configuração geral**.
-3. Prima o botão **Adicionar dia não útil**.
-4. Selecione a data no seletor de calendário.
-5. Indique o tipo (feriado nacional, ponte, encerramento interno, etc.) e, opcionalmente, adicione uma descrição.
-6. Guarde o registo.
+2. Abra **Horários** no menu lateral e coloque-se no separador **Configurações gerais**.
+3. Em **Feriados da entidade**, prima **Adicionar feriado**.
+4. Escreva o nome do feriado e selecione a data; se o desejar, adicione uma descrição.
+5. Prima **Salvar feriado**.
 
 **Ao nível da sucursal:**
 
 1. Aceda ao backoffice com perfil owner ou manager.
-2. Navegue até **Sucursais** e selecione a sucursal correspondente.
-3. Aceda a **Calendário** e coloque-se no separador **Sucursal**.
-4. Siga os passos 3 a 6 do procedimento anterior.
+2. Abra a ficha da sucursal correspondente.
+3. No bloco **Dias de folga** da sucursal, adicione o feriado com os mesmos dados.
+
+**Ao nível do funcionário:** as ausências de uma pessoa registam-se a partir da sua ficha ou diretamente a partir do [quadro de disponibilidade](98-quadro-de-disponibilidade.md). O separador **Dias não úteis dos funcionários** de **Horários** permite procurar um funcionário e consultar os seus dias não úteis com a respetiva origem. Uma ausência pode abranger um **intervalo de datas** e levar a marca **Remunerada**; explica-se em [Feriados e dias não úteis](29-feriados-e-dias-nao-uteis.md#ausências-de-um-funcionário).
 
 As alterações são efetivas de imediato. Uma vez guardado o feriado, qualquer tentativa de registo nessa data por parte dos funcionários afetados será bloqueada.
 
@@ -80,6 +82,10 @@ Este erro fica gravado no histórico do funcionário com o seu timestamp e os da
 | Registo em feriado da entidade | `checklog/day_disabled`. Registo recusado. |
 | Registo em feriado da sucursal | `checklog/day_disabled`. Registo recusado. |
 | Registo em dia desativado no horário base | `checklog/day_disabled`. Registo recusado. |
+| Registo num dia não útil próprio do funcionário (férias, licença) | `checklog/day_disabled`. Registo recusado. |
+| Registo com uma ausência registada que abrange esse dia | `checklog/absence`. Registo recusado. |
+
+A partir da versão 1.3.2, a aplicação não se limita a mostrar o código: explica num diálogo que esse dia não é útil e que, se o funcionário trabalhou, pode [solicitar uma jornada manual](../03-controlo-de-horarios/19-solicitar-jornada-manual.md). No cartão do dia distingue ainda um **feriado** de um **dia livre**.
 
 > **Aviso:** se a sua empresa trabalha habitualmente em feriados (por exemplo, nos setores do retalho ou da restauração), deve rever a configuração do calendário para não bloquear registos válidos. Consulte o artigo [Feriados e dias não úteis](29-feriados-e-dias-nao-uteis.md) para saber como gerir este caso.
 
@@ -89,11 +95,11 @@ Este erro fica gravado no histórico do funcionário com o seu timestamp e os da
 
 A partir do backoffice, o responsável pode consultar que dias estão marcados como não úteis para um funcionário concreto:
 
-1. Aceda a **Funcionários** e selecione o funcionário.
-2. Abra a secção **Calendário efetivo**.
-3. O sistema mostra o calendário mensal com os dias úteis, os feriados herdados da entidade e da sucursal, e as exceções individuais do funcionário.
+1. Aceda a **Funcionários** e abra a ficha do funcionário.
+2. Abra o separador de horários.
+3. Junto ao seu horário, a ficha mostra os seus dias não úteis separados por origem: **Herdados da entidade**, **herdados da sua sucursal** e **próprias do colaborador**. As ausências de vários dias seguidos aparecem agrupadas numa só linha com o respetivo intervalo.
 
-Esta vista é especialmente útil para depurar situações em que um funcionário reporta que não conseguiu registar numa determinada data.
+Esta vista é especialmente útil para depurar situações em que um funcionário reporta que não conseguiu registar numa determinada data. Para ver num relance quem está disponível em cada dia em toda uma sucursal, use o [quadro de disponibilidade](98-quadro-de-disponibilidade.md).
 
 ---
 
@@ -103,4 +109,5 @@ Esta vista é especialmente útil para depurar situações em que um funcionári
 - [Exceções de horário](25-excecoes-de-horario.md)
 - [Herança de configuração](26-heranca-de-configuracao.md)
 - [Feriados e dias não úteis](29-feriados-e-dias-nao-uteis.md)
+- [Quadro de disponibilidade](98-quadro-de-disponibilidade.md)
 - [Estados e códigos de erro](../03-controlo-de-horarios/22-estados-e-codigos-de-erro.md)

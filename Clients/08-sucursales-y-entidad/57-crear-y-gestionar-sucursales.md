@@ -13,7 +13,7 @@ Para crear y gestionar sucursales necesita acceder al backoffice web con un rol 
 Al crear una sucursal deberá cumplimentar los siguientes campos:
 
 - **Nombre**: identificador visible de la sucursal en todo el sistema. Utilice un nombre claro y único dentro de su organización (por ejemplo, "Madrid Centro" o "Almacén Norte").
-- **Dirección**: dirección postal completa del centro de trabajo. El sistema geocodifica automáticamente esta dirección para obtener las coordenadas GPS que se utilizarán como punto central de la geocerca de fichaje. Es importante que la dirección sea precisa para garantizar la exactitud de las coordenadas.
+- **Dirección**: dirección postal completa del centro de trabajo, elegida del buscador. El sistema obtiene de ella las coordenadas GPS que se utilizarán como punto central de la geocerca de fichaje, y rellena solos el **país** y el **código postal**. No hay campo de ciudad: la dirección normalizada ya la incluye. Es importante que la dirección sea precisa para garantizar la exactitud de las coordenadas.
 - **Radio de fichaje**: distancia en metros desde el punto central de la sucursal dentro de la cual el sistema considera válido un fichaje por geolocalización. Un radio de 100 metros es el valor recomendado para oficinas en entornos urbanos; puede ampliarse para instalaciones industriales o espacios abiertos.
 - **Zona horaria**: forma parte de la dirección y determina cómo se interpretan las horas de fichaje y cómo se calculan las jornadas. Es especialmente relevante en organizaciones con centros en distintos países o regiones. Si no se indica, la sucursal hereda la zona horaria de la entidad.
 
@@ -27,7 +27,7 @@ Al crear una sucursal deberá cumplimentar los siguientes campos:
 ### Pasos para crear la primera sucursal
 
 1. Acceda al backoffice en `saas.encodebiz.com` e inicie sesión con sus credenciales.
-2. En el menú lateral, dentro de CheckBiz, seleccione **Sucursales**.
+2. En el menú lateral, seleccione **Sucursales** (o el nombre que su entidad dé a sus centros).
 3. Pulse el botón de crear sucursal.
 4. Introduzca el nombre de la sucursal en el campo correspondiente.
 5. Escriba la dirección postal completa en el campo **Dirección**. Seleccione la sugerencia que aparece en el desplegable de autocompletado para asegurarse de que el sistema obtiene las coordenadas correctas.
@@ -38,6 +38,10 @@ Al crear una sucursal deberá cumplimentar los siguientes campos:
 10. Pulse **Guardar**. El sistema confirmará la creación con un mensaje de éxito y la nueva sucursal aparecerá en el listado.
 
 > **Aviso:** Si la geocodificación de la dirección no devuelve coordenadas precisas, el sistema lo indicará con una advertencia. En ese caso, ajuste el marcador manualmente en el mapa antes de guardar. Coordenadas incorrectas generarán rechazos de fichaje injustificados para los empleados asignados.
+
+> **Nota:** el código postal admite letras, espacios y guiones, de modo que se pueden dar de alta centros fuera de España («EC2V 8AS», «3512 EN», «K1A 0B1»). El país se toma de la dirección elegida; si su centro está en otro país, búsquelo con la dirección completa.
+
+> **Nota:** al dar de alta el servicio, CheckBiz360 crea una primera sucursal con los datos de la empresa. Revísela antes de crear otras.
 
 ## Editar una sucursal
 
@@ -50,6 +54,10 @@ Para modificar los datos de una sucursal existente:
 5. Pulse **Guardar cambios**.
 
 > **Aviso:** Los cambios en el radio de fichaje o en las coordenadas tienen efecto inmediato. Los empleados que estén intentando fichar en ese momento pueden verse afectados transitoriamente.
+
+Editar solo cambia lo que usted modifica. En particular, si la sucursal tiene **desactivada la zona de chequeo**, guardar otros cambios no la vuelve a activar.
+
+Si la sucursal fue creada por una integración (por ejemplo, un montaje importado de Rentman), su ficha muestra un distintivo con el origen. Puede editarla con normalidad; los datos de procedencia que guarda la integración no se pierden al guardar.
 
 ## Desactivar una sucursal
 

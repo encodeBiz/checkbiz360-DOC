@@ -32,6 +32,37 @@ The task report is generated from the **Reports** section of the back office and
 
 > **Important:** the report period applies to each task's **deadline**, not to its creation date. A July report includes the tasks that were due in July, even if they were created in June.
 
+### What it contains
+
+One row per task, with these columns: Company, Site, Title, Status, Priority, Start, End, **Time spent (h)**, **Paused (h)**, **No. of pauses**, **Time spent excluding pauses (h)**, Team, Rating and No. of evidence items.
+
+The time columns are worth reading carefully:
+
+| Column | What it measures |
+|---|---|
+| **Time spent (h)** | The time elapsed between the start and the end of the task. It is not time worked: a task started on Friday and finished on Monday includes the weekend. |
+| **Paused (h)** | The sum of the task's pauses. |
+| **No. of pauses** | How many times it was paused. |
+| **Time spent excluding pauses (h)** | Time spent minus time paused. It deducts the pauses someone recorded, not the interruptions nobody marked. |
+
+A task that has not yet been started leaves the pause columns empty. If a task is paused when the report is generated, the open pause counts up to that moment.
+
+### Material for each task
+
+If your company has [inventory](../16-inventory/100-what-is-inventory.md) subscribed (or on trial), the report also answers a question the work report rarely does: **what material was used on each job and what it cost**.
+
+The tasks sheet gains three columns at the end:
+
+| Column | What it is |
+|---|---|
+| **Material** | What was consumed on the task: each item with its quantity, and equipment by its unit. |
+| **Unsettled** | What went out and nobody has declared or returned. This is what to check before validating. |
+| **Material cost (€)** | What was consumed times its unit cost. Empty if no item has a cost on its record. |
+
+And the file has one more sheet, **Material**, with one row per task and item or unit: the warehouse it came from, quantities reserved, issued, consumed, returned and unsettled, cost, and for equipment its reservation slot and its usage. This is the sheet to filter or build pivot tables on.
+
+Without inventory, the report is exactly the same as always.
+
 ### If there are no results
 
 If no task meets the selected filters, the system says so and does not generate an empty file. Widen the period or review the branch and status filters.

@@ -13,7 +13,7 @@ Este artigo explica como criar um funcionário de raiz, que campos são obrigat�
 - **Nome completo** — Nome e apelidos tal como devem aparecer nos registos.
 - **Correio eletrónico** — Endereço único na plataforma. É o identificador do funcionário e o endereço para onde é enviado o acesso inicial. **Não pode ser alterado depois de criado o perfil.**
 - **Telefone** — Número de contacto, com indicativo internacional.
-- **Tipo de relação** — *Interno* (quadro de pessoal) ou *Colaborador* (externo, freelancer ou prestador de serviços).
+- **Tipo de relação** — *Pessoal* (quadro de pessoal da empresa) ou *Colaborador* (externo, freelancer ou prestador de serviços). Aparece na ficha junto ao estado, e não é um dado menor: os colaboradores **não são incluídos no relatório de registo de jornada**, que é obrigatório para a relação laboral. Ver [Perfis e níveis de responsabilidade](07-perfis-e-niveis-de-responsabilidade.md#tipo-de-relação-interno-face-a-colaborador).
 
 > **Importante:** o nível de responsabilidade —worker, supervisor, manager ou owner— **não é atribuído na criação**. Define-se ao associar o funcionário a uma sucursal, porque a mesma pessoa pode ter responsabilidades distintas em cada local. Consulte [Atribuir funcionários a sucursais](../08-sucursais-e-entidade/60-atribuir-funcionarios-a-sucursais.md).
 
@@ -41,14 +41,14 @@ Três opções ativam-se ou desativam-se por funcionário:
 |---|---|
 | **Verificação em dois passos (2FA)** | Exige um código temporário além da palavra-passe |
 | **Biometria obrigatória** | O funcionário tem de se autenticar com impressão digital ou reconhecimento facial antes de o seu registo ser aceite |
-| **Trabalho remoto** | Permite registar fora da geocerca da sucursal. Ao ativá-lo, **a morada do funcionário passa a ser obrigatória**, porque é a referência com que se valida o registo remoto |
+| **Trabalha fora do centro** | Permite registar fora da geocerca da sucursal (antes chamava-se *Trabalho remoto*). Ao ativá-lo, **a morada do funcionário passa a ser obrigatória**, porque é a referência com que se valida o registo. Ver [Trabalho fora do centro](../03-controlo-de-horarios/15-registo-em-teletrabalho.md) |
 
 ---
 
 ## Outros campos
 
 - **Documento de identificação** — Útil para auditorias e exportações de recursos humanos.
-- **Morada** — Opcional, salvo se o trabalho remoto for ativado.
+- **Morada** — Opcional, salvo se o trabalho fora do centro for ativado. Escolhe-se na pesquisa de moradas; não há campo de cidade à parte, porque a morada normalizada já a inclui.
 - **Calendário do funcionário** — Horário próprio e exceções, quando diferem dos da sua sucursal. Se não for configurado, o funcionário herda o calendário da sucursal.
 - **Dados adicionais** — Campos livres em formato chave/valor para informação própria da sua organização (número de funcionário, convenção coletiva, centro de custo…).
 
@@ -58,10 +58,11 @@ Ao associar o funcionário a uma sucursal definem-se ainda a sua **responsabilid
 
 ## Estados do funcionário
 
-O CheckBiz360 contempla sete estados laborais:
+O CheckBiz360 contempla sete estados laborais, mais o estado **Pendente** para as fichas por completar:
 
 | Estado | Descrição |
 |---|---|
+| **Pendente** | A ficha existe mas ainda não pode trabalhar, normalmente porque lhe falta o correio eletrónico (é habitual em fichas importadas a partir de uma integração). Não recebe acesso nem correio de boas-vindas, e **não é faturada**. Sai deste estado ao completar o correio. Não se atribui à mão. |
 | **Ativo** | O funcionário trabalha com normalidade e tem acesso à plataforma. |
 | **Inativo** | O funcionário não está operacional. É o estado usado ao terminar a relação laboral: o perfil e o seu histórico são conservados. |
 | **Férias** | O funcionário encontra-se de férias. |
@@ -70,7 +71,9 @@ O CheckBiz360 contempla sete estados laborais:
 | **Licença de paternidade** | O funcionário está em licença de paternidade. |
 | **Licença de maternidade** | A funcionária está em licença de maternidade. |
 
-Para alterar o estado, abra o perfil do funcionário, prima **Editar** e selecione o novo estado.
+Para alterar o estado, abra o perfil do funcionário, prima **Editar** e selecione o novo estado. O filtro de estado da listagem de funcionários inclui **Pendente**, para localizar as fichas que falta completar.
+
+> **Importante:** para efeitos de faturação, conta todo o funcionário que não esteja pendente nem eliminado. Um funcionário **Inativo** ou de baixa continua a fazer parte do quadro de pessoal e **é faturado**.
 
 > **Nota:** os estados de ausência (férias, baixas, licença sem vencimento) também podem ser geridos como **ausências com datas** a partir do calendário, o que permite planeá-las com antecedência em vez de mudar o estado à mão no dia em que começam.
 
@@ -112,3 +115,4 @@ A gestão de perfis está disponível para **manager** (nível 3) e **owner** (n
 - [Autenticação de dois fatores](09-autenticacao-de-dois-fatores.md)
 - [Atribuir funcionários a sucursais](../08-sucursais-e-entidade/60-atribuir-funcionarios-a-sucursais.md)
 - [Exportar a lista de funcionários](12-exportar-lista-de-funcionarios.md)
+- [Equipas](99-equipas.md)

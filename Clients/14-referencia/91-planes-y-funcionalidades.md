@@ -10,14 +10,14 @@ CheckBiz360 se ofrece en dos planes:
 
 | Plan | Precio | Para quién |
 |---|---|---|
-| **Bronce** | **5 €/empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Es el plan completo de la plataforma. |
+| **Bronce** | **5 €/empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Incluye los módulos base; Inventario se contrata aparte. |
 | **Empresarial** | **Precio a medida** | Organizaciones grandes (orientativamente, a partir de 100 empleados) o que necesitan integraciones con sus propios sistemas y soporte preferente. |
 
-El precio del plan Bronce es **por empleado y mes**: se factura según los empleados dados de alta, sin cuota fija de entrada ni coste de implantación. El plan Empresarial se acuerda con el equipo comercial en función del volumen y de las integraciones necesarias.
+El precio del plan Bronce es **por empleado y mes**: se factura según los empleados dados de alta, sin cuota fija de entrada ni coste de implantación. Cuentan todos los empleados de la plantilla, también los inactivos o de baja, porque siguen formando parte de ella; no cuentan las fichas **pendientes** de completar ni los empleados eliminados. El plan Empresarial se acuerda con el equipo comercial en función del volumen y de las integraciones necesarias.
 
 > **Tarifa 2026:** el plan Bronce puede contratarse por **2 €/empleado al mes** hasta el **31 de diciembre de 2026 incluido**. Desde el 01/01/2027 la tarifa general vuelve a ser de 5 € y se aplica solo a las altas nuevas: quien haya contratado antes conserva la suya, y cualquier revisión futura de precios se comunicará con amplia antelación.
 
-> **Periodo de prueba:** la primera suscripción incluye **15 días de prueba**. La prueba no se aplica en suscripciones posteriores de la misma entidad.
+> **Periodo de prueba:** la primera suscripción incluye **15 días de prueba**. La prueba no se aplica en suscripciones posteriores de la misma entidad. Para activarla hace falta un método de pago, pero añadirlo no genera cargo y la prueba tampoco: si cancela antes de que termine, no se le cobra nada.
 
 Para condiciones concretas (volumen, facturación anual, integraciones a medida, permanencias asociadas a un desarrollo específico), escriba a **hola@encodebiz.com**.
 
@@ -25,22 +25,23 @@ Para condiciones concretas (volumen, facturación anual, integraciones a medida,
 
 ## Qué incluye la suscripción
 
-Ambos planes dan acceso a la plataforma completa: los módulos que se describen a continuación están disponibles en el backoffice y en la app móvil desde el primer día.
+Ambos planes incluyen los módulos base descritos a continuación. Inventario es un complemento opcional con facturación adicional, también en el plan Empresarial salvo acuerdo comercial expreso.
 
 ### Control horario y fichajes
 
 - Fichaje de entrada y salida desde la app móvil (iOS y Android), con validación de geolocalización (geocerca configurable por sucursal), horario y dispositivo.
 - Verificación biométrica y dispositivos de confianza, configurables por empleado.
 - Descansos y pausas (`restin` / `restout`) con descuento automático configurable.
-- Fichaje en remoto para teletrabajo.
+- Trabajo fuera del centro, para equipos de campo y teletrabajo.
 - Validación del empleado mediante QR, configurable por sucursal.
 - Solicitud de jornada manual con aprobación del responsable, e historial de cambios inmutable.
 
 ### Gestión de empleados
 
-- Alta, edición y desactivación de empleados, con estados laborales: activo, inactivo, vacaciones, baja médica, excedencia, permiso de paternidad y permiso de maternidad.
+- Alta, edición y desactivación de empleados, con estados laborales: activo, inactivo, vacaciones, baja médica, excedencia, permiso de paternidad y permiso de maternidad, más el estado pendiente para fichas a medio completar.
 - Cuatro niveles de responsabilidad: Owner, Manager, Supervisor y Worker.
-- Empleados internos y colaboradores externos.
+- Empleados de plantilla y colaboradores externos, que quedan fuera del informe de registro de jornada.
+- Equipos: plantillas con la responsabilidad, el puesto y el precio de cada persona, que dan de alta a toda una cuadrilla en una sucursal de una vez.
 - Verificación en dos pasos (2FA), biometría y gestión de dispositivos de confianza.
 - Empleados asignados a varias entidades, con selector de entidad al iniciar sesión.
 - Importación de empleados desde CSV en la puesta en marcha.
@@ -55,13 +56,18 @@ Ambos planes dan acceso a la plataforma completa: los módulos que se describen 
 ### Calendario y horarios
 
 - Horarios base con uno o varios turnos por día y descansos dentro del turno.
-- Calendario laboral con festivos, ausencias y excepciones, aplicables a entidad, sucursal o empleado.
+- Calendario laboral con festivos y ausencias —por rangos de fechas y con marca de retribuida—, aplicables a entidad, sucursal o empleado.
 - Jornada estricta o flexible y descanso estricto o flexible, que deciden cómo se computan horas y pausas.
-- Presets de calendario para replicar un horario en varias sucursales.
+- Plantillas de horario para replicar un horario en varias sucursales.
+- Tablero de disponibilidad: cobertura por sucursal y día, quién falta y por qué, y alta de días libres desde el propio tablero.
 
 ### Tareas
 
 - Creación, asignación y seguimiento de tareas operativas, con sucursal, fecha límite y fecha prevista de inicio.
+- Lugar de trabajo propio por tarea, con su margen, para trabajos fuera de la sucursal.
+- Duplicar una tarea para repetir el encargo sin rellenar de nuevo el formulario.
+- Pausar y reanudar tareas en progreso, con el tiempo en pausa en el informe.
+- Historial de la tarea: quién la movió en cada estado y cuándo.
 - Descripción con formato: listas, listas de tareas (checklists), títulos y enlaces.
 - Cuatro prioridades: baja, media, alta y crítica.
 - Evidencias de foto y vídeo, notas tipificadas, validación y valoración por el responsable.
@@ -71,7 +77,8 @@ Ambos planes dan acceso a la plataforma completa: los módulos que se describen 
 
 - Subida de documentos laborales (nóminas, contratos, comunicados, políticas, protocolos, prevención de riesgos y otros tipos).
 - Ámbito por entidad, sucursal o empleado, y visibilidad por rol.
-- Acuse de recibo del empleado, con control de versión del documento.
+- Acuse de recibo firmado desde el móvil, con control de versión y acta de firma descargable.
+- PDF firmado descargable para documentos PDF dirigidos a un solo empleado; en documentos de grupo se conserva un acta por firmante sin modificar el archivo compartido.
 - Archivado lógico: los documentos archivados dejan de mostrarse pero se conservan.
 
 ### Incidencias
@@ -83,8 +90,21 @@ Ambos planes dan acceso a la plataforma completa: los módulos que se describen 
 ### Informes
 
 - Informe de asistencia en **PDF o Excel (XLSX)**, filtrable por sucursal, empleado y periodo.
-- Informe de tareas en **Excel (XLSX)**, filtrable por sucursal, estado y periodo de vencimiento.
+- Informe de tareas en **Excel (XLSX)**, filtrable por sucursal, estado y periodo de vencimiento, con tiempo invertido y tiempo en pausa; con el inventario contratado, también el material y su coste por tarea.
 - Informe de cumplimiento del RDL 8/2019 para inspecciones.
+
+### Inventario (complemento de pago)
+
+Se contrata aparte desde **Suscripciones**, con 15 días de prueba.
+
+- Artículos que se gastan (consumibles) y que se prestan (operables, por ejemplares), en almacenes ligados a sucursales.
+- Material asignado al crear la tarea; salida y consumo desde la app; cuadre del sobrante al validar.
+- Calendario de cada ejemplar con aviso de choque entre tareas.
+- Mínimos de aviso por almacén y señal de discrepancias.
+- Informe de consumo y libro de movimientos en CSV.
+- Documentos y revisiones por equipo, con avisos de vencimiento.
+- Entregas de equipos y EPIs al trabajador, con documentación asociada, confirmación firmada o disconformidad y estado de devolución.
+- Informe «Equipos y EPIs» en Excel con entregas y revisiones para preparar la documentación ante una inspección.
 
 ### Inteligencia operativa
 
@@ -100,6 +120,8 @@ CheckBiz360 incluye un asistente de inteligencia artificial que interpreta los d
 
 El asistente **narra y prioriza sobre las cifras que ya muestra la pantalla**: no recalcula ni genera datos propios, de forma que su lectura nunca puede contradecir a los paneles.
 
+Merlin también acompaña la **guía inicial** del backoffice, que lleva a cada cuenta nueva por la suscripción, el horario, el centro de trabajo, el primer empleado y la prueba de fichaje.
+
 ---
 
 ## Diferencias entre Bronce y Empresarial
@@ -108,7 +130,8 @@ El plan Empresarial incluye todo lo del plan Bronce y añade:
 
 | | Bronce | Empresarial |
 |---|---|---|
-| Módulos de la plataforma | Todos | Todos |
+| Módulos base | Incluidos | Incluidos |
+| Inventario | Complemento de pago | Complemento de pago, salvo acuerdo |
 | Soporte | Estándar, con tiempos de respuesta definidos | Preferente, por canales prioritarios |
 | Integraciones por webhook | — | Incluidas |
 | Integraciones con ERP/CRM y desarrollos a medida | — | Bajo acuerdo |
@@ -125,7 +148,6 @@ Las siguientes funcionalidades están planificadas y **no** están disponibles e
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-- **Firma electrónica** de documentos desde la app móvil.
 - **Historial automático de versiones** de documentos.
 - **Descarga masiva de documentos** en un único archivo.
 - **Informes automáticos por email**: envío programado de los informes ya disponibles.

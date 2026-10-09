@@ -30,9 +30,12 @@ Registration takes place in the back office itself, at `saas.encodebiz.com`.
    - **Phone**
    - **Password** and its **confirmation**
 4. Accept the terms and the privacy policy.
-5. Submit the form.
+5. Complete the **verification challenge** shown in the form. It is an automatic Cloudflare check that confirms the person registering is a human; the submit button becomes active once it has been passed.
+6. Submit the form.
 
 There is no intermediate email verification step: on completing registration, the system takes you **straight to the organisation creation screen**.
+
+> **Note:** the verification challenge expires after a few minutes. If you take a while to submit the form and the `turnstile/failed` warning appears, reload the page and try again. The same challenge is requested when recovering your password.
 
 > **Note:** use a corporate email address. That address is linked as the account Owner and is where administrative communications are sent. If the email is already in use, the system reports it with the error `auth/email-already-in-use`.
 
@@ -57,34 +60,36 @@ Save to continue.
 
 ---
 
-## Step 3. Activate CheckBiz
+## Step 3. Activate CheckBiz360
 
-With the organisation created, the service has to be activated. In the side menu, go to **CheckBiz** and review the available plans.
+With the organisation created, the service has to be activated. In the side menu, go to **CheckBiz360** and review the available plans.
 
 Before subscribing, the system checks two requirements and warns you if either is missing, linking to the relevant screen:
 
 - **Company details** complete.
-- **Payment method** configured.
+- **Payment method** configured. **Without a payment method the service cannot be activated.**
 
-Remember that the first subscription includes a **15-day trial**. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
+Adding the card does not generate any charge, and there is no charge during the trial either: the first subscription includes a **15-day trial**, and if you decide not to continue before it ends, you cancel the subscription and nothing is charged. The card also serves to confirm that there is a person behind the account. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
+
+Once the service is activated, the CheckBiz360 sections —Employees, Branches, Schedules, Tasks, Documents, Reports…— appear directly in the side menu.
 
 ---
 
 ## Step 4. Create the first branch
 
-In the side menu, inside CheckBiz, go to **Branches** and create one.
+When the service is activated, CheckBiz360 creates a first branch with the company details. Review its address and its check zone from its record. If your account does not have it, or you need more sites, go to **Branches** in the side menu and create one.
 
 | Field | Required | Description |
 |---|---|---|
 | **Name** | Yes | Identifier of the operational unit: "City Centre Store", "Madrid Office" |
-| **Address** | Yes | The system geocodes it to obtain the site's coordinates and time zone |
+| **Address** | Yes | It is chosen from the search box. The system obtains the site's coordinates and time zone, and fills in the country and the postcode |
 | **Check zone in metres** | Yes | The radius within which a clock-in is accepted. Between 50 and 200 metres depending on the size of the site |
 | **Tax ID** | — | Only if the site has its own tax identification |
 | **Status** | — | Active by default |
 
 > **Note:** the check zone is what prevents clocking in from outside the site. Too wide a radius makes it useless; too narrow a one generates rejections through GPS imprecision. For most offices and stores, **100 metres** is a good starting point, and it is adjusted afterwards with the data from the first few weeks.
 
-Save. You will then be able to configure its weekly schedule from **Calendar**.
+Save. You will then be able to configure its weekly schedule from **Schedules**.
 
 ---
 
@@ -92,7 +97,7 @@ Save. You will then be able to configure its weekly schedule from **Calendar**.
 
 In **Employees**, create a new one.
 
-1. Fill in the required details: **full name**, **email address**, **phone** and **relationship type** (internal or contractor).
+1. Fill in the required details: **full name**, **email address**, **phone** and **relationship type** (staff or collaborator).
 2. Save. The system creates the profile and **automatically sends the welcome email** with the activation instructions.
 3. Open the employee's record and **link them to the branch** you have just created. It is in that link that their **responsibility** —worker, supervisor, manager or owner—, their **position** and their **hourly rate** are defined.
 

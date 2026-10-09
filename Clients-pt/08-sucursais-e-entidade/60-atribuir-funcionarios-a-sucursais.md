@@ -30,6 +30,10 @@ Também pode atribuir funcionários diretamente a partir da ficha da sucursal:
 3. Prima **Atribuir funcionário** e introduza o nome ou o correio eletrónico do funcionário na pesquisa.
 4. Selecione o perfil e o calendário e prima **Confirmar**.
 
+### Adicionar uma equipa inteira
+
+Se a mesma equipa de trabalho trabalha em vários projetos, não é preciso associar cada pessoa em separado. Na lista de funcionários da ficha da sucursal, **Aplicar equipa** adiciona de uma vez todos os membros de uma equipa, cada um com a sua responsabilidade, função e valor, e ignora quem já lá estava. **Guardar como equipa** faz o contrário: converte o pessoal da sucursal numa equipa reutilizável. Consulte [Equipas](../02-funcionarios/99-equipas.md).
+
 ## Multi-sucursal: um funcionário em várias sucursais
 
 O CheckBiz360 admite que o mesmo funcionário esteja atribuído a várias sucursais em simultâneo, com perfis distintos em cada uma. Esta funcionalidade foi concebida para cobrir casos como:
@@ -82,6 +86,7 @@ Para desassociar um funcionário de uma sucursal:
 ## Artigos relacionados
 
 - [Criar e gerir sucursais](57-criar-e-gerir-sucursais.md)
+- [Equipas](../02-funcionarios/99-equipas.md)
 - [Estados de uma sucursal](59-estados-de-uma-sucursal.md)
 - [Configuração da entidade](61-configuracao-da-entidade.md)
 - [Vista global multi-sucursal](62-vista-global-multi-sucursal.md)

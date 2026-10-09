@@ -50,7 +50,7 @@ Quando um contrato é renovado ou as condições laborais mudam, arquive o contr
 
 Para alterações parciais —como um anexo de mudança de horário ou um aumento salarial— pode carregar o anexo como um documento separado com o tipo **Contrato** e indicar na descrição a que contrato principal se refere.
 
-> **Importante:** o CheckBiz360 **não assina contratos**. O que oferece hoje é distribuição rastreável e confirmação de leitura: fica constância de que o funcionário acedeu ao documento, quando e sobre que versão. A assinatura do contrato deve ser feita pelo canal habitual —em papel ou com um serviço de assinatura eletrónica externo— e carregada aqui já assinada. A assinatura eletrónica avançada dentro da plataforma está no roadmap.
+> **Importante:** um recibo de vencimento, uma advertência ou um contrato carregados **ao funcionário** com confirmação de leitura ficam **assinados por ele dentro do PDF** ao confirmar na aplicação, com assinatura eletrónica avançada e ata de assinatura (ver [Confirmação de leitura e assinatura eletrónica](35-assinatura-eletronica.md)). É a assinatura do trabalhador: se um procedimento exigir também a da empresa com certificado qualificado, faça-o pelo canal habitual e carregue aqui o resultado.
 
 ## Conservação documental e obrigações legais
 

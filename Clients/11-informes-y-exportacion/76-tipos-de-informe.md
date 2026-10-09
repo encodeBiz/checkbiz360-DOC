@@ -2,7 +2,7 @@
 
 CheckBiz360 centraliza la información operativa de su empresa en dos formas distintas, y conviene no confundirlas:
 
-- **Informes descargables**, que se generan bajo demanda desde la sección **Informes**, quedan archivados en el histórico y se descargan como fichero. Hoy son dos: el **informe de asistencia** (PDF o Excel) y el **informe de tareas** (Excel).
+- **Informes descargables**, que se generan bajo demanda desde la sección **Informes**, quedan archivados en el histórico y se descargan como fichero. Son tres: el **informe de asistencia** (PDF o Excel), el **informe de tareas** (Excel) y el informe **«Equipos y EPIs»** (Excel, con el complemento de inventario). Con el inventario contratado, el de tareas incluye además el material de cada tarea, y el inventario tiene su propio **informe de consumo**.
 - **Análisis en pantalla**, que se consultan en el panel operativo y en las fichas de sucursal y empleado: puntualidad, costes y anomalías. No generan fichero descargable en la versión actual.
 
 Esta guía describe cada uno y los roles que tienen acceso.
@@ -19,6 +19,10 @@ El informe de asistencia es el documento base del módulo. Recoge los datos de p
 - Horas trabajadas totales por empleado en el periodo seleccionado.
 - Desglose por turno, sucursal o periodo.
 - Estado de cada jornada: completa, ausencia justificada, ausencia sin justificar, jornada parcial.
+
+> **Importante:** el informe recoge al personal de **plantilla**. Los empleados marcados como **colaboradores** no aparecen, porque el registro horario es una obligación de la relación laboral y no se aplica a un autónomo que factura a la empresa. Los empleados sin tipo de relación registrado se siguen incluyendo. Consulte [Roles y niveles de responsabilidad](../02-empleados/07-roles-y-niveles-de-responsabilidad.md#tipo-de-relación-interno-frente-a-colaborador).
+
+Si no hay ningún fichaje que cumpla los filtros, el sistema lo indica y no genera el fichero.
 
 ### Para qué sirve
 
@@ -64,8 +68,11 @@ El informe de tareas recoge las tareas del periodo con su estado y su cumplimien
 ### Qué incluye
 
 - Las tareas cuya **fecha límite** cae dentro del periodo seleccionado, con su estado y su cumplimiento temporal.
+- El tiempo de cada tarea: tiempo invertido, tiempo en pausa, número de pausas y tiempo invertido sin pausas. Se explican en [Informes de tareas](../06-tareas/48-informes-de-tareas.md#qué-contiene).
 - Filtros por sucursal y por estado de la tarea.
 - Los datos necesarios para calcular en la hoja de cálculo lo que se necesite: completadas frente a asignadas, vencidas, rechazadas.
+
+- Con el [inventario](../16-inventario/100-que-es-el-inventario.md) contratado: el material consumido por tarea, su coste y lo que quedó sin cuadrar, más una hoja de detalle por artículo. Ver [Informes de tareas](../06-tareas/48-informes-de-tareas.md#material-de-cada-tarea).
 
 > **Nota:** las métricas agregadas ya calculadas —porcentaje de completitud, tiempo medio de resolución, valoración media— están en el roadmap. Hoy el informe entrega el detalle y el cálculo se hace en la hoja.
 
@@ -84,9 +91,19 @@ Complementa el control de presencia con datos sobre la actividad real realizada 
 
 ---
 
+## Informe de consumo (inventario)
+
+Exclusivo del complemento de inventario. Responde a **dónde se va el material y cuánto cuesta**: agrupa el consumo de un periodo por artículo, tarea, empleado, sucursal o almacén, valorado al coste de cada artículo, y se exporta a CSV junto con el libro de movimientos. Se abre desde la sección Inventario. Ver [Informe de consumo y movimientos](../16-inventario/103-informe-de-consumo-y-movimientos.md).
+
+---
+
 > **Nota:** los análisis de costes y anomalías contienen información especialmente sensible. Asegúrese de que solo los roles con acceso autorizado tienen credenciales activas en la plataforma. Revise periódicamente los usuarios con rol de Manager u Owner en la sección de gestión de equipo.
 
 ---
+
+## Informe «Equipos y EPIs»
+
+Se lista siempre en Informes; sin el complemento de inventario aparece en rojo y explica qué es y cómo activarlo. Es la prueba para una inspección de trabajo, en dos hojas: **Entregas** (qué se entregó a cada trabajador, con qué documentos y versión, quién lo entregó, cómo lo confirmó y si la firma fue verificada, cuándo y cómo lo devolvió) y **Equipos y revisiones** (cada ejemplar con su estado, quién lo tiene y cada papel con su resultado y caducidad). Ver [Equipos: documentos, revisiones y entregas](../16-inventario/104-equipos-documentos-revisiones-y-entregas.md).
 
 ## Artículos relacionados
 

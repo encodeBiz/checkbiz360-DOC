@@ -38,8 +38,10 @@ O owner tem acesso absoluto à plataforma, incluindo a configuração global da 
 
 Independentemente do nível de perfil atribuído, cada funcionário tem um tipo de relação com a empresa:
 
-- **Interno** — Funcionário do quadro com contrato de trabalho em vigor. Faz parte da estrutura habitual da organização.
+- **Pessoal** — Funcionário com contrato de trabalho em vigor. Faz parte da estrutura habitual da organização.
 - **Colaborador** — Pessoa externa que trabalha para a empresa de forma pontual ou recorrente sem pertencer ao quadro. Pode ser um freelancer, um prestador de serviços ou um trabalhador independente.
+
+O tipo de relação aparece na ficha do funcionário, junto ao seu estado, e tem uma consequência legal: o **relatório de registo de jornada deixa de fora os colaboradores**, porque o registo de horários é obrigatório para a relação laboral e não para um trabalhador independente que fatura à empresa. Os colaboradores continuam a aparecer nos painéis de análise e nas tarefas. Os funcionários anteriores a esta distinção, que não têm tipo registado, são incluídos no relatório como até agora.
 
 Ambos os tipos podem ter qualquer nível de perfil, embora na prática os colaboradores costumem operar como workers ou supervisores com um âmbito limitado.
 

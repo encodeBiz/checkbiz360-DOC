@@ -18,7 +18,7 @@ There are two main situations in which a record enters `pending-employee-validat
 
 **Manual workday request:** When a manager or supervisor creates a workday on the employee's behalf (Mode A or Mode B), the system automatically assigns this status until the employee responds. See the article [Request a manual workday](19-request-a-manual-workday.md) for more detail.
 
-**Manager correction:** When a manager modifies an existing clock record for the employee (for example, adjusting the entry or exit time), the system may require the employee to validate the change before applying it definitively, depending on the organisation's configuration.
+**Manager correction:** When a manager proposes a correction to an existing clock record for the employee (for example, adjusting the entry or exit time), the change is not applied until the employee accepts it. In the meantime, the record remains pending validation. The proposed time cannot be in the future: the form does not allow it and the server rejects it with `checklog_update/future_not_allowed`.
 
 ---
 
@@ -37,13 +37,18 @@ The review screen is available at the route `/notifications/checklog-update/:id`
 
 ## What happens if the employee accepts
 
-The record moves to `valid` status. From that moment on, it counts as time worked and is incorporated into the calculation of hours for the workday. The system records the validation action in the audit history with the date, time and identifier of the employee who performed it.
+The record moves to `valid` status. From that moment on, it counts as time worked and is incorporated into the calculation of hours for the workday; in the case of a correction, the corrected time is the one that appears in the working-time record report. The system records the validation action in the audit history with the date, time and identifier of the employee who performed it.
 
 ---
 
 ## What happens if the employee rejects
 
-The record is marked with `failed` status and the reason for the rejection is stored. The record remains in the system for auditing but does not count as hours worked. The manager receives a notification of the rejection and can start a new, corrected request or resolve the incident manually.
+The outcome depends on what is rejected:
+
+- **A correction of an existing clock record.** The record **goes back to how it was before the proposal**: the original time is not touched and it recovers its previous status, so it still counts in the working-time record. The rejection, with its reason, is noted in the record's change history.
+- **A manual workday.** Since the record did not exist before the proposal, it is marked with `failed` status and the reason for the rejection. It remains in the system for auditing but does not count as hours worked.
+
+In both cases, the manager can start a new, corrected proposal or resolve the incident manually.
 
 ---
 

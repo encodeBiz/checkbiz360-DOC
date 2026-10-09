@@ -43,6 +43,8 @@ Choose the format according to use: **PDF** to present or file —it is the one 
 | Hours worked | Total hours and minutes of the workday recorded |
 | Status | Complete, justified absence, unjustified absence, partial workday |
 
+The report includes staff personnel and leaves out employees marked as collaborators; those with no relationship type recorded are included.
+
 ---
 
 ## Downloading the task report (Excel)
@@ -50,6 +52,8 @@ Choose the format according to use: **PDF** to present or file —it is the one 
 The task report is generated in the same way as the attendance one, by selecting the *Task report* type. It is produced only in **Excel (XLSX)**.
 
 It supports filters by **branch** and by task **status**. The period applies to each task's **deadline**, not to its creation date: a July report gathers the tasks that were due in July, even if they were created earlier.
+
+In addition to each task's data, the Excel file includes the columns **Time spent (h)**, **Paused (h)**, **No. of pauses** and **Time spent excluding pauses (h)**. What each one measures is explained in [Task reports](../06-tasks/48-task-reports.md#what-it-contains).
 
 If no task meets the filters, the system says so and does not generate an empty file.
 

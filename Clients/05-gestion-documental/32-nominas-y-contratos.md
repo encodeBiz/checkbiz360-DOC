@@ -50,7 +50,7 @@ Cuando un contrato se prorroga o se modifican las condiciones laborales, archive
 
 Para modificaciones parciales —como un anexo de cambio de jornada o una subida salarial—, puede subir el anexo como un documento separado con el tipo **Contrato** e indicar en la descripción a qué contrato principal hace referencia.
 
-> **Importante:** CheckBiz360 **no firma contratos**. Lo que ofrece hoy es distribución trazable y acuse de recibo: queda constancia de que el empleado accedió al documento, cuándo y sobre qué versión. La firma del contrato debe realizarse por su cauce habitual —en papel o con un servicio de firma electrónica externo— y subirse aquí ya firmada. La firma electrónica avanzada dentro de la plataforma está en el roadmap.
+> **Importante:** una nómina, una amonestación o un contrato subidos **al empleado** con acuse de recibo quedan **firmados por él dentro del PDF** al confirmar desde la app, con firma electrónica avanzada y acta de firma (ver [Acuse de recibo y firma electrónica](35-firma-electronica.md)). Es la firma del trabajador: si un trámite exige además la de la empresa con certificado cualificado, hágalo por su cauce habitual y suba aquí el resultado.
 
 ## Conservación documental y obligaciones legales
 
