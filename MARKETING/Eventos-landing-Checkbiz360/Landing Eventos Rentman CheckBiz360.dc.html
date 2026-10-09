@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  body { margin:0; background:#fff; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:inherit; text-decoration:none; }
+  a:hover { color:#1D4ED8; }
+  h1, h2, h3, h4 { font-family:'Outfit', sans-serif; margin:0; }
+  p { margin:0; }
+  @keyframes cb-rise { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+  [data-reveal] { animation:cb-rise linear both; animation-timeline:view(); animation-range:entry 4% cover 22%; }
+  h1 { font-size:clamp(32px, 5vw, 58px) !important; }
+  .cb-h2 { font-size:clamp(25px, 3.4vw, 40px) !important; }
+  .cb-lede { font-size:clamp(15.5px, 1.4vw, 19px) !important; }
+  .cb-nav { display:flex; align-items:center; gap:26px; }
+  @media (max-width:1040px) { .cb-nav { display:none !important; } }
+  @media (max-width:1000px) { .cb-2col { grid-template-columns:1fr !important; } }
+  @media (max-width:880px) { .cb-3col { grid-template-columns:1fr !important; } }
+  section, header { padding-left:clamp(20px, 4vw, 52px) !important; padding-right:clamp(20px, 4vw, 52px) !important; }
+  input, textarea { font-family:'Karla', sans-serif; }
+  input:focus-visible, textarea:focus-visible, summary:focus-visible, a:focus-visible, button:focus-visible { outline:2px solid #1D4ED8; outline-offset:2px; }
+  summary { cursor:pointer; list-style:none; }
+  summary::-webkit-details-marker { display:none; }
+  details[open] .cb-faq-mas { transform:rotate(45deg); }
+</style>
+</helmet>
+
+<div lang="es" style="font-family:'Karla',sans-serif; color:#0A1226; background:#fff;">
+
+  <header style="position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; gap:28px; padding:14px 52px; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-bottom:1px solid #E9ECF2;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span style="display:flex; align-items:flex-start; font-family:'Outfit',sans-serif; font-size:23px; font-weight:700; letter-spacing:-.03em; line-height:1;">
+        <span style="color:#0A1226;">check</span><span style="color:#1D4ED8;">biz</span><span style="color:#1D4ED8; font-size:11px; font-weight:700; margin-top:1px;">360</span>
+      </span>
+      <span style="font-size:9px; letter-spacing:.14em; color:#5A657C; text-transform:uppercase; border-left:1px solid #E9ECF2; padding-left:12px;">eventos y alquiler</span>
+    </div>
+    <nav class="cb-nav" style="font-size:14px; font-weight:600; color:#414C63;">
+      <a href="#montajes" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">En montajes</a>
+      <a href="#almacen" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">En el almacén</a>
+      <a href="#rentman" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Con Rentman</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <sc-if value="{{ whatsapp }}" hint-placeholder-val="{{ true }}">
+        <a href="{{ whatsappUrl }}" target="_blank" rel="noopener" style="font-size:13.5px; font-weight:600; color:#5A657C;" style-hover="color:#0A1226;">WhatsApp</a>
+      </sc-if>
+      <a href="#demo" style="font-size:14px; font-weight:700; color:#fff; background:#1D4ED8; padding:12px 18px; border-radius:10px; white-space:nowrap; transition:background .2s ease, transform .2s ease;" style-hover="background:#173FAF; color:#fff; transform:translateY(-1px);">Solicitar una demo</a>
+    </div>
+  </header>
+
+  <section style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,56px); align-items:center; padding:clamp(48px,6vw,86px) 52px clamp(40px,5vw,68px); background:linear-gradient(180deg,#F7F9FC 0%,#FFFFFF 92%); border-bottom:1px solid #E9ECF2;" class="cb-2col">
+    <div style="display:flex; flex-direction:column; gap:22px; max-width:640px;">
+      <span style="align-self:flex-start; font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8; background:#EAF0FE; border:1px solid #D3E0FD; padding:7px 12px; border-radius:999px;">Para empresas de eventos y alquiler de equipamiento</span>
+      <h1 style="font-weight:800; letter-spacing:-.03em; line-height:1.03;">{{ titular }}</h1>
+      <p class="cb-lede" style="font-weight:600; color:#1F2A44; line-height:1.45;">Tu equipo consulta tareas, registra su jornada y comunica incidencias desde el montaje y el almacén. Tú revisas el trabajo realizado.</p>
+      <p style="font-size:16px; color:#4A5568; line-height:1.62; max-width:560px;">RentmanBiz conecta esta operativa con Rentman. Ejecución en campo para equipos fuera de la oficina y descentralizados.</p>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:4px;">
+        <a href="#demo" style="font-family:'Outfit',sans-serif; font-size:16px; font-weight:700; color:#fff; background:#1D4ED8; padding:16px 26px; border-radius:12px; box-shadow:0 18px 34px -18px rgba(29,78,216,.8); transition:transform .2s ease, background .2s ease;" style-hover="background:#173FAF; color:#fff; transform:translateY(-2px);">Solicitar una demo</a>
+        <span style="font-size:14px; color:#5A657C; max-width:280px; line-height:1.5;">Te mostramos el recorrido del trabajador y la revisión del responsable.</span>
+      </div>
+    </div>
+    <figure style="margin:0; display:flex; flex-direction:column; gap:10px; max-width:560px; width:100%;">
+      <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EEF1F6; box-shadow:0 30px 56px -42px rgba(10,18,38,.5);">
+        <img src="img/ev-hero-montaje.png" alt="Técnico en el montaje de un escenario consultando en CheckBiz360 su jornada iniciada y las tareas del día" style="display:block; width:100%; height:auto;">
+      </div>
+      <figcaption style="font-size:12.5px; color:#5A657C; line-height:1.5;">Jornada iniciada y tareas del día en el montaje. Datos de demostración.</figcaption>
+    </figure>
+  </section>
+
+  <section id="problema" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:start;" class="cb-2col">
+      <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08; max-width:520px;">El trabajo está repartido. Necesitas saber qué está pasando.</h2>
+      <p data-reveal style="font-size:16.5px; color:#4A5568; line-height:1.66; max-width:540px;">Un montaje en marcha, material pendiente de preparar y una devolución que revisar. Cuando la información llega en llamadas, mensajes o partes sueltos, seguir el trabajo exige reconstruir lo ocurrido.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:clamp(34px,4vw,54px); background:#E9ECF2; border:1px solid #E9ECF2;" class="cb-3col">
+      <div data-reveal style="background:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Situación 01</span>
+        <h3 style="font-size:19px; font-weight:700; letter-spacing:-.015em;">¿Quién tiene asignada la preparación?</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">El material sale mañana y el reparto del trabajo vive en una conversación.</p>
+      </div>
+      <div data-reveal style="background:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Situación 02</span>
+        <h3 style="font-size:19px; font-weight:700; letter-spacing:-.015em;">¿El montaje está completado o falta revisarlo?</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Marcado como hecho no es lo mismo que revisado por un responsable.</p>
+      </div>
+      <div data-reveal style="background:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Situación 03</span>
+        <h3 style="font-size:19px; font-weight:700; letter-spacing:-.015em;">¿Dónde quedó registrada esa incidencia?</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">El contexto se reparte entre llamadas y mensajes y hay que reconstruirlo.</p>
+      </div>
+    </div>
+    <p style="margin-top:18px; font-size:13px; color:#5A657C;">Conecta al equipo con sus tareas y reúne el contexto que necesitas para revisarlas. Ejemplos redactados para esta página, no testimonios.</p>
+  </section>
+
+  <section id="montajes" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:flex; flex-direction:column; gap:14px; max-width:620px;">
+      <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Ejecución en el montaje</span>
+      <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">El trabajo se registra donde se hace.</h2>
+      <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">El técnico abre CheckBiz360 en el lugar de trabajo, consulta lo que tiene asignado y actualiza sus tareas. Puede aportar notas y evidencias para que el responsable revise la ejecución con contexto.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(18px,2.4vw,30px); margin-top:clamp(30px,3.5vw,44px); align-items:start;" class="cb-3col">
+      <figure data-reveal style="margin:0; display:flex; flex-direction:column; gap:12px;">
+        <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EEF1F6;">
+          <img src="img/ev-montaje-tareas.png" alt="Técnico con casco en un montaje al aire libre consultando en su móvil la lista de tareas asignadas" style="display:block; width:100%; height:auto;">
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">01</span>
+          <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Consulta la tarea asignada</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Qué le corresponde a cada persona, con su plazo y su estado, en el propio recinto.</p>
+        </div>
+      </figure>
+      <figure data-reveal style="margin:0; display:flex; flex-direction:column; gap:12px;">
+        <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EEF1F6;">
+          <img src="img/ev-tarea-evidencia.png" alt="Detalle de una tarea en la app: equipo asignado, notas, recursos adjuntos y revisión final" style="display:block; width:100%; height:auto;">
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">02</span>
+          <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Registra lo realizado y su evidencia</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Notas y recursos adjuntos quedan en la tarea, junto al estado de su revisión.</p>
+        </div>
+      </figure>
+      <figure data-reveal style="margin:0; display:flex; flex-direction:column; gap:12px;">
+        <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EEF1F6;">
+          <img src="img/ev-revision-responsable.png" alt="Dos responsables revisando en el escritorio la gestión de tareas de CheckBiz360 con estados, prioridades y vencimientos" style="display:block; width:100%; height:auto;">
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">03</span>
+          <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">El responsable revisa la ejecución</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Estado, prioridad, asignación y vencimiento de cada trabajo, con su contexto.</p>
+        </div>
+      </figure>
+    </div>
+    <p style="margin-top:18px; font-size:13px; color:#5A657C;">Pantallas de CheckBiz360 con datos de demostración.</p>
+  </section>
+
+  <section id="almacen" style="padding:clamp(56px,6vw,92px) 52px; background:#F7F9FC; border-bottom:1px solid #E9ECF2;">
+    <div style="display:flex; flex-direction:column; gap:14px; max-width:680px;">
+      <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Preparación y devolución</span>
+      <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">De la salida del material a su recepción: organiza el trabajo del almacén.</h2>
+      <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">Activa las tareas de almacén de RentmanBiz para preparar salidas y organizar la recepción y revisión del material cuando vuelve. El responsable reparte el trabajo y consulta la evolución de las tareas.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:clamp(30px,3.5vw,46px); background:#E3E7EF; border:1px solid #E3E7EF;" class="cb-3col">
+      <div data-reveal style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">01</span>
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Preparar</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Asigna a quién corresponde dejar listo el material para su salida.</p>
+      </div>
+      <div data-reveal style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">02</span>
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Recibir y revisar</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Organiza la revisión cuando el material vuelve al almacén.</p>
+      </div>
+      <div data-reveal style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">03</span>
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Revisar la ejecución</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Consulta las tareas completadas y las evidencias aportadas.</p>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,3vw,40px); margin-top:clamp(26px,3vw,38px); align-items:start;" class="cb-2col">
+      <figure data-reveal style="margin:0; display:flex; flex-direction:column; gap:12px;">
+        <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EDF0F5;">
+          <img src="img/ev-almacen-tareas.png" alt="Responsable de almacén consultando en el móvil las tareas asignadas entre estanterías de material de iluminación y flight cases" style="display:block; width:100%; height:auto;">
+        </div>
+        <figcaption style="font-size:13.5px; color:#5A657C; line-height:1.55;">Preparación: el trabajo del almacén repartido y con su plazo, antes de la salida del material.</figcaption>
+      </figure>
+      <figure data-reveal style="margin:0; display:flex; flex-direction:column; gap:12px;">
+        <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EDF0F5;">
+          <img src="img/ev-tarea-evidencia.png" alt="Detalle de una tarea de almacén con notas, recursos adjuntos y revisión final" style="display:block; width:100%; height:auto;">
+        </div>
+        <figcaption style="font-size:13.5px; color:#5A657C; line-height:1.55;">Recepción y revisión: cuando el material vuelve, la tarea recoge notas, evidencias y su revisión final.</figcaption>
+      </figure>
+    </div>
+    <p style="margin-top:18px; font-size:14.5px; color:#5A657C; line-height:1.6; border-left:2px solid #D3DBE8; padding-left:14px; max-width:720px;">Las tareas se generan según los datos importados y se asignan desde CheckBiz360. Nacen sin asignar: el responsable las reparte. La gestión de inventario permanece en tu herramienta actual.</p>
+  </section>
+
+  <section id="supervision" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:start;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Supervisión del trabajo</span>
+        <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">Tu equipo completa. El responsable revisa.</h2>
+        <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">Consulta las notas y evidencias del trabajo realizado. El responsable autorizado valida la tarea o la rechaza indicando el motivo. Así queda constancia de la ejecución y de su revisión.</p>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6; border-left:2px solid #D3DBE8; padding-left:14px;">Una tarea completada y una tarea validada representan pasos distintos. Reabrir una tarea requiere la acción del responsable.</p>
+      </div>
+      <div style="display:grid; gap:1px; background:#E9ECF2; border:1px solid #E9ECF2;">
+        <div style="background:#fff; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em;">Completada</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">El técnico o el personal de almacén registra la ejecución y adjunta evidencias.</p>
+        </div>
+        <div style="background:#fff; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em;">Validada o rechazada</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">El responsable revisa el resultado y deja el motivo cuando la rechaza.</p>
+        </div>
+        <div style="background:#fff; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em;">Con quién y cuándo</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Queda registrado quién revisó y en qué momento, junto al trabajo realizado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="incidencias" style="padding:clamp(56px,6vw,92px) 52px; background:#F7F9FC; border-bottom:1px solid #E9ECF2;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:center;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Incidencias</span>
+        <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">Lo que ocurre en campo llega con contexto.</h2>
+        <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">El equipo comunica las incidencias desde CheckBiz360. Los responsables consultan el detalle, responden y mantienen un historial de su evolución.</p>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6; border-left:2px solid #D3DBE8; padding-left:14px;">Para seguir una incidencia sin reconstruir una cadena de mensajes.</p>
+      </div>
+      <figure data-reveal style="margin:0; display:flex; flex-direction:column; gap:10px; max-width:560px; width:100%;">
+        <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EDF0F5;">
+          <img src="img/ev-incidencia.png" alt="Dos técnicos junto a una máquina de humo en un montaje, revisando en el móvil una incidencia en revisión con su centro, fecha y descripción" style="display:block; width:100%; height:auto;">
+        </div>
+        <figcaption style="font-size:13px; color:#5A657C; line-height:1.5;">Incidencia comunicada desde el montaje, con su estado y su historial. Datos de demostración.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="rentman" style="padding:clamp(56px,6vw,92px) 52px; background:#0A1226; color:#fff;">
+    <div style="display:flex; flex-direction:column; gap:14px; max-width:640px;">
+      <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#8FB2E8;">RentmanBiz</span>
+      <h2 class="cb-h2" style="font-weight:800; letter-spacing:-.025em; line-height:1.08; color:#fff;">Conecta tu operativa de campo con Rentman.</h2>
+      <p style="font-size:16.5px; color:#C3CBDB; line-height:1.66;">RentmanBiz importa personas, centros y asignaciones dentro de su alcance para preparar el trabajo en CheckBiz360. Las jornadas cerradas de los empleados emparejados se envían a Rentman con las horas netas registradas.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:clamp(30px,3.5vw,46px); background:#2A3557; border:1px solid #2A3557;" class="cb-3col">
+      <div style="background:#0F1932; padding:24px 22px; display:flex; flex-direction:column; gap:8px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#8FB2E8;">Rentman → CheckBiz360</span>
+        <h3 style="font-size:17.5px; font-weight:700; letter-spacing:-.015em; color:#fff;">Personas, centros y asignaciones</h3>
+        <p style="font-size:14.5px; color:#A8B2C6; line-height:1.6;">Se importan y configuran para preparar el trabajo del equipo.</p>
+      </div>
+      <div style="background:#0F1932; padding:24px 22px; display:flex; flex-direction:column; gap:8px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#8FB2E8;">En CheckBiz360</span>
+        <h3 style="font-size:17.5px; font-weight:700; letter-spacing:-.015em; color:#fff;">Tareas, evidencias y revisión</h3>
+        <p style="font-size:14.5px; color:#A8B2C6; line-height:1.6;">El trabajo se ejecuta y se revisa desde el montaje y el almacén.</p>
+      </div>
+      <div style="background:#0F1932; padding:24px 22px; display:flex; flex-direction:column; gap:8px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#8FB2E8;">CheckBiz360 → Rentman</span>
+        <h3 style="font-size:17.5px; font-weight:700; letter-spacing:-.015em; color:#fff;">Jornadas cerradas: horas netas</h3>
+        <p style="font-size:14.5px; color:#A8B2C6; line-height:1.6;">De los empleados emparejados, con su estado de envío consultable.</p>
+      </div>
+    </div>
+    <p style="margin-top:20px; font-size:14px; color:#fff; background:#16213F; border:1px solid #2A3557; border-radius:12px; padding:14px 16px; line-height:1.55; max-width:840px;">La conexión requiere revisar los empleados emparejados y configurar los centros de trabajo. El envío de horas es periódico; su estado puede consultarse. No incluye inventario, presupuestos ni facturación.</p>
+  </section>
+
+  <section id="jornada" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:start;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Registro de jornada y trazabilidad</span>
+        <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08; max-width:560px;">La jornada también queda registrada desde el lugar de trabajo.</h2>
+        <p style="font-size:16.5px; color:#4A5568; line-height:1.66; max-width:560px;">Reúne las entradas, salidas y pausas según la configuración del centro. Consulta los registros y sus informes para revisar la jornada del equipo.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px; border:1px solid #E9ECF2; padding:24px 22px;">
+        <h3 style="font-size:16px; font-weight:700; letter-spacing:-.01em;">Si cambian las horas enviadas</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Puedes revisar las diferencias detectadas sin que esa edición sobrescriba el fichaje registrado en CheckBiz360.</p>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">La revisión de diferencias es periódica y queda reflejada en los registros consultables.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="analisis" style="padding:clamp(56px,6vw,92px) 52px; background:#F7F9FC; border-bottom:1px solid #E9ECF2;">
+    <div style="display:flex; flex-direction:column; gap:14px; max-width:660px;">
+      <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Información para los responsables</span>
+      <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">Utiliza lo registrado en campo para revisar tu operación.</h2>
+      <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">Analiza el coste observado del equipo a partir de jornadas validadas y tarifas configuradas. Consulta la evolución por persona y centro junto al contexto de la operación.</p>
+      <p style="font-size:14.5px; color:#5A657C; line-height:1.6; border-left:2px solid #D3DBE8; padding-left:14px;">Los cálculos dependen de los registros y de las tarifas configuradas. No incluye rentabilidad por alquiler ni un panel en directo de los eventos.</p>
+    </div>
+  </section>
+
+  <section id="encaje" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08; max-width:620px;">Prepara la conexión para la forma en que trabaja tu empresa.</h2>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:clamp(30px,3.5vw,46px); background:#E9ECF2; border:1px solid #E9ECF2;" class="cb-3col">
+      <div style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">01</span>
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Revisamos tu operación</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Montajes, almacenes, equipo y flujo de trabajo que necesitas conectar.</p>
+      </div>
+      <div style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">02</span>
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Configuramos el alcance</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Conexión con Rentman, empleados emparejados y centros de trabajo preparados.</p>
+      </div>
+      <div style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:800; color:#1D4ED8;">03</span>
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Recorremos un caso real</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Desde la tarea en el móvil hasta la revisión y el registro de horas.</p>
+      </div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:18px; margin-top:clamp(26px,3vw,36px);">
+      <p style="font-size:16px; color:#4A5568; line-height:1.62; max-width:560px;">Cuéntanos cómo trabaja tu equipo. Revisaremos el alcance de CheckBiz360 y RentmanBiz y te presentaremos una propuesta para tu empresa.</p>
+      <a href="#demo" style="font-family:'Outfit',sans-serif; font-size:15.5px; font-weight:700; color:#fff; background:#1D4ED8; padding:15px 24px; border-radius:12px; transition:background .2s ease, transform .2s ease;" style-hover="background:#173FAF; color:#fff; transform:translateY(-2px);">Solicitar una demo</a>
+    </div>
+  </section>
+
+  <section id="faq" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08; max-width:520px;">Preguntas frecuentes</h2>
+    <div style="display:grid; gap:1px; margin-top:clamp(26px,3vw,38px); background:#E9ECF2; border:1px solid #E9ECF2; max-width:880px;">
+      <details style="background:#fff; padding:20px 22px;">
+        <summary style="display:flex; align-items:center; justify-content:space-between; gap:16px; font-family:'Outfit',sans-serif; font-size:17.5px; font-weight:700; letter-spacing:-.015em;">¿Tengo que dejar de utilizar Rentman?<span class="cb-faq-mas" style="color:#1D4ED8; font-size:20px; transition:transform .2s ease;">+</span></summary>
+        <p style="margin-top:12px; font-size:15px; color:#5A657C; line-height:1.62;">Puedes mantener Rentman e incorporar CheckBiz360 para la ejecución y revisión del trabajo en campo. RentmanBiz conecta los flujos descritos en esta página.</p>
+      </details>
+      <details style="background:#fff; padding:20px 22px;">
+        <summary style="display:flex; align-items:center; justify-content:space-between; gap:16px; font-family:'Outfit',sans-serif; font-size:17.5px; font-weight:700; letter-spacing:-.015em;">¿Qué utiliza el técnico o el personal de almacén?<span class="cb-faq-mas" style="color:#1D4ED8; font-size:20px; transition:transform .2s ease;">+</span></summary>
+        <p style="margin-top:12px; font-size:15px; color:#5A657C; line-height:1.62;">La app de CheckBiz360 para consultar tareas, registrar la jornada y comunicar incidencias según los permisos y la configuración de su empresa.</p>
+      </details>
+      <details style="background:#fff; padding:20px 22px;">
+        <summary style="display:flex; align-items:center; justify-content:space-between; gap:16px; font-family:'Outfit',sans-serif; font-size:17.5px; font-weight:700; letter-spacing:-.015em;">¿Sirve para alquileres sin personal desplazado al evento?<span class="cb-faq-mas" style="color:#1D4ED8; font-size:20px; transition:transform .2s ease;">+</span></summary>
+        <p style="margin-top:12px; font-size:15px; color:#5A657C; line-height:1.62;">Sí. Las tareas de almacén permiten organizar la preparación y, cuando hay devolución, la recepción y revisión del material. Esta opción se activa y el responsable asigna el trabajo.</p>
+      </details>
+      <details style="background:#fff; padding:20px 22px;">
+        <summary style="display:flex; align-items:center; justify-content:space-between; gap:16px; font-family:'Outfit',sans-serif; font-size:17.5px; font-weight:700; letter-spacing:-.015em;">¿Qué horas llegan a Rentman?<span class="cb-faq-mas" style="color:#1D4ED8; font-size:20px; transition:transform .2s ease;">+</span></summary>
+        <p style="margin-top:12px; font-size:15px; color:#5A657C; line-height:1.62;">Las jornadas cerradas de empleados emparejados con su ficha de Rentman. Se envían las horas netas, con los descansos calculados según la configuración. El envío es periódico y puede requerir revisión si hay errores o registros incompatibles.</p>
+      </details>
+      <details style="background:#fff; padding:20px 22px;">
+        <summary style="display:flex; align-items:center; justify-content:space-between; gap:16px; font-family:'Outfit',sans-serif; font-size:17.5px; font-weight:700; letter-spacing:-.015em;">¿También se sincroniza el inventario o la facturación?<span class="cb-faq-mas" style="color:#1D4ED8; font-size:20px; transition:transform .2s ease;">+</span></summary>
+        <p style="margin-top:12px; font-size:15px; color:#5A657C; line-height:1.62;">El recorrido presentado se centra en personas, centros, asignaciones, tareas y registro de jornada. La gestión de material, presupuestos y facturas no forma parte de este alcance.</p>
+      </details>
+      <details style="background:#fff; padding:20px 22px;">
+        <summary style="display:flex; align-items:center; justify-content:space-between; gap:16px; font-family:'Outfit',sans-serif; font-size:17.5px; font-weight:700; letter-spacing:-.015em;">¿Cuánto cuesta?<span class="cb-faq-mas" style="color:#1D4ED8; font-size:20px; transition:transform .2s ease;">+</span></summary>
+        <p style="margin-top:12px; font-size:15px; color:#5A657C; line-height:1.62;">La propuesta detalla CheckBiz360 y el alcance de RentmanBiz para tu empresa. Solicita una demo para revisar tu operativa y recibir las condiciones correspondientes.</p>
+      </details>
+      <details style="background:#fff; padding:20px 22px;">
+        <summary style="display:flex; align-items:center; justify-content:space-between; gap:16px; font-family:'Outfit',sans-serif; font-size:17.5px; font-weight:700; letter-spacing:-.015em;">¿Qué pasa si todavía no usamos Rentman?<span class="cb-faq-mas" style="color:#1D4ED8; font-size:20px; transition:transform .2s ease;">+</span></summary>
+        <p style="margin-top:12px; font-size:15px; color:#5A657C; line-height:1.62;">Podemos revisar el encaje de CheckBiz360 con tu operativa. Esta página describe específicamente la conexión con Rentman; otras integraciones requieren evaluar su alcance.</p>
+      </details>
+    </div>
+  </section>
+
+  <section id="demo" style="padding:clamp(56px,6vw,96px) 52px clamp(60px,6vw,100px); background:#F7F9FC;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,60px); align-items:start;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:16px; max-width:520px;">
+        <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">Ve cómo conectar tu montaje y tu almacén con la ejecución en campo.</h2>
+        <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">Cuéntanos cómo trabaja tu equipo. Te mostraremos CheckBiz360 desde el móvil del trabajador hasta la revisión del responsable y su conexión con Rentman.</p>
+        <sc-if value="{{ whatsapp }}" hint-placeholder-val="{{ true }}">
+          <p style="font-size:14px; color:#5A657C; line-height:1.6;">Si lo prefieres, <a href="{{ whatsappUrl }}" target="_blank" rel="noopener" style="color:#1D4ED8; font-weight:600; text-decoration:underline; text-underline-offset:3px;">escríbenos por WhatsApp</a> y acordamos la demo por ahí.</p>
+        </sc-if>
+      </div>
+      <div style="background:#fff; border:1px solid #E3E7EF; border-radius:18px; padding:clamp(22px,3vw,34px); box-shadow:0 30px 60px -44px rgba(10,18,38,.4);">
+        <sc-if value="{{ enviado }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; gap:12px; padding:8px 0;">
+            <h3 style="font-size:21px; font-weight:700; letter-spacing:-.02em;">Hemos recibido tu solicitud.</h3>
+            <p style="font-size:15px; color:#4A5568; line-height:1.6;">Te contactaremos para acordar la demo.</p>
+            <button type="button" onClick="{{ reiniciar }}" style="align-self:flex-start; margin-top:6px; font-family:'Outfit',sans-serif; font-size:14px; font-weight:700; color:#1D4ED8; background:#fff; border:1px solid #D3E0FD; padding:12px 18px; border-radius:10px; cursor:pointer;" style-hover="background:#EAF0FE;">Enviar otra solicitud</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ formVisible }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ enviar }}" style="display:flex; flex-direction:column; gap:16px;">
+            <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:14px; color:#8A2318; background:#FDF1EF; border:1px solid #F4CFC9; border-radius:10px; padding:12px 14px; line-height:1.5;">{{ errorTexto }}</p>
+            </sc-if>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Nombre</span>
+              <input name="nombre" type="text" value="{{ nombre }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Email profesional</span>
+              <input name="email" type="email" value="{{ email }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Empresa</span>
+              <input name="empresa" type="text" value="{{ empresa }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Teléfono <span style="font-weight:500; color:#5A657C;">· opcional</span></span>
+              <input name="telefono" type="tel" value="{{ telefono }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">¿Qué necesitas controlar? <span style="font-weight:500; color:#5A657C;">· opcional</span></span>
+              <textarea name="contexto" rows="3" value="{{ contexto }}" onChange="{{ campo }}" placeholder="Cuéntanos si trabajáis con Rentman y si el principal reto está en montajes, almacén o ambos." style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff; resize:vertical;"></textarea>
+            </label>
+            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+              <input name="privacidad" type="checkbox" checked="{{ privacidad }}" onChange="{{ marcarPrivacidad }}" style="width:18px; height:18px; margin:2px 0 0; accent-color:#1D4ED8; flex:none;">
+              <span style="font-size:13.5px; color:#33405C; line-height:1.55;">He leído y acepto la <a href="/politica-de-privacidad" target="_blank" rel="noopener" style="color:#1D4ED8; font-weight:600; text-decoration:underline; text-underline-offset:3px;">política de privacidad</a>.</span>
+            </label>
+            <button type="submit" style="margin-top:4px; font-family:'Outfit',sans-serif; font-size:16px; font-weight:700; color:#fff; background:#1D4ED8; border:none; padding:16px 22px; border-radius:12px; cursor:pointer; transition:background .2s ease;" style-hover="background:#173FAF;">{{ textoBoton }}</button>
+            <p style="font-size:12.5px; color:#5A657C; line-height:1.55;">Usaremos estos datos para contactarte y acordar la demo. Puedes ejercer tus derechos según se describe en la política de privacidad.</p>
+          </form>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <footer style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px; padding:26px clamp(20px,4vw,52px); border-top:1px solid #E9ECF2; font-size:13px; color:#5A657C;">
+    <span>CheckBiz360 · encodeBiz</span>
+    <span>Las capturas corresponden a datos de demostración anonimizados. Rentman es una marca de su titular; compatibilidad mediante RentmanBiz.</span>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;whatsapp&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Contenido&quot;},&quot;whatsappUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contenido&quot;},&quot;titular&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;base&quot;,&quot;integracion&quot;,&quot;revision&quot;],&quot;default&quot;:&quot;base&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contenido&quot;},&quot;estadoFormulario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;enviando&quot;,&quot;error&quot;,&quot;enviado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estados&quot;}}">
+class Component extends DCLogic {
+  state = { estado: "idle", nombre: "", email: "", empresa: "", telefono: "", contexto: "", privacidad: false, errorTexto: "" };
+
+  renderVals() {
+    const forzado = this.props.estadoFormulario ?? "normal";
+    const estado = forzado === "error" ? "error" : forzado === "enviado" ? "enviado" : forzado === "enviando" ? "enviando" : this.state.estado;
+    const titulares = {
+      base: "Controla el trabajo de tu equipo desde el montaje y el almacén.",
+      integracion: "Tu equipo en campo, conectado con Rentman.",
+      revision: "Del trabajo en el montaje a la revisión del responsable."
+    };
+    return {
+      whatsapp: this.props.whatsapp ?? true,
+      whatsappUrl: this.props.whatsappUrl || "https://wa.me/34600000000?text=" + encodeURIComponent("Hola, quiero ver cómo usar CheckBiz360 con Rentman para controlar el trabajo en montajes y almacenes."),
+      privacidad: this.state.privacidad,
+      marcarPrivacidad: (e) => this.setState({ privacidad: e.target.checked }),
+      titular: titulares[this.props.titular ?? "base"] || titulares.base,
+      enviado: estado === "enviado",
+      formVisible: estado !== "enviado",
+      error: estado === "error",
+      textoBoton: estado === "enviando" ? "Enviando solicitud…" : "Solicitar una demo",
+      errorTexto: this.state.errorTexto || "Revisa los campos indicados: nombre, email profesional y empresa.",
+      nombre: this.state.nombre,
+      email: this.state.email,
+      empresa: this.state.empresa,
+      telefono: this.state.telefono,
+      contexto: this.state.contexto,
+      campo: (e) => this.setState({ [e.target.name]: e.target.value }),
+      enviar: (e) => {
+        e.preventDefault();
+        const { nombre, email, empresa, privacidad } = this.state;
+        if (!nombre.trim() || !empresa.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          this.setState({ estado: "error", errorTexto: "Revisa los campos indicados: nombre, email profesional y empresa." });
+          return;
+        }
+        if (!privacidad) {
+          this.setState({ estado: "error", errorTexto: "Para enviar la solicitud debes aceptar la política de privacidad." });
+          return;
+        }
+        this.setState({ estado: "enviando" });
+        setTimeout(() => this.setState({ estado: "enviado" }), 700);
+      },
+      reiniciar: () => this.setState({ estado: "idle", nombre: "", email: "", empresa: "", telefono: "", contexto: "", privacidad: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

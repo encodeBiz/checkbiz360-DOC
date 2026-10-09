@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #FFFFFF; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: #1D4ED8; }
+  summary::-webkit-details-marker { display: none; }
+  summary { list-style: none; cursor: pointer; }
+  @keyframes cb-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(.8); } }
+  @keyframes cb-node { 0%,100% { opacity: .18; } 50% { opacity: .6; } }
+  .cb-mesh { fill: none; stroke: #0A1226; stroke-width: 1; opacity: .07; }
+  .cb-flow { fill: none; stroke: #1D4ED8; stroke-width: 1.2; opacity: .16; }
+  .cb-flow-t { stroke: #0E9384; }
+  .cb-dot { fill: #0A1226; opacity: .2; animation: cb-node 8s ease-in-out infinite; }
+  @keyframes cb-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  @keyframes cb-grow-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  @keyframes cb-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  [data-reveal] { animation: cb-rise linear both; animation-timeline: view(); animation-range: entry 4% cover 24%; }
+  .cb-bar { transform-origin: bottom; animation: cb-grow-y cubic-bezier(.2,.8,.2,1) both; animation-timeline: view(); animation-range: entry 10% cover 34%; }
+  .cb-barx { transform-origin: left; animation: cb-grow-x cubic-bezier(.2,.8,.2,1) both; animation-timeline: view(); animation-range: entry 10% cover 34%; }
+  .cb-lift { transition: box-shadow .32s cubic-bezier(.2,.7,.2,1), transform .32s cubic-bezier(.2,.7,.2,1), border-color .32s ease; }
+  .cb-lift:hover { transform: translateY(-5px); box-shadow: 0 34px 60px -34px rgba(10,18,38,.42); border-color: #C2CDE4; }
+  .cb-cell { transition: background .28s ease, transform .28s ease, border-color .28s ease; }
+  .cb-cell:hover { background: #121E3D; transform: translateY(-4px); border-color: #33406A; }
+  .cb-cta { transition: background .22s ease, transform .22s ease, box-shadow .22s ease; }
+  .cb-cta:hover { transform: translateY(-2px); box-shadow: 0 24px 42px -18px rgba(29,78,216,.85); }
+  .cb-row { transition: background .2s ease; }
+  .cb-row:hover { background: #F7F8FB; }
+</style>
+</helmet>
+
+<div lang="es" style="font-family:'Manrope',sans-serif; color:#0A1226; background:#fff;">
+
+  <header style="position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; gap:32px; padding:16px 48px; background:#fff; border-bottom:1px solid #E9ECF2;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:9px; background:#0A1226; color:#fff; font-weight:800; font-size:14px;">C</span>
+      <span style="display:flex; flex-direction:column; line-height:1;">
+        <span style="font-size:17px; font-weight:800; letter-spacing:-.02em;">CheckBiz360</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.14em; color:#7B8494; text-transform:uppercase; margin-top:3px;">de EncodeBiz</span>
+      </span>
+    </div>
+    <nav style="display:flex; align-items:center; gap:28px; font-size:14px; font-weight:600; color:#414C63;">
+      <a href="#pilares" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Plataforma</a>
+      <a href="#cumplimiento" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Cumplimiento</a>
+      <a href="#inteligencia" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Inteligencia</a>
+      <a href="#sectores" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Sectores</a>
+      <a href="#precio" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Precio</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="#demo" style="font-size:14px; font-weight:700; padding:11px 16px; border-radius:10px; border:1px solid #D8DCE4;" style-hover="background:#F5F6F9;">Agendar demo 30'</a>
+      <a class="cb-cta" href="#precio" style="font-size:14px; font-weight:700; color:#fff; background:#1D4ED8; padding:12px 18px; border-radius:10px; box-shadow:0 12px 24px -12px rgba(29,78,216,.8);" style-hover="background:#173FAF; color:#fff;">Empieza gratis</a>
+    </div>
+  </header>
+
+  <section style="position:relative; padding:104px 48px 0; background:linear-gradient(180deg,#F7F9FC 0%,#FFFFFF 84%); border-bottom:1px solid #E9ECF2; overflow:hidden;">
+    <svg viewBox="0 0 1440 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%;">
+      <g class="cb-mesh">
+        <path d="M120 210 L340 120 L560 250 L780 140 L1000 260 L1240 170"></path>
+        <path d="M120 210 L300 400 L560 250"></path>
+        <path d="M300 400 L520 520 L780 140"></path>
+        <path d="M520 520 L760 620 L1000 260"></path>
+        <path d="M760 620 L1080 560 L1240 170"></path>
+        <path d="M1080 560 L1000 260"></path>
+        <path d="M340 120 L300 400"></path>
+      </g>
+      <path class="cb-flow" d="M120 210 L340 120 L560 250 L780 140 L1000 260 L1240 170"></path>
+      <path class="cb-flow cb-flow-t" d="M120 210 L300 400 L520 520 L760 620 L1080 560 L1240 170"></path>
+      <g>
+        <circle class="cb-dot" cx="120" cy="210" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:1s;" cx="340" cy="120" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:2s;" cx="560" cy="250" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:3s;" cx="780" cy="140" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:4s;" cx="1000" cy="260" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:5s;" cx="1240" cy="170" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:2.5s;" cx="300" cy="400" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:3.5s;" cx="520" cy="520" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:4.5s;" cx="760" cy="620" r="3"></circle>
+        <circle class="cb-dot" style="animation-delay:5.5s;" cx="1080" cy="560" r="3"></circle>
+      </g>
+    </svg>
+    <div style="position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; gap:26px; max-width:900px; margin:0 auto;">
+      <div data-reveal style="display:inline-flex; align-items:center; gap:10px; padding:7px 14px 7px 10px; border-radius:999px; background:#fff; border:1px solid #DDE2EC; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#414C63; box-shadow:0 4px 14px -6px rgba(10,18,38,.2);">
+        <span style="width:7px; height:7px; border-radius:50%; background:#0E9384; animation:cb-pulse 2.4s ease-in-out infinite;"></span>
+        Conforme al RDL 8/2019 · Registro inmutable
+      </div>
+      <h1 data-reveal style="margin:0; font-size:88px; line-height:.95; letter-spacing:-.045em; font-weight:800; text-wrap:balance;">El fichaje es solo<br>el principio<span style="color:#1D4ED8;">.</span></h1>
+      <p data-reveal style="margin:0; max-width:720px; font-size:21px; line-height:1.5; color:#414C63; text-wrap:pretty;">CheckBiz360 registra la jornada de tu equipo y la convierte en cumplimiento legal, control operativo y decisiones con datos. Todo desde una sola app.</p>
+      <div data-reveal style="display:flex; align-items:center; gap:14px; margin-top:4px;">
+        <a class="cb-cta" href="#precio" style="font-size:16px; font-weight:700; color:#fff; background:#1D4ED8; padding:17px 28px; border-radius:12px; box-shadow:0 18px 34px -16px rgba(29,78,216,.85);" style-hover="background:#173FAF; color:#fff;">Empieza gratis — 45 días de prueba</a>
+        <a href="#demo" style="font-size:16px; font-weight:700; padding:17px 26px; border-radius:12px; border:1px solid #CFD5E0; background:#fff;" style-hover="background:#F5F6F9; border:1px solid #0A1226;">Agenda una demo de 30'</a>
+      </div>
+      <p data-reveal style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.04em; color:#6B7484;">Desde 2 €/empleado al mes · Sin instalar hardware · iOS y Android</p>
+    </div>
+
+    <div data-reveal style="position:relative; max-width:1180px; margin:68px auto -1px; border-radius:18px 18px 0 0; border:1px solid #D5DBE7; border-bottom:none; background:#0A1226; padding:12px 12px 0; box-shadow:0 60px 100px -50px rgba(10,18,38,.6), 0 18px 40px -24px rgba(10,18,38,.35);">
+      <div style="display:flex; align-items:center; gap:8px; padding:6px 8px 12px;">
+        <span style="width:9px; height:9px; border-radius:50%; background:#39415A;"></span>
+        <span style="width:9px; height:9px; border-radius:50%; background:#39415A;"></span>
+        <span style="width:9px; height:9px; border-radius:50%; background:#39415A;"></span>
+        <span style="margin-left:12px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8B94A8;">panel.checkbiz360.com / vista global</span>
+      </div>
+      <div style="display:grid; grid-template-columns:1.55fr 1fr; gap:1px; background:#E9ECF2; border-radius:14px 14px 0 0; overflow:hidden;">
+        <div style="background:#fff; padding:26px 26px 30px; display:flex; flex-direction:column; gap:22px;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:20px;">
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#7B8494;">Coste real vs. planificado</span>
+              <span style="font-size:15px; font-weight:700;">5 centros · semana en curso</span>
+            </div>
+            <div style="display:flex; gap:14px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#6B7484;">
+              <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#1D4ED8;"></span>Real</span>
+              <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:3px; background:#DDE2EC;"></span>Previsto</span>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:18px; align-items:end; height:172px; padding-bottom:26px; border-bottom:1px solid #E9ECF2;">
+            <div style="display:flex; gap:5px; align-items:end; height:100%; position:relative;"><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#1D4ED8; height:58%;"></span><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#DDE2EC; height:62%;"></span><span style="position:absolute; bottom:-24px; left:0; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B94A8;">L</span></div>
+            <div style="display:flex; gap:5px; align-items:end; height:100%; position:relative;"><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#1D4ED8; height:71%;"></span><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#DDE2EC; height:68%;"></span><span style="position:absolute; bottom:-24px; left:0; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B94A8;">M</span></div>
+            <div style="display:flex; gap:5px; align-items:end; height:100%; position:relative;"><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#1D4ED8; height:64%;"></span><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#DDE2EC; height:70%;"></span><span style="position:absolute; bottom:-24px; left:0; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B94A8;">X</span></div>
+            <div style="display:flex; gap:5px; align-items:end; height:100%; position:relative;"><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#1D4ED8; height:88%;"></span><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#DDE2EC; height:72%;"></span><span style="position:absolute; bottom:-24px; left:0; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B94A8;">J</span></div>
+            <div style="display:flex; gap:5px; align-items:end; height:100%; position:relative;"><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#1D4ED8; height:96%;"></span><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#DDE2EC; height:74%;"></span><span style="position:absolute; bottom:-24px; left:0; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B94A8;">V</span></div>
+            <div style="display:flex; gap:5px; align-items:end; height:100%; position:relative;"><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#1D4ED8; height:42%;"></span><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#DDE2EC; height:45%;"></span><span style="position:absolute; bottom:-24px; left:0; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B94A8;">S</span></div>
+            <div style="display:flex; gap:5px; align-items:end; height:100%; position:relative;"><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#1D4ED8; height:18%;"></span><span class="cb-bar" style="flex:1; border-radius:5px 5px 0 0; background:#DDE2EC; height:20%;"></span><span style="position:absolute; bottom:-24px; left:0; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B94A8;">D</span></div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+            <div style="display:flex; flex-direction:column; gap:5px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7B8494;">Fiabilidad</span><span style="font-size:26px; font-weight:800; letter-spacing:-.03em;">94%</span></div>
+            <div style="display:flex; flex-direction:column; gap:5px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7B8494;">Eficiencia</span><span style="font-size:26px; font-weight:800; letter-spacing:-.03em;">87%</span></div>
+            <div style="display:flex; flex-direction:column; gap:5px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7B8494;">Desvío coste</span><span style="font-size:26px; font-weight:800; letter-spacing:-.03em; color:#B4560A;">+6%</span></div>
+          </div>
+        </div>
+        <div style="background:#F7F8FB; padding:26px 24px; display:flex; flex-direction:column; gap:14px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#7B8494;">Hoy en tus centros</span>
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:13px 14px; background:#fff; border:1px solid #E9ECF2; border-radius:11px; box-shadow:0 2px 6px -3px rgba(10,18,38,.12);"><span style="font-size:13px; font-weight:700;">Madrid · Almacén</span><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#0E9384;">12/12 fichados</span></div>
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:13px 14px; background:#fff; border:1px solid #E9ECF2; border-radius:11px; box-shadow:0 2px 6px -3px rgba(10,18,38,.12);"><span style="font-size:13px; font-weight:700;">Ibiza · Venue Norte</span><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#0E9384;">8/8 fichados</span></div>
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:13px 14px; background:#fff; border:1px solid #F0C9A8; border-radius:11px; box-shadow:0 2px 6px -3px rgba(180,86,10,.16);"><span style="font-size:13px; font-weight:700;">Valencia · Tienda 2</span><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#B4560A;">1 sin fichar</span></div>
+          <div style="height:1px; background:#E4E8F0; margin:4px 0;"></div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#7B8494;">Avisos de cumplimiento</span>
+          <div style="display:flex; flex-direction:column; gap:6px; padding:13px 14px; background:#fff; border:1px solid #E9ECF2; border-radius:11px;">
+            <span style="font-size:13px; font-weight:700;">Horas extra al 80 % del límite</span>
+            <span style="font-size:12px; color:#5B6479; line-height:1.45;">2 empleados · límite anual 80 h</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; padding:13px 14px; background:#fff; border:1px solid #E9ECF2; border-radius:11px;">
+            <span style="font-size:13px; font-weight:700;">Descanso entre jornadas &lt; 12 h</span>
+            <span style="font-size:12px; color:#5B6479; line-height:1.45;">Turno noche · Ibiza · revisar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:34px 48px; border-bottom:1px solid #E9ECF2;">
+    <div style="max-width:1180px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:40px;">
+      <p style="margin:0; max-width:420px; font-size:14px; line-height:1.5; color:#5B6479;">Empresas con equipos en varios centros, proyectos o en la calle ya operan con CheckBiz360.</p>
+      <div style="display:flex; align-items:center; gap:34px;">
+        <span style="font-size:17px; font-weight:800; letter-spacing:-.02em; color:#9AA2B2;">Litoral Group</span>
+        <span style="font-size:17px; font-weight:800; letter-spacing:-.02em; color:#9AA2B2;">ACB</span>
+        <span style="font-size:17px; font-weight:800; letter-spacing:-.02em; color:#9AA2B2;">Ferrada</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#AEB5C2;">+ logo slot</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="position:relative; padding:112px 48px; background:#F7F8FB; border-bottom:1px solid #E9ECF2; overflow:hidden;">
+    <div style="position:relative; max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:28px; align-items:center; text-align:center;">
+      <span data-reveal style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#1D4ED8;">El problema</span>
+      <h2 data-reveal style="margin:0; font-size:54px; line-height:1.04; letter-spacing:-.035em; font-weight:800; text-wrap:balance;">Tus fichajes están llenos de respuestas.<br>Solo que nadie las lee.</h2>
+      <p data-reveal style="margin:0; max-width:780px; font-size:18px; line-height:1.62; color:#414C63; text-wrap:pretty;">La mayoría de los sistemas registran entradas y salidas y ahí se quedan. El resultado: horas cada semana consolidando datos a mano, informes que llegan tarde, costes que se escapan y el miedo latente a una Inspección de Trabajo. CheckBiz360 nace justo para el momento en que el fichaje simple deja de ser suficiente.</p>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; width:100%; margin-top:14px; text-align:left;">
+        <div data-reveal class="cb-lift" style="padding:22px; background:#fff; border:1px solid #E4E8F0; border-radius:14px; box-shadow:0 4px 14px -10px rgba(10,18,38,.2);"><span style="display:block; font-size:15px; font-weight:700; margin-bottom:6px;">Horas de consolidación</span><span style="font-size:13px; line-height:1.5; color:#5B6479;">Excel, WhatsApp y hojas sueltas en cada cierre de mes.</span></div>
+        <div data-reveal class="cb-lift" style="padding:22px; background:#fff; border:1px solid #E4E8F0; border-radius:14px; box-shadow:0 4px 14px -10px rgba(10,18,38,.2);"><span style="display:block; font-size:15px; font-weight:700; margin-bottom:6px;">Informes que llegan tarde</span><span style="font-size:13px; line-height:1.5; color:#5B6479;">Cuando ves el dato, la semana ya se gastó.</span></div>
+        <div data-reveal class="cb-lift" style="padding:22px; background:#fff; border:1px solid #E4E8F0; border-radius:14px; box-shadow:0 4px 14px -10px rgba(10,18,38,.2);"><span style="display:block; font-size:15px; font-weight:700; margin-bottom:6px;">Sobrecostes invisibles</span><span style="font-size:13px; line-height:1.5; color:#5B6479;">Nadie compara coste real contra previsto por centro.</span></div>
+        <div data-reveal class="cb-lift" style="padding:22px; background:#fff; border:1px solid #E4E8F0; border-radius:14px; box-shadow:0 4px 14px -10px rgba(10,18,38,.2);"><span style="display:block; font-size:15px; font-weight:700; margin-bottom:6px;">Riesgo de Inspección</span><span style="font-size:13px; line-height:1.5; color:#5B6479;">Registros editables no aguantan un requerimiento.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pilares" style="padding:112px 48px; border-bottom:1px solid #E9ECF2;">
+    <div style="max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:48px;">
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:48px;">
+        <div data-reveal style="display:flex; flex-direction:column; gap:16px; max-width:700px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#1D4ED8;">Cuatro pilares</span>
+          <h2 style="margin:0; font-size:48px; line-height:1.06; letter-spacing:-.035em; font-weight:800;">Una plataforma, cuatro cosas que hoy tienes repartidas.</h2>
+        </div>
+        <a data-reveal href="#demo" style="flex:none; font-size:15px; font-weight:700; padding:14px 20px; border-radius:11px; border:1px solid #CFD5E0;" style-hover="background:#F5F6F9; border:1px solid #0A1226;">Verlo en una demo →</a>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:20px;">
+        <div data-reveal class="cb-lift" style="display:flex; flex-direction:column; gap:14px; padding:32px; border:1px solid #E4E8F0; border-radius:18px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; background:#E8F4F1; color:#0E9384; font-family:'IBM Plex Mono',monospace; font-size:13px;">01</span>
+            <h3 style="margin:0; font-size:24px; font-weight:800; letter-spacing:-.025em;">Cumplimiento sin esfuerzo</h3>
+          </div>
+          <p style="margin:0; font-size:16px; line-height:1.6; color:#414C63;">Cumple el RDL 8/2019 sin preparar nada. Registro con hora exacta, historial que nadie puede alterar, cada corrección trazada con su motivo y cuatro años de conservación. Si llama la Inspección, ya está todo listo.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Historial inmutable</span>
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Motivo obligatorio</span>
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">4 años</span>
+          </div>
+        </div>
+        <div data-reveal class="cb-lift" style="display:flex; flex-direction:column; gap:14px; padding:32px; border:1px solid #E4E8F0; border-radius:18px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; background:#EAEFFC; color:#1D4ED8; font-family:'IBM Plex Mono',monospace; font-size:13px;">02</span>
+            <h3 style="margin:0; font-size:24px; font-weight:800; letter-spacing:-.025em;">Operación bajo control</h3>
+          </div>
+          <p style="margin:0; font-size:16px; line-height:1.6; color:#414C63;">No solo sabes quién vino: sabes qué se hizo. Asigna tareas y checklists a cada turno, recibe la evidencia en foto y valídalo desde el panel. El trabajo real, documentado.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Checklists por turno</span>
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Evidencia foto/vídeo</span>
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Validación 1–5</span>
+          </div>
+        </div>
+        <div data-reveal class="cb-lift" style="display:flex; flex-direction:column; gap:14px; padding:32px; border:1px solid #E4E8F0; border-radius:18px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; background:#EAEFFC; color:#1D4ED8; font-family:'IBM Plex Mono',monospace; font-size:13px;">03</span>
+            <h3 style="margin:0; font-size:24px; font-weight:800; letter-spacing:-.025em;">Decisiones con datos</h3>
+          </div>
+          <p style="margin:0; font-size:16px; line-height:1.6; color:#414C63;">Coste real por empleado y por centro, comparativa entre sedes e índices de rendimiento que te ayudan a decidir con criterio y no con intuición. Más justo para tu equipo, más claro para ti.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Coste real vs. previsto</span>
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Comparativa multi-sede</span>
+          </div>
+        </div>
+        <div data-reveal class="cb-lift" style="display:flex; flex-direction:column; gap:14px; padding:32px; border:1px solid #E4E8F0; border-radius:18px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; background:#EAEFFC; color:#1D4ED8; font-family:'IBM Plex Mono',monospace; font-size:13px;">04</span>
+            <h3 style="margin:0; font-size:24px; font-weight:800; letter-spacing:-.025em;">Fácil para todos</h3>
+          </div>
+          <p style="margin:0; font-size:16px; line-height:1.6; color:#414C63;">Tu gente solo tiene que fichar desde el móvil, con validación por GPS y sin ningún aparato que instalar. Tú lo gestionas todo desde un único panel web.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">iOS y Android</span>
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Sin hardware</span>
+            <span style="padding:6px 11px; border-radius:8px; background:#F5F6F9; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#414C63;">Un solo panel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="position:relative; padding:104px 48px; background:#0A1226; color:#EDF0F6; overflow:hidden;">
+    <div style="position:relative; max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:44px;">
+      <div data-reveal style="display:flex; flex-direction:column; gap:14px; max-width:640px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#7FA0F5;">Cómo funciona</span>
+        <h2 style="margin:0; font-size:44px; line-height:1.08; letter-spacing:-.035em; font-weight:800; color:#fff;">Tres pasos, y el resto lo hace la plataforma.</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;">
+        <div data-reveal class="cb-cell" style="padding:34px 30px; background:#0D1730; border:1px solid #232C43; border-radius:16px; display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#7FA0F5;">01</span>
+          <h3 style="margin:0; font-size:24px; font-weight:800; letter-spacing:-.02em; color:#fff;">Ficha</h3>
+          <p style="margin:0; font-size:15px; line-height:1.6; color:#A7B1C6;">El empleado ficha desde la app; el sistema valida ubicación, turno y dispositivo.</p>
+        </div>
+        <div data-reveal class="cb-cell" style="padding:34px 30px; background:#0D1730; border:1px solid #232C43; border-radius:16px; display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#7FA0F5;">02</span>
+          <h3 style="margin:0; font-size:24px; font-weight:800; letter-spacing:-.02em; color:#fff;">Gestiona</h3>
+          <p style="margin:0; font-size:15px; line-height:1.6; color:#A7B1C6;">Asignas tareas, revisas jornadas y publicas documentos desde el backoffice.</p>
+        </div>
+        <div data-reveal class="cb-cell" style="padding:34px 30px; background:#0D1730; border:1px solid #232C43; border-radius:16px; display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#7FA0F5;">03</span>
+          <h3 style="margin:0; font-size:24px; font-weight:800; letter-spacing:-.02em; color:#fff;">Decide</h3>
+          <p style="margin:0; font-size:15px; line-height:1.6; color:#A7B1C6;">La plataforma convierte todo en indicadores de coste, cumplimiento y rendimiento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="inteligencia" style="padding:112px 48px; border-bottom:1px solid #E9ECF2;">
+    <div style="max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;">
+      <div data-reveal style="display:flex; flex-direction:column; gap:20px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#1D4ED8;">Inteligencia operativa</span>
+        <h2 style="margin:0; font-size:46px; line-height:1.06; letter-spacing:-.035em; font-weight:800;">La diferencia no está en fichar. Está en lo que pasa después.</h2>
+        <p style="margin:0; font-size:17px; line-height:1.62; color:#414C63; text-wrap:pretty;">Cada jornada y cada tarea alimentan un perfil que detecta tendencias antes de que sean problemas: fiabilidad y eficiencia por persona, coste real frente al previsto, comparativa entre centros y detección automática de anomalías. Todo desde paneles que se actualizan solos.</p>
+        <div style="display:flex; gap:12px; padding:16px 18px; background:#F7F8FB; border:1px solid #E4E8F0; border-radius:12px;">
+          <span style="flex:none; width:3px; border-radius:2px; background:#0E9384;"></span>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#414C63;">Indicadores de apoyo a la gestión, pensados para decisiones más justas y objetivas — nunca un sustituto del criterio humano.</p>
+        </div>
+        <a href="#demo" style="align-self:flex-start; font-size:15px; font-weight:700; color:#1D4ED8; padding-bottom:4px; border-bottom:2px solid #1D4ED8;" style-hover="color:#173FAF;">Ver la inteligencia operativa en una demo →</a>
+      </div>
+      <div data-reveal style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:14px;">
+          <div class="cb-lift" style="padding:22px; border:1px solid #E4E8F0; border-radius:16px; display:flex; flex-direction:column; gap:10px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7B8494;">Índice de fiabilidad</span>
+            <span style="font-size:34px; font-weight:800; letter-spacing:-.035em;">94%</span>
+            <div style="height:6px; border-radius:3px; background:#EDF0F6; overflow:hidden;"><span class="cb-barx" style="display:block; height:100%; width:94%; background:#1D4ED8;"></span></div>
+          </div>
+          <div class="cb-lift" style="padding:22px; border:1px solid #E4E8F0; border-radius:16px; display:flex; flex-direction:column; gap:10px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7B8494;">Índice de eficiencia</span>
+            <span style="font-size:34px; font-weight:800; letter-spacing:-.035em;">87%</span>
+            <div style="height:6px; border-radius:3px; background:#EDF0F6; overflow:hidden;"><span class="cb-barx" style="display:block; height:100%; width:87%; background:#0E9384;"></span></div>
+          </div>
+        </div>
+        <div class="cb-lift" style="padding:24px; border:1px solid #E4E8F0; border-radius:16px; display:flex; flex-direction:column; gap:16px; box-shadow:0 8px 26px -18px rgba(10,18,38,.28);">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7B8494;">Coste real por centro · mes</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#B4560A;">2 anomalías</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px;"><span style="width:104px; font-size:13px; font-weight:600;">Madrid</span><span style="flex:1; height:10px; border-radius:5px; background:#EDF0F6; overflow:hidden;"><span class="cb-barx" style="display:block; height:100%; width:82%; background:#1D4ED8;"></span></span><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5B6479;">18,2 k€</span></div>
+            <div style="display:flex; align-items:center; gap:12px;"><span style="width:104px; font-size:13px; font-weight:600;">Ibiza</span><span style="flex:1; height:10px; border-radius:5px; background:#EDF0F6; overflow:hidden;"><span class="cb-barx" style="display:block; height:100%; width:68%; background:#1D4ED8;"></span></span><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5B6479;">15,1 k€</span></div>
+            <div style="display:flex; align-items:center; gap:12px;"><span style="width:104px; font-size:13px; font-weight:600;">Valencia</span><span style="flex:1; height:10px; border-radius:5px; background:#EDF0F6; overflow:hidden;"><span class="cb-barx" style="display:block; height:100%; width:47%; background:#B4560A;"></span></span><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5B6479;">10,4 k€</span></div>
+            <div style="display:flex; align-items:center; gap:12px;"><span style="width:104px; font-size:13px; font-weight:600;">Barcelona</span><span style="flex:1; height:10px; border-radius:5px; background:#EDF0F6; overflow:hidden;"><span class="cb-barx" style="display:block; height:100%; width:59%; background:#1D4ED8;"></span></span><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5B6479;">13,0 k€</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cumplimiento" style="position:relative; padding:112px 48px; background:#F7F8FB; border-bottom:1px solid #E9ECF2; overflow:hidden;">
+    <div style="position:relative; max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;">
+      <div data-reveal style="display:flex; flex-direction:column; gap:1px; background:#E4E8F0; border:1px solid #E4E8F0; border-radius:16px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(10,18,38,.35);">
+        <div style="display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1px; background:#E4E8F0;">
+          <span style="padding:16px 18px; background:#fff; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7B8494;">Garantía</span>
+          <span style="padding:16px 14px; background:#fff; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7B8494;">Excel / papel</span>
+          <span style="padding:16px 14px; background:#0A1226; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#fff;">CheckBiz360</span>
+        </div>
+        <div class="cb-row" style="display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1px; background:#E4E8F0;"><span style="padding:16px 18px; background:#fff; font-size:14px; font-weight:600;">Hora exacta al segundo</span><span style="padding:16px 14px; background:#fff; font-size:14px; color:#9AA2B2;">No</span><span style="padding:16px 14px; background:#F0F6F4; font-size:14px; font-weight:700; color:#0E9384;">Sí</span></div>
+        <div class="cb-row" style="display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1px; background:#E4E8F0;"><span style="padding:16px 18px; background:#fff; font-size:14px; font-weight:600;">Historial inalterable</span><span style="padding:16px 14px; background:#fff; font-size:14px; color:#9AA2B2;">No</span><span style="padding:16px 14px; background:#F0F6F4; font-size:14px; font-weight:700; color:#0E9384;">Sí</span></div>
+        <div class="cb-row" style="display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1px; background:#E4E8F0;"><span style="padding:16px 18px; background:#fff; font-size:14px; font-weight:600;">Corrección con motivo</span><span style="padding:16px 14px; background:#fff; font-size:14px; color:#9AA2B2;">No</span><span style="padding:16px 14px; background:#F0F6F4; font-size:14px; font-weight:700; color:#0E9384;">Sí</span></div>
+        <div class="cb-row" style="display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1px; background:#E4E8F0;"><span style="padding:16px 18px; background:#fff; font-size:14px; font-weight:600;">Acceso del trabajador</span><span style="padding:16px 14px; background:#fff; font-size:14px; color:#9AA2B2;">Manual</span><span style="padding:16px 14px; background:#F0F6F4; font-size:14px; font-weight:700; color:#0E9384;">En la app</span></div>
+        <div class="cb-row" style="display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1px; background:#E4E8F0;"><span style="padding:16px 18px; background:#fff; font-size:14px; font-weight:600;">Conservación 4 años</span><span style="padding:16px 14px; background:#fff; font-size:14px; color:#9AA2B2;">Frágil</span><span style="padding:16px 14px; background:#F0F6F4; font-size:14px; font-weight:700; color:#0E9384;">Automática</span></div>
+      </div>
+      <div data-reveal style="display:flex; flex-direction:column; gap:20px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#0E9384;">Cumplimiento</span>
+        <h2 style="margin:0; font-size:46px; line-height:1.06; letter-spacing:-.035em; font-weight:800;">La tranquilidad de tenerlo todo en regla.</h2>
+        <p style="margin:0; font-size:17px; line-height:1.62; color:#414C63; text-wrap:pretty;">Registro conforme al RDL 8/2019, inmutable y trazable, con acceso del trabajador a sus propias horas desde la app y conservación durante cuatro años. El papel y las hojas de cálculo editables no ofrecen las mismas garantías ante la Inspección; CheckBiz360 sí.</p>
+        <a class="cb-cta" href="#demo" style="align-self:flex-start; font-size:15px; font-weight:700; color:#fff; background:#0A1226; padding:15px 22px; border-radius:11px; box-shadow:0 14px 28px -14px rgba(10,18,38,.6);" style-hover="background:#1D4ED8; color:#fff;">Descarga la guía «Prepara tu empresa para una Inspección»</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:112px 48px; border-bottom:1px solid #E9ECF2;">
+    <div style="max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:36px;">
+      <div data-reveal style="display:flex; flex-direction:column; gap:16px; max-width:760px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#1D4ED8;">¿Ya usas un ERP?</span>
+        <h2 style="margin:0; font-size:46px; line-height:1.06; letter-spacing:-.035em; font-weight:800;">No sustituye a tu ERP. Lo completa.</h2>
+        <p style="margin:0; font-size:17px; line-height:1.62; color:#414C63; text-wrap:pretty;">CheckBiz360 se coloca al lado de tu ERP y añade lo que no cubre: el cumplimiento horario legal, las tareas de campo y el expediente documental de tu equipo. Si necesitas integrarlo con tu sistema, <strong>el equipo de EncodeBiz se encarga</strong>: solo tienes que solicitarlo y estudiamos si es viable.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;">
+        <div data-reveal class="cb-lift" style="padding:30px; border:1px solid #E4E8F0; border-radius:18px; display:flex; flex-direction:column; gap:12px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#1D4ED8;">01</span>
+          <h3 style="margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em;">Lo solicitas</h3>
+          <p style="margin:0; font-size:15px; line-height:1.6; color:#5B6479;">Nos cuentas qué ERP usas y qué datos quieres que viajen entre sistemas.</p>
+        </div>
+        <div data-reveal class="cb-lift" style="padding:30px; border:1px solid #E4E8F0; border-radius:18px; display:flex; flex-direction:column; gap:12px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#1D4ED8;">02</span>
+          <h3 style="margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em;">Lo estudiamos</h3>
+          <p style="margin:0; font-size:15px; line-height:1.6; color:#5B6479;">Verificamos que tu ERP cumple las condiciones mínimas: API disponible, permisos y datos identificables.</p>
+        </div>
+        <div data-reveal class="cb-lift" style="padding:30px; border:1px solid #E4E8F0; border-radius:18px; display:flex; flex-direction:column; gap:12px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#1D4ED8;">03</span>
+          <h3 style="margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em;">Nosotros lo hacemos</h3>
+          <p style="margin:0; font-size:15px; line-height:1.6; color:#5B6479;">Si es viable, el equipo de EncodeBiz desarrolla y mantiene la integración. Tú no montas nada.</p>
+        </div>
+      </div>
+      <div data-reveal style="display:flex; align-items:center; justify-content:space-between; gap:32px; padding:24px 28px; background:#F7F8FB; border:1px solid #E4E8F0; border-radius:16px;">
+        <p style="margin:0; font-size:15px; line-height:1.55; color:#414C63; max-width:640px;">Somos una empresa de desarrollo: si tu operación necesita algo a medida, es una conversación, no un ticket cerrado.</p>
+        <a class="cb-cta" href="#demo" style="flex:none; font-size:15px; font-weight:700; color:#fff; background:#1D4ED8; padding:14px 22px; border-radius:11px; box-shadow:0 14px 28px -14px rgba(29,78,216,.7);" style-hover="background:#173FAF; color:#fff;">Solicitar estudio de integración</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="sectores" style="position:relative; padding:112px 48px; background:#0A1226; color:#EDF0F6; overflow:hidden;">
+    <div style="position:relative; max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:40px;">
+      <div data-reveal style="display:flex; flex-direction:column; gap:14px; max-width:700px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#7FA0F5;">Sectores</span>
+        <h2 style="margin:0; font-size:44px; line-height:1.08; letter-spacing:-.035em; font-weight:800; color:#fff;">Donde el turno cambia cada día y el coste no espera.</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;">
+        <div data-reveal class="cb-cell" style="padding:28px; border:1px solid #232C43; border-radius:16px; background:#0D1730; display:flex; flex-direction:column; gap:10px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7FA0F5;">01</span>
+          <h3 style="margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em; color:#fff;">Eventos y audiovisual</h3>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#A7B1C6;">Técnicos entre venues y jornadas hasta la madrugada: fichaje sin hardware en cada sitio.</p>
+        </div>
+        <div data-reveal class="cb-cell" style="padding:28px; border:1px solid #232C43; border-radius:16px; background:#0D1730; display:flex; flex-direction:column; gap:10px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7FA0F5;">02</span>
+          <h3 style="margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em; color:#fff;">Hostelería</h3>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#A7B1C6;">Turnos rotativos y partidos que descuadran el coste de sala y cocina.</p>
+        </div>
+        <div data-reveal class="cb-cell" style="padding:28px; border:1px solid #232C43; border-radius:16px; background:#0D1730; display:flex; flex-direction:column; gap:10px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7FA0F5;">03</span>
+          <h3 style="margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em; color:#fff;">Retail multi-tienda</h3>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#A7B1C6;">Comparar productividad y coste entre centros sin montar un Excel cada mes.</p>
+        </div>
+        <div data-reveal class="cb-cell" style="padding:28px; border:1px solid #232C43; border-radius:16px; background:#0D1730; display:flex; flex-direction:column; gap:10px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7FA0F5;">04</span>
+          <h3 style="margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em; color:#fff;">Logística y campo</h3>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#A7B1C6;">Equipos que nunca pisan la oficina: fichaje GPS sin terminal físico.</p>
+        </div>
+        <div data-reveal class="cb-cell" style="padding:28px; border:1px solid #232C43; border-radius:16px; background:#0D1730; display:flex; flex-direction:column; gap:10px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7FA0F5;">05</span>
+          <h3 style="margin:0; font-size:21px; font-weight:800; letter-spacing:-.02em; color:#fff;">Servicios y mantenimiento</h3>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#A7B1C6;">Imputación de horas por proyecto y cliente, con la evidencia del trabajo hecho.</p>
+        </div>
+        <div data-reveal style="padding:28px; border:1px dashed #303A54; border-radius:16px; display:flex; flex-direction:column; justify-content:center; gap:10px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; line-height:1.6; color:#8B94A8;">¿Tu sector no está aquí?<br>Cuéntanos tu operación y te decimos si encajamos.</span>
+          <a href="#demo" style="font-size:14px; font-weight:700; color:#fff; border-bottom:2px solid #4F7CFF; align-self:flex-start; padding-bottom:3px;" style-hover="color:#7FA0F5;">Hablemos →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:112px 48px; border-bottom:1px solid #E9ECF2;">
+    <div style="max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:40px;">
+      <div data-reveal style="display:flex; flex-direction:column; gap:14px; max-width:700px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#1D4ED8;">Prueba social</span>
+        <h2 style="margin:0; font-size:44px; line-height:1.07; letter-spacing:-.035em; font-weight:800;">Empresas como la tuya, contándolo con sus palabras.</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;">
+        <figure data-reveal class="cb-lift" style="margin:0; padding:30px; border:1px solid #E4E8F0; border-radius:18px; display:flex; flex-direction:column; gap:18px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#0E9384;">Gestión integral de la operativa</span>
+          <blockquote style="margin:0; font-size:17px; line-height:1.55; font-weight:600; letter-spacing:-.015em;">«Nos dio algo que no teníamos: orden y visibilidad real. Los informes salen listos y las horas cuadran.»</blockquote>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#5B6479;">Gestionamos cuadrillas en distintos proyectos y antes todo dependía de WhatsApp y hojas sueltas. Hoy sabemos qué equipo está activo, dónde y cuánto tiempo, sin perseguir a nadie.</p>
+          <figcaption style="display:flex; flex-direction:column; gap:2px; margin-top:auto; padding-top:16px; border-top:1px solid #EDF0F6;">
+            <span style="font-size:14px; font-weight:700;">Luis M. Acevedo</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#7B8494;">Owner &amp; CEO · Litoral Group</span>
+          </figcaption>
+        </figure>
+        <figure data-reveal class="cb-lift" style="margin:0; padding:30px; border:1px solid #E4E8F0; border-radius:18px; display:flex; flex-direction:column; gap:18px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#0E9384;">Equipos y proyectos en campo</span>
+          <blockquote style="margin:0; font-size:17px; line-height:1.55; font-weight:600; letter-spacing:-.015em;">«Antes sentía que gestionábamos a ciegas; ahora trabajamos con datos.»</blockquote>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#5B6479;">Nuestros equipos se mueven entre clientes y ubicaciones. Registrar asistencia por proyecto y ubicación era fundamental. No se trata de vigilar, sino de gestionar con criterio.</p>
+          <figcaption style="display:flex; flex-direction:column; gap:2px; margin-top:auto; padding-top:16px; border-top:1px solid #EDF0F6;">
+            <span style="font-size:14px; font-weight:700;">Michel Ferrada</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#7B8494;">Owner &amp; Project Supervisor · Ferrada</span>
+          </figcaption>
+        </figure>
+        <figure data-reveal class="cb-lift" style="margin:0; padding:30px; border:1px solid #E4E8F0; border-radius:18px; display:flex; flex-direction:column; gap:18px; box-shadow:0 6px 20px -14px rgba(10,18,38,.22);">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#0E9384;">Decisiones con métricas reales</span>
+          <blockquote style="margin:0; font-size:17px; line-height:1.55; font-weight:600; letter-spacing:-.015em;">«Hoy tomamos decisiones con información objetiva, no con suposiciones.»</blockquote>
+          <p style="margin:0; font-size:14px; line-height:1.55; color:#5B6479;">Necesitábamos algo flexible para distintos perfiles y proyectos. Los paneles nos permiten detectar patrones, optimizar recursos y anticiparnos, sin fricción para los empleados.</p>
+          <figcaption style="display:flex; flex-direction:column; gap:2px; margin-top:auto; padding-top:16px; border-top:1px solid #EDF0F6;">
+            <span style="font-size:14px; font-weight:700;">Yoan Céspedes</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#7B8494;">Head of Operations · ACB</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="precio" style="padding:112px 48px; background:#F7F8FB; border-bottom:1px solid #E9ECF2;">
+    <div style="max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:40px;">
+      <div data-reveal style="display:flex; align-items:flex-end; justify-content:space-between; gap:48px;">
+        <div style="display:flex; flex-direction:column; gap:14px; max-width:660px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#1D4ED8;">Planes</span>
+          <h2 style="margin:0; font-size:46px; line-height:1.06; letter-spacing:-.035em; font-weight:800;">Empieza por lo que necesitas hoy. Amplía cuando crezcas.</h2>
+        </div>
+        <div style="flex:none; display:flex; flex-direction:column; gap:6px; text-align:right;">
+          <span style="font-size:44px; font-weight:800; letter-spacing:-.04em;">desde 2 €</span>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5B6479;">por empleado / mes · 45 días de prueba</span>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div data-reveal class="cb-lift" style="padding:36px; background:#fff; border:1px solid #E4E8F0; border-radius:18px; display:flex; flex-direction:column; gap:22px; box-shadow:0 8px 26px -18px rgba(10,18,38,.25);">
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#7B8494;">Bronze</span>
+            <h3 style="margin:0; font-size:28px; font-weight:800; letter-spacing:-.03em;">Empieza a gobernar el turno</h3>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:11px; font-size:15px; color:#414C63;">
+            <span style="display:flex; gap:10px;"><span style="color:#0E9384; font-weight:700;">+</span>Control horario con validación GPS</span>
+            <span style="display:flex; gap:10px;"><span style="color:#0E9384; font-weight:700;">+</span>Tareas con evidencia y validación</span>
+            <span style="display:flex; gap:10px;"><span style="color:#0E9384; font-weight:700;">+</span>Inteligencia operativa básica</span>
+            <span style="display:flex; gap:10px;"><span style="color:#0E9384; font-weight:700;">+</span>App iOS y Android incluida</span>
+          </div>
+          <a href="#demo" style="margin-top:auto; text-align:center; font-size:15px; font-weight:700; padding:15px; border-radius:11px; border:1px solid #CFD5E0;" style-hover="background:#F5F6F9; border:1px solid #0A1226;">Crear cuenta gratuita</a>
+        </div>
+        <div data-reveal style="position:relative; padding:36px; background:#0A1226; border-radius:18px; display:flex; flex-direction:column; gap:22px; color:#EDF0F6; box-shadow:0 40px 70px -40px rgba(10,18,38,.7);">
+          <span style="position:absolute; top:24px; right:24px; padding:6px 11px; border-radius:8px; background:#1D4ED8; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#fff;">Multi-centro</span>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#7FA0F5;">Enterprise</span>
+            <h3 style="margin:0; font-size:28px; font-weight:800; letter-spacing:-.03em; color:#fff;">Toda la operación, gobernada</h3>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:11px; font-size:15px; color:#C3CBDB;">
+            <span style="display:flex; gap:10px;"><span style="color:#7FA0F5; font-weight:700;">+</span>Todo lo de Bronze</span>
+            <span style="display:flex; gap:10px;"><span style="color:#7FA0F5; font-weight:700;">+</span>Gestión documental del expediente</span>
+            <span style="display:flex; gap:10px;"><span style="color:#7FA0F5; font-weight:700;">+</span>Análisis de costes y anomalías</span>
+            <span style="display:flex; gap:10px;"><span style="color:#7FA0F5; font-weight:700;">+</span>Multi-entidad y vista global</span>
+          </div>
+          <a class="cb-cta" href="#demo" style="margin-top:auto; text-align:center; font-size:15px; font-weight:700; color:#fff; background:#1D4ED8; padding:15px; border-radius:11px;" style-hover="background:#173FAF; color:#fff;">Agendar demo de 30'</a>
+        </div>
+      </div>
+      <div data-reveal style="display:flex; align-items:center; gap:14px; padding:20px 24px; background:#fff; border:1px solid #E4E8F0; border-radius:14px;">
+        <span style="flex:none; width:3px; height:34px; border-radius:2px; background:#1D4ED8;"></span>
+        <p style="margin:0; font-size:15px; line-height:1.5; color:#414C63;"><strong>Nosotros te lo dejamos montado y formamos a tu equipo.</strong> Puesta en marcha y capacitación incluidas, sin coste. Sin permanencia para empezar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:112px 48px; border-bottom:1px solid #E9ECF2;">
+    <div style="max-width:920px; margin:0 auto; display:flex; flex-direction:column; gap:28px;">
+      <h2 data-reveal style="margin:0; font-size:40px; line-height:1.08; letter-spacing:-.035em; font-weight:800;">Preguntas frecuentes</h2>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <details class="cb-lift" style="padding:22px 24px; border:1px solid #E4E8F0; border-radius:14px;">
+          <summary style="display:flex; align-items:center; justify-content:space-between; gap:20px; font-size:17px; font-weight:700; letter-spacing:-.015em;">¿Necesito instalar algún aparato?<span style="color:#1D4ED8; font-weight:500;">+</span></summary>
+          <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#414C63;">No: se ficha desde el móvil con validación por GPS, dispositivo de confianza y horario efectivo del turno.</p>
+        </details>
+        <details class="cb-lift" style="padding:22px 24px; border:1px solid #E4E8F0; border-radius:14px;">
+          <summary style="display:flex; align-items:center; justify-content:space-between; gap:20px; font-size:17px; font-weight:700; letter-spacing:-.015em;">¿Cumple la ley española de registro horario?<span style="color:#1D4ED8; font-weight:500;">+</span></summary>
+          <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#414C63;">Sí, el RDL 8/2019: hora exacta, historial inmutable y trazable, correcciones con motivo y conservación durante cuatro años.</p>
+        </details>
+        <details class="cb-lift" style="padding:22px 24px; border:1px solid #E4E8F0; border-radius:14px;">
+          <summary style="display:flex; align-items:center; justify-content:space-between; gap:20px; font-size:17px; font-weight:700; letter-spacing:-.015em;">¿Puedo empezar solo con el control horario?<span style="color:#1D4ED8; font-weight:500;">+</span></summary>
+          <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#414C63;">Sí, con el plan Bronze, y ampliar a documental, costes y multi-entidad cuando lo necesites.</p>
+        </details>
+        <details class="cb-lift" style="padding:22px 24px; border:1px solid #E4E8F0; border-radius:14px;">
+          <summary style="display:flex; align-items:center; justify-content:space-between; gap:20px; font-size:17px; font-weight:700; letter-spacing:-.015em;">¿Se integra con mi ERP?<span style="color:#1D4ED8; font-weight:500;">+</span></summary>
+          <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#414C63;">Solicítalo y lo estudiamos: si tu ERP cumple unas condiciones mínimas (API accesible, permisos y datos identificables), el equipo de EncodeBiz desarrolla la integración.</p>
+        </details>
+        <details class="cb-lift" style="padding:22px 24px; border:1px solid #E4E8F0; border-radius:14px;">
+          <summary style="display:flex; align-items:center; justify-content:space-between; gap:20px; font-size:17px; font-weight:700; letter-spacing:-.015em;">¿Cuánto cuesta?<span style="color:#1D4ED8; font-weight:500;">+</span></summary>
+          <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#414C63;">Desde 2 €/empleado al mes, con 45 días de prueba y la puesta en marcha incluida.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo" style="position:relative; padding:112px 48px; background:#0A1226; color:#EDF0F6; overflow:hidden;">
+    <div style="position:relative; max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1.05fr .95fr; gap:64px; align-items:center;">
+      <div data-reveal style="display:flex; flex-direction:column; gap:22px;">
+        <h2 style="margin:0; font-size:54px; line-height:1.03; letter-spacing:-.04em; font-weight:800; color:#fff; text-wrap:balance;">Deja de reaccionar a tu operación. Empieza a gobernarla.</h2>
+        <p style="margin:0; max-width:520px; font-size:18px; line-height:1.6; color:#A7B1C6;">45 días de prueba, puesta en marcha y formación incluidas. Si en la demo vemos que no encajamos, te lo diremos.</p>
+        <div style="display:flex; gap:14px;">
+          <a class="cb-cta" href="#precio" style="font-size:16px; font-weight:700; color:#0A1226; background:#fff; padding:17px 26px; border-radius:12px;" style-hover="background:#DCE4F8; color:#0A1226;">Empieza gratis — 45 días</a>
+          <a href="#demo" style="font-size:16px; font-weight:700; color:#fff; padding:17px 26px; border-radius:12px; border:1px solid #303A54;" style-hover="border:1px solid #7FA0F5; color:#fff;">Habla con nosotros</a>
+        </div>
+      </div>
+      <form data-reveal onSubmit="{{ noSubmit }}" style="display:flex; flex-direction:column; gap:14px; padding:32px; background:#0D1730; border:1px solid #232C43; border-radius:18px; box-shadow:0 40px 70px -40px rgba(0,0,0,.7);">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#7FA0F5;">Agenda tu demo de 30'</span>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <input placeholder="Nombre" style="padding:14px; border-radius:10px; border:1px solid #2A344C; background:#0A1226; color:#fff; font-family:'Manrope',sans-serif; font-size:14px; outline:none;">
+          <input placeholder="Teléfono" style="padding:14px; border-radius:10px; border:1px solid #2A344C; background:#0A1226; color:#fff; font-family:'Manrope',sans-serif; font-size:14px; outline:none;">
+        </div>
+        <input placeholder="Email de trabajo" style="padding:14px; border-radius:10px; border:1px solid #2A344C; background:#0A1226; color:#fff; font-family:'Manrope',sans-serif; font-size:14px; outline:none;">
+        <input placeholder="Empresa" style="padding:14px; border-radius:10px; border:1px solid #2A344C; background:#0A1226; color:#fff; font-family:'Manrope',sans-serif; font-size:14px; outline:none;">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <span style="font-size:13px; color:#8B94A8;">Número de trabajadores</span>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+            <span style="text-align:center; padding:11px 6px; border-radius:9px; border:1px solid #2A344C; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#C3CBDB; cursor:pointer;" style-hover="border:1px solid #4F7CFF; color:#fff;">&lt;10</span>
+            <span style="text-align:center; padding:11px 6px; border-radius:9px; border:1px solid #2A344C; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#C3CBDB; cursor:pointer;" style-hover="border:1px solid #4F7CFF; color:#fff;">10–50</span>
+            <span style="text-align:center; padding:11px 6px; border-radius:9px; border:1px solid #2A344C; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#C3CBDB; cursor:pointer;" style-hover="border:1px solid #4F7CFF; color:#fff;">51–200</span>
+            <span style="text-align:center; padding:11px 6px; border-radius:9px; border:1px solid #2A344C; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#C3CBDB; cursor:pointer;" style-hover="border:1px solid #4F7CFF; color:#fff;">200+</span>
+          </div>
+        </div>
+        <button class="cb-cta" style="margin-top:4px; padding:16px; border:none; border-radius:11px; background:#1D4ED8; color:#fff; font-family:'Manrope',sans-serif; font-size:15px; font-weight:700; cursor:pointer;" style-hover="background:#173FAF;">Quiero conocer CheckBiz360</button>
+        <span style="font-size:12px; line-height:1.5; color:#7B8494;">He leído y acepto la <a href="https://www.encodebiz.com/politicas-de-privacidad" style="color:#7FA0F5; text-decoration:underline;">Política de privacidad</a>.</span>
+      </form>
+    </div>
+  </section>
+
+  <footer style="padding:44px 48px; background:#070C18; color:#8B94A8;">
+    <div style="max-width:1180px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:40px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:8px; background:#1D4ED8; color:#fff; font-weight:800; font-size:12px;">C</span>
+        <span style="font-size:14px; font-weight:700; color:#EDF0F6;">CheckBiz360, de EncodeBiz</span>
+      </div>
+      <div style="display:flex; gap:24px; font-size:13px;">
+        <a href="https://www.encodebiz.com/aviso-legal" style="color:#8B94A8;" style-hover="color:#fff;">Aviso legal</a>
+        <a href="https://www.encodebiz.com/politica-cookies" style="color:#8B94A8;" style-hover="color:#fff;">Cookies</a>
+        <a href="https://www.encodebiz.com/politicas-de-privacidad" style="color:#8B94A8;" style-hover="color:#fff;">Privacidad</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() { return { noSubmit: (e) => e.preventDefault() }; }
+}
+
+</script>
+</body>
+</html>

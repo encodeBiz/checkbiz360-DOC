@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  body { margin:0; background:#fff; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:inherit; text-decoration:none; }
+  a:hover { color:#1D4ED8; }
+  h1, h2, h3, h4 { font-family:'Outfit', sans-serif; margin:0; }
+  p { margin:0; }
+  @keyframes cb-rise { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+  [data-reveal] { animation:cb-rise linear both; animation-timeline:view(); animation-range:entry 4% cover 22%; }
+  h1 { font-size:clamp(32px, 5vw, 58px) !important; }
+  .cb-h2 { font-size:clamp(25px, 3.4vw, 40px) !important; }
+  .cb-lede { font-size:clamp(15.5px, 1.4vw, 19px) !important; }
+  .cb-nav { display:flex; align-items:center; gap:26px; }
+  @media (max-width:1040px) { .cb-nav { display:none !important; } }
+  @media (max-width:1000px) { .cb-2col { grid-template-columns:1fr !important; } }
+  @media (max-width:880px) { .cb-3col { grid-template-columns:1fr !important; } .cb-hide-s { display:none !important; } }
+  section, header { padding-left:clamp(20px, 4vw, 52px) !important; padding-right:clamp(20px, 4vw, 52px) !important; }
+  input, textarea { font-family:'Karla', sans-serif; }
+  input:focus-visible, textarea:focus-visible { outline:2px solid #1D4ED8; outline-offset:1px; }
+</style>
+</helmet>
+
+<div lang="es" style="font-family:'Karla',sans-serif; color:#0A1226; background:#fff;">
+
+  <header style="position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; gap:28px; padding:14px 52px; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-bottom:1px solid #E9ECF2;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:9px; background:#0A1226; color:#fff; font-weight:800; font-size:14px;">C</span>
+      <span style="display:flex; flex-direction:column; line-height:1;">
+        <span style="font-size:17px; font-weight:800; letter-spacing:-.02em;">CheckBiz360</span>
+        <span style="font-size:9px; letter-spacing:.14em; color:#5A657C; text-transform:uppercase; margin-top:3px;">equipos en campo</span>
+      </span>
+    </div>
+    <nav class="cb-nav" style="font-size:14px; font-weight:600; color:#414C63;">
+      <a href="#trabajo" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Control del trabajo</a>
+      <a href="#analisis" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Análisis de la operación</a>
+      <a href="#precio" style="padding:6px 0; border-bottom:2px solid transparent;" style-hover="color:#0A1226; border-bottom:2px solid #1D4ED8;">Precio y qué incluye</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <sc-if value="{{ whatsapp }}" hint-placeholder-val="{{ true }}">
+        <a href="#demo" style="font-size:13.5px; font-weight:600; color:#5A657C;" style-hover="color:#0A1226;">WhatsApp</a>
+      </sc-if>
+      <a href="#demo" style="font-size:14px; font-weight:700; color:#fff; background:#1D4ED8; padding:12px 18px; border-radius:10px; white-space:nowrap; transition:background .2s ease, transform .2s ease;" style-hover="background:#173FAF; color:#fff; transform:translateY(-1px);">Solicitar una demo</a>
+    </div>
+  </header>
+
+  <section style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,56px); align-items:center; padding:clamp(48px,6vw,86px) 52px clamp(40px,5vw,68px); background:linear-gradient(180deg,#F7F9FC 0%,#FFFFFF 92%); border-bottom:1px solid #E9ECF2;" class="cb-2col">
+    <div style="display:flex; flex-direction:column; gap:22px; max-width:640px;">
+      <span style="align-self:flex-start; font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8; background:#EAF0FE; border:1px solid #D3E0FD; padding:7px 12px; border-radius:999px;">Para empresas con equipos fuera de la oficina</span>
+      <h1 style="font-weight:800; letter-spacing:-.03em; line-height:1.03;">CheckBiz360: control del trabajo en campo</h1>
+      <p class="cb-lede" style="font-weight:600; color:#1F2A44; line-height:1.45;">Entiende dónde se desvía tu operación y qué necesita atención.</p>
+      <p style="font-size:16px; color:#4A5568; line-height:1.62; max-width:560px;">Conecta tareas, tiempos e incidencias de tus equipos en distintas ubicaciones. Revisa el trabajo realizado, analiza el coste de tu equipo y utiliza los datos para decidir qué corregir y cómo planificar mejor.</p>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:4px;">
+        <a href="#demo" style="font-family:'Outfit',sans-serif; font-size:16px; font-weight:700; color:#fff; background:#1D4ED8; padding:16px 26px; border-radius:12px; box-shadow:0 18px 34px -18px rgba(29,78,216,.8); transition:transform .2s ease, background .2s ease;" style-hover="background:#173FAF; color:#fff; transform:translateY(-2px);">Solicitar una demo</a>
+        <span style="font-size:14px; color:#5A657C;">Bronce con IA incluida. Prueba de 15 días.</span>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:560px; width:100%;">
+      <div style="position:relative; border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EEF1F6; box-shadow:0 30px 56px -42px rgba(10,18,38,.5); aspect-ratio:4/3;">
+        <image-slot id="gen-hero-campo" placeholder="Escena de trabajo fuera de oficina con la app de CheckBiz360 legible en el móvil (no fichaje, no oficina)" style="width:100%; height:100%;"></image-slot>
+      </div>
+      <span style="font-size:12px; color:#5A657C;">Pendiente: foto de campo con producto legible.</span>
+    </div>
+  </section>
+
+  <section id="problema" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:start;" class="cb-2col">
+      <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08; max-width:520px;">El trabajo está repartido. La información no debería estarlo.</h2>
+      <p data-reveal style="font-size:16.5px; color:#4A5568; line-height:1.66; max-width:540px;">Tareas pendientes, partes que llegan tarde e incidencias repartidas entre llamadas y mensajes dificultan saber qué ocurrió y dónde intervenir. Reúne la ejecución del equipo y su contexto en un mismo lugar.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:clamp(34px,4vw,54px); background:#E9ECF2; border:1px solid #E9ECF2;" class="cb-3col">
+      <div data-reveal style="background:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Situación 01</span>
+        <h3 style="font-size:19px; font-weight:700; letter-spacing:-.015em;">Trabajo completado sin revisar</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Se marca como hecho, pero nadie ha comprobado el resultado ni ha dejado constancia de esa revisión.</p>
+      </div>
+      <div data-reveal style="background:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Situación 02</span>
+        <h3 style="font-size:19px; font-weight:700; letter-spacing:-.015em;">Incidencia sin contexto</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Llega por mensaje o llamada y hay que reconstruir qué pasó, quién intervino y en qué quedó.</p>
+      </div>
+      <div data-reveal style="background:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Situación 03</span>
+        <h3 style="font-size:19px; font-weight:700; letter-spacing:-.015em;">Centro que depende de pocas personas</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Si falta alguien concreto, el servicio se tambalea y se descubre cuando ya ha ocurrido.</p>
+      </div>
+    </div>
+    <p style="margin-top:18px; font-size:13px; color:#5A657C;">Situaciones de encaje para valorar si CheckBiz360 te sirve; no son hechos atribuidos a todos los clientes.</p>
+  </section>
+
+  <section id="trabajo" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:flex; flex-direction:column; gap:14px; max-width:620px;">
+      <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Ejecución y validación</span>
+      <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">De tarea asignada a trabajo revisado.</h2>
+      <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">El trabajador consulta la tarea, registra su ejecución y aporta notas y evidencias. El responsable revisa el resultado y lo valida o rechaza con un motivo.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,3vw,40px); margin-top:clamp(30px,3.5vw,44px); align-items:start;" class="cb-2col">
+      <figure data-reveal style="margin:0; display:flex; flex-direction:column; gap:10px; max-width:560px; width:100%;">
+        <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EEF1F6; aspect-ratio:4/3;">
+          <image-slot id="gen-validacion-backoffice" placeholder="Captura real: tarea registrada por el trabajador y su revisión (validar o rechazar con motivo)" style="width:100%; height:100%;"></image-slot>
+        </div>
+        <figcaption style="font-size:13px; color:#5A657C;">Pendiente de captura del entorno demo.</figcaption>
+      </figure>
+      <div style="display:grid; gap:1px; background:#E9ECF2; border:1px solid #E9ECF2;">
+        <div style="background:#fff; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em;">Completado</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">El trabajador registra la ejecución y adjunta notas y evidencias.</p>
+        </div>
+        <div style="background:#fff; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em;">Validado o rechazado</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">El responsable revisa el resultado y deja el motivo si lo rechaza. Completar no equivale a validar.</p>
+        </div>
+        <div style="background:#fff; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em;">Con quién y cuándo</h3>
+          <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Queda registrado quién revisó y en qué momento. El GPS no certifica que el trabajo esté bien hecho.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="incidencias" style="padding:clamp(56px,6vw,92px) 52px; background:#F7F9FC; border-bottom:1px solid #E9ECF2;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:center;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Incidencias y resolución</span>
+        <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">Resuelve con contexto, no reconstruyendo conversaciones.</h2>
+        <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">Consulta el detalle de la incidencia, responde y deja constancia de su evolución. El historial reúne quién intervino, cuándo y qué se hizo.</p>
+        <p style="font-size:13.5px; color:#5A657C; line-height:1.55; border-left:2px solid #D3DBE8; padding-left:14px;">La resolución la realiza una persona. Esto no es la detección estadística de anomalías de fichaje.</p>
+      </div>
+      <figure data-reveal style="margin:0; display:flex; flex-direction:column; gap:10px; max-width:560px; width:100%;">
+        <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#EDF0F5; aspect-ratio:4/3;">
+          <image-slot id="gen-hilo-incidencia" placeholder="Captura real del hilo de incidencia, anonimizada: autor, fecha, respuestas y estados" style="width:100%; height:100%;"></image-slot>
+        </div>
+        <figcaption style="font-size:13px; color:#5A657C;">Hilo real anonimizado. Pendiente de captura.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="analisis" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:flex; flex-direction:column; gap:14px; max-width:660px;">
+      <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Datos, IA y anticipación</span>
+      <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">Sabe dónde mirar antes de decidir.</h2>
+      <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">El panel de Operación muestra qué centros necesitan atención, cuánto depende el trabajo de personas clave y cómo evoluciona el comportamiento observado. La IA explica y prioriza esas señales sobre los mismos datos del panel.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:clamp(28px,3vw,40px); background:#E9ECF2; border:1px solid #E9ECF2;" class="cb-3col">
+      <div style="background:#fff; padding:24px 22px;"><h3 style="font-size:18.5px; font-weight:700; letter-spacing:-.015em;">¿Qué centro necesita atención?</h3></div>
+      <div style="background:#fff; padding:24px 22px;"><h3 style="font-size:18.5px; font-weight:700; letter-spacing:-.015em;">¿De quién depende la operación?</h3></div>
+      <div style="background:#fff; padding:24px 22px;"><h3 style="font-size:18.5px; font-weight:700; letter-spacing:-.015em;">¿Hay relevo si falta alguien?</h3></div>
+    </div>
+    <figure data-reveal style="margin:clamp(26px,3vw,38px) 0 0; display:flex; flex-direction:column; gap:10px;">
+      <div style="border:1px solid #E3E7EF; border-radius:14px; overflow:hidden; background:#fff; box-shadow:0 30px 56px -48px rgba(10,18,38,.45);">
+        <img src="uploads/dashboard-anonimizado.png" alt="Panel de Operación de CheckBiz360 con el periodo visible, el estado de los datos y la lectura de la IA" style="display:block; width:100%; height:auto;">
+      </div>
+      <figcaption style="font-size:13px; color:#5A657C; max-width:760px; line-height:1.55;">Panel de Operación con datos de demostración anonimizados. El periodo es mensual y el mes en curso se muestra hasta ayer; no es un monitor instantáneo. Cuando no hay evidencia suficiente, el panel lo indica.</figcaption>
+    </figure>
+    <p style="margin-top:22px; font-size:15.5px; color:#4A5568; line-height:1.66; max-width:660px;">Utiliza el histórico para reconocer patrones y preparar decisiones. Sin historial suficiente no hay lectura fiable: el panel avisa antes de que decidas sobre ella.</p>
+  </section>
+
+  <section id="costes" style="padding:clamp(56px,6vw,92px) 52px; background:#0A1226; color:#fff; border-bottom:1px solid #0A1226;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(26px,4vw,56px); align-items:center;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:16px; max-width:560px;">
+        <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#8FB2E8;">Costes</span>
+        <h2 class="cb-h2" style="font-weight:800; letter-spacing:-.025em; line-height:1.08; color:#fff;">Pon cifras al coste observado de tu equipo.</h2>
+        <p style="font-size:16.5px; color:#C3CBDB; line-height:1.66;">Relaciona jornadas validadas con las tarifas configuradas para analizar el coste por persona y centro. Consulta su evolución y utiliza esa información junto al contexto del trabajo para revisar tu operación.</p>
+        <p style="font-size:14px; color:#fff; background:#16213F; border:1px solid #2A3557; border-radius:12px; padding:14px 16px; line-height:1.55;">El cálculo depende de las horas registradas y de las tarifas que configures.</p>
+      </div>
+      <div style="display:grid; gap:1px; background:#2A3557; border:1px solid #2A3557;">
+        <div style="background:#0F1932; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em; color:#fff;">Jornadas validadas × tarifa configurada</h3>
+          <p style="font-size:14.5px; color:#A8B2C6; line-height:1.6;">El coste se calcula sobre horas registradas, no sobre estimaciones.</p>
+        </div>
+        <div style="background:#0F1932; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em; color:#fff;">Lectura por persona y por centro</h3>
+          <p style="font-size:14.5px; color:#A8B2C6; line-height:1.6;">Con su evolución en el tiempo, para leerla junto al contexto del trabajo.</p>
+        </div>
+        <div style="background:#0F1932; padding:20px 22px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:17px; font-weight:700; letter-spacing:-.015em; color:#fff;">Qué no incluye</h3>
+          <p style="font-size:14.5px; color:#A8B2C6; line-height:1.6;">No gestiona presupuestos ni costes planificados, ni margen o facturación.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="hardware" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:start;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Hardware y dependencias</span>
+        <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08; max-width:620px;">Una ubicación más no tiene por qué exigir otro dispositivo de fichaje.</h2>
+        <p style="font-size:16.5px; color:#4A5568; line-height:1.66; max-width:600px;">El equipo registra desde el móvil, sin instalar equipos adicionales destinados al fichaje en cada ubicación ni depender de un proveedor para instalarlos, mantenerlos o trasladarlos.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px; border:1px solid #E9ECF2; padding:24px 22px;">
+        <h3 style="font-size:16px; font-weight:700; letter-spacing:-.01em;">Con qué alcance</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">La sustitución depende del sistema actual. No reemplaza tornos ni dispositivos de control físico de accesos.</p>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Siguen siendo necesarios un móvil compatible, permisos, configuración y conectividad según el flujo de trabajo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="adopcion" style="padding:clamp(56px,6vw,92px) 52px; background:#F7F9FC; border-bottom:1px solid #E9ECF2;">
+    <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08; max-width:600px;">El equipo registra. Los responsables revisan y deciden.</h2>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:clamp(30px,3.5vw,46px); background:#E3E7EF; border:1px solid #E3E7EF;" class="cb-3col">
+      <div style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Recorrido corto en el móvil</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Abrir la tarea, registrar la ejecución, adjuntar la evidencia. Hay formación de alta incluida; no prometemos cero aprendizaje.</p>
+      </div>
+      <div style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Accesos por rol</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Cada perfil ve lo que le corresponde. Las evidencias quedan registradas y la trazabilidad apoya el cumplimiento, sin sustituir tu criterio legal.</p>
+      </div>
+      <div style="background:#fff; padding:26px 24px; display:flex; flex-direction:column; gap:10px;">
+        <h3 style="font-size:18px; font-weight:700; letter-spacing:-.015em;">Encaje con tus herramientas</h3>
+        <p style="font-size:14.5px; color:#5A657C; line-height:1.6;">Revisamos cómo encaja CheckBiz360 con las herramientas que ya utilizas. Las integraciones dependen del sistema y del alcance acordado.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="precio" style="padding:clamp(56px,6vw,92px) 52px; border-bottom:1px solid #E9ECF2;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(26px,4vw,56px); align-items:start;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <span style="font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#1D4ED8;">Precio</span>
+        <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">Plan Bronce, con IA incluida.</h2>
+        <div style="display:flex; align-items:flex-end; gap:12px; margin-top:6px;">
+          <span style="font-family:'Outfit',sans-serif; font-size:clamp(46px,6vw,74px); font-weight:800; letter-spacing:-.04em; line-height:.95;">{{ precio }}</span>
+          <span style="font-size:15px; color:#5A657C; padding-bottom:10px;">por empleado y mes</span>
+        </div>
+        <p style="font-size:15px; color:#4A5568; line-height:1.62;">Precio para nuevas contrataciones hasta el 31/12/2026 incluido. Desde el 01/01/2027, 5 €/empleado/mes solo para nuevas contrataciones. Quien contrate ahora conserva su tarifa al terminar la promoción.</p>
+        <a href="#demo" style="align-self:flex-start; font-family:'Outfit',sans-serif; font-size:15.5px; font-weight:700; color:#fff; background:#1D4ED8; padding:15px 24px; border-radius:12px; transition:background .2s ease, transform .2s ease;" style-hover="background:#173FAF; color:#fff; transform:translateY(-2px);">Solicitar una demo</a>
+      </div>
+      <div style="border:1px solid #E9ECF2;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:18px 22px; border-bottom:1px solid #E9ECF2;"><span style="font-size:15px; font-weight:600;">IA operativa</span><span style="font-size:14px; color:#5A657C;">Incluida en Bronce</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:18px 22px; border-bottom:1px solid #E9ECF2;"><span style="font-size:15px; font-weight:600;">Prueba</span><span style="font-size:14px; color:#5A657C;">15 días en la primera suscripción</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:18px 22px; border-bottom:1px solid #E9ECF2;"><span style="font-size:15px; font-weight:600;">Alta y formación</span><span style="font-size:14px; color:#5A657C;">Incluidas</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:18px 22px; border-bottom:1px solid #E9ECF2;"><span style="font-size:15px; font-weight:600;">Permanencia inicial</span><span style="font-size:14px; color:#5A657C;">Sin permanencia</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:18px 22px;"><span style="font-size:15px; font-weight:600;">Integraciones a medida</span><span style="font-size:14px; color:#5A657C;">Fuera de Bronce, según alcance</span></div>
+        <p style="font-size:13px; color:#5A657C; line-height:1.55; padding:16px 22px; border-top:1px solid #E9ECF2; background:#FAFBFD;">Pendiente de confirmar antes de publicar: tratamiento de IVA, mínimo de empleados o facturación si lo hubiera, condiciones de la prueba, tarjeta y renovación.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo" style="padding:clamp(56px,6vw,96px) 52px clamp(60px,6vw,100px); background:#F7F9FC;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,60px); align-items:start;" class="cb-2col">
+      <div style="display:flex; flex-direction:column; gap:16px; max-width:520px;">
+        <h2 class="cb-h2" data-reveal style="font-weight:800; letter-spacing:-.025em; line-height:1.08;">Ve cómo aplicar estos datos a tu operación.</h2>
+        <p style="font-size:16.5px; color:#4A5568; line-height:1.66;">Cuéntanos cómo se reparte tu equipo y qué necesitas controlar. En la demo revisaremos el recorrido desde el trabajo en campo hasta las decisiones del responsable.</p>
+        <sc-if value="{{ whatsapp }}" hint-placeholder-val="{{ true }}">
+          <p style="font-size:14px; color:#5A657C;">Si lo prefieres, escríbenos por WhatsApp y acordamos la demo por ahí.</p>
+        </sc-if>
+      </div>
+      <div style="background:#fff; border:1px solid #E3E7EF; border-radius:18px; padding:clamp(22px,3vw,34px); box-shadow:0 30px 60px -44px rgba(10,18,38,.4);">
+        <sc-if value="{{ enviado }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; gap:12px; padding:8px 0;">
+            <h3 style="font-size:21px; font-weight:700; letter-spacing:-.02em;">Hemos recibido tu solicitud.</h3>
+            <p style="font-size:15px; color:#4A5568; line-height:1.6;">Te contactaremos para acordar la demo.</p>
+            <button type="button" onClick="{{ reiniciar }}" style="align-self:flex-start; margin-top:6px; font-family:'Outfit',sans-serif; font-size:14px; font-weight:700; color:#1D4ED8; background:#fff; border:1px solid #D3E0FD; padding:12px 18px; border-radius:10px; cursor:pointer;" style-hover="background:#EAF0FE;">Enviar otra solicitud</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ formVisible }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ enviar }}" style="display:flex; flex-direction:column; gap:16px;">
+            <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:14px; color:#8A2318; background:#FDF1EF; border:1px solid #F4CFC9; border-radius:10px; padding:12px 14px; line-height:1.5;">{{ errorTexto }}</p>
+            </sc-if>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Nombre</span>
+              <input name="nombre" type="text" value="{{ nombre }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Email profesional</span>
+              <input name="email" type="email" value="{{ email }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Empresa</span>
+              <input name="empresa" type="text" value="{{ empresa }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Teléfono <span style="font-weight:500; color:#5A657C;">· opcional</span></span>
+              <input name="telefono" type="tel" value="{{ telefono }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:13px; font-weight:700; color:#33405C;">Cómo se reparte tu equipo <span style="font-weight:500; color:#5A657C;">· opcional</span></span>
+              <textarea name="contexto" rows="3" value="{{ contexto }}" onChange="{{ campo }}" style="font-size:15px; color:#0A1226; padding:13px 14px; border:1px solid #D8DEE9; border-radius:10px; background:#fff; resize:vertical;"></textarea>
+            </label>
+            <button type="submit" style="margin-top:4px; font-family:'Outfit',sans-serif; font-size:16px; font-weight:700; color:#fff; background:#1D4ED8; border:none; padding:16px 22px; border-radius:12px; cursor:pointer; transition:background .2s ease;" style-hover="background:#173FAF;">Solicitar una demo</button>
+            <p style="font-size:12.5px; color:#5A657C; line-height:1.55;">Usaremos estos datos para contactarte y acordar la demo, conforme a nuestra política de privacidad.</p>
+          </form>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <footer style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px; padding:26px clamp(20px,4vw,52px); border-top:1px solid #E9ECF2; font-size:13px; color:#5A657C;">
+    <span>CheckBiz360 · encodeBiz</span>
+    <span>Las capturas corresponden a datos de demostración anonimizados.</span>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;whatsapp&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Contenido&quot;},&quot;precio&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2 €&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contenido&quot;},&quot;estadoFormulario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;error&quot;,&quot;enviado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estados&quot;}}">
+class Component extends DCLogic {
+  state = { estado: "idle", nombre: "", email: "", empresa: "", telefono: "", contexto: "", errorTexto: "" };
+
+  renderVals() {
+    const forzado = this.props.estadoFormulario ?? "normal";
+    const estado = forzado === "error" ? "error" : forzado === "enviado" ? "enviado" : this.state.estado;
+    return {
+      whatsapp: this.props.whatsapp ?? true,
+      precio: this.props.precio ?? "2 €",
+      enviado: estado === "enviado",
+      formVisible: estado !== "enviado",
+      error: estado === "error",
+      errorTexto: this.state.errorTexto || "Revisa los campos obligatorios: nombre, email profesional y empresa.",
+      nombre: this.state.nombre,
+      email: this.state.email,
+      empresa: this.state.empresa,
+      telefono: this.state.telefono,
+      contexto: this.state.contexto,
+      campo: (e) => this.setState({ [e.target.name]: e.target.value }),
+      enviar: (e) => {
+        e.preventDefault();
+        const { nombre, email, empresa } = this.state;
+        if (!nombre.trim() || !empresa.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          this.setState({ estado: "error", errorTexto: "Revisa los campos obligatorios: nombre, email profesional y empresa." });
+          return;
+        }
+        this.setState({ estado: "enviado" });
+      },
+      reiniciar: () => this.setState({ estado: "idle", nombre: "", email: "", empresa: "", telefono: "", contexto: "" })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

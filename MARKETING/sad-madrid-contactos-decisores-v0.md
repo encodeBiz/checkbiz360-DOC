@@ -127,6 +127,9 @@ lo cual encaja muy bien con CheckBiz360. Falta nombre de decisor.
 **Lectura:** buena cuenta para acceso directo. Puede ser pequena, pero justo por
 eso la demo presencial puede ser mas facil.
 
+**Seguimiento (2026-09-17):** tercera empresa SAD que Jose va a intentar
+contactar. Contacto pendiente; no hay llamada, respuesta ni demo registrada.
+
 ## Cuenta 9 - INNOVA ASISTENCIAL SL
 
 | Tipo | Contacto / rol | Canal | Estado | Fuente |
