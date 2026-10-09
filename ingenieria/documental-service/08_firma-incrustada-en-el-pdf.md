@@ -1,6 +1,6 @@
 # 08 — Firma incrustada en el PDF (PAdES) con certificado propio
 
-**Fecha:** 2026-10-09 · **Estado:** **auth hecho y probado en staging** (CA del entorno, certificado por clave al registrar, `GET /api/v1/checkinbiz/auth/signing-ca.crt`; la cadena verifica con OpenSSL y una firma de la clave se comprueba con su certificado); el documental (preparar, montar, PDF firmado) y la app, pendientes · **Decisionario:** Jose Acevedo
+**Fecha:** 2026-10-09 · **Estado:** **auth hecho y probado en staging** (CA del entorno, certificado por clave al registrar, `GET /api/v1/checkinbiz/auth/signing-ca.crt`; la cadena verifica con OpenSSL y una firma de la clave se comprueba con su certificado); el documental (preparar, montar, PDF firmado) pendiente; **la app, hecha el 2026-10-09** (§Lo que tiene que cambiar la app) · **Decisionario:** Jose Acevedo
 
 > Jose, 2026-10-09: «¿la nómina se firma en sí, o sería un documento con un acta de firma? La
 > idea es firmar el documento». Y después: «ojo, esto es solo para los documentos; lo del
@@ -13,12 +13,20 @@
 
 | | Hoy (firma separada) | Con esto |
 |---|---|---|
-| Nómina en PDF con acuse | el PDF queda intacto; la firma cubre su hash y vive en la evidencia y el acta | **el PDF sale firmado por dentro** (PAdES): cualquier lector lo enseña como firmado por el trabajador, con fecha; además, evidencia y acta como hoy |
+| Nómina en PDF con acuse | el PDF queda intacto; la firma cubre su hash y vive en la evidencia y el acta | **el PDF sale firmado por dentro** (PAdES) y **sustituye al fichero del documento**: cualquier lector lo enseña como firmado por el trabajador, con fecha; además, evidencia y acta como hoy |
 | Documento que no es PDF (imagen, Word, Excel) | evidencia y acta | igual: evidencia y acta. No se convierte a PDF para firmarlo |
 | Entrega de equipos (inventario) | evidencia y acta | **igual, sin tocar** |
 
 Lo que se firma no cambia: es el contenido del fichero. Cambia dónde queda la firma: dentro del
 propio PDF, que es lo que el cliente guarda y enseña.
+
+**Solo documentos dirigidos a un solo empleado.** Jose, 2026-10-09: «los documentos pueden ser
+firmados cuando van dirigidos a un solo empleado; eso es importantísimo». La firma dentro del PDF
+es la de una persona sobre **su** documento (`scope: employee`: nómina, amonestación, contrato).
+Un documento de empresa o de sucursal es el mismo fichero para todos: cada trabajador sigue
+acusando recibo con la firma sobre el hash (evidencia y acta), pero el fichero no se firma por
+dentro. La regla la aplican los dos lados: la app no pide `prepare` para esos documentos
+(`ManagedDocument.canBeSignedInPdf`) y el documental lo rechaza con 400 aunque se lo pidan.
 
 ## La pieza que falta: un certificado
 
@@ -57,7 +65,8 @@ de pedir «la cadena de certificados de esta clave» a `shared`.
 ## El flujo, en el documental
 
 1. **Preparar** — `POST /documents/:id/sign/prepare` (el trabajador; el documento requiere
-   acuse, es `application/pdf` y `canAcknowledge`). El servidor añade al PDF el hueco de firma
+   acuse, **va dirigido a un solo empleado** (`scope: employee`; si no, 400 con un código propio,
+   p. ej. `documents/not_employee_scoped`), es `application/pdf` y `canAcknowledge`). El servidor añade al PDF el hueco de firma
    (actualización incremental con `/ByteRange`), calcula el resumen de lo que queda fuera del
    hueco y construye los atributos firmados de CMS (`contentType`, `messageDigest`,
    `signingTime`, `signingCertificateV2`). Guarda el estado en el reto:
@@ -70,15 +79,18 @@ de pedir «la cadena de certificados de esta clave» a `shared`.
    signature }`.
 3. **Montar** — el servidor verifica la firma sobre los atributos firmados con la clave vigente
    (como hoy), monta el `SignedData` de CMS con el certificado del trabajador y la cadena de la
-   CA, lo incrusta en el hueco y escribe el **PDF firmado** como fichero propio:
-   `documents/entities/{e}/signed/{documentId}/{employeeId}-v{version}.pdf` (una sola vez). El
-   acuse guarda `signedFile { path, sha256 }` además de `signature` y `evidence`; la evidencia
-   y el acta se generan igual que hoy (el `payload` de la evidencia es el base64 de los
-   atributos firmados, y el acta lo dice).
-4. **Descargar** — `GET /documents/:id/acks/:employeeId/signed-file?entityId` → URL firmada
-   (5 min) del PDF firmado, con el permiso de leer el documento (el propio trabajador, y quien
-   puede leer sus documentos). En el panel: en la ficha del documento, junto a cada
-   confirmación, «Descargar el PDF firmado» cuando exista; en la app, «Mi copia firmada».
+   CA, lo incrusta en el hueco y **el PDF firmado sustituye al fichero del documento**. Jose,
+   2026-10-09: «el documento firmado, por ejemplo una nómina, debe ser reemplazado, y si es para
+   más de una persona esto es inviable»; de ahí la regla de arriba. Por fijar en el documental:
+   el original se guarda aparte (para la evidencia, cuyo `payload` es el base64 de los atributos
+   firmados, y para poder enseñar qué se firmó); sustituir **no cambia la versión ni vuelve a
+   pedir acuse** (es el mismo contenido, con la firma dentro); `contentSha256` pasa a ser el del
+   PDF firmado o se guarda el del original al lado. El acuse guarda `signature` y `evidence` como
+   hoy, y el acta se genera igual.
+4. **Descargar** — la descarga de siempre del documento (`GET /documents/:id/download`) ya da el
+   PDF firmado: no hace falta ruta ni botón aparte, ni en el panel ni en la app. La app, tras un
+   acuse firmado, vuelve a pedir ese documento (`GET /documents/:id`, que trae `ackStatus`) para
+   que la lista enseñe el fichero que hay ahora.
 
 Si el documento no es PDF, `prepare` responde 400 `documents/not_pdf` y la app usa el flujo de
 hoy (`signing-subject` + reto + `ack`): evidencia y acta.
@@ -88,13 +100,39 @@ pide un sello RFC 3161 a una autoridad de sellado externa y lo añade como atrib
 la hora deja de depender de nosotros. Sin la variable, la firma lleva la hora del servidor
 (PAdES-B-B), que es lo que hay hoy en el acta.
 
-## Lo que tiene que cambiar la app
+## Lo que tiene que cambiar la app — hecho el 2026-10-09
 
 Hoy la función de firmar recibe un **texto** y firma sus bytes UTF-8. Para el PDF tiene que
-firmar **bytes exactos** (`toSign`, base64 → bytes). Hay que confirmar con el paquete
-`biometric_signature` si admite bytes; si solo admite texto, hace falta un ajuste en el
-paquete (es pequeño: el chip firma bytes; es la capa Dart la que lo limita). Es lo único que la
-app necesita; el resto del flujo es el acuse de siempre.
+firmar **bytes exactos** (`toSign`, base64 → bytes). Es lo único que la app necesita; el resto
+del flujo es el acuse de siempre.
+
+**El paquete ya firma bytes.** Comprobado en `biometric_signature` 13.2.0: además de
+`createSignature(String)` tiene `createSignatureFromBytes(Uint8List)`, y en nativo los dos
+acaban en la misma firma (`Signature.update(bytes)` con `SHA256withECDSA` en Android;
+`SecKeyCreateSignature` con `ecdsaSignatureMessageX962SHA256` sobre el `Data` recibido en iOS).
+Los bytes cruzan el canal como `ByteArray` / `FlutterStandardTypedData`, sin recodificar. No hace
+falta tocar el paquete.
+
+**Lo hecho en la app** (checkbiz360, rama `feat/firma-clave-en-dispositivo`):
+
+- `DeviceSigningKeyService.signBytes` firma un `Uint8List` tal cual. `SignAcknowledgement.signPrepared`
+  firma un reto ya emitido (`challengeId` + `toSign`) sin pedir otro, y `canSign` dice si el móvil
+  tiene clave sin tocar la red: sin clave no se prepara ningún PDF ni se pide reto.
+- Al acusar recibo con clave en el móvil: si el documento va dirigido a un solo empleado
+  (`scope: employee`) y es PDF (`mimeType`) —`ManagedDocument.canBeSignedInPdf`—, la app llama
+  a `POST /documents/:id/sign/prepare`, decodifica `toSign` una sola vez y firma esos bytes; el
+  acuse es el de siempre, `POST /documents/:id/ack` con `{ challengeId, signature }`. Si no cumple
+  la regla no pregunta; si el documental responde 400 (`not_pdf`, `pdf_not_signable`, el del
+  ámbito) o aún no tiene `prepare` (404, 5xx), vuelve al flujo de hoy (`signing-subject` + reto +
+  `ack`): evidencia y acta.
+- Probado en unitarios con un servidor de mentira (petición, decodificación de `toSign`, códigos
+  de error) y con la firma falsa (firma los bytes exactos, sin reto nuevo ni paso por texto).
+  **Sin probar contra el documental**, porque su parte está pendiente; cuando esté, un acuse de
+  una nómina PDF desde el móvil debería salir con `signedFile`.
+- Como el PDF firmado sustituye al fichero, la app no necesita nada aparte para descargarlo: la
+  descarga de siempre ya lo da. Tras un acuse firmado vuelve a pedir el documento
+  (`GET /documents/:id`, que trae `ackStatus`) y lo cambia en la lista sin retrasar el aviso; si
+  esa recarga falla, se queda lo marcado en local.
 
 ## Qué pide cada entorno (va al registro del pase)
 

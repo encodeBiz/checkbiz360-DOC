@@ -84,6 +84,25 @@ Permiso: `canRead`; el documento debe requerir acuse. Query: `entityId`.
 `contentSha256` es el SHA-256 del fichero, calculado al subirlo (los documentos anteriores al 2026-10-09 no lo
 tienen y el `subject` lo omite): la firma queda atada al contenido, no solo al id.
 
+### `POST /:documentId/sign/prepare` — firma dentro del PDF (documental 08)
+Permiso: `canAcknowledge`, y **solo si el documento va dirigido a un empleado** (`scope: employee`,
+`acknowledgementMode: single_employee`, y ese empleado es quien llama); si no, `400
+not_addressed_to_one_employee`. Jose, 2026-10-09: «el documento firmado debe ser reemplazado, y si es para
+más de una persona es inviable». Body: `entityId`, `keyId?` (la clave del móvil; sin él, la última registrada).
+Efectos: dibuja la marca del margen (quién, cuándo, verificación, acta; 5,5 pt, gris), añade el hueco CAdES
+detached, guarda el PDF preparado en `signatures/pending/…` y emite un reto `documents.pades` cuyo `payload`
+son **bytes** en base64.
+`201` → `{ challengeId, toSign (base64 del DER de los atributos firmados), expiresAt, stamp }`.
+`400` not_pdf / pdf_not_signable (`detail`: `pdf_encrypted` | `pdf_already_signed` | `pdf_unreadable`) /
+not_addressed_to_one_employee / no_signing_key · `409` already_acknowledged · `503` ca_not_configured.
+
+El móvil firma **los bytes** de `toSign` y llama al `POST /:documentId/ack` de siempre con `{ challengeId,
+signature }`. El servidor comprueba la firma, monta el CMS con el certificado del trabajador y la CA, lo
+incrusta, y **el PDF firmado sustituye al original**: `storagePath` pasa a ser el firmado y el documento gana
+`signed { at, by, challengeId, sha256, originalStoragePath, originalSha256 }`; el original no se borra. La descarga
+de siempre (`GET /:documentId/download`) entrega el firmado. El acuse guarda además `signedFile { path, sha256 }`
+y `ackStatus.signedFile: true`. Lo que no es PDF o va a más de una persona sigue con el acuse y su acta.
+
 ### El acta de una firma (servicio `reports`)
 Cada acuse firmado guarda `signature.challengeId` y `signature.evidence { path, sha256 }` (la evidencia cerrada en
 Storage al firmar). El acta se pide a `reports`, con el ID token de Firebase y asiento en la empresa:
