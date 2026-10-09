@@ -358,15 +358,18 @@ de uso; un texto libre no prueba eso, un documento sí.
   trabajador, supervisor y manager, y solo un documento visible para trabajadores puede ir con
   una entrega (si no, 400 `inventory/document_not_for_workers`). Así el trabajador lo abre con
   los permisos de siempre; no hay excepción de lectura por entrega.
-- **La frase la escribe el sistema y nombra los documentos**: «He recibido Casco (CS-12) junto
-  con «Modo de uso» (v1) y «Compromiso de responsabilidad» (v1), y me comprometo…». El panel
-  deja de pedir texto libre; queda la nota opcional. La API sigue aceptando
+- **La frase la escribe el sistema y es genérica** (Jose, 2026-10-09: «solo debe decir de forma
+  genérica que estás de acuerdo con la entrega y los documentos relacionados»): «Confirmo que he
+  recibido este equipo y los documentos relacionados, y estoy de acuerdo con la entrega» (sin
+  documentos, sin esa parte). Qué equipo y qué documentos, con su versión, lo dice la entrega.
+  El panel deja de pedir texto libre; queda la nota opcional. La API sigue aceptando
   `acknowledgementText` por compatibilidad.
 - **Tipo nuevo** `responsibility_commitment` («Compromiso de uso y responsabilidad»). El modo de
   uso y el folleto del fabricante caben en `manual`.
 - **El informe** «Equipos y EPIs» gana la columna «Documentos entregados» con título y versión.
-- **Postgres**: la entrega espejada lleva la frase, que ya nombra los documentos; la lista
-  estructurada vive en Firestore. Una columna propia pediría migración y no hace falta hoy.
+- **Postgres**: la lista de documentos de la entrega vive en Firestore, que es de donde lee el
+  informe; espejarla en `unit_assignments_raw` pediría una migración (pendiente si analytics
+  la necesita).
 - **La app (2026-10-09, `develop` de checkbiz360):** «Mi material» enseña en cada entrega el
   bloque «Documentos de la entrega (n)», una fila por documento con título subrayado, versión y
   «Abrir»; se abre con la descarga del documental de siempre. Si la entrega espera confirmación,
