@@ -30,5 +30,6 @@ planes manuales de QA. El método está en [../plan-automatizacion.md](../plan-a
 | [equipos.md](./equipos.md) | Equipos: plantillas de responsabilidades, aplicar a una sucursal, guardar una sucursal | EQP | Publicado · con prueba (`52-equipos.spec.ts`) |
 | [facturacion-informes-eventos.md](./facturacion-informes-eventos.md) | Facturación, informes, webhooks salientes y analítica | FAC, INF, EVT, ANA | Publicado · análisis estático |
 | [mapa-migracion.md](./mapa-migracion.md) | Qué llama cada cliente, adónde va y qué queda fuera del HTTP | MAP | Publicado · análisis estático |
+| [firma.md](./firma.md) | Firma del trabajador desde el móvil: clave y certificado, reto, acuse de recibo firmado con evidencia y acta | FIR | 20 casos, afirmados contra dev el 09-oct-2026 |
 | [hallazgos.md](./hallazgos.md) | Fallos y comportamientos dudosos, confirmados, con su corrección debajo | HAL | 35 de 37 corregidos o con código listo (14-sep-2026); 2 esperan decisión |
 | [hallazgos-triaje.md](./hallazgos-triaje.md) | Los hallazgos clasificados por importancia, con su resolución y el orden de ataque | HAL | Auditoría y primera tanda de arreglos, 2026-09-13 |
