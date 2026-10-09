@@ -269,9 +269,16 @@ Android y un iPhone reales (clave con solo PIN, gama baja sin StrongBox).
 
 ## 9b. Lo que NO entra en este lote (para no buscarlo)
 
-La firma incrustada en el PDF (PAdES con CA propia, [documental 08](../ingenieria/documental-service/08_firma-incrustada-en-el-pdf.md))
-está diseñada, no construida. Cuando entre, traerá una CA por entorno en el volumen de secretos
-(`signing-ca.key`, `signing-ca.crt`) y, si se quiere sello de tiempo, `SIGNING_TSA_URL`.
+La firma incrustada en el PDF (PAdES con CA propia, [documental 08](../ingenieria/documental-service/08_firma-incrustada-en-el-pdf.md)):
+la parte de **auth está construida** (CA, certificado por clave, `GET /auth/signing-ca.crt`) y
+**sí entra** en este lote con el código; el documental (preparar y montar el PDF) todavía no.
+Lo que pide en prod, cuando se quiera que emita certificados (sin esto arranca igual y no emite):
+1. generar la CA de producción desde el portátil con `services/checkinbiz/src/scripts/signing-ca.ts`
+   (`--name "CheckBiz360 Firma CA" --out <dir> --apply`), **guardar la clave fuera de cualquier repo**;
+2. copiar `signing-ca.key` (600) y `signing-ca.crt` (644) a `/opt/encodebiz-api/secrets/`;
+3. añadir a `x-secret-volumes` del `docker-compose.yml` de prod las dos líneas que ya tiene el de
+   staging (`./secrets/signing-ca.key:/secrets/signing-ca.key:ro` y `.crt`), en el mismo PR;
+4. `SIGNING_TSA_URL`, solo cuando llegue el sello de tiempo (documental, pendiente).
 
 ## 10. Orden de ejecución el día del pase
 

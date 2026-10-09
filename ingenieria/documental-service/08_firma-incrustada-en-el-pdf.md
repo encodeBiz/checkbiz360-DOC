@@ -1,6 +1,6 @@
 # 08 — Firma incrustada en el PDF (PAdES) con certificado propio
 
-**Fecha:** 2026-10-09 · **Estado:** diseño, pendiente de construir · **Decisionario:** Jose Acevedo
+**Fecha:** 2026-10-09 · **Estado:** **auth hecho y probado en staging** (CA del entorno, certificado por clave al registrar, `GET /api/v1/checkinbiz/auth/signing-ca.crt`; la cadena verifica con OpenSSL y una firma de la clave se comprueba con su certificado); el documental (preparar, montar, PDF firmado) y la app, pendientes · **Decisionario:** Jose Acevedo
 
 > Jose, 2026-10-09: «¿la nómina se firma en sí, o sería un documento con un acta de firma? La
 > idea es firmar el documento». Y después: «ojo, esto es solo para los documentos; lo del
@@ -28,7 +28,7 @@ autoridad de certificación**:
 
 - **Una CA por entorno** («CheckBiz360 Firma CA», EC P-256): la privada en el volumen de
   secretos (`secrets/signing-ca.key`, nunca en el repo), la pública publicada en
-  `GET /api/v1/documents/signing-ca.crt` y en el manual, para que el cliente la instale como
+  `GET /api/v1/checkinbiz/auth/signing-ca.crt` (auth: es identidad) y en el manual, para que el cliente la instale como
   de confianza en Acrobat si quiere ver la firma en verde.
 - **Un certificado por clave registrada**, emitido al registrar (`POST /auth/signing-keys`) y
   guardado en `signing_keys/{employeeId}/keys/{keyId}.certificatePem`: sujeto `CN = nombre del
@@ -98,9 +98,12 @@ app necesita; el resto del flujo es el acuse de siempre.
 
 ## Qué pide cada entorno (va al registro del pase)
 
-- Generar la CA del entorno (clave + certificado autofirmado, 10 años), dejar la clave en
-  `secrets/signing-ca.key` y el certificado en `secrets/signing-ca.crt` en el volumen de secretos;
-  `SIGNING_CA_KEY_PATH` y `SIGNING_CA_CERT_PATH` si no están en la ruta por defecto.
+- Generar la CA del entorno **una vez**, desde el portátil:
+  `npx ts-node --project services/checkinbiz/tsconfig.json services/checkinbiz/src/scripts/signing-ca.ts --name "CheckBiz360 Firma CA" --out <dir> --apply`
+  (simula sin `--apply`; nunca pisa). Copiar `signing-ca.key` (600) y `signing-ca.crt` (644) al
+  directorio `secrets/` del servidor; el compose los monta en `/secrets/` (hecho en staging el
+  2026-10-09; el de producción lo documenta el pase). Sin ficheros, el servicio arranca y no
+  emite certificados. `SIGNING_CA_KEY_PATH` / `SIGNING_CA_CERT_PATH` solo si cambia la ruta.
 - Las claves registradas **antes** de la CA no tienen certificado: se emite al vuelo la primera
   vez que firman un PDF (el servidor tiene la pública), sin pedir nada al móvil.
 - `SIGNING_TSA_URL` si se quiere sello de tiempo.
