@@ -62,3 +62,5 @@ For machines, vehicles and PPE, inventory keeps their documents (ownership, CE, 
 | [Consumption report and movements](./103-consumption-report-and-movements.md) | Where material goes and what it costs |
 | [Task reports](../06-tasks/48-task-reports.md) | Material inside the task report |
 | [Equipment: documents, inspections and handovers](./104-equipment-documents-inspections-and-handovers.md) | Each machine's paperwork, PPE handovers and the inspection report |
+| [Import material from a template](./105-import-material-from-a-template.md) | Load everything a warehouse holds at once |
+| [Where each piece of equipment is](./106-where-each-piece-of-equipment-is.md) | Free equipment away from the warehouse and how it is received |

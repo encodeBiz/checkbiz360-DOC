@@ -62,3 +62,5 @@ Para las máquinas, vehículos y EPIs, el inventario guarda sus documentos (prop
 | [Informe de consumo y movimientos](./103-informe-de-consumo-y-movimientos.md) | Dónde se va el material y cuánto cuesta |
 | [Informes de tareas](../06-tareas/48-informes-de-tareas.md) | El material dentro del informe de tareas |
 | [Equipos: documentos, revisiones y entregas](./104-equipos-documentos-revisiones-y-entregas.md) | Papeles de cada máquina, entregas de EPIs e informe para la inspección |
+| [Importar material desde una plantilla](./105-importar-material-desde-una-plantilla.md) | Cargar de una vez todo lo que hay en un almacén |
+| [Dónde está cada equipo](./106-donde-esta-cada-equipo.md) | Equipos libres fuera del almacén y cómo se reciben |

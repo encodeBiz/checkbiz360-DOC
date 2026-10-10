@@ -37,7 +37,7 @@ El detalle de la tarea muestra una tabla con todo su material, del tipo que sea:
 - Para lo que se gasta: lo reservado, lo que salió, lo gastado, lo devuelto y lo **sin declarar**.
 - Para lo que se presta: el ejemplar, su tramo y el estado de la reserva.
 
-Desde ahí, **Añadir material** reserva más y **Declarar consumo** apunta lo gastado desde el backoffice, sobre lo reservado o sobre lo no previsto, sin registrar antes ninguna salida: es lo práctico cuando la tarea se planifica y se cierra desde el backoffice. Las salidas no se dan desde la tarea, sino desde el almacén o el artículo. Un ejemplar se puede liberar si ya no hace falta, y uno **fuera de regla** se puede reservar igualmente, después de aceptar el aviso.
+Desde ahí, **Añadir material** reserva más y **Declarar consumo** apunta lo gastado desde el backoffice, sobre lo reservado o sobre lo no previsto, sin registrar antes ninguna salida: es lo práctico cuando la tarea se planifica y se cierra desde el backoffice. Las salidas no se dan desde la tarea, sino desde el almacén o el artículo. Un ejemplar se puede **liberar** si ya no hace falta: la plataforma pregunta **¿Dónde queda?** —en la tarea o en un almacén—, porque liberarlo no lo devuelve al almacén (ver [Dónde está cada equipo](./106-donde-esta-cada-equipo.md)). Uno **fuera de regla** se puede reservar igualmente, después de aceptar el aviso.
 
 ---
 
@@ -46,6 +46,8 @@ Desde ahí, **Añadir material** reserva más y **Declarar consumo** apunta lo g
 El trabajador ve el material de la tarea en la propia tarea de la app y tiene un único botón, **Declarar consumo**: viene precargado con lo reservado; si se gastó todo, basta con confirmar. Puede corregir cantidades y añadir lo que gastó sin estar previsto. No tiene que registrar ninguna salida: si el almacén no la dio, la plataforma la apunta al declarar.
 
 Si la sucursal tiene varios almacenes y añade algo no previsto, la app pregunta de cuál salió.
+
+La tarjeta de cada equipo dice dónde está. Un supervisor o superior puede **liberarlo** desde la app, diciendo si queda en la tarea o vuelve a un almacén; el trabajador ve que se libera al completar la tarea.
 
 ---
 
@@ -67,3 +69,4 @@ Así ninguna tarea se cierra con material perdido por el camino. En una tarea ya
 | [Existencias, almacenes y entradas](./101-existencias-almacenes-y-entradas.md) | Cómo se da de alta el material |
 | [Validación de tareas](../06-tareas/45-validacion-de-tareas.md) | El paso de validación donde se cuadra el material |
 | [Informes de tareas](../06-tareas/48-informes-de-tareas.md) | El material de cada tarea en el informe |
+| [Dónde está cada equipo](./106-donde-esta-cada-equipo.md) | Liberar un equipo, lo que hay que recoger y recibirlo en el almacén |

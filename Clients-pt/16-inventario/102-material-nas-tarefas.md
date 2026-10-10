@@ -37,7 +37,7 @@ O detalhe da tarefa mostra uma tabela com todo o seu material, seja de que tipo 
 - Para o que se gasta: o reservado, o que saiu, o gasto, o devolvido e o **por declarar**.
 - Para o que se empresta: o exemplar, o seu período e o estado da reserva.
 
-A partir daí, **Adicionar material** reserva mais e **Declarar consumo** regista o gasto no backoffice, sobre o reservado ou sobre o não previsto, sem registar antes nenhuma saída: é o prático quando a tarefa se planeia e fecha no backoffice. As saídas não se dão a partir da tarefa, mas do armazém ou do artigo. Um exemplar pode ser libertado se já não for preciso, e um **fora de regra** pode ser reservado na mesma, depois de aceitar o aviso.
+A partir daí, **Adicionar material** reserva mais e **Declarar consumo** regista o gasto no backoffice, sobre o reservado ou sobre o não previsto, sem registar antes nenhuma saída: é o prático quando a tarefa se planeia e fecha no backoffice. As saídas não se dão a partir da tarefa, mas do armazém ou do artigo. Um exemplar pode ser **libertado** se já não for preciso: a plataforma pergunta **Onde fica?** —na tarefa ou num armazém—, porque libertá-lo não o devolve ao armazém (ver [Onde está cada equipamento](./106-onde-esta-cada-equipamento.md)). Um **fora de regra** pode ser reservado na mesma, depois de aceitar o aviso.
 
 ---
 
@@ -46,6 +46,8 @@ A partir daí, **Adicionar material** reserva mais e **Declarar consumo** regist
 O trabalhador vê o material da tarefa na própria tarefa da aplicação e tem um único botão, **Declarar consumo**: vem pré-preenchido com o reservado; se se gastou tudo, basta confirmar. Pode corrigir quantidades e acrescentar o que gastou sem estar previsto. Não regista nenhuma saída: se o armazém não a deu, a plataforma regista-a ao declarar.
 
 Se a sucursal tiver vários armazéns e acrescentar algo não previsto, a aplicação pergunta de qual saiu.
+
+O cartão de cada equipamento diz onde está. Um supervisor ou superior pode **libertá-lo** a partir da aplicação, dizendo se fica na tarefa ou volta a um armazém; o trabalhador vê que é libertado ao concluir a tarefa.
 
 ---
 
@@ -67,3 +69,4 @@ Assim nenhuma tarefa fecha com material perdido pelo caminho. Numa tarefa já fe
 | [Existências, armazéns e entradas](./101-existencias-armazens-e-entradas.md) | Como se dá entrada do material |
 | [Validação de tarefas](../06-tarefas/45-validacao-de-tarefas.md) | O passo de validação em que se acerta o material |
 | [Relatórios de tarefas](../06-tarefas/48-relatorios-de-tarefas.md) | O material de cada tarefa no relatório |
+| [Onde está cada equipamento](./106-onde-esta-cada-equipamento.md) | Libertar um equipamento, o que há para recolher e recebê-lo no armazém |

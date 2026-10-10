@@ -62,3 +62,5 @@ Para máquinas, veículos e EPI, o inventário guarda os seus documentos (propri
 | [Relatório de consumo e movimentos](./103-relatorio-de-consumo-e-movimentos.md) | Para onde vai o material e quanto custa |
 | [Relatórios de tarefas](../06-tarefas/48-relatorios-de-tarefas.md) | O material dentro do relatório de tarefas |
 | [Equipamentos: documentos, inspeções e entregas](./104-equipamentos-documentos-inspecoes-e-entregas.md) | Documentos de cada máquina, entregas de EPI e relatório para a inspeção |
+| [Importar material a partir de um modelo](./105-importar-material-a-partir-de-um-modelo.md) | Carregar de uma vez tudo o que há num armazém |
+| [Onde está cada equipamento](./106-onde-esta-cada-equipamento.md) | Equipamentos livres fora do armazém e como se recebem |

@@ -56,6 +56,11 @@ controlador puede haberse quedado vieja. Mismo criterio que las pausas de tareas
 **Nada de esto se guarda en el ejemplar.** `ItemUnit.status` solo distingue `available`,
 `unavailable` y `retired`; el «en uso» y el «dónde está» se derivan de la reserva activa.
 
+> 2026-10-10: el «dónde está» **después** de liberar no se deduce de nada, y por eso pasa a
+> llevar su propio rastro (`position`, con «¿dónde queda?» al liberar a mano y recepción en
+> almacén sin bloquear la agenda). La agenda de este TDR no cambia.
+> [ADR-008](../adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md).
+
 Al liberar se registra `usageEnd` si el artículo declara `usageUnit`, y se acumula la diferencia
 en `ItemUnit.usageCounter`. Ese contador no se usa todavía —el mantenimiento preventivo es fase
 posterior— pero **no se puede rellenar hacia atrás**.

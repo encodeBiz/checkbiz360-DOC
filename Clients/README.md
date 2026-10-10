@@ -438,6 +438,8 @@ Complemento de pago: el material atado a la tarea, a la persona, al sitio y a la
 | Documentos y revisiones de cada máquina | **Disponible** | Aviso de caducidad y marca en rojo, sin bloquear. |
 | Entrega de EPIs confirmada por el trabajador | **Disponible** | Con huella o cara desde la app. |
 | Informe «Equipos y EPIs» para inspecciones | **Disponible** | Registro de entregas y dossier por máquina. |
+| Importación de material desde una plantilla de Excel | **Disponible** | Por almacén, una para consumibles y otra para operables; se revisa antes de importar y no duplica al volver a subirla. |
+| Dónde está cada equipo y equipos fuera de base | **Disponible** | Liberar no lo devuelve al almacén: se dice dónde queda y se recibe en el almacén; historial de dónde ha estado. |
 
 | Artículo | Descripción |
 |---|---|
@@ -446,6 +448,8 @@ Complemento de pago: el material atado a la tarea, a la persona, al sitio y a la
 | [Material en las tareas](16-inventario/102-material-en-las-tareas.md) | Reservar, sacar, declarar y cuadrar |
 | [Informe de consumo y movimientos](16-inventario/103-informe-de-consumo-y-movimientos.md) | Dónde se va el material y cuánto cuesta |
 | [Equipos: documentos, revisiones y entregas](16-inventario/104-equipos-documentos-revisiones-y-entregas.md) | Papeles de cada máquina, entregas de EPIs e informe para la inspección |
+| [Importar material desde una plantilla](16-inventario/105-importar-material-desde-una-plantilla.md) | Cargar de una vez todo lo que hay en un almacén |
+| [Dónde está cada equipo](16-inventario/106-donde-esta-cada-equipo.md) | Equipos libres fuera del almacén, recogerlos y recibirlos |
 
 ---
 
@@ -469,7 +473,7 @@ DOCS/Clients/
 ├── 13-soporte-e-incidencias/          (4 artículos)
 ├── 14-referencia/                     (4 artículos)
 ├── 15-integraciones/                  (5 artículos)
-└── 16-inventario/                     (5 artículos)
+└── 16-inventario/                     (7 artículos)
 ```
 
 **Total: 104 artículos**

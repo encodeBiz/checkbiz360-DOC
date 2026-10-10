@@ -438,6 +438,8 @@ Paid add-on: material tied to the task, the person, the place and the time.
 | Documents and inspections for each machine | **Available** | Expiry alert and red flag, without blocking. |
 | PPE delivery confirmed by the worker | **Available** | With fingerprint or face from the app. |
 | "Equipment and PPE" report for inspections | **Available** | Delivery record and dossier per machine. |
+| Material import from an Excel template | **Available** | Per warehouse, one for consumables and one for operables; reviewed before importing and does not duplicate when uploaded again. |
+| Where each piece of equipment is, and equipment away from base | **Available** | Releasing it does not return it to the warehouse: you say where it stays and it is received in the warehouse; history of where it has been. |
 
 | Article | Description |
 |---|---|
@@ -446,6 +448,8 @@ Paid add-on: material tied to the task, the person, the place and the time.
 | [Material on tasks](16-inventory/102-material-on-tasks.md) | Reserve, issue, declare and settle |
 | [Consumption report and movements](16-inventory/103-consumption-report-and-movements.md) | Where material goes and what it costs |
 | [Equipment: documents, inspections and handovers](16-inventory/104-equipment-documents-inspections-and-handovers.md) | Each machine's paperwork, PPE handovers and the inspection report |
+| [Import material from a template](16-inventory/105-import-material-from-a-template.md) | Load everything a warehouse holds at once |
+| [Where each piece of equipment is](16-inventory/106-where-each-piece-of-equipment-is.md) | Free equipment away from the warehouse, collecting and receiving it |
 
 ---
 
@@ -469,7 +473,7 @@ DOCS/Clients-en/
 ├── 13-support-and-incidents/           (4 articles)
 ├── 14-reference/                       (4 articles)
 ├── 15-integrations/                    (5 articles)
-└── 16-inventory/                       (5 articles)
+└── 16-inventory/                       (7 articles)
 ```
 
 **Total: 104 articles**

@@ -438,6 +438,8 @@ Complemento pago: o material ligado à tarefa, à pessoa, ao sítio e à hora.
 | Documentos e revisões de cada máquina | **Disponível** | Aviso de caducidade e marca a vermelho, sem bloquear. |
 | Entrega de EPI confirmada pelo trabalhador | **Disponível** | Com impressão digital ou rosto na aplicação. |
 | Relatório «Equipamentos e EPI» para inspeções | **Disponível** | Registo de entregas e dossiê por máquina. |
+| Importação de material a partir de um modelo de Excel | **Disponível** | Por armazém, um para consumíveis e outro para operáveis; revê-se antes de importar e não duplica ao voltar a carregá-lo. |
+| Onde está cada equipamento e equipamentos fora da base | **Disponível** | Libertá-lo não o devolve ao armazém: diz-se onde fica e recebe-se no armazém; histórico de onde esteve. |
 
 | Artigo | Descrição |
 |---|---|
@@ -446,6 +448,8 @@ Complemento pago: o material ligado à tarefa, à pessoa, ao sítio e à hora.
 | [Material nas tarefas](16-inventario/102-material-nas-tarefas.md) | Reservar, retirar, declarar e acertar |
 | [Relatório de consumo e movimentos](16-inventario/103-relatorio-de-consumo-e-movimentos.md) | Para onde vai o material e quanto custa |
 | [Equipamentos: documentos, inspeções e entregas](16-inventario/104-equipamentos-documentos-inspecoes-e-entregas.md) | Documentos de cada máquina, entregas de EPI e relatório para a inspeção |
+| [Importar material a partir de um modelo](16-inventario/105-importar-material-a-partir-de-um-modelo.md) | Carregar de uma vez tudo o que há num armazém |
+| [Onde está cada equipamento](16-inventario/106-onde-esta-cada-equipamento.md) | Equipamentos livres fora do armazém, recolhê-los e recebê-los |
 
 ---
 
@@ -469,7 +473,7 @@ DOCS/Clients-pt/
 ├── 13-apoio-e-incidencias/             (4 artigos)
 ├── 14-referencia/                      (4 artigos)
 ├── 15-integracoes/                     (5 artigos)
-└── 16-inventario/                      (5 artigos)
+└── 16-inventario/                      (7 artigos)
 ```
 
 **Total: 104 artigos**

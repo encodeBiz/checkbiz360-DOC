@@ -29,6 +29,8 @@ El material entra siempre por **Nueva entrada**, en **Inventario → Existencias
 
 > **Consejo:** el buscador empieza a buscar a partir de la tercera letra, igual que el resto de buscadores del backoffice.
 
+Si tiene muchos artículos que dar de alta, cárguelos de una vez desde la ficha del almacén con **Importar**: se explica en [Importar material desde una plantilla](./105-importar-material-desde-una-plantilla.md).
+
 ---
 
 ## 3. Existencias: lo que hay, artículo a artículo
@@ -49,7 +51,7 @@ La columna **Estado** resume si hay que hacer algo:
 | **Todos ocupados** | Ningún ejemplar libre en este momento. |
 | **Sin ejemplares** | Operable dado de alta sin ningún ejemplar todavía. |
 
-Se puede filtrar por texto, tipo, almacén y estado. Si hay discrepancias, un aviso arriba permite verlas con un clic.
+Se puede filtrar por texto, tipo, almacén y estado. Si hay discrepancias, un aviso arriba permite verlas con un clic. El estado **Fuera de base** deja solo los equipos libres que no están en su almacén: lo que hay que ir a recoger (ver [Dónde está cada equipo](./106-donde-esta-cada-equipo.md)).
 
 ---
 
@@ -75,7 +77,7 @@ Desde cada fila, o desde la ficha del artículo:
 Todos los artículos tienen la misma ficha: sus datos, lo que hay en cada almacén y su historia.
 
 - En un **consumible**: existencias por almacén y movimientos de los últimos 30 días, con descarga del año en CSV.
-- En un **operable**: cuántos ejemplares están libres; cada ejemplar con su estado (libre, reservado, en uso, entregado, no disponible o retirado) y su uso actual; un **calendario** donde cada reserva es una barra con su horario, en tramos de 7, 14 o 30 días; y sus **documentos** (ITV, seguro, revisiones, manual), con la marca de si cada ejemplar está en regla.
+- En un **operable**: cuántos ejemplares están libres; cada ejemplar con su estado (libre, reservado, en uso, entregado, no disponible o retirado) , su uso actual y **dónde está**; un **calendario** donde cada reserva es una barra con su horario, en tramos de 7, 14 o 30 días; y sus **documentos** (ITV, seguro, revisiones, manual), con la marca de si cada ejemplar está en regla.
 
 ---
 
@@ -95,3 +97,5 @@ Todos los artículos tienen la misma ficha: sus datos, lo que hay en cada almac�
 |---|---|
 | [Qué es el inventario](./100-que-es-el-inventario.md) | Qué problemas resuelve y cómo se contrata |
 | [Material en las tareas](./102-material-en-las-tareas.md) | Cómo se asigna y se sigue el material de cada tarea |
+| [Importar material desde una plantilla](./105-importar-material-desde-una-plantilla.md) | Cargar de una vez todo lo que hay en un almacén |
+| [Dónde está cada equipo](./106-donde-esta-cada-equipo.md) | Equipos libres fuera del almacén y cómo se reciben |

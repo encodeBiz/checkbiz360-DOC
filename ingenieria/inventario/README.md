@@ -75,6 +75,7 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 | [ADR-005](./adr/ADR-005-instante-firestore-historico-postgres.md) | Un solo camino de escritura; instante en Firestore, histórico en Postgres | Aceptado |
 | [ADR-006](./adr/ADR-006-operable-se-asigna-a-tareas-con-hora.md) | El operable se asigna a tareas con hora, no a obras por rango | Aceptado |
 | [ADR-007](./adr/ADR-007-entrega-es-asignacion-con-acuse.md) | La entrega de un ejemplar es una asignación con acuse; su papel es el documento de siempre | Propuesto |
+| [ADR-008](./adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md) | Liberar no es devolver: la agenda la suelta el supervisor y la posición del ejemplar lleva su propio rastro («¿dónde queda?», recepción en almacén sin bloquear) | Aceptado |
 
 ## Technical Design Records (TDRs)
 
@@ -102,6 +103,7 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 - [ ] **Fase 6** — Operables con papeles: documentos y revisiones del ejemplar (rojo y aviso, sin bloquear), entrega a personas con acuse, e informe «Equipos y EPIs» en Informes para la inspección. **Diseñada el 2026-10-07, corregida el 2026-10-08; 6a (entrega con acuse, «Mi material», informe Equipos y EPIs) hecha el 2026-10-08, API en staging** ([07](./07_operables-documentos-y-entregas.md), [ADR-007](./adr/ADR-007-entrega-es-asignacion-con-acuse.md)); el acuse, con biometría y escalera de alternativas (D8, decidida)
 - [x] **Material en el informe de tareas** — con el add-on, tres columnas más en «Tareas» y una hoja «Material»; sin él, el informe de siempre. **En `develop` y `staging` desde el 2026-10-08, desplegado en dev; pendiente de pase a producción** ([TDR-005](./tdr/TDR-005-material-en-el-informe-de-tareas.md))
 - [ ] **Material en el panel operativo y en Merlin** — el material como fuente para las tres preguntas del panel y quinto eje de la fiabilidad; sin add-on, nada. Prerrequisito: las tareas en Postgres. **Diseñado el 2026-10-09, sin código** ([TDR-006](./tdr/TDR-006-material-en-el-panel-y-en-merlin.md))
+- [ ] **Posición del ejemplar** — liberar no es devolver: al liberar a mano el supervisor dice dónde queda (sitio, almacén o persona), la tarea cerrada lo deja en su sitio, «Recibir en almacén» sin bloquear la agenda, y el tablero marca lo libre fuera de base. **Decidido el 2026-10-10; app hecha el mismo día (libera ya con la API de hoy y pregunta «¿Dónde queda?» en cuanto la API mande `position`); API y panel pendientes** ([ADR-008](./adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md))
 - [ ] **Importación masiva de artículos** — plantilla por almacén y por tipo, dos ejemplos con `ELIMINAR`, propuesta fila a fila y confirmar. **Implementado el 2026-10-09 en `feat/inventario-importacion-masiva` (API y panel), probado contra dev, sin fusionar** ([TDR-007](./tdr/TDR-007-importacion-masiva-por-plantilla.md))
 
 **Lo que sale de otro repo:** las pantallas de la app —material de la tarea, selector de

@@ -37,7 +37,7 @@ The task detail shows a table with all of its material, whatever the type:
 - For what gets used up: what was reserved, issued, used, returned and **not declared**.
 - For what is lent out: the unit, its time slot and the reservation status.
 
-From there, **Add material** reserves more and **Declare consumption** records what was used from the back office, on what was reserved or on unplanned material, without recording any issue first: the practical option when the task is planned and closed from the back office. Issues are not made from the task but from the warehouse or the item. A unit can be released if it is no longer needed, and a **non-compliant** one can still be reserved after accepting the warning.
+From there, **Add material** reserves more and **Declare consumption** records what was used from the back office, on what was reserved or on unplanned material, without recording any issue first: the practical option when the task is planned and closed from the back office. Issues are not made from the task but from the warehouse or the item. A unit can be **released** if it is no longer needed: the platform asks **Where does it stay?** —at the task or in a warehouse—, because releasing it does not return it to the warehouse (see [Where each piece of equipment is](./106-where-each-piece-of-equipment-is.md)). A **non-compliant** one can still be reserved after accepting the warning.
 
 ---
 
@@ -46,6 +46,8 @@ From there, **Add material** reserves more and **Declare consumption** records w
 The worker sees the task's material in the task itself in the app and has a single button, **Declare consumption**: preloaded with what was reserved; if everything was used, just confirm. They can correct quantities and add what they used without it being planned. They never record an issue: if the warehouse did not, the platform records it on declaring.
 
 If the branch has several warehouses and they add something unplanned, the app asks which one it came from.
+
+Each piece of equipment's card says where it is. A supervisor or above can **release** it from the app, saying whether it stays at the task or goes back to a warehouse; the worker sees that it is released when the task is completed.
 
 ---
 
@@ -67,3 +69,4 @@ That way no task is closed with material lost along the way. On a closed task, t
 | [Stock, warehouses and receipts](./101-stock-warehouses-and-receipts.md) | How material is added |
 | [Task validation](../06-tasks/45-task-validation.md) | The validation step where material is settled |
 | [Task reports](../06-tasks/48-task-reports.md) | Each task's material in the report |
+| [Where each piece of equipment is](./106-where-each-piece-of-equipment-is.md) | Releasing equipment, what needs collecting and receiving it in the warehouse |

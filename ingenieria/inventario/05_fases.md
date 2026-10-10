@@ -291,6 +291,17 @@ Fuera por decisión: EPIs consumibles ([06 §D9](./06_decisiones-abiertas.md)).
 
 ---
 
+## Posición del ejemplar: liberar no es devolver (decidido el 2026-10-10)
+
+Caso: la fregadora reservada el día entero se usó solo por la mañana; el supervisor la libera a
+mediodía y la agenda queda libre, pero nadie sabe dónde está. Se decidió separar la agenda (la
+suelta la tarea o el supervisor, como hasta ahora) de la posición (un rastro de hechos: en el
+sitio de la tarea, en el almacén, con una persona). Al liberar a mano se pregunta «¿Dónde
+queda?»; la tarea cerrada deja el equipo en su sitio; «Recibir en almacén» mueve la posición sin
+bloquear la agenda; el tablero marca lo libre fuera de base como lista para recoger. Reparto por
+sesión (API, panel, app) en [ADR-008](./adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md).
+Hasta que la API lleve `position`, la app enseña el equipo como hoy.
+
 ## Fuera de estas fases
 
 **Sin conexión.** Fase posterior, con el boceto en [06 §D3](./06_decisiones-abiertas.md):

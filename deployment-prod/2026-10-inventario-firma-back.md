@@ -5,14 +5,18 @@
 2026-10-09 y aún no está en `main`: el servicio `inventory` (Fases 0–6d), el material en el
 informe de tareas (TDR-005), los documentos de los equipos y la entrega con documentos (6b, 6d),
 y el módulo de firma (registro de claves, retos, acuse firmado en inventario y documental).
-Se suman dos cambios de facturación del 2026-10-09 (§6.1): los despedidos que ficharon en el
-periodo se cobran, y el cliente recibe un correo cuando falla un cobro.
+Se suman tres cambios de facturación del 2026-10-09 (§6.1, §6.2): los despedidos que ficharon
+en el periodo se cobran, el cliente recibe un correo cuando falla un cobro, y la pestaña de
+facturas del panel las lee de Stripe en vez de una colección que ya nadie llena.
+**Última revisión de este registro:** 2026-10-10. Al 2026-10-10, `origin/staging` de los dos
+repos ya contiene todo lo que hay en `origin/develop`: no queda nada por subir a staging.
 **Cómo se usa:** se va completando; el día del pase se ejecuta en el orden de §10 y se anota
 aquí lo hecho, como en [2026-09-05-back.md](./2026-09-05-back.md).
 
 > Lo que **no se ha podido comprobar en producción** porque el hook no deja mirarla: el
 > ruleset de Firestore vigente, los índices compuestos que existen, los eventos suscritos en
-> el endpoint de Stripe y el contenido de `.env.production`. Cada uno tiene su aviso abajo.
+> el endpoint de Stripe, el contenido de `.env.production` y si la pestaña de Facturas del panel
+> enseña algo hoy (§6.2). Cada uno tiene su aviso abajo.
 
 ---
 
@@ -32,6 +36,12 @@ aquí lo hecho, como en [2026-09-05-back.md](./2026-09-05-back.md).
    desplegar: el servicio responde 403 `inventory/not_subscribed` y el panel enseña la puerta.
 5. **Los índices de `items` no se crean solos** (§5.1). Sin ellos, Existencias responde 500 a
    la primera entidad que active el módulo.
+6. **La pestaña de facturas del panel no enseña ninguna factura de suscripción**, y este lote
+   lo arregla (§6.2): leía `entities/{id}/invoices`, y nadie llena esa colección desde que la
+   facturación se portó a `billing` (leído en el código, **no comprobado en prod**: el webhook
+   anota sobre documentos que ya existan y nunca los crea). El arreglo depende de una clave de Vercel (§8.1), y si falta, la pestaña
+   se queda vacía igual. El síntoma del olvido es idéntico al del fallo que se venía a corregir,
+   así que esa clave se comprueba mirando la pestaña, no el despliegue.
 
 ---
 
@@ -112,13 +122,14 @@ y `reports`. Nada nuevo para la firma: usa Firestore con el Admin SDK y `crypto`
 
 ## 4. Migraciones de Postgres (`encodebiz_analytics`)
 
-Dos, **a mano, por SSH, una a una, mirando el resultado**, como manda CLAUDE.md. Las dos son
+Tres, **a mano, por SSH, una a una, mirando el resultado**, como manda CLAUDE.md. Las tres son
 `IF NOT EXISTS`: repetirlas no rompe.
 
 | Orden | Fichero | Qué crea |
 |---|---|---|
 | 023 | `migrations/023_inventario.sql` | `dim_warehouses`, `dim_items`, `dim_item_units` (con sus índices por entidad), `item_movements_raw` (5 índices), `unit_reservations_raw`; amplía el `CHECK` de `dim_sync_log` |
 | 024 | `migrations/024_inventario_entregas.sql` | `unit_assignments_raw` (3 índices) |
+| 025 | `migrations/025_inventario_posiciones.sql` | `unit_positions_raw` (2 índices): el rastro de dónde ha estado cada ejemplar (ADR-008). Sin ella el servicio funciona, pero no espeja el rastro y lo avisa en el log |
 
 ```bash
 # producción — una cada vez, y leer la salida
@@ -127,7 +138,7 @@ docker compose --env-file .env.production -f docker-compose.yml exec -T postgres
 ```
 
 (Ajustar la ruta al montaje real de `migrations/` en el contenedor de prod; en staging se
-ejecutaron el 2026-09-28 y el 2026-10-08.)
+ejecutaron el 2026-09-28, el 2026-10-08 y, la 025, el 2026-10-10.)
 
 **No hay columna nueva para los documentos de la entrega ni para la firma**: viven en Firestore
 (`unit_assignments.documents`, `acknowledgement.signature`); el informe los lee de ahí.
@@ -195,11 +206,21 @@ publicada, por API), así que estas reglas no le afectan.
 
 La evidencia de cada firma se escribe en el bucket de `FIREBASE_STORAGE_BUCKET` bajo
 `signatures/evidence/{entityId}/{purpose}/{challengeId}.json` **una sola vez** (precondición de
-generación 0), y las actas bajo `checkbiz/reports/entities/{e}/acta_{challengeId}.pdf`. Ninguna
-regla de retención debe borrarlas: son la prueba. Conviene activar en el bucket la
-**retención** (o al menos el versionado) de `signatures/`, que hoy no está en ningún entorno.
+generación 0), y las actas bajo
+`checkbiz/reports/entities/{e}/actas/{layout}/acta_{challengeId}.pdf`, donde `{layout}` es la
+versión del dibujo del acta: **`v2` desde el 2026-10-09**. La carpeta lleva la versión a
+propósito, para que al cambiar el dibujo las actas ya guardadas se vuelvan a generar en la
+carpeta nueva sin tocar la evidencia, que no cambia. En prod no hay nada que migrar porque
+todavía no existe ninguna acta; en dev quedan las de `v1`, huérfanas y sin borrar.
+
+Ninguna regla de retención debe borrar la evidencia: es la prueba. Conviene activar en el bucket
+la **retención** (o al menos el versionado) de `signatures/`, que hoy no está en ningún entorno.
 
 ### 5.4 Colecciones que se crean solas
+
+Además de lo de abajo, con el rastro de posición: `entities/{e}/item_units/{unitId}/positions`. Los ejemplares ganan
+`position` y `outOfBase`. **Ningún índice nuevo**: el filtro «fuera de base» son dos igualdades
+(`active`, `outOfBase`) y el rastro ordena por un solo campo dentro de su subcolección.
 
 `signing_keys/{employeeId}/keys`, `signing_challenges`, `entities/{e}/inventory_notices`, y
 bajo cada entidad con el módulo: `items`, `warehouses`, `item_units`, `stock`, `movements`,
@@ -217,6 +238,17 @@ node services/inventory/dist/scripts/mirror-dimensions.js --entity <entityId> --
 
 Solo hacen falta para datos que existieran antes del código que los indexa y espeja (en prod,
 ninguno): se anotan por si se importa un catálogo a mano.
+
+```bash
+node services/inventory/dist/scripts/backfill-positions.js --entity <entityId>           # simula
+node services/inventory/dist/scripts/backfill-positions.js --entity <entityId> --apply   # lo hace
+```
+
+Da su primera posición (ADR-008) a los ejemplares dados de alta antes del rastro: entregado →
+con la persona, en uso → en el sitio de su tarea, si no → su base. **En prod no hay ejemplares
+anteriores**: lo que se dé de alta ya nace con posición, así que solo hace falta si se importó o
+se migró algo a mano. En staging se pasó el 2026-10-10 a la única entidad con ejemplares
+(Cuidama: 3 en su base, 2 con una persona).
 
 ### 5.6 Plantillas de correo del cobro fallido — `emails_template`
 
@@ -265,16 +297,47 @@ Comprobación tras el pase: en el siguiente `invoice.payment_failed` real, el do
 `invoice_emails` queda en `sent`; y en la próxima renovación, el log de billing
 `ajustada a N unidades` cuadra con plantilla + despedidos con actividad.
 
+### 6.2 Las facturas del panel salen de Stripe
+
+`GET /api/v1/billing/invoices/:entityId`, paginado en el servicio (`page`, `limit` ≤ 100,
+`order`) y solo para quien pueda escribir en la entidad (owner o admin). Enseña las facturas de
+las suscripciones de la empresa a **servicios de la plataforma**, add-ons incluidos, y nada más
+de lo que cobre la cuenta de Stripe, que a veces le cobra al mismo cliente cosas que no son de
+checkbiz360. Los borradores no salen: un borrador todavía puede cambiar o no emitirse.
+
+Las suscripciones se reúnen de dos sitios porque ninguno basta solo: Firestore guarda las
+antiguas que nacieron sin metadata, y Stripe guarda la que Firestore pierde cuando alguien
+vuelve a contratar antes de que la baja anterior se archive.
+
+Qué pide en producción: **nada en Stripe y nada en Firestore**. Lee con la clave que billing ya
+tiene y no escribe. Lo único que hace falta es la clave de Vercel de §8.1; la ruta
+`/api/v1/billing/` ya está en el `nginx.conf` de prod desde el porte de septiembre.
+
+Qué arregla: antes la pestaña leía `entities/{id}/invoices`, y esa colección no la llena nadie
+desde el porte —el webhook anota sobre documentos que ya existan, pero nunca los crea—, así que
+no sale ninguna factura de suscripción, ni de checkinbiz ni del inventario. Eso está **leído en
+el código, no comprobado en producción**; se confirma mirando la pestaña antes del pase, que es
+además la forma de distinguir después si la clave de §8.1 se puso o se olvidó.
+
+La lista de servicios de la plataforma queda en un solo sitio,
+`billing/src/domain/PlatformServices.ts`, y la usan el alta, la baja, el webhook y esta
+pestaña. **Un add-on nuevo se añade ahí y en ningún otro sitio**, que es lo que conviene
+recordar la próxima vez.
+
+Comprobación tras el pase: abrir Facturación → Facturas con una entidad que tenga al menos una
+factura emitida y ver la fila con su servicio, su estado traducido y el PDF descargable. Vacía
+con una entidad que sí tiene facturas en Stripe significa que falta la clave de §8.1.
+
 ## 7. Servicios que cambian (ya desplegados por CI al fusionar `staging → main`)
 
 | Servicio | Qué entra |
 |---|---|
-| `inventory` | **nuevo** (§1–§3) |
+| `inventory` | **nuevo** (§1–§3), con la importación por plantilla (TDR-007) y el rastro de posición del ejemplar (ADR-008): liberar pregunta «¿dónde queda?» (tarea o almacén), `POST /units/:id/receive`, `GET /units/:id`, `GET /units/:id/positions`, `outOfBase` en tablero y Existencias |
 | `reports` | material en el informe de tareas (TDR-005); `POST /api/reports/equipment` (Excel, 2 hojas; 402 sin add-on); `GET /api/reports/inventory/consumption` |
 | `documents` | ámbitos `item`/`unit`, 8 tipos nuevos, `POST/DELETE /:id/links`, `contentSha256`, acuse firmado y `GET /:id/signing-subject` |
 | `checkinbiz` | `POST /auth/signing-keys`, `POST /auth/signing-challenges` |
 | `shared` | inventario, cumplimiento de papeles, firma, `internalSubscribers`, avisos `unit_*` |
-| `billing` | despedidos con actividad en el recuento; correo de cobro fallido (§6.1) |
+| `billing` | despedidos con actividad en el recuento; correo de cobro fallido (§6.1); `GET /api/v1/billing/invoices/:entityId` para la pestaña de facturas (§6.2) |
 | `firebase_sdk` | sin cambios en este lote |
 
 Nada de esto rompe a quien no tiene el add-on: sin suscripción el inventario responde 403, el
@@ -291,23 +354,39 @@ informe de tareas sale idéntico al de siempre y los documentos siguen igual.
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_EQUIPMENT` | `https://api.checkbiz360.com/api/reports/equipment` |
 | `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_SIGNATURES` | `https://api.checkbiz360.com/api/reports/signatures` |
 | `NEXT_BACKEND_URI_CHECKINBIZ_SIGNING_CA` | `https://api.checkbiz360.com/api/v1/checkinbiz/auth/signing-ca/bundle` |
+| `NEXT_BACKEND_URI_BILLING_INVOICES` | `https://api.checkbiz360.com/api/v1/billing/invoices` |
 
-Sin la primera, toda la sección Inventario responde «el proxy rechazó la llamada»; sin las dos
-siguientes, los dos informes nuevos fallan al generar; sin la cuarta, «Descargar el acta de firma»
-en la ficha del documento no funciona; sin la quinta, no se descarga el certificado de la CA desde
-«Entorno de trabajo». Vercel solo tiene producción: no se tocan para
-probar.
+Son **seis claves**, y cada una se nota en un sitio distinto:
+
+| Si falta | Lo que ve el cliente |
+|---|---|
+| `…_INVENTORY_HANDLER` | toda la sección Inventario responde «el proxy rechazó la llamada» |
+| `…_REPORTS_INVENTORY` | el informe de consumo falla al generar |
+| `…_REPORTS_EQUIPMENT` | el informe «Equipos y EPIs» falla al generar |
+| `…_REPORTS_SIGNATURES` | «Descargar el acta de firma» no funciona en la ficha del documento |
+| `…_SIGNING_CA` | no se descarga el certificado de la CA desde «Entorno de trabajo» |
+| `…_BILLING_INVOICES` | la pestaña de Facturas sigue vacía, igual que antes del arreglo (§6.2) |
+
+Vercel solo tiene producción: no se tocan para probar.
 
 ### 8.2 Promoción
 
-`develop` del panel lleva (al 2026-10-09) **11 commits sin empujar** —los de la ficha rediseñada,
-la página de alta y los documentos de la entrega—; la cadena es `develop → staging → main`,
-y el `main` lo fusiona y redespliega Jose en Vercel. Revisar antes que `main` no tenga hotfixes
-que `develop` no tenga (pasó en septiembre).
+Al 2026-10-10 el panel ya está empujado y `origin/staging` tiene todo lo de `origin/develop`:
+los 11 commits que el 09-oct estaban sin subir ya están arriba. `origin/staging` va **106 commits
+por delante de `origin/main`** en el panel y **148** en la API. La cadena sigue siendo
+`develop → staging → main`, y el `main` lo fusiona y redespliega Jose en Vercel. Antes de
+fusionar, revisar que `main` no tenga hotfixes que `develop` no tenga (pasó en septiembre).
 
 ## 9. App móvil (`checkbiz360`)
 
-Lo lleva otra sesión. Para prod hace falta **una versión nueva publicada** (no sale de `master`,
+Lo lleva otra sesión. Del ADR-008, la app libera el equipo desde la tarea («¿Dónde queda?»:
+la tarea o un almacén) y enseña dónde está; al 2026-10-10 estaba a medio hacer y sin commitear.
+El panel, igual: diálogos de liberar y recibir, «Fuera de base» en Existencias y la posición en
+la ficha del ejemplar, a medio hacer en `feat/inventario-posicion-ejemplar` sin commitear. Lo
+que no cuadraba con la API quedó dicho a sus sesiones: el texto «si se perdió, retirado» (la API
+lo deja no disponible), el rastro sin enseñar en la ficha y el tipo de vuelta de recibir.
+
+ Para prod hace falta **una versión nueva publicada** (no sale de `master`,
 sin tags, subida a mano): módulo de inventario («Mi material», declarar consumo), documentos de
 la entrega, y la firma (registro de la clave por `POST /auth/signing-keys` en el login, reto y
 acuse firmado). Hasta que se publique, la app actual sigue confirmando entregas con el
@@ -332,6 +411,12 @@ Lo que pide en prod, cuando se quiera que emita certificados (sin esto arranca i
 documento sigue `active` y el inventario abierto. Falta decidir si se cierra al primer fallo o
 tras un margen (caso que lo destapó: Full Certificado, 2026-10-09).
 
+**El correo de la factura sigue mandando todas.** El filtro de «solo lo de la plataforma» de
+§6.2 es de la pestaña del panel; `SendInvoiceEmail` no lo tiene, así que en cada
+`invoice.finalized` de la cuenta el cliente recibe su factura aunque no sea de checkbiz360. Es
+el comportamiento de hoy y no empeora con el pase, pero queda escrito para no buscarlo cuando
+alguien pregunte por qué el panel y el correo no dicen lo mismo.
+
 ## 9c. Aceptación antes de subir
 
 No se fusiona `staging → main` hasta pasar en staging el guion
@@ -341,7 +426,7 @@ se va a publicar. Tras el pase se repiten allí los pasos 1, 2 y 7 con una empre
 
 ## 10. Orden de ejecución el día del pase
 
-1. Migraciones 023 y 024 (§4), una a una.
+1. Migraciones 023, 024 y 025 (§4), una a una.
 2. `.env.production`: `INVENTORY_INTERNAL_URL` y, si se quiere, las de §3.2.
 3. `docker-compose.yml` y `nginx/nginx.conf` (§1, §2) **commiteados en el PR** `staging → main`;
    fusionar; el `deploy.yml` levanta el contenedor y reinicia nginx.
@@ -353,10 +438,16 @@ se va a publicar. Tras el pase se repiten allí los pasos 1, 2 y 7 con una empre
 7. Stripe: precio en vivo (§6) y `alta-servicio.js --stripe-price … --apply` (§5.2); que el
    webhook tenga `invoice.payment_failed`.
 7b. Plantillas `PAYMENT_FAILED_es/en` copiadas de dev (§5.6) e índice de `checklogs` (§5.7).
-8. Vercel: las tres claves (§8.1) y el PR del panel (§8.2).
+8. Vercel: las **seis** claves (§8.1) y el PR del panel (§8.2).
 9. Primera entidad: contratar desde Suscripciones; comprobar que nace `active` con 15 días de
    prueba y `quantity` = plantilla; abrir Existencias (índices), subir una entrada, generar el
    informe «Equipos y EPIs» (402 sin add-on, Excel con add-on).
+9a. Rastro de posición: un ejemplar recién dado de alta sale «en su almacén»; reservarlo, poner
+   la tarea en curso y liberarla desde el panel lo deja «en la tarea»; recibirlo, de nuevo en el
+   almacén. Si se migró algún ejemplar a mano, `backfill-positions.js` (§5.5).
+9b. Facturación → Facturas de una entidad con facturas ya emitidas: salen con servicio, estado
+   y PDF (§6.2). Es la comprobación de la clave `…_BILLING_INVOICES`, que no se nota en ningún
+   log.
 10. App: cuando haya versión publicada (§9), un registro de clave real y un acuse firmado.
 
 **Rollback:** el inventario es aditivo (quitar el bloque del compose y las rutas devuelve el

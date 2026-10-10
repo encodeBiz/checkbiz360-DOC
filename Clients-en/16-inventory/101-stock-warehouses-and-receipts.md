@@ -29,6 +29,8 @@ Material always comes in through **New receipt**, in **Inventory → Stock**. Yo
 
 > **Tip:** the search starts from the third letter, like every other search in the back office.
 
+If you have many items to add, load them all at once from the warehouse record with **Import**: see [Import material from a template](./105-import-material-from-a-template.md).
+
 ---
 
 ## 3. Stock: what you have, item by item
@@ -49,7 +51,7 @@ The **Status** column summarises whether you need to act:
 | **All busy** | No unit free at this moment. |
 | **No units** | An operable registered without any unit yet. |
 
-You can filter by text, type, warehouse and status. If there are discrepancies, a banner at the top shows them in one click.
+You can filter by text, type, warehouse and status. If there are discrepancies, a banner at the top shows them in one click. The **Away from base** status leaves only the free equipment that is not in its warehouse: what needs collecting (see [Where each piece of equipment is](./106-where-each-piece-of-equipment-is.md)).
 
 ---
 
@@ -75,7 +77,7 @@ From each row, or from the item's record:
 All items have the same record: their details, what there is in each warehouse and their history.
 
 - For a **consumable**: stock per warehouse and movements over the last 30 days, with the year's download in CSV.
-- For an **operable**: how many units are free; each unit with its status (free, reserved, in use, handed over, unavailable or retired) and its current use; a **calendar** where each reservation is a bar with its time slot, over 7, 14 or 30 days; and its **documents** (roadworthiness test, insurance, inspections, manual), marking whether each unit is compliant.
+- For an **operable**: how many units are free; each unit with its status (free, reserved, in use, handed over, unavailable or retired), its current use and **where it is**; a **calendar** where each reservation is a bar with its time slot, over 7, 14 or 30 days; and its **documents** (roadworthiness test, insurance, inspections, manual), marking whether each unit is compliant.
 
 ---
 
@@ -95,3 +97,5 @@ All items have the same record: their details, what there is in each warehouse a
 |---|---|
 | [What is inventory](./100-what-is-inventory.md) | What problems it solves and how to subscribe |
 | [Material on tasks](./102-material-on-tasks.md) | How each task's material is assigned and tracked |
+| [Import material from a template](./105-import-material-from-a-template.md) | Load everything a warehouse holds at once |
+| [Where each piece of equipment is](./106-where-each-piece-of-equipment-is.md) | Free equipment away from the warehouse and how it is received |

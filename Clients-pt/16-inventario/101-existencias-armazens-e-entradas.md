@@ -29,6 +29,8 @@ O material entra sempre por **Nova entrada**, em **Inventário → Existências*
 
 > **Dica:** a pesquisa começa a partir da terceira letra, como as restantes pesquisas do backoffice.
 
+Se tiver muitos artigos para registar, carregue-os de uma vez a partir da ficha do armazém com **Importar**: explica-se em [Importar material a partir de um modelo](./105-importar-material-a-partir-de-um-modelo.md).
+
 ---
 
 ## 3. Existências: o que há, artigo a artigo
@@ -49,7 +51,7 @@ A coluna **Estado** resume se é preciso fazer alguma coisa:
 | **Todos ocupados** | Nenhum exemplar livre neste momento. |
 | **Sem exemplares** | Operável registado sem nenhum exemplar ainda. |
 
-Pode filtrar por texto, tipo, armazém e estado. Se houver discrepâncias, um aviso no topo permite vê-las com um clique.
+Pode filtrar por texto, tipo, armazém e estado. Se houver discrepâncias, um aviso no topo permite vê-las com um clique. O estado **Fora da base** deixa só os equipamentos livres que não estão no seu armazém: o que há para recolher (ver [Onde está cada equipamento](./106-onde-esta-cada-equipamento.md)).
 
 ---
 
@@ -75,7 +77,7 @@ A partir de cada linha, ou da ficha do artigo:
 Todos os artigos têm a mesma ficha: os seus dados, o que há em cada armazém e o seu histórico.
 
 - Num **consumível**: existências por armazém e movimentos dos últimos 30 dias, com descarga do ano em CSV.
-- Num **operável**: quantos exemplares estão livres; cada exemplar com o seu estado (livre, reservado, em uso, entregue, indisponível ou retirado) e o seu uso atual; um **calendário** onde cada reserva é uma barra com o seu horário, em períodos de 7, 14 ou 30 dias; e os seus **documentos** (inspeção, seguro, revisões, manual), com a marca de se cada exemplar está em regra.
+- Num **operável**: quantos exemplares estão livres; cada exemplar com o seu estado (livre, reservado, em uso, entregue, indisponível ou retirado), o seu uso atual e **onde está**; um **calendário** onde cada reserva é uma barra com o seu horário, em períodos de 7, 14 ou 30 dias; e os seus **documentos** (inspeção, seguro, revisões, manual), com a marca de se cada exemplar está em regra.
 
 ---
 
@@ -95,3 +97,5 @@ Todos os artigos têm a mesma ficha: os seus dados, o que há em cada armazém e
 |---|---|
 | [O que é o inventário](./100-o-que-e-o-inventario.md) | Que problemas resolve e como se contrata |
 | [Material nas tarefas](./102-material-nas-tarefas.md) | Como se atribui e acompanha o material de cada tarefa |
+| [Importar material a partir de um modelo](./105-importar-material-a-partir-de-um-modelo.md) | Carregar de uma vez tudo o que há num armazém |
+| [Onde está cada equipamento](./106-onde-esta-cada-equipamento.md) | Equipamentos livres fora do armazém e como se recebem |
