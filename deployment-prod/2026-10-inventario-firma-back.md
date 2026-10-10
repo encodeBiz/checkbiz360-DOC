@@ -1,6 +1,9 @@
 # Pase a producción — inventario, documentos de los equipos y firma (octubre 2026)
 
-**Estado:** en preparación. Jose, 2026-10-09: «ve documentando todo para cuando pasemos a prod».
+**Estado: documentación del despliegue del 2026-10-11.** Jose, 2026-10-10 por la noche: «déjalo
+marcado como documentación de despliegue para mañana». Se ejecuta en el orden de §10, empezando
+por el paso 0, y cada paso se anota en §11 con hora y resultado. (El origen: 2026-10-09, «ve
+documentando todo para cuando pasemos a prod».)
 **Alcance:** todo lo que entró en `develop`/`staging` de `encodebiz-api` entre el 2026-09-28 y el
 2026-10-09 y aún no está en `main`: el servicio `inventory` (Fases 0–6d), el material en el
 informe de tareas (TDR-005), los documentos de los equipos y la entrega con documentos (6b, 6d),
@@ -8,12 +11,20 @@ y el módulo de firma (registro de claves, retos, acuse firmado en inventario y 
 Se suman tres cambios de facturación del 2026-10-09 (§6.1, §6.2): los despedidos que ficharon
 en el periodo se cobran, el cliente recibe un correo cuando falla un cobro, y la pestaña de
 facturas del panel las lee de Stripe en vez de una colección que ya nadie llena.
-**Última revisión de este registro:** 2026-10-10. Al 2026-10-10, `origin/staging` de los dos
-repos ya contiene todo lo que hay en `origin/develop`: no queda nada por subir a staging.
+**Última revisión de este registro:** 2026-10-10 por la noche, contrastado entero con
+`git diff origin/main..origin/staging` de la API, del panel y del SaaS; lo que cambió lleva la
+marca «rev. 10-oct». Al 2026-10-10, `origin/staging` de los dos repos ya contiene todo lo que
+hay en `origin/develop`: no queda nada por subir a staging; va 154 commits (API) y 115 (panel)
+por delante de `origin/main`.
 **Cómo se usa:** se va completando; el día del pase se ejecuta en el orden de §10 y se anota
 aquí lo hecho, como en [2026-09-05-back.md](./2026-09-05-back.md).
 
-> Lo que **no se ha podido comprobar en producción** porque el hook no deja mirarla: el
+> **Rev. 10-oct — el hook `block-prod.sh` está desenganchado**: `.claude/settings.json` tiene
+> `"PreToolUse": []`, igual que antes del 2026-09-07. La regla sigue valiendo (es de Jose, no del
+> fichero) y este registro se ha hecho sin mirar producción; pero conviene rearmarlo **antes** del
+> día del pase, que es cuando más comandos de prod se escriben al lado de los de dev.
+>
+> Lo que **no se ha podido comprobar en producción** porque producción no se mira desde aquí: el
 > ruleset de Firestore vigente, los índices compuestos que existen, los eventos suscritos en
 > el endpoint de Stripe, el contenido de `.env.production` y si la pestaña de Facturas del panel
 > enseña algo hoy (§6.2). Cada uno tiene su aviso abajo.
@@ -42,34 +53,68 @@ aquí lo hecho, como en [2026-09-05-back.md](./2026-09-05-back.md).
    anota sobre documentos que ya existan y nunca los crea). El arreglo depende de una clave de Vercel (§8.1), y si falta, la pestaña
    se queda vacía igual. El síntoma del olvido es idéntico al del fallo que se venía a corregir,
    así que esa clave se comprueba mirando la pestaña, no el despliegue.
+7. **La firma dentro del PDF (PAdES) SÍ entra en este lote** (rev. 10-oct; §9b decía lo
+   contrario). Los commits del documental del 2026-10-09 (`443da75`, `5747cd0`, `1386354`) están
+   en `staging`. Sin la CA en el servidor no rompe nada: preparar la firma de un PDF responde
+   `ca_not_configured` y el acuse sigue por el camino de siempre; pero ninguna nómina sale firmada
+   por dentro hasta que la CA exista. Es una decisión del día del pase: con CA o sin ella (§9b).
+8. **El `docker-compose.yml` de producción no tiene los anclajes `x-service` ni `x-health`** que
+   usa el de staging (rev. 10-oct). El bloque de `inventory` va escrito desarrollado (§1); copiado
+   tal cual de staging, compose no parsea el fichero y el despliegue entero falla.
 
 ---
 
-## 1. `docker-compose.yml` de producción — un bloque a añadir
+## 1. `docker-compose.yml` de producción — un bloque a añadir y dos líneas en los secretos
 
-Copiar de `docker-compose.staging.yml` (líneas 378–391 al 2026-10-09), con los anclajes de prod:
+**Rev. 10-oct.** El compose de producción **no tiene** los anclajes `x-service`/`x-health` del de
+staging (solo `x-secret-volumes`): cada servicio va escrito entero, con `env_file:
+.env.production`, su `healthcheck` completo y `restart`. El bloque, en esa forma, al estilo de
+`billing` o `events`, y **fuera del `depends_on` de nginx** (como `employees`: tocar esa lista
+recrea nginx, y el workflow ya lo reinicia tras el `up`):
 
 ```yaml
   # ── Inventario — add-on (puerto 3016) ─────────────────────────────────────
+  # Consumibles y operables ligados a las tareas. Servicio y factura aparte: sin
+  # suscripción activa responde 403 a todo menos /health. Ver DOCS/ingenieria/inventario/
   inventory:
-    <<: *service
     build:
       context: .
       dockerfile: services/inventory/Dockerfile
+    env_file: .env.production
     environment:
       - NODE_ENV=production
       - PORT=3016
     volumes: *secret-volumes
+    depends_on:
+      postgres:
+        condition: service_healthy
     expose:
       - "3016"
     healthcheck:
-      <<: *health
       test: ["CMD", "wget", "-qO-", "http://localhost:3016/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
 ```
 
-Lee el mismo `env_file` y los mismos secretos (`firebase-sa.json`) que los demás. Postgres lo
-alcanza por la red de contenedores. Arranca tres trabajos propios: recálculo de saldos (30 min),
-reespejo a Postgres (5 min) y avisos de caducidad de papeles (6 h y a los 2 min de arrancar).
+Y en `x-secret-volumes`, las dos líneas que staging tiene desde el 2026-10-09 para la CA de
+firma (§9b). Van en el PR **con o sin CA**: si los ficheros no existen en el servidor, Docker
+monta un directorio vacío en su lugar y el servicio arranca igual, sin emitir certificados:
+
+```yaml
+x-secret-volumes: &secret-volumes
+  - ./secrets/firebase-sa.json:/secrets/firebase-sa.json:ro
+  - ./secrets/signing-ca.key:/secrets/signing-ca.key:ro
+  - ./secrets/signing-ca.crt:/secrets/signing-ca.crt:ro
+```
+
+Lee el mismo `env_file` y los mismos secretos que los demás. Postgres lo alcanza por la red de
+contenedores (espeja a las `dim_*` y `*_raw` de la 023–025; de ahí el `depends_on`). Arranca
+tres trabajos propios: recálculo de saldos (30 min), reespejo a Postgres (5 min) y avisos de
+caducidad de papeles (6 h y a los 2 min de arrancar). El `deploy.yml` hace `up --build -d` del
+fichero entero, así que no hay ninguna lista de servicios que ampliar.
 
 ## 2. `nginx/nginx.conf` de producción — un upstream y dos rutas
 
@@ -90,10 +135,12 @@ El `client_max_body_size` llegó con la importación masiva por plantilla (2026-
 viaja como base64 dentro de JSON y un fichero de más de ~750 KB pasa del mega por defecto de
 nginx. Staging lo tiene desde esa fecha; si el pase no lleva la importación, sobra pero no estorba.
 
-Todo lo demás de este lote cuelga de rutas que prod **ya** proxya: `/api/reports/` (informe de
-equipos y de consumo), `/api/v1/documents/` (ámbitos, vínculos, `signing-subject`) y
-`/api/v1/checkinbiz/auth/` (`signing-keys`, `signing-challenges`). El `deploy.yml` reinicia
-nginx tras el `up -d` (resuelve los upstreams al arrancar).
+Todo lo demás de este lote cuelga de rutas que prod **ya** proxya (comprobado en
+`nginx/nginx.conf`, rev. 10-oct): `/api/reports/` (informe de equipos y de consumo, actas),
+`/api/v1/documents/` (ámbitos, vínculos, `signing-subject`, `sign/prepare`),
+`/api/v1/checkinbiz/auth/` (`signing-keys`, `signing-challenges`, `signing-ca/bundle`) y
+`/api/v1/billing/` (facturas). El `deploy.yml` reinicia nginx tras el `up -d` (resuelve los
+upstreams al arrancar).
 
 ## 3. Variables de entorno — `/opt/encodebiz-api/.env.production`
 
@@ -114,6 +161,11 @@ emite) y `events` (que rescata).
 | `INVENTORY_REMIRROR_MINUTES` | `5` | reintento del espejo a Postgres; `0` lo apaga |
 | `INVENTORY_DOC_EXPIRY_HOURS` | `6` | avisos de papeles por caducar / caducados; `0` lo apaga |
 | `BILLING_TRIAL_DAYS` | ya existe (`15`) | la prueba del inventario es la misma |
+| `SIGNING_CA_KEY_PATH` / `SIGNING_CA_CERT_PATH` | `/secrets/signing-ca.key` / `.crt` | dónde busca la CA de firma (§9b); con el montaje de §1 no hay que tocarlas (rev. 10-oct) |
+
+`.env.example` del repo —la plantilla de producción— **no lleva ninguna clave de inventario**;
+`.env.staging.example` sí (rev. 10-oct). Añadirlas en el mismo PR: es donde el siguiente las
+va a buscar.
 
 ### 3.3 Ya deberían estar — comprobar, no añadir
 
@@ -134,11 +186,20 @@ Tres, **a mano, por SSH, una a una, mirando el resultado**, como manda CLAUDE.md
 ```bash
 # producción — una cada vez, y leer la salida
 docker compose --env-file .env.production -f docker-compose.yml exec -T postgres \
-  psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 -f /migrations/023_inventario.sql
+  psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 \
+  -f /docker-entrypoint-initdb.d/023_inventario.sql
 ```
 
-(Ajustar la ruta al montaje real de `migrations/` en el contenedor de prod; en staging se
-ejecutaron el 2026-09-28, el 2026-10-08 y, la 025, el 2026-10-10.)
+La ruta es la del montaje real (rev. 10-oct): el compose de prod monta `./migrations` en
+`/docker-entrypoint-initdb.d` del contenedor de Postgres, y así se pasó la 010 en septiembre.
+El fichero tiene que estar ya en el servidor, o sea **después** del `git pull` del despliegue,
+o por la tubería del ssh como se hizo con la 022. En staging se ejecutaron el 2026-09-28, el
+2026-10-08 y, la 025, el 2026-10-10.
+
+Lo único de la 023 que no es `IF NOT EXISTS` es el `CHECK` de `dim_sync_log`: hace `DROP
+CONSTRAINT IF EXISTS dim_sync_log_dimension_check` y lo vuelve a crear con seis valores. El
+nombre es el que Postgres le puso solo en la 006 (CHECK en línea sobre la columna `dimension`),
+así que el DROP lo encuentra y repetirla tampoco rompe. `analytics` la necesita también (§7).
 
 **No hay columna nueva para los documentos de la entrega ni para la firma**: viven en Firestore
 (`unit_assignments.documents`, `acknowledgement.signature`); el informe los lee de ahí.
@@ -167,6 +228,16 @@ gcloud firestore indexes composite create --project=encodebiz-services \
 Los 14 índices de `documents` que dev tiene vienen del documental de julio; comprobar en
 consola que prod los tiene (debería: el documental está en prod desde el 2026-07-26).
 **El hook bloquea `--project=encodebiz-services`: lo ejecuta Jose.**
+
+**Comprobado contra lo desplegado en dev, no contra el fichero (rev. 10-oct, noche):**
+`gcloud firestore indexes composite list --project=dev-encodebiz` devuelve 133 índices y, de
+inventario, solo esos dos de `items`. Cuadra con el código: todas las demás consultas del
+inventario, de los papeles de los equipos y de la firma son igualdades, `in` o `array-contains`
+sin `orderBy` (índices de un campo, que Firestore funde solo), y los dos `orderBy` que hay van
+sobre `name` en `items` (los dos índices) y sobre `at` en la subcolección `positions` (un campo).
+El de `checklogs (employeeId, status, timestamp)` de §5.7 está `READY` en dev, y los 14 de
+`documents`, también. El recuento de despedidos (§6.1) filtra `status` en memoria a propósito,
+para no pedir `(status, updatedAt)`.
 
 ### 5.2 Ficha del add-on — `service/inventory` y `service/inventory/plan/standard`
 
@@ -277,6 +348,13 @@ debería existir. En dev está `READY`; **en prod sin comprobar**. Si faltase, l
 - `GetCountPayPerUse` ya cuenta plantilla para `inventory` igual que para `checkinbiz`.
 - Entre los eventos del webhook tiene que estar `invoice.payment_failed`: es el que dispara el
   correo de §6.1. **Sin comprobar en prod.**
+- (rev. 10-oct) El router de billing contrata y da de baja solo lo que está en
+  `PlatformServices` —antes una lista fija `checkinbiz`/`passinbiz`, y el alta del inventario
+  moría en `unknown_service` antes de llegar a Stripe—, y para `inventory` pide a la empresa lo
+  mismo que para checkinbiz: datos legales y método de pago, no `slug` ni logo. Las rutas de alta
+  y baja son las de siempre, así que las variables `…_SUBCRIBE`, `…_UNSUBCRIBE` y
+  `…_CONFIGBILLING` de Vercel (a billing desde el 12-sep) sirven sin tocarlas.
+  `GET /invoices/:entityId` exige `canWrite` (owner o admin) y 404 si la empresa no existe.
 
 ### 6.1 Cambios de facturación que entran (billing)
 
@@ -334,16 +412,40 @@ con una entidad que sí tiene facturas en Stripe significa que falta la clave de
 |---|---|
 | `inventory` | **nuevo** (§1–§3), con la importación por plantilla (TDR-007) y el rastro de posición del ejemplar (ADR-008): liberar pregunta «¿dónde queda?» (tarea o almacén), `POST /units/:id/receive`, `GET /units/:id`, `GET /units/:id/positions`, `outOfBase` en tablero y Existencias |
 | `reports` | material en el informe de tareas (TDR-005); `POST /api/reports/equipment` (Excel, 2 hojas; 402 sin add-on); `GET /api/reports/inventory/consumption` |
-| `documents` | ámbitos `item`/`unit`, 8 tipos nuevos, `POST/DELETE /:id/links`, `contentSha256`, acuse firmado y `GET /:id/signing-subject` |
-| `checkinbiz` | `POST /auth/signing-keys`, `POST /auth/signing-challenges` |
+| `documents` | ámbitos `item`/`unit`, 8 tipos nuevos, `POST/DELETE /:id/links`, `contentSha256`, acuse firmado y `GET /:id/signing-subject`; y (rev. 10-oct, faltaba) la **firma dentro del PDF**: `POST /:id/sign/prepare`, el acuse con reto PAdES incrusta la firma y **el PDF firmado sustituye al original** (se descarga como `<nombre>-firmado.pdf`; el original queda a un lado). Solo documentos dirigidos a un único empleado. Sin CA responde `ca_not_configured` y el acuse sigue el camino normal. Permisos: los papeles de `item`/`unit` los ve quien tenga nivel *manager* en alguna sucursal; los tipos restringidos y disciplinarios no admiten esos ámbitos. Los vínculos a equipos van en `linkedItemIds`/`linkedUnitIds` (`array-contains`, sin índice compuesto); en la ruta de Storage el id del equipo ocupa el sitio del de la sucursal |
+| `checkinbiz` | `POST /auth/signing-keys`, `POST /auth/signing-challenges`; públicos `GET /auth/signing-ca.crt` y `GET /auth/signing-ca/bundle` (zip con .cer, .crt e instrucciones; lo que usa la clave `…_SIGNING_CA` de §8.1). Una clave registrada antes de que exista la CA recibe su certificado la siguiente vez que se usa, sin tocar el móvil |
 | `shared` | inventario, cumplimiento de papeles, firma, `internalSubscribers`, avisos `unit_*` |
 | `billing` | despedidos con actividad en el recuento; correo de cobro fallido (§6.1); `GET /api/v1/billing/invoices/:entityId` para la pestaña de facturas (§6.2) |
-| `firebase_sdk` | sin cambios en este lote |
+| `analytics` | (rev. 10-oct, faltaba) `SyncDimensions` espeja también `warehouses`, `items` e `item_units` a las `dim_*` por el mismo camino que sucursales y empleados; **necesita la 023**. Mientras ninguna entidad tenga inventario no toca esas tablas y no da error, pero el orden de §10 pone la migración primero igual |
+| `merlin` | (rev. 10-oct, faltaba) herramienta de soporte `puesta-en-marcha` (`92d7c7f`, 07-oct): rechaza como geocerca la dirección que Google solo casa en parte, avisa en vez de bloquear por calle sin número, admite plantilla sin responsabilidad y sembrar sobre una entidad existente sin bloque de empresa. Solo CLI; sin infra ni variables nuevas |
+| `firebase_sdk` | sin cambios en este lote (lo que tiene pendiente de despliegue es de septiembre: §9d) |
 
 Nada de esto rompe a quien no tiene el add-on: sin suscripción el inventario responde 403, el
 informe de tareas sale idéntico al de siempre y los documentos siguen igual.
 
-## 8. Front (`encodebiz-front-saas`, Vercel) — variables y promoción
+## 8. Front (`encodebiz-front-saas`, Vercel) — proxy, variables y promoción
+
+### 8.0 Entradas del proxy (rev. 10-oct)
+
+El navegador no habla con la API: pasa por `/api/proxy/<handler>`, y solo existen los handlers
+dados de alta en `src/lib/http/serverBackendProxy.ts`, cada uno con su variable, sus métodos y,
+si la base es una raíz, la lista de subrutas que deja pasar. Este lote da de alta **seis**, uno
+por clave de §8.1:
+
+| Handler | Variable | Métodos | Subrutas | Quién lo usa |
+|---|---|---|---|---|
+| `checkinbiz_inventory_handler` | `…_CHECKINBIZ_INVENTORY_HANDLER` | GET, POST, PATCH, DELETE | allowlist de las rutas del contrato: `access`, `board`, `movements`, `warehouses…` (+ `import-template`, `imports`), `imports/:id(/apply)`, `items…` (+ `units`, `documents`), `units/:id/{schedule,assign,assignments,documents,positions,receive}`, `assignments/:id/{acknowledge,return}`, `employees/:id/assignments`, `me/assignments`, `stock/{overview,discrepancies,receipts,adjustments,transfers,minimum}`, `tasks/:id/materials{,/reserve,/issue,/consume,/settle}` y `tasks/:id/units(/:id)`. `/internal/*` fuera a propósito | toda la sección Inventario, el material de la tarea, los equipos del empleado |
+| `checkbiz360_reports_equipment` | `…_REPORTS_EQUIPMENT` | POST | ninguna (URL completa) | informe «Equipos y EPIs» |
+| `checkbiz360_reports_inventory` | `…_REPORTS_INVENTORY` | GET | ninguna | informe de consumo |
+| `checkbiz360_reports_signatures` | `…_REPORTS_SIGNATURES` | GET | `/acta`, `/evidence` | «Descargar el acta» en la ficha del documento |
+| `checkinbiz_signing_ca` | `…_CHECKINBIZ_SIGNING_CA` | GET | ninguna | «Certificado de firma» en Entorno de trabajo |
+| `billing_invoices` | `…_BILLING_INVOICES` | GET | `/:entityId` | Facturación → Facturas |
+
+Y **reutiliza cuatro que prod ya tiene**, sin tocar su variable: `checkinbiz_documents_handler`
+(reenvía cualquier subruta con GET/POST/PATCH/DELETE, así que `/documents/:id/links` y
+`/documents/:id/signing-subject` pasan sin cambios en el proxy), y `subcribe`, `unsubcribe` y
+`configbilling`, que desde el 12-sep apuntan a billing en Vercel y ahora sirven también para
+contratar y dar de baja el add-on.
 
 ### 8.1 Claves nuevas en Vercel (producción)
 
@@ -369,22 +471,60 @@ Son **seis claves**, y cada una se nota en un sitio distinto:
 
 Vercel solo tiene producción: no se tocan para probar.
 
+Las seis son exactamente las que el código del panel lee de nuevo entre `main` y `staging`
+(comprobado, rev. 10-oct). El `.env.example` del panel documenta **cuatro**: le faltan
+`…_REPORTS_SIGNATURES` y `…_SIGNING_CA`. Completarlo en el PR del panel para que la plantilla
+y esta tabla digan lo mismo (`…_CALENDAR_AVAILABILITY` y `…_UPLOAD_MEDIA` tampoco están en la
+plantilla, pero eso viene de antes de este lote).
+
 ### 8.2 Promoción
 
 Al 2026-10-10 el panel ya está empujado y `origin/staging` tiene todo lo de `origin/develop`:
-los 11 commits que el 09-oct estaban sin subir ya están arriba. `origin/staging` va **106 commits
-por delante de `origin/main`** en el panel y **148** en la API. La cadena sigue siendo
-`develop → staging → main`, y el `main` lo fusiona y redespliega Jose en Vercel. Antes de
-fusionar, revisar que `main` no tenga hotfixes que `develop` no tenga (pasó en septiembre).
+los 11 commits que el 09-oct estaban sin subir ya están arriba. `origin/staging` va **115 commits
+por delante de `origin/main`** en el panel y **154** en la API (rev. 10-oct, noche). La cadena
+sigue siendo `develop → staging → main`, y el `main` lo fusiona y redespliega Jose en Vercel.
+
+Revisado si `main` tiene algo que `staging` no tenga (pasó en septiembre):
+- **API:** solo los merges de los PR #134–#141. Nada que reconciliar.
+- **Panel:** un commit, `d7e4b3d7` «Bump version from 2.1.4 to 2.1.5», hecho directamente en
+  `main`; `staging` sigue en 2.1.4. El merge no da conflicto (probado con `merge-tree`) y se
+  queda con 2.1.5. Conviene fusionar `main → develop` antes, para que la versión no viva solo
+  en `main`, que es lo que pasó con Turnstile.
+
+### 8.3 Qué entra en el panel, por pantalla (rev. 10-oct)
+
+115 commits, 2026-09-28 → 2026-10-10. **Ninguno añade lecturas ni escrituras directas a
+Firestore** (comprobado en el diff: ni `getDocs`, ni `setDoc`, ni `onSnapshot` nuevos): todo lo
+nuevo va por el proxy, que es lo que las reglas de §5.3 y «Postgres primero» piden. La pestaña
+de facturas, de hecho, deja de leer Firestore.
+
+| Área | Qué cambia |
+|---|---|
+| **Inventario** (nuevo, 40 ficheros) | la sección entera: tablero, Existencias (con «Fuera de base»), almacenes, artículos y ejemplares, movimientos, entregas, importación por plantilla, ficha del ejemplar con su posición; entrada **«Inventory» en el menú siempre que CheckBiz esté contratado** (sin add-on enseña la puerta de alta); `useInventoryAccess` pregunta a la API, no al contexto |
+| **Tareas** (8) | material en la tarea: planificador al crear, sección de materiales en el detalle, diálogos de reservar, entregar, consumir y liberar |
+| **Documentos** (7) | ámbitos `item`/`unit` y tipos de equipo en el modal de subida; diálogo de **vincular** un documento a equipos (`/links`); en la ficha, cómo se firmó cada acuse (biometría, PIN, contraseña o pulsado) y el botón del **acta** |
+| **Facturación** | Facturas deja de leer `entities/{id}/invoices` y pide `billing_invoices`, paginado por el servidor, con servicio y estado traducidos; la tarjeta del plan trata `inventory` como add-on (un solo plan, el botón entra en el módulo, la baja desde la tarjeta); los textos del plan salen de i18n `salesPlan.plans.standard` |
+| **Entorno de trabajo** (branding) | sección «Certificado de firma»: descarga el zip de la CA |
+| **Empleados** | sección de equipos entregados en la ficha |
+| **Informes** | «Equipos y EPIs» y «Consumo de material» en el modal de informes |
+| **Contexto de la entidad** | **cambio de comportamiento**: una suscripción `trialing` cuenta como contratada (antes solo `active`). Afecta también a checkinbiz: quien esté de prueba ve los módulos como activos. Arregla que el detalle de la tarea escondiera el material a quien probaba el add-on |
+| **Buscador** | `searchIndex` admite los tipos `employee`, `branch`, `document`, `item` y `warehouse` (los dos últimos los escribe el servicio de inventario) |
+| **Errores e idiomas** | 37 códigos `inventory/*` traducidos; sección `inventory` en los cinco idiomas (de, en, es, fr, pt) |
+| **Maquetación** | el aviso flotante de incidencias ya no tapa el menú lateral; el pie deja de ir por encima del menú |
 
 ## 9. App móvil (`checkbiz360`)
 
 Lo lleva otra sesión. Del ADR-008, la app libera el equipo desde la tarea («¿Dónde queda?»:
-la tarea o un almacén) y enseña dónde está; al 2026-10-10 estaba a medio hacer y sin commitear.
-El panel, igual: diálogos de liberar y recibir, «Fuera de base» en Existencias y la posición en
-la ficha del ejemplar, a medio hacer en `feat/inventario-posicion-ejemplar` sin commitear. Lo
-que no cuadraba con la API quedó dicho a sus sesiones: el texto «si se perdió, retirado» (la API
-lo deja no disponible), el rastro sin enseñar en la ficha y el tipo de vuelta de recibir.
+la tarea o un almacén) y enseña dónde está. Al 2026-10-10 por la noche (rev.), `develop` de
+`PLATAFORMA/checkbiz360` ya lleva el merge «material de la tarea con nombres y orden, el
+supervisor libera equipos, fuera de radio legible y la firma del PDF dice su clave
+(**1.7.0+55**)», con 7 ficheros todavía sin commitear en el árbol. La versión publicada sigue
+siendo 1.2.0+47 según la última mirada a las consolas (04-sep); no se ha vuelto a comprobar.
+El panel ya tiene la posición en `origin/staging` (`positionUi.tsx`, «Fuera de base» en
+Existencias, diálogos de liberar y recibir): la rama `feat/inventario-posicion-ejemplar` quedó
+fusionada y el árbol está limpio. Lo que no cuadraba con la API quedó dicho a sus sesiones: el
+texto «si se perdió, retirado» (la API lo deja no disponible), el rastro sin enseñar en la ficha
+y el tipo de vuelta de recibir; falta comprobar que se recogió.
 
  Para prod hace falta **una versión nueva publicada** (no sale de `master`,
 sin tags, subida a mano): módulo de inventario («Mi material», declarar consumo), documentos de
@@ -395,15 +535,28 @@ Android y un iPhone reales (clave con solo PIN, gama baja sin StrongBox).
 
 ## 9b. Lo que NO entra en este lote (para no buscarlo)
 
-La firma incrustada en el PDF (PAdES con CA propia, [documental 08](../ingenieria/documental-service/08_firma-incrustada-en-el-pdf.md)):
-la parte de **auth está construida** (CA, certificado por clave, `GET /auth/signing-ca.crt`) y
-**sí entra** en este lote con el código; el documental (preparar y montar el PDF) todavía no.
-Lo que pide en prod, cuando se quiera que emita certificados (sin esto arranca igual y no emite):
+**Corrección (rev. 10-oct): la firma incrustada en el PDF SÍ entra entera**, no solo la parte
+de auth; este apartado decía lo contrario. PAdES con CA propia,
+[documental 08](../ingenieria/documental-service/08_firma-incrustada-en-el-pdf.md): auth (CA,
+certificado por clave, `GET /auth/signing-ca.crt` y `/signing-ca/bundle`) **y** el documental
+(`POST /:id/sign/prepare`, acuse con reto PAdES, el firmado sustituye al original) están en
+`staging` desde el 2026-10-09 (`443da75`, `5747cd0`, `1386354`); QA FIR-04 lo cubre con una
+nómina sintética. Solo para documentos dirigidos a un único empleado.
+
+**Qué pasa en prod sin la CA:** nada se rompe. `loadSigningCa` prueba una vez y se queda con
+«no hay»; preparar la firma responde `ca_not_configured`, la app cae al acuse de siempre y el
+acuse firmado con la clave del móvil (sin PDF) funciona igual. El coste es que, hasta que exista
+la CA, ninguna nómina sale firmada por dentro. Y la CA puede llegar **después** sin rehacer
+nada: a una clave registrada antes se le emite el certificado la siguiente vez que se usa
+(`ensureCertificate`). Lo que sí hace falta al ponerla es **reiniciar `checkinbiz` y
+`documents`**, porque la ausencia se cachea en el proceso.
+
+**Decisión para el día del pase: ¿con CA de producción o sin ella?** Si es con ella:
 1. generar la CA de producción desde el portátil con `services/checkinbiz/src/scripts/signing-ca.ts`
    (`--name "CheckBiz360 Firma CA" --out <dir> --apply`), **guardar la clave fuera de cualquier repo**;
-2. copiar `signing-ca.key` (600) y `signing-ca.crt` (644) a `/opt/encodebiz-api/secrets/`;
-3. añadir a `x-secret-volumes` del `docker-compose.yml` de prod las dos líneas que ya tiene el de
-   staging (`./secrets/signing-ca.key:/secrets/signing-ca.key:ro` y `.crt`), en el mismo PR;
+2. copiar `signing-ca.key` (600) y `signing-ca.crt` (644) a `/opt/encodebiz-api/secrets/` y
+   reiniciar `checkinbiz` y `documents`;
+3. las dos líneas de `x-secret-volumes` ya van en §1, con o sin CA;
 4. `SIGNING_TSA_URL`, solo cuando llegue el sello de tiempo (documental, pendiente).
 
 **El cierre del add-on por impago tampoco entra.** Billing solo reacciona a
@@ -424,12 +577,31 @@ No se fusiona `staging → main` hasta pasar en staging el guion
 (panel → app → perito → informes → inventario → consumo → avisos) con la versión de la app que
 se va a publicar. Tras el pase se repiten allí los pasos 1, 2 y 7 con una empresa piloto.
 
+## 9d. Pendiente para producción que no lleva este lote y ningún otro registro recoge (rev. 10-oct)
+
+Está aquí para que «todo lo pendiente» tenga un sitio donde mirarse. Nada de esto bloquea el
+pase de inventario y firma, y nada de esto se arrastra con el PR `staging → main` de la API.
+
+| Qué | Dónde está | Qué falta |
+|---|---|---|
+| **Cloud Functions (`encodeBiz-SAAS`)** | `develop` va 33 commits por delante de `main` (23-ago → 21-sep): índices de `tasks` y `documents` en `firestore.indexes.json` (+264 líneas), retirar del índice `onChecklogWebhook`, `processInvoices` y `triggerInvoiceWorker`, correos del colaborador en su idioma, ficha del colaborador y aviso de incidencia, pie del informe, asunto del correo desde la plantilla, la B mayúscula del push | **No hay registro de qué está desplegado en prod y qué no**: el 05-sep se desplegaron nueve por nombre y `main` se recortó a eso. Y **el SaaS no se promueve por merge**: su `develop` borra el codebase `critical` (los proxies que prod sigue usando); se despliega función a función, por nombre y con `--project`. Los índices, con `gcloud` (`deploy --only firestore:indexes` poda lo que el fichero no declara). Sigue pendiente quitar `onDocumentWriteSubscriptions` del índice del SaaS: el próximo deploy lo recrearía y duplicaría correos y checkout |
+| **`services/firebase_sdk`** | 22 triggers portados el 12-sep (+ la B mayúscula el 17-sep), en `main` | Sin constancia de despliegue en prod; va por nombre con `scripts/desplegar.mjs`, nunca `--only functions` a secas. `MAINTENANCE_GHOST_CUTOFF_DATE` está en el código de `main` desde el 05-sep y puesta en el entorno de la función en prod, **sin desplegar**: el CI solo levanta contenedores |
+| **Campañas in-app** | API en prod desde el 16-sep (PR #137) | La parte del panel (otra sesión) y las reglas de `campaigns` en prod. Sin comprobar en prod: una subida de imagen real y el 3 MB de nginx |
+| **Baja de colaboradores por backend** | API y panel en prod desde el 15-sep | No se comprobó si `NEXT_BACKEND_URI_CHECKINBIZ_COLLABORATORS_HANDLER` estaba en Vercel antes del pase; sin ella el proxy da 403 al retirar a alguien. Se comprueba con una baja real |
+| **`firestore.indexes.json` unión** | generado en septiembre (132 índices) | Sin commitear en el SaaS; el `develop` del SaaS declara 122 |
+| **Reglas de Firestore de prod** | §5.3 | Nunca leídas. Es el primer paso del día del pase, no el sexto |
+
 ## 10. Orden de ejecución el día del pase
 
-1. Migraciones 023, 024 y 025 (§4), una a una.
+0. (rev. 10-oct) Rearmar el hook `block-prod.sh` (`PreToolUse` de `.claude/settings.json`).
+   Leer y guardar el ruleset de Firestore de prod (§5.3). Decidir si el pase va con CA de firma
+   (§9b) y, si va, generarla y copiarla antes del despliegue.
+1. Migraciones 023, 024 y 025 (§4), una a una, desde `/docker-entrypoint-initdb.d/`.
 2. `.env.production`: `INVENTORY_INTERNAL_URL` y, si se quiere, las de §3.2.
-3. `docker-compose.yml` y `nginx/nginx.conf` (§1, §2) **commiteados en el PR** `staging → main`;
-   fusionar; el `deploy.yml` levanta el contenedor y reinicia nginx.
+3. `docker-compose.yml` (bloque de `inventory` **desarrollado, sin anclajes**, y las dos líneas
+   de la CA en `x-secret-volumes`), `nginx/nginx.conf` y `.env.example` (§1, §2, §3.2)
+   **commiteados en el PR** `staging → main`; en el panel, antes, `main → develop` por el bump
+   de versión (§8.2); fusionar; el `deploy.yml` levanta el contenedor y reinicia nginx.
 4. Comprobar: `docker compose … ps` (16 → 17 contenedores `healthy`, `inventory` entre ellos) y
    `curl https://api.checkbiz360.com/api/v1/inventory/access?entityId=…` con un token de prod
    → 403 `inventory/not_subscribed` (no 502).
@@ -454,6 +626,28 @@ se va a publicar. Tras el pase se repiten allí los pasos 1, 2 y 7 con una empre
 estado anterior; las tablas pueden quedarse). Reglas: redesplegar la copia guardada en §5.3.
 Precio de Stripe: archivarlo deja el plan no contratable sin tocar código.
 
-## 11. Registro de lo ejecutado
+## 11. Registro de lo ejecutado — 2026-10-11
 
-_(vacío: se rellena el día del pase)_
+Una fila por paso de §10, en el orden en que se haga. Lo que no se haga, también se escribe,
+con el motivo: es lo que permite saber después qué está corriendo.
+
+| Paso (§10) | Hora | Quién | Resultado y lo que se vio |
+|---|---|---|---|
+| 0. Hook rearmado · ruleset de prod leído y guardado · decisión CA | | | |
+| 1. Migraciones 023 / 024 / 025 | | | |
+| 2. `INVENTORY_INTERNAL_URL` en el entorno | | | |
+| 3. PR `staging → main` (compose, nginx, `.env.example`) y despliegue | | | |
+| 4. `ps` 17 `healthy` · `inventory/access` → 403 | | | |
+| 5. Índices de `items` | | | |
+| 6. Reglas de Firestore | | | |
+| 7. Precio Stripe · `alta-servicio.js` · webhook | | | |
+| 7b. Plantillas `PAYMENT_FAILED_*` · índice `checklogs` | | | |
+| 8. Vercel, seis claves · PR del panel | | | |
+| 9. Primera entidad: alta, Existencias, informe | | | |
+| 9a. Rastro de posición | | | |
+| 9b. Pestaña Facturas | | | |
+| 10. App (cuando haya versión) | | | |
+
+**Incidencias y desvíos del guion:**
+
+_(nada todavía)_
