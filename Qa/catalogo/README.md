@@ -29,6 +29,7 @@ planes manuales de QA. El método está en [../plan-automatizacion.md](../plan-a
 | [empleados-sucursales-empresas.md](./empleados-sucursales-empresas.md) | Empleados, sucursales, empresas y colaboradores | EMP, SUC, ENT, COL | Publicado · análisis estático |
 | [equipos.md](./equipos.md) | Equipos: plantillas de responsabilidades, aplicar a una sucursal, guardar una sucursal | EQP | Publicado · con prueba (`52-equipos.spec.ts`) |
 | [facturacion-informes-eventos.md](./facturacion-informes-eventos.md) | Facturación, informes, webhooks salientes y analítica | FAC, INF, EVT, ANA | Publicado · análisis estático |
+| [dashboard-operativo.md](./dashboard-operativo.md) | Dashboard operativo: espejo de tareas, conciliación de fichajes, el hoy, el cierre diario y las semanas | DAS | Con prueba (`54-dashboard-operativo.spec.ts`), sin ejecutar aún contra staging |
 | [mapa-migracion.md](./mapa-migracion.md) | Qué llama cada cliente, adónde va y qué queda fuera del HTTP | MAP | Publicado · análisis estático |
 | [firma.md](./firma.md) | Firma del trabajador desde el móvil: clave y certificado, reto, acuse de recibo firmado con evidencia y acta | FIR | 27 casos (incluida la firma dentro del PDF), en verde contra dev el 09-oct-2026 |
 | [hallazgos.md](./hallazgos.md) | Fallos y comportamientos dudosos, confirmados, con su corrección debajo | HAL | 35 de 37 corregidos o con código listo (14-sep-2026); 2 esperan decisión |
