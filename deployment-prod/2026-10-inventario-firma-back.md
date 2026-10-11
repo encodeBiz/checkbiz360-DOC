@@ -559,16 +559,29 @@ nada: a una clave registrada antes se le emite el certificado la siguiente vez q
 3. las dos líneas de `x-secret-volumes` ya van en §1, con o sin CA;
 4. `SIGNING_TSA_URL`, solo cuando llegue el sello de tiempo (documental, pendiente).
 
-**El cierre del add-on por impago tampoco entra.** Billing solo reacciona a
-`customer.subscription.deleted`; mientras Stripe deja la suscripción en `past_due`/`unpaid`, el
-documento sigue `active` y el inventario abierto. Falta decidir si se cierra al primer fallo o
-tras un margen (caso que lo destapó: Full Certificado, 2026-10-09).
+**El cierre por impago está decidido y no pide código** (Jose, 2026-10-11: «no se cierra
+mientras está en periodo de gracia»). Durante los reintentos de Stripe la suscripción queda
+`past_due`, el inventario sigue abierto y el cliente recibe el correo de cobro fallido en cada
+intento (§6.1). Al agotarse los reintentos Stripe cancela, manda `customer.subscription.deleted`
+y billing cierra el add-on. **Depende de un ajuste de la cuenta que la API no expone**: Billing →
+Revenue recovery → Retries, «si fallan todos los reintentos» = **cancelar la suscripción**. Con
+«marcar como impagada» o «dejarla vencida» no llega nunca el evento y el add-on no se cierra.
+Comprobarlo en la cuenta en vivo (caso que lo destapó: Full Certificado, 2026-10-09).
 
 **El correo de la factura sigue mandando todas.** El filtro de «solo lo de la plataforma» de
 §6.2 es de la pestaña del panel; `SendInvoiceEmail` no lo tiene, así que en cada
 `invoice.finalized` de la cuenta el cliente recibe su factura aunque no sea de checkbiz360. Es
 el comportamiento de hoy y no empeora con el pase, pero queda escrito para no buscarlo cuando
 alguien pregunte por qué el panel y el correo no dicen lo mismo.
+
+**Cambio del 2026-10-11 (Jose):** desactivado en Stripe «Enviar facturas finalizadas a los
+clientes», porque billing ya las manda y llegaban duplicadas. Consecuencia: las facturas que no
+son de la plataforma (p. ej. mantenimientos) ya solo las manda billing. Sin empresa en la
+plataforma, `SendInvoiceEmail` cae a `invoice.customer_email` y la envía **con la plantilla de
+CheckBiz360 y el nombre de empresa vacío**; sin correo en el cliente de Stripe, no sale ninguna
+(`invoice_emails` en `skipped`, `sin_destinatario`). El arreglo es que el correo filtre por
+`PlatformServices` como la pestaña del panel, y que las de fuera las mande Stripe o nadie:
+decisión pendiente, fuera de este pase.
 
 ## 9c. Aceptación antes de subir
 
@@ -610,6 +623,10 @@ pase de inventario y firma, y nada de esto se arrastra con el PR `staging → ma
 7. Stripe: precio en vivo (§6) y `alta-servicio.js --stripe-price … --apply` (§5.2); que el
    webhook tenga `invoice.payment_failed`.
 7b. Plantillas `PAYMENT_FAILED_es/en` copiadas de dev (§5.6) e índice de `checklogs` (§5.7).
+7c. (añadido el 11-oct) Plantillas del alta y la baja del inventario en `emails_template` de
+   prod. **Hechas**: copiadas de dev antes del despliegue. Para la próxima plantilla que nazca en
+   código: `node services/billing/dist/scripts/email-templates.js --apply` en el contenedor
+   `billing`. Sin ellas el correo sale igual, con el respaldo que vive en el código.
 8. Vercel: las **seis** claves (§8.1) y el PR del panel (§8.2).
 9. Primera entidad: contratar desde Suscripciones; comprobar que nace `active` con 15 días de
    prueba y `quantity` = plantilla; abrir Existencias (índices), subir una entrada, generar el
@@ -633,16 +650,21 @@ con el motivo: es lo que permite saber después qué está corriendo.
 
 | Paso (§10) | Hora | Quién | Resultado y lo que se vio |
 |---|---|---|---|
-| 0. Hook rearmado · ruleset de prod leído y guardado · decisión CA | | | |
-| 1. Migraciones 023 / 024 / 025 | | | |
-| 2. `INVENTORY_INTERNAL_URL` en el entorno | | | |
-| 3. PR `staging → main` (compose, nginx, `.env.example`) y despliegue | | | |
-| 4. `ps` 17 `healthy` · `inventory/access` → 403 | | | |
-| 5. Índices de `items` | | | |
-| 6. Reglas de Firestore | | | |
-| 7. Precio Stripe · `alta-servicio.js` · webhook | | | |
-| 7b. Plantillas `PAYMENT_FAILED_*` · índice `checklogs` | | | |
-| 8. Vercel, seis claves · PR del panel | | | |
+| 0a. Hook | 11:20 → 12:20 | Jose / Claude | **Se deja desenganchado a propósito**: Jose decide que los pasos de prod los ejecute Claude, uno a uno con aprobación. **Rearmado a las 12:20**, al acabar los pasos de servidor: `PreToolUse` con la ruta absoluta del script, y la lista de contenedores del script ampliada con los cinco servicios nacidos desde agosto (`backoffice`, `billing`, `events`, `employees`, `inventory`) y `certbot` |
+| 0b. QA de staging previo | 11:15 | Claude | El run del 10-oct falló por **una** prueba (CHK-08-70, ventana de turno que cruza medianoche a las 23h de la zona de la persona); fichero sin cambios desde el 14-sep y pasó en los runs anteriores: no es regresión. 438 de 439 en verde |
+| 0c. Rama de config | 11:20–11:27 | Claude | `feat/inventario-en-produccion` en API (compose desarrollado + CA en secretos, nginx, `.env.example`) y panel (dos claves en la plantilla + merge de `main` por el bump 2.1.5) → develop → staging. `docker compose config` ok; `nginx -t` del nginx de prod ok en contenedor desechable en el VPS |
+| 0d. CA de producción | 11:28 | Claude | Generada en el portátil, `~/encodebiz-secrets/signing-ca-produccion/` (fuera de repos). `CN=CheckBiz360 Firma CA, O=encodeBiz, C=ES`, hasta 2036-10-10, SHA-256 `42:E3:7E:89:…:DA:F4:4A`. Copiada a `/opt/encodebiz-api/secrets/` (key 600, crt 644) **antes** del despliegue; huella comprobada en el servidor |
+| 0e. Ruleset de prod | 11:29 | Claude | **Distinto del de dev**: leer `if true`, escribir `if request.auth != null`. Copia en `2026-10-11-firestore-rules-prod-antes.rules`. El fichero del repo habría abierto escrituras anónimas: se funde (ver paso 6) |
+| 1. Migraciones 023 / 024 / 025 | 11:32 | Claude | Copia previa `~/backups/encodebiz_analytics_antes_pase_2026-10-11.sql.gz` (1,7 MB, completa). Las tres por la tubería del ssh con `ON_ERROR_STOP`, exit 0. 7 de 7 tablas; CHECK de `dim_sync_log` con seis valores |
+| 2. `INVENTORY_INTERNAL_URL` en el entorno | 11:33 | Claude | Copia `~/backups/env.production.antes_pase_2026-10-11`. Añadidas `INVENTORY_INTERNAL_URL`, `_RECOMPUTE_MINUTES=30`, `_REMIRROR_MINUTES=5`, `_DOC_EXPIRY_HOURS=6`. `ENCODEBIZ_API_KEY` y `FIREBASE_STORAGE_BUCKET` presentes; la de Stripe se llama `STRIPE_PRO_KEY` |
+| 3. PR `staging → main` (compose, nginx, `.env.example`) y despliegue | 12:00 | Jose / CI | PR #142 abierto por Claude a las 11:55 y **fusionado por Jose a las 12:00, con el QA de staging del último commit todavía en marcha** (el del commit anterior había dado 445/445). *Production CI/CD* `38130411079` en verde a las 12:02 (2 min): `up --build -d`, reinicio de nginx |
+| 4. `ps` 17 `healthy` · `inventory/access` → 403 | 12:10 | Claude | 17 contenedores, 15 `healthy` + nginx y certbot (sin healthcheck). Desde fuera: `/health` 200; `inventory/access`, raíz de inventory, `billing/invoices` y `reports/equipment` sin token → **401** (no 502); `signing-ca.crt` devuelve la CA de prod con la huella `42:E3:…:F4:4A`; `signing-ca/bundle` 200. Sin errores en los logs del arranque |
+| 5. Índices de `items` | 11:31 | Claude | Descargados los de prod antes (137, copia en `2026-10-11-indices-prod-antes.json`) y comparados con dev (133). **Solo `create`, nunca deploy de índices.** Prod: los dos de `items` (137 → 139). Fundidos hacia abajo: los 12 que prod tenía y dev no (tareas por prioridad, documentos, incidencias, responsabilidades, planificadores) creados en dev (133 → 145). Los 6 de `fleetbiz_glovo` que solo tiene dev, sin tocar (otro producto) |
+| 6. Reglas de Firestore | 11:30 | Claude | Fichero fundido: lectura como prod (abierta salvo `signing_keys`/`signing_challenges`), escritura con sesión como prod, más el cierre de `signingKey`. Desplegado **primero en dev** y comprobado sin sesión (leer 200, escribir 403, `signing_challenges` 403); luego en prod con el mismo resultado. Commit en la rama → develop → staging |
+| 7. Precio Stripe · `alta-servicio.js` · webhook | 11:40 | Claude | Copiada la forma del precio de dev. **IVA incluido** (decisión de Jose, como el Bronze en vivo). Producto `prod_VQ9ScpOvvMYTWE` «Inventario» y precio `price_1UPJ9qJdldmbRy89Sp7nY5xl`: graduado, 2900 fijo hasta 50 + 75 por unidad desde 51, mensual/licensed, metadata `serviceId`/`planId`. `alta-servicio.js --stripe-price … --apply` ejecutado a las 12:12 en el contenedor de prod (simulado antes): `service/inventory` activo y `plan/standard` con el precio en vivo y `payPerUse`. `INVENTORY_INTERNAL_URL` visible en `tasks` y `events`. Webhook de prod: llegan `upcoming`, `trial_will_end`, `payment_failed`, `finalized`, `paid`, `deleted`; **falta `invoice.created`** (conciliación del borrador, en código de prod desde el 13-sep y nunca recibida). No se añade sin decisión de Jose |
+| 7b. Plantillas `PAYMENT_FAILED_*` · índice `checklogs` | 11:43 | Claude | `PAYMENT_FAILED_es` y `_en` creadas en prod con `create` desde dev (0 → 2). Índice `checklogs (employeeId, status, timestamp)` `READY` en prod |
+| 7c. Correo del alta/baja del inventario | 11:34–12:00 | Jose / Claude | **Desvío**: al probar el alta en staging, el correo era el de bienvenida general de CheckBiz360 y la baja anunciaba la cancelación de todo. Jose lo corrige en `develop → staging` (`dd09631`, `7b387a9`): `SUBSCRIBE_INVENTORY`/`CANCELLED_INVENTORY` con plantilla en código como respaldo y script `email-templates.js`. Revisado: autosuficiente (shared ya tenía `fallbackHtml`); `BILLING_CHECKOUT_SUCCESS_URL` no está en prod y el botón «Acceder» cae a `https://saas.encodebiz.com`, que es el panel. Plantillas copiadas de dev a prod a las 12:05 con `create` (las cuatro: `SUBSCRIBE_INVENTORY_es/en`, `CANCELLED_INVENTORY_es/en`); el paso 7c de §10 queda hecho antes del despliegue. PR de la API abierto: #142 |
+| 8. Vercel, seis claves · PR del panel | 11:42 | Claude | Las seis en Production con la CLI (Preview no: el panel no tiene ese entorno). `…_COLLABORATORS_HANDLER` ya estaba en Production desde hace 30 días: cierra el pendiente de §9d. **PR del panel abierto a las 12:13**: encodebiz-front-saas-clean#96 (`staging → main`, 127 commits, `main` sin nada que staging no tenga); lo fusiona Jose y Vercel redespliega |
 | 9. Primera entidad: alta, Existencias, informe | | | |
 | 9a. Rastro de posición | | | |
 | 9b. Pestaña Facturas | | | |
@@ -650,4 +672,27 @@ con el motivo: es lo que permite saber después qué está corriendo.
 
 **Incidencias y desvíos del guion:**
 
-_(nada todavía)_
+- **Reglas de prod distintas de las de dev** (0e). El fichero del repo copiaba el comodín de dev
+  (todo abierto hasta 2030); prod pedía sesión para escribir. Desplegarlo tal cual habría abierto
+  las escrituras anónimas en producción. Se fundió con la semántica de prod y se desplegó primero
+  en dev. Lección: **leer el ruleset vigente antes de versionar reglas**, no después.
+- **Índices en los dos sentidos** (5). Prod tenía 12 compuestos que dev no tenía (tareas por
+  prioridad, documentos, incidencias, responsabilidades, planificadores): dev llevaba semanas sin
+  reproducir consultas de prod. Bajados a dev. Siempre `create`, nunca deploy de índices.
+- **El correo del alta del inventario era el de CheckBiz360 entero** (7c), visto al probar el alta
+  en staging. Corregido por Jose en 25 minutos; plantillas copiadas a prod antes del despliegue.
+- **El PR de la API se fusionó con el QA del último commit en marcha** (3). Terminó en verde
+  (445/445) nueve minutos después del despliegue. El commit anterior sí tenía QA en verde.
+- **`invoice.created` no llega al webhook de prod**: la conciliación del borrador (en código desde
+  el 13-sep) nunca ha corrido allí. No se añade sin decisión: cambia lo que se cobra. Pendiente.
+- **Stripe deja de mandar facturas** (Jose, durante el pase): desactivado «Enviar facturas
+  finalizadas a los clientes» para evitar el duplicado con billing. Las facturas que no son de la
+  plataforma ya solo las manda billing, con plantilla de CheckBiz360. Pendiente de decidir (§9b).
+- **Cierre por impago**: decidido, sin código (§9b). Comprobar en la cuenta en vivo que al agotar
+  reintentos Stripe **cancela** la suscripción.
+- **TSK-05-27 y TSK-05-28** (editar tarea desde el formulario del panel) fallan al primer intento
+  y pasan al reintento en los tres últimos runs de staging. Inestables, no rotas: mirar después.
+
+**Queda para Jose, en el panel, cuando fusione encodebiz-front-saas-clean#96:** pasos 9, 9a y 9b
+(primera empresa: contratar el inventario, Existencias, informe «Equipos y EPIs», rastro de
+posición, pestaña Facturas). Y el paso 10 cuando la app tenga versión publicada.
