@@ -372,8 +372,12 @@ dos órdenes) y añadir las rutas a la allowlist del proxy del panel (§6).
 
 ## 12. Para el pase a producción
 
-1. Migración `034_inventario_cuentas_destino.sql` a mano, antes o después del despliegue (el
-   espejo tolera las dos órdenes). Aplicada en staging el 2026-10-14.
+1. Migración `034_inventario_cuentas_destino.sql` a mano, **antes** del despliegue. El espejo
+   tolera el orden inverso, pero los apuntes de persona o sucursal que se espejen sin la
+   columna quedan en Postgres sin destino. Pasó en staging el 2026-10-14: los espejó el
+   contenedor anterior al despliegue. Se arregla con el script
+   `backfill-account-kind.js` (simula por defecto, `--apply` para hacerlo): en staging, 14
+   filas, y la segunda pasada dio 0.
 2. API: `shared` + `inventory` con la cadena `develop → staging → main`.
 3. Panel: el mismo paso; la allowlist del proxy va en el propio código.
 4. App: versión 1.8.0+58 o posterior; sin la API nueva, la app esconde lo nuevo.
