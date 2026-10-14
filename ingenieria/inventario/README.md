@@ -76,6 +76,7 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 | [ADR-006](./adr/ADR-006-operable-se-asigna-a-tareas-con-hora.md) | El operable se asigna a tareas con hora, no a obras por rango | Aceptado |
 | [ADR-007](./adr/ADR-007-entrega-es-asignacion-con-acuse.md) | La entrega de un ejemplar es una asignación con acuse; su papel es el documento de siempre | Propuesto |
 | [ADR-008](./adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md) | Liberar no es devolver: la agenda la suelta el supervisor y la posición del ejemplar lleva su propio rastro («¿dónde queda?», recepción en almacén sin bloquear) | Aceptado |
+| [ADR-009](./adr/ADR-009-el-material-sale-hacia-una-tarea-una-persona-o-una-sucursal.md) | El material sale hacia una tarea, una persona o una sucursal: la cuenta tiene destino y las cuatro operaciones son las mismas para los tres | Aceptado |
 
 ## Technical Design Records (TDRs)
 
@@ -88,6 +89,7 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 | [TDR-005](./tdr/TDR-005-material-en-el-informe-de-tareas.md) | El material de cada tarea en el informe de tareas, solo con el add-on | — | Implementado, en staging |
 | [TDR-006](./tdr/TDR-006-material-en-el-panel-y-en-merlin.md) | El material en el panel operativo y en Merlin: motivos de centro, quinto eje de la persona, claves para el relato | — | Diseño aprobado, sin código |
 | [TDR-007](./tdr/TDR-007-importacion-masiva-por-plantilla.md) | Importación masiva por plantilla de almacén: dos modelos, dos ejemplos con `ELIMINAR`, propuesta antes de aplicar | — | Implementado en rama, sin fusionar |
+| [TDR-008](./tdr/TDR-008-cuentas-de-material-por-destino.md) | Cuentas de material por destino: `material_accounts`, `accountKind` en el libro, rutas `/materials`, declarar desde la jornada | — | Implementado: API y panel en staging, app en develop |
 
 ---
 
@@ -105,6 +107,7 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 - [ ] **Material en el panel operativo y en Merlin** — el material como fuente para las tres preguntas del panel y quinto eje de la fiabilidad; sin add-on, nada. Prerrequisito: las tareas en Postgres. **Diseñado el 2026-10-09, sin código** ([TDR-006](./tdr/TDR-006-material-en-el-panel-y-en-merlin.md))
 - [ ] **Posición del ejemplar** — liberar no es devolver: al liberar a mano el supervisor dice dónde queda (sitio, almacén o persona), la tarea cerrada lo deja en su sitio, «Recibir en almacén» sin bloquear la agenda, y el tablero marca lo libre fuera de base. **Decidido el 2026-10-10; app hecha el mismo día (libera ya con la API de hoy y pregunta «¿Dónde queda?» en cuanto la API mande `position`); API y panel pendientes** ([ADR-008](./adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md))
 - [ ] **Importación masiva de artículos** — plantilla por almacén y por tipo, dos ejemplos con `ELIMINAR`, propuesta fila a fila y confirmar. **Implementado el 2026-10-09 en `feat/inventario-importacion-masiva` (API y panel), probado contra dev, sin fusionar** ([TDR-007](./tdr/TDR-007-importacion-masiva-por-plantilla.md))
+- [ ] **Material sin tarea: destino tarea, persona o sucursal** — la salida, la declaración y el cuadre valen contra una tarea, una persona o un centro; «Declarar consumo» desde la jornada en la app; «Fuera del almacén» en Existencias. **Implementado el 2026-10-14: API y panel en staging, app en develop; falta producción** ([ADR-009](./adr/ADR-009-el-material-sale-hacia-una-tarea-una-persona-o-una-sucursal.md), [TDR-008](./tdr/TDR-008-cuentas-de-material-por-destino.md))
 
 **Lo que sale de otro repo:** las pantallas de la app —material de la tarea, selector de
 almacén, consumo precargado, paso de cuadre— y las del panel son el camino crítico de las

@@ -66,7 +66,7 @@ Desde cada fila, o desde la ficha del artículo:
 | **Recuento** | Fijar lo que hay de verdad después de contar, con un motivo. Solo consumibles. |
 | **Mínimo** | Fijar el nivel por debajo del cual se avisa a los responsables. Solo consumibles. |
 | **Editar** | Cambiar los datos de la ficha. El tipo no se cambia. |
-| **Salida a una tarea** | Entregar material del almacén para un trabajo concreto, antes de que empiece. Es opcional: si nadie la da, la apunta el consumo. |
+| **Dar salida** | Entregar material del almacén a una tarea, a una persona o a una sucursal. Es opcional: si nadie la da, la apunta el consumo. Ver [Material sin tareas](./107-material-sin-tareas-personas-y-centros.md). |
 | **Entregar** | Dar un ejemplar a una persona, que lo confirma desde su móvil. Ver [Equipos: documentos, revisiones y entregas](./104-equipos-documentos-revisiones-y-entregas.md). |
 | **Archivar** | Dejar de ofrecer un artículo. Si tiene historia, se conserva. |
 

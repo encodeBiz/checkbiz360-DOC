@@ -66,7 +66,7 @@ A partir de cada linha, ou da ficha do artigo:
 | **Contagem** | Fixar o que há de facto depois de contar, com um motivo. Só consumíveis. |
 | **Mínimo** | Fixar o nível abaixo do qual os responsáveis são avisados. Só consumíveis. |
 | **Editar** | Alterar os dados da ficha. O tipo não se altera. |
-| **Saída para uma tarefa** | Entregar material do armazém para um trabalho concreto, antes de começar. É opcional: se ninguém a der, regista-a o consumo. |
+| **Dar saída** | Entregar material do armazém a uma tarefa, a uma pessoa ou a uma sucursal. É opcional: se ninguém a der, regista-a o consumo. Ver [Material sem tarefas](./107-material-sem-tarefas-pessoas-e-locais.md). |
 | **Entregar** | Dar um exemplar a uma pessoa, que o confirma no telemóvel. Ver [Equipamentos: documentos, inspeções e entregas](./104-equipamentos-documentos-inspecoes-e-entregas.md). |
 | **Arquivar** | Deixar de oferecer um artigo. Se tiver histórico, conserva-se. |
 

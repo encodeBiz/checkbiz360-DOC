@@ -9,7 +9,7 @@ O inventário foi pensado para que o material se acompanhe no mesmo sítio onde 
 | Passo | Quem | O que acontece |
 |---|---|---|
 | **1. Reservar** | Quem planeia | Decide-se o material de que a tarefa precisa. Fica comprometido no armazém, mas ainda não sai. |
-| **2. Retirar** (opcional) | Quem gere o armazém | Na ficha do armazém ou do artigo, **Saída para uma tarefa**: o material sai para esse trabalho. Se ninguém o fizer, a saída é registada pelo consumo. |
+| **2. Retirar** (opcional) | Quem gere o armazém | Na ficha do armazém ou do artigo, **Dar saída** e, em **Para onde vai?**, **Tarefa**: o material sai para esse trabalho. Se ninguém o fizer, a saída é registada pelo consumo. |
 | **3. Declarar** | O trabalhador | Indica quanto se gastou, previsto ou não. |
 | **4. Acertar** | Quem valida | O que ficou por declarar resolve-se: do que saiu, quanto voltou ao armazém; do reservado, quanto se gastou. O resto volta ao armazém. |
 

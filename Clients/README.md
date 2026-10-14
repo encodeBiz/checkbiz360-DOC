@@ -440,6 +440,7 @@ Complemento de pago: el material atado a la tarea, a la persona, al sitio y a la
 | Informe «Equipos y EPIs» para inspecciones | **Disponible** | Registro de entregas y dossier por máquina. |
 | Importación de material desde una plantilla de Excel | **Disponible** | Por almacén, una para consumibles y otra para operables; se revisa antes de importar y no duplica al volver a subirla. |
 | Dónde está cada equipo y equipos fuera de base | **Disponible** | Liberar no lo devuelve al almacén: se dice dónde queda y se recibe en el almacén; historial de dónde ha estado. |
+| Material sin tareas: a una persona o a una sucursal | **Disponible** | Dar salida, asignar dotación, declarar desde la jornada en la app y cuadrar desde la ficha; «Fuera del almacén» en Existencias. |
 
 | Artículo | Descripción |
 |---|---|
@@ -450,6 +451,7 @@ Complemento de pago: el material atado a la tarea, a la persona, al sitio y a la
 | [Equipos: documentos, revisiones y entregas](16-inventario/104-equipos-documentos-revisiones-y-entregas.md) | Papeles de cada máquina, entregas de EPIs e informe para la inspección |
 | [Importar material desde una plantilla](16-inventario/105-importar-material-desde-una-plantilla.md) | Cargar de una vez todo lo que hay en un almacén |
 | [Dónde está cada equipo](16-inventario/106-donde-esta-cada-equipo.md) | Equipos libres fuera del almacén, recogerlos y recibirlos |
+| [Material sin tareas: personas y centros](16-inventario/107-material-sin-tareas-personas-y-centros.md) | Dar material a una persona o a un centro y declararlo desde la jornada |
 
 ---
 

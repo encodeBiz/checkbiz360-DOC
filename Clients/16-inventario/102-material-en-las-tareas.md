@@ -9,7 +9,7 @@ El inventario está pensado para que el material se siga en el mismo sitio donde
 | Paso | Quién | Qué pasa |
 |---|---|---|
 | **1. Reservar** | Quien planifica | Se decide qué material necesita la tarea. Queda comprometido en el almacén, pero no sale todavía. |
-| **2. Sacar** (opcional) | Quien lleva el almacén | Desde la ficha del almacén o del artículo, **Salida a una tarea**: el material sale hacia ese trabajo. Si nadie lo hace, la salida la apunta el consumo. |
+| **2. Sacar** (opcional) | Quien lleva el almacén | Desde la ficha del almacén o del artículo, **Dar salida** y, en **¿A qué va?**, **Tarea**: el material sale hacia ese trabajo. Si nadie lo hace, la salida la apunta el consumo. |
 | **3. Declarar** | El trabajador | Indica cuánto se gastó, previsto o no. |
 | **4. Cuadrar** | Quien valida | Lo que quedó sin declarar se resuelve: de lo que salió, cuánto volvió al almacén; de lo reservado, cuánto se gastó. El resto vuelve al almacén. |
 

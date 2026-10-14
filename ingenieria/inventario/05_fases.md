@@ -302,6 +302,26 @@ bloquear la agenda; el tablero marca lo libre fuera de base como lista para reco
 sesión (API, panel, app) en [ADR-008](./adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md).
 Hasta que la API lleve `position`, la app enseña el equipo como hoy.
 
+## Material sin tarea: destino tarea, persona o sucursal (decidido el 2026-10-14)
+
+**Objetivo:** que una empresa sin tareas gestione el material igual que una con ellas. La salida, la
+declaración, la devolución y el cuadre valen contra una tarea, una persona o un centro
+([ADR-009](./adr/ADR-009-el-material-sale-hacia-una-tarea-una-persona-o-una-sucursal.md)).
+
+- **API** (primero): `MaterialAccount` con `kind`, `accountKind` en el movimiento, el libro resolviendo la
+  cuenta por destino, rutas `/materials/*`, migración de `account_kind` y espejo
+  ([TDR-008](./tdr/TDR-008-cuentas-de-material-por-destino.md) §2–§4).
+- **Panel**: «A qué va» en Salida y Asignar; Material en la ficha del empleado y de la sucursal; «Fuera del
+  almacén» en Existencias; allowlist del proxy.
+- **App**: «Declarar consumo» desde la jornada contra la sucursal fichada; consumibles en «Mi material».
+- **Informes**: eje «destino» en el de consumo, después.
+
+**Criterio de éxito:** una limpiadora fichada en un centro declara 2 litros sin que nadie haya creado una
+tarea ni registrado una salida, y la ficha del centro y el informe del mes lo cuentan.
+**Rollback:** sin `/materials` el panel y la app siguen como hoy; `task_materials` no se toca.
+
+---
+
 ## Fuera de estas fases
 
 **Sin conexión.** Fase posterior, con el boceto en [06 §D3](./06_decisiones-abiertas.md):

@@ -246,6 +246,12 @@ igual.
 Va como colección propia y no como subcolección de `tasks/{taskId}/…` para que `inventory` no
 escriba dentro de la casa de `tasks`.
 
+**Desde el 2026-10-14 la cuenta tiene destino** ([ADR-009](./adr/ADR-009-el-material-sale-hacia-una-tarea-una-persona-o-una-sucursal.md)):
+`task_materials` es el caso `kind: "task"` de `MaterialAccount`; las cuentas de **persona** y de
+**sucursal** viven en `material_accounts/{kind}_{targetId}_{itemId}` con los mismos contadores, y el
+movimiento lleva `accountKind` para saber contra cuál apunta. La regla de un almacén por artículo
+es solo de la tarea. Detalle en [TDR-008](./tdr/TDR-008-cuentas-de-material-por-destino.md) §2.
+
 ---
 
 ## 7. `item_movements` — el libro

@@ -440,6 +440,7 @@ Complemento pago: o material ligado à tarefa, à pessoa, ao sítio e à hora.
 | Relatório «Equipamentos e EPI» para inspeções | **Disponível** | Registo de entregas e dossiê por máquina. |
 | Importação de material a partir de um modelo de Excel | **Disponível** | Por armazém, um para consumíveis e outro para operáveis; revê-se antes de importar e não duplica ao voltar a carregá-lo. |
 | Onde está cada equipamento e equipamentos fora da base | **Disponível** | Libertá-lo não o devolve ao armazém: diz-se onde fica e recebe-se no armazém; histórico de onde esteve. |
+| Material sem tarefas: para uma pessoa ou uma sucursal | **Disponível** | Dar saída, atribuir dotação, declarar a partir da jornada na app e acertar a partir da ficha; «Fora do armazém» em Existências. |
 
 | Artigo | Descrição |
 |---|---|
@@ -450,6 +451,7 @@ Complemento pago: o material ligado à tarefa, à pessoa, ao sítio e à hora.
 | [Equipamentos: documentos, inspeções e entregas](16-inventario/104-equipamentos-documentos-inspecoes-e-entregas.md) | Documentos de cada máquina, entregas de EPI e relatório para a inspeção |
 | [Importar material a partir de um modelo](16-inventario/105-importar-material-a-partir-de-um-modelo.md) | Carregar de uma vez tudo o que há num armazém |
 | [Onde está cada equipamento](16-inventario/106-onde-esta-cada-equipamento.md) | Equipamentos livres fora do armazém, recolhê-los e recebê-los |
+| [Material sem tarefas: pessoas e locais](16-inventario/107-material-sem-tarefas-pessoas-e-locais.md) | Dar material a uma pessoa ou a um local e declará-lo a partir da jornada |
 
 ---
 

@@ -66,7 +66,7 @@ From each row, or from the item's record:
 | **Recount** | Set what is really there after counting, with a reason. Consumables only. |
 | **Minimum** | Set the level below which managers are alerted. Consumables only. |
 | **Edit** | Change the record's details. The type cannot be changed. |
-| **Issue to a task** | Hand out warehouse material for a specific job, before it starts. It is optional: if nobody does it, consumption records it. |
+| **Issue** | Hand out warehouse material to a task, a person or a workplace. It is optional: if nobody does it, consumption records it. See [Material without tasks](./107-material-without-tasks-people-and-workplaces.md). |
 | **Hand over** | Give a unit to a person, who confirms it from their phone. See [Equipment: documents, inspections and handovers](./104-equipment-documents-inspections-and-handovers.md). |
 | **Archive** | Stop offering an item. If it has history, the history is kept. |
 

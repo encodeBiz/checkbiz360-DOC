@@ -161,6 +161,26 @@ Es el paso que aparece en la pantalla de validación cuando quedan cantidades si
 
 ---
 
+## Material por destino — persona o sucursal (2026-10-14)
+
+Las mismas cuatro operaciones que la tarea, contra una **persona** o una **sucursal**
+([ADR-009](./adr/ADR-009-el-material-sale-hacia-una-tarea-una-persona-o-una-sucursal.md)). Cuelgan
+de `/materials` y llevan el destino en el cuerpo (`kind`, `id`); `kind: "task"` también vale y
+delega en lo de arriba. Contratos completos en [TDR-008](./tdr/TDR-008-cuentas-de-material-por-destino.md) §4.
+
+```
+GET  /materials?kind&id                 → { accounts }            ficha del empleado o de la sucursal
+GET  /me/materials                      → { accounts }            «Mi material» en la app (kind=employee)
+GET  /materials/outstanding?warehouseId → { accounts + nombres }  lo que está fuera del almacén, por destino
+POST /materials/reserve                 { kind, id, movementId, items }                       dotación
+POST /materials/issue                   { kind, id, movementId, items, branchId?, employeeId? } salida
+POST /materials/consume                 { kind, id, movementId, items, branchId?, employeeId? } gasto (apunta la salida si no la hubo)
+POST /materials/return                  { kind, id, movementId, items }                       devolución
+POST /materials/settle                  { kind, id, movementId, items: [{resolution}] }        cuadre; lo no resuelto se queda
+```
+
+---
+
 ## Operables en una tarea
 
 ### `POST /tasks/:taskId/units` — reservar
@@ -230,6 +250,7 @@ la entrega sea válida, tenga o no la entidad suscripción.
 | `409 inventory/warehouse_not_empty` | Borrado de almacén con existencias o ejemplares |
 | `400 inventory/branches_required` | Almacén sin sucursales |
 | `400 inventory/adjustment_reason_required` | Ajuste sin motivo |
+| `400 inventory/account_required` | Un movimiento de cuenta sin destino (`accountKind` y su id) |
 
 **No hay error por falta de existencias.** Reservar de más avisa; consumir de más deja el saldo
 en negativo y lo marca. Ver [ADR-005](./adr/ADR-005-instante-firestore-historico-postgres.md),

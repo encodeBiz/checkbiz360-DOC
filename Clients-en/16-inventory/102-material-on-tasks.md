@@ -9,7 +9,7 @@ Inventory is designed so that material is tracked in the same place the work is 
 | Step | Who | What happens |
 |---|---|---|
 | **1. Reserve** | Whoever plans | Decides what material the task needs. It is committed in the warehouse but does not leave yet. |
-| **2. Issue** (optional) | Whoever runs the warehouse | From the warehouse or item record, **Issue to a task**: the material leaves for that job. If nobody does it, the consumption records the issue. |
+| **2. Issue** (optional) | Whoever runs the warehouse | From the warehouse or item record, **Issue** and, under **Where does it go?**, **Task**: the material leaves for that job. If nobody does it, the consumption records the issue. |
 | **3. Declare** | The worker | States how much was used, planned or not. |
 | **4. Settle** | Whoever validates | What was left undeclared is resolved: of what went out, how much came back; of what was reserved, how much was used. The rest goes back to the warehouse. |
 

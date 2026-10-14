@@ -440,6 +440,7 @@ Paid add-on: material tied to the task, the person, the place and the time.
 | "Equipment and PPE" report for inspections | **Available** | Delivery record and dossier per machine. |
 | Material import from an Excel template | **Available** | Per warehouse, one for consumables and one for operables; reviewed before importing and does not duplicate when uploaded again. |
 | Where each piece of equipment is, and equipment away from base | **Available** | Releasing it does not return it to the warehouse: you say where it stays and it is received in the warehouse; history of where it has been. |
+| Material without tasks: to a person or a workplace | **Available** | Issue, allocate allowances, declare from the working day in the app and settle from the record; "Outside the warehouse" in Stock. |
 
 | Article | Description |
 |---|---|
@@ -450,6 +451,7 @@ Paid add-on: material tied to the task, the person, the place and the time.
 | [Equipment: documents, inspections and handovers](16-inventory/104-equipment-documents-inspections-and-handovers.md) | Each machine's paperwork, PPE handovers and the inspection report |
 | [Import material from a template](16-inventory/105-import-material-from-a-template.md) | Load everything a warehouse holds at once |
 | [Where each piece of equipment is](16-inventory/106-where-each-piece-of-equipment-is.md) | Free equipment away from the warehouse, collecting and receiving it |
+| [Material without tasks: people and workplaces](16-inventory/107-material-without-tasks-people-and-workplaces.md) | Hand material to a person or a workplace and declare it from the working day |
 
 ---
 
