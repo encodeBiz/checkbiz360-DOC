@@ -42,7 +42,7 @@ Con la dotación asignada, el panel puede decir quién gasta más de lo que tien
 
 El trabajador lo declara desde la aplicación:
 
-- **En el centro.** Con la jornada iniciada, la pantalla de fichaje muestra **Material del centro** con el botón **Declarar consumo**. Lo que se mandó al centro aparece ya cargado; lo que no estaba previsto se añade.
+- **En el centro.** La pantalla de inicio tiene la tarjeta **Mi material**. Con la jornada iniciada, muestra además **Material del centro** y el botón **Declarar consumo**. Lo que se mandó al centro aparece ya cargado; lo que no estaba previsto se añade.
 - **Lo suyo.** En **Mi material** aparecen también los consumibles que lleva, con **Declarar consumo** y **Devolver**.
 
 No hace falta que nadie haya dado salida antes: si alguien declara algo que no consta que saliera, la salida se registra a la vez.

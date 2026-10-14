@@ -42,7 +42,7 @@ Com a dotação atribuída, o painel consegue dizer quem gasta mais do que tem a
 
 O trabalhador declara-o a partir da aplicação:
 
-- **No local.** Com a jornada iniciada, o ecrã de picagem mostra **Material do local** com o botão **Declarar consumo**. O que foi enviado para o local aparece já carregado; o que não estava previsto acrescenta-se.
+- **No local.** O ecrã inicial tem o cartão **O meu material**. Com a jornada iniciada, mostra também **Material do local** e o botão **Declarar consumo**. O que foi enviado para o local aparece já carregado; o que não estava previsto acrescenta-se.
 - **O seu.** Em **O meu material** aparecem também os consumíveis que leva, com **Declarar consumo** e **Devolver**.
 
 Não é preciso que alguém tenha dado saída antes: se alguém declara algo que não consta que tenha saído, a saída regista-se ao mesmo tempo.

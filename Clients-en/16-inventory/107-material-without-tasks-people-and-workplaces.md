@@ -42,7 +42,7 @@ With allowances in place, the panel can tell who uses more than they were alloca
 
 Workers declare it from the app:
 
-- **At the workplace.** With the working day started, the clock-in screen shows **Workplace material** with the **Declare consumption** button. What was sent to the workplace is already loaded; anything unplanned can be added.
+- **At the workplace.** The home screen has the **My equipment** card. With the working day started, it also shows **Workplace material** and the **Declare consumption** button. What was sent to the workplace is already loaded; anything unplanned can be added.
 - **Their own.** **My equipment** also shows the consumables they carry, with **Declare consumption** and **Return**.
 
 Nobody has to issue anything first: if someone declares something that was not recorded as issued, the issue is recorded at the same time.
