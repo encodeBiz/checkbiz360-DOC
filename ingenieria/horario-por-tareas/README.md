@@ -104,13 +104,27 @@ puntos; sin ellos el diseño sería otro.
 
 ## Decisiones
 
-### D1. Un modo explícito del horario, heredado
+### D1. Un modo explícito del horario, heredado, que se llama «Horario por tareas»
 
-El modo «horario por tareas» es un valor del calendario, no un interruptor suelto, y se
-hereda como el resto: entidad, sucursal, empleado. Es distinto de «sin horario», que hoy
-abre el día entero y hace que el panel avise de que falta configurar. El interruptor puede
-ponerse en la sucursal para no activarlo veinte veces; **lo generado vive siempre en el
-empleado**, porque las tareas son de personas.
+El modo es un valor del calendario, no un interruptor suelto, y se hereda como el resto:
+entidad, sucursal, empleado. Es distinto de «sin horario», que hoy abre el día entero y hace
+que el panel avise de que falta configurar. El interruptor puede ponerse en la sucursal para
+no activarlo veinte veces; **lo generado vive siempre en el empleado**, porque las tareas son
+de personas.
+
+**Nombre** (decidido el 2026-10-15). Se llama «Horario por tareas», y en el panel no es un
+interruptor sino una elección entre dos cosas que la empresa ya entiende, en Horarios y
+festivos: «el horario lo marca la semana» o «el horario lo marcan las tareas», con etiquetas
+cortas «Horario semanal» y «Horario por tareas». Se descartaron «modo tareas», que cuenta
+mecánica del sistema; «jornada por tareas», que en lenguaje laboral sugiere que la jornada
+legal es cada tarea, cuando lo que se parte es el horario; y «turnos por tarea», que suena a
+industria de turnos. En los otros idiomas: inglés «Weekly schedule» y «Schedule from tasks»,
+portugués «Horário semanal» y «Horário por tarefas», alemán «Wochenplan» y «Zeitplan aus
+Aufgaben».
+
+**Campo.** Un solo campo en el calendario, en los tres niveles y heredado como el resto:
+`scheduleMode`, con valores `weekly` y `tasks`. Sin valor es `weekly`, así que nadie cambia
+al desplegar.
 
 ### D2. Cada tarea es un turno; no se funden
 
