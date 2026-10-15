@@ -696,3 +696,61 @@ con el motivo: es lo que permite saber después qué está corriendo.
 **Queda para Jose, en el panel, cuando fusione encodebiz-front-saas-clean#96:** pasos 9, 9a y 9b
 (primera empresa: contratar el inventario, Existencias, informe «Equipos y EPIs», rastro de
 posición, pestaña Facturas). Y el paso 10 cuando la app tenga versión publicada.
+
+## 12. Incidente posterior al pase — 2026-10-14, las consultas de grupo denegadas
+
+**Qué se vio.** Un cliente, con el usuario propietario de su entidad, recibía «permiso
+insuficiente» al abrir los presets del calendario en el panel de producción. Reportado el 14-oct
+por la mañana.
+
+**Causa, establecida y reproducida.** Las reglas del paso 6 (11-oct, 09:30 UTC) cambiaron el
+comodín de `/{document=**}` a `/{collection}/{document=**}` para poder nombrar la colección y
+cerrar las de la firma. Firestore solo evalúa las consultas de grupo de colecciones
+(`collectionGroup`) contra reglas cuya ruta **empieza** por un comodín recursivo; con el comodín
+nuevo ninguna regla alcanza esas consultas y se deniegan todas, con cualquier sesión y cualquier
+rol. Reproducido en dev con un `runQuery` anónimo y `allDescendants: true` sobre `calendar`: 403.
+
+**A quién afectó.** A las dos lecturas que hacen consulta de grupo desde el cliente, durante
+~71 horas (del 11-oct 09:30 UTC al 14-oct ~08:20 UTC):
+
+- Panel: `listCalendarPresets` (`src/services/checkinbiz/calendar.service.ts`),
+  `collectionGroup("calendar")` filtrando `type == preset` y `entityId`. Es el síntoma reportado.
+- App: `watchEmployeeEntityIds` (`lib/data/datasources/firestore/entity_firestore_datasource.dart`),
+  `collectionGroup("employees")` por `uid`. Nadie lo reportó y no se ha trazado qué pantalla lo
+  usa; roto igual durante la misma ventana.
+
+Las reglas de documento (leer/escribir por ruta) no se vieron afectadas: todo lo demás del panel y
+la app siguió funcionando, que es por lo que tardó tres días en aparecer.
+
+| Paso | Hora (UTC) | Quién | Resultado y lo que se vio |
+|---|---|---|---|
+| Reproducción en dev | ~08:05 | Claude | `runQuery` anónimo con `allDescendants: true` sobre `calendar` y `employees` en `dev-encodebiz`: 403 en los dos |
+| Arreglo | ~08:08 | Claude | Rama `fix/reglas-collection-group` desde develop, commit `fc04b40`: se añade `match /{path=**}/{sub}/{document} { allow read: if !soloServidor(sub); }`. Solo lectura (una consulta de grupo no escribe) y nombra la colección final, así que `signing_keys` y `signing_challenges` siguen cerradas |
+| Dev | ~08:10 | Claude | Desplegado con `--only firestore:rules --project dev-encodebiz`. Comprobado sin sesión: `calendar` y `employees` 200, `signing_keys` 403 |
+| Ruleset vivo de prod | ~08:18 | Claude | Leído por la API de firebaserules (token de `gcloud`, cabecera `x-goog-user-project`): `updateTime` 2026-10-11T09:30:32Z, **idéntico** al fichero de develop salvo un salto de línea final. Copia en `2026-10-14-firestore-rules-prod-antes.rules` (es el ruleset con el fallo; el rollback real de hoy es el commit `fc04b40`) |
+| Prod | ~08:20 | Claude, con autorización expresa de Jose en el chat | `firebase deploy --only firestore:rules --project encodebiz-services` desde la rama. Comprobado sin sesión contra prod: `calendar` y `employees` 200, `signing_keys` y `signing_challenges` 403 |
+| Ramas | 08:21 | Claude | develop `c868ae0`, staging `318e2d4` (*Staging CI/CD* `38534500956` arranca solo). **`main` sigue sin `firestore.rules`** (está en #141): lo versionado en main no refleja prod hasta el próximo pase |
+
+**Incidencias y lecciones:**
+
+- **Las reglas del 11-oct se probaron solo con lecturas y escrituras por documento** (paso 6:
+  leer 200, escribir 403, `signing_challenges` 403). Una consulta de grupo no estaba en la
+  comprobación, y es justo lo único que el cambio de forma del comodín rompía. Lección: **cualquier
+  cambio de reglas se prueba también con `runQuery` + `allDescendants: true`** sobre una
+  subcolección que el cliente consulte en grupo (`calendar`, `employees`), en dev y en prod.
+- **La forma del `match` importa tanto como la condición.** Las reglas se combinan con OR, pero
+  una consulta de grupo solo mira las reglas con comodín recursivo al principio. Nombrar la
+  colección como primer segmento la deja fuera aunque la condición sea `true`. Queda explicado en
+  el comentario del fichero.
+- **El hook `block-prod.sh` no estaba enganchado.** §11 (0a) dice que se rearmó el 11-oct a las
+  12:20; el 14-oct el `PreToolUse` de `.claude/settings.json` está vacío y ningún `settings.local`
+  ni el de usuario lo registra, y el `allow` incluye `firebase * --project encodebiz-services*`.
+  No está establecido cuándo ni por qué se quitó. Producción se tocó con autorización expresa de
+  Jose, paso a paso. Pendiente: decidir si se rearma.
+- **`gcloud` no despliega reglas de Firestore.** Sirve para leer el ruleset vigente (API de
+  firebaserules con su token); el despliegue es siempre `firebase deploy --only firestore:rules`.
+
+**Cierre.** El cliente confirma el 14-oct (~09:30 UTC) que ve los presets y guarda el calendario
+de la sucursal. El segundo fallo que reportó en el mismo gesto —el guardado rechazado en inglés y
+el modal con Guardar apagado— era del panel, no de las reglas: encodebiz-front-saas-clean#102,
+fusionado a las 09:12 y traído a develop y staging.
