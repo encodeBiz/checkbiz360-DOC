@@ -193,10 +193,16 @@ lista no se toca (README del servicio, «Despliegue — reemplazar, no añadir»
 función nueva, con nombre nuevo, no pisa nada del SaaS ni depende de que el resto del porte
 esté vivo.
 
-**Precondición, comprobada antes de escribir código:** el estado real de despliegue de
-`firebase_sdk` no está anotado en ningún sitio; la última verificación escrita
-(`eventos-webhooks/07_estado-verificado.md`, 2026-09-04) es anterior al porte. El primer paso
-de la fase es `firebase functions:list --project dev-encodebiz` y dejar escrito qué corre.
+**Precondición, comprobada el 2026-10-15.** El estado de despliegue de `firebase_sdk` no
+estaba anotado en ningún sitio; la última verificación escrita
+(`eventos-webhooks/07_estado-verificado.md`, 2026-09-04) era anterior al porte. Se miró con
+`firebase functions:list --project dev-encodebiz`: en dev corren, en v2, `europe-west1` y
+Node 22, `onTaskPattern`, `onChecklogSync`, `onChecklogWrite` y `onCreateEmployee` bajo
+`apiV100-firebaseFirestoreTriggersCheckinBiz`, y las programadas `employeePlanifierWorker`,
+`planifierNotificationWorker`, `sanitizerChecklog` y `taskStartNotificationWorker` bajo
+`apiV100-scheduleCheckbiz`. Es la forma que despliega este servicio, así que el camino de
+`--solo` está probado en dev. La lista no distingue si el código vivo es el del porte o el
+gemelo del SaaS; para esta función nueva da igual.
 
 **Alternativa considerada, para que conste.** `services/tasks` ya tiene un decorador que
 espeja cada escritura a Postgres en la misma petición, `MirroredTaskRepository`, a mejor
