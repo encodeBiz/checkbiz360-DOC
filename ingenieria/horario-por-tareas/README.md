@@ -158,7 +158,9 @@ Para quien está en el modo, al crear o editar una tarea se rechaza, con código
   descripción, que ya existe en Markdown.
 
 Y al activar el modo a alguien que ya tiene tareas así, se rechaza también y la respuesta
-las enumera.
+las enumera. Vale igual para las tareas que escribe el sync de Rentman: si un proyecto genera
+tareas de más de un día o solapadas, esa persona **no entra en el modo**; el adaptador no las
+parte (decidido el 2026-10-15).
 
 ### D5. El fichaje manda; la tarea va detrás
 
@@ -290,9 +292,6 @@ versión usable, no cada peldaño.
   entrada, el de tarea no iniciada a los quince minutos y el de entrada fuera del patrón
   dicen lo mismo y la persona recibiría tres.
 - **Qué estados de tarea forman turno.** Propuesta: todos menos borrador y cancelada.
-- **Las tareas que crea el sync de Rentman.** Si un proyecto de Rentman genera tareas de más
-  de un día o solapadas, esa persona no puede estar en el modo (D4) o el adaptador tiene que
-  partirlas. Hay que mirarlo contra lo que escribe hoy el adaptador antes de la fase 1.
 - **El nombre definitivo de la línea de huecos** en el informe, en los tres idiomas.
 
 ## Documentos
