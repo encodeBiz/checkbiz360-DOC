@@ -286,11 +286,12 @@ tarea. La app detecta el modo en la lectura con la que arranca, la misma que tra
 
 Ordenadas por lo que la persona ve primero, no por comodidad técnica.
 
-1. **Modelo y generación.** El modo en el calendario y su herencia; la subcolección de días
-   generados; el trigger escritor; el resolutor del día en ambos lados, Firestore y Postgres;
-   el espejo; las reglas de D4; las reglas de Firestore y los índices que haga falta. Al
-   acabar, una persona en el modo ficha contra los turnos de sus tareas con el gesto doble de
-   hoy, y el panel la ve esperada. Sirve para validar todo lo demás sin tocar la app.
+1. **Modelo y generación** ([TDR-001](./tdr/TDR-001-modo-dias-generados-y-escritor.md)).
+   El modo en el calendario y su herencia; la subcolección de días generados; el trigger
+   escritor; el resolutor del día en ambos lados, Firestore y Postgres; el espejo; las reglas
+   de D4; las reglas de Firestore y los índices que haga falta. Al acabar, una persona en el
+   modo ficha contra los turnos de sus tareas con el gesto doble de hoy, y el panel la ve
+   esperada. Sirve para validar todo lo demás sin tocar la app.
 2. **Gesto único.** El fichaje inicia, completa, pausa y reanuda la tarea (D5, D6); enlace
    guardado en los dos lados; descanso fijo apagado en el modo. Después, la app.
 3. **Alarmas por tarea** (D7) en `firebase_sdk`, y apagar la salida anticipada en el modo (D9).
@@ -310,6 +311,8 @@ versión usable, no cada peldaño.
 
 ## Documentos
 
+- [TDR-001](./tdr/TDR-001-modo-dias-generados-y-escritor.md): fase 1, el modo, los días
+  generados y quién los escribe.
 - Importación de cuadrantes: [cuadrantes/README.md](../cuadrantes/README.md), que escribe
   hoy la franja de la primera tarea a la última.
 - Pausas de tarea: [tasks-service/08_pausas.md](../tasks-service/08_pausas.md).
