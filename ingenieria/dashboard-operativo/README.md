@@ -135,6 +135,8 @@ analytics (cron) ──▶ dim_employees/branches/calendars ─┘        │
 | [ADR-003](./adr/ADR-003-las-tareas-se-espejan-desde-el-servicio-de-tareas.md) | Las tareas se espejan desde el servicio `tasks`, en la petición | Aceptado |
 | [ADR-004](./adr/ADR-004-el-historico-se-congela-al-cerrar-el-dia.md) | El histórico se congela al cerrar el día; la semana es la suma de sus días | Aceptado |
 | [ADR-005](./adr/ADR-005-el-retraso-se-calcula-contra-el-reloj.md) | El retraso se calcula contra el reloj y la tolerancia configurada; «sin fichaje», nunca «ausente» | Aceptado |
+| [ADR-006](./adr/ADR-006-la-plantilla-se-sigue-por-eventos-de-estado.md) | La plantilla se sigue por eventos de estado; el pasado se reconstruye y se marca | Aceptado |
+| [ADR-007](./adr/ADR-007-alertas-que-se-leen.md) | Alertas que se leen: doble umbral, pocas y con destino | Aceptado |
 
 ## Technical Design Records (TDRs)
 
@@ -144,6 +146,8 @@ analytics (cron) ──▶ dim_employees/branches/calendars ─┘        │
 | [TDR-002](./tdr/TDR-002-espejo-de-tareas.md) | `tasks_raw`, repositorio espejado, reintento y backfill | 1 | Diseño |
 | [TDR-003](./tdr/TDR-003-cierre-diario-y-semanas.md) | `operational_daily`, cierre por zona, backfill y semanas | 3 | Diseño |
 | [TDR-004](./tdr/TDR-004-endurecer-el-espejo.md) | Conciliación de fichajes y cron de dimensiones | 1 | Diseño |
+| [TDR-005](./tdr/TDR-005-plantilla-en-el-tiempo.md) | Plantilla en el tiempo: eventos de estado, foto diaria y `/panel/headcount` | 6 | Diseño |
+| [TDR-006](./tdr/TDR-006-disponibilidad-semanal-y-alertas.md) | Disponibilidad de la semana y alertas del dashboard | 7 | Diseño |
 
 ---
 
