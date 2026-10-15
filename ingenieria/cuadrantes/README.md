@@ -3,7 +3,7 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** Merlin — capa de soporte · checkbiz360 — calendario del empleado y tareas
 **Fecha de inicio:** 2026-09-20
-**Estado:** Diseño abierto · sin implementar
+**Estado:** En producción desde el 2026-09-20 (lectura por modelo) · importación por plantilla de sucursal decidida el 2026-10-15 ([TDR-001](./tdr/TDR-001-importacion-por-plantilla-de-sucursal.md))
 **Autor:** Jose Acevedo
 
 ---
@@ -240,11 +240,14 @@ propuesta ya aprobada, enseña lo que haría y sólo escribe cuando se le pide e
   no comprueba que esa persona pueda hacerlo: eso llega con las rutas HTTP.
 - **Una semana ya empezada**, con días ya fichados: qué se puede tocar y qué no.
 - **El cuadrante de varias personas** en una sola matriz, que es como lo saca más de un ERP.
+  Resuelto por otro camino el 2026-10-15: la plantilla de sucursal con una pestaña por persona
+  ([TDR-001](./tdr/TDR-001-importacion-por-plantilla-de-sucursal.md)). La matriz de un ERP sigue fuera.
 
 ## Documentos
 
 | | |
 |---|---|
 | [01_el-prompt.md](./01_el-prompt.md) | Lo que se le pide al modelo, su esquema y su prueba |
+| [tdr/TDR-001](./tdr/TDR-001-importacion-por-plantilla-de-sucursal.md) | Importación por plantilla de sucursal: una pestaña por persona, una subida para toda la plantilla, sin modelo |
 
 **Decisiones:** en [`adr/`](./adr/).
