@@ -1,7 +1,7 @@
 # TDR-001 — Fase 1: el modo, los días generados y quién los escribe
 
 **Fecha:** 2026-10-15
-**Estado:** Diseño, pendiente de implementación
+**Estado:** Implementado el 2026-10-15 en `feat/horario-por-tareas` de `encodebiz-api` (7 commits, c80b34f..35e8d67), sin fusionar a `develop`; en dev ya están la migración, las reglas, la función y el índice. Lo hecho y lo que queda, en el §13.
 **Componente:** `encodebiz-api` — `packages/shared` (calendar), `services/checkinbiz` (calendar, checklog), `services/tasks` (validaciones), `services/firebase_sdk` (trigger), `services/analytics` (espejo y resolutor), `firestore.rules`, `firestore.indexes.json`
 **Decisiones de referencia:** [README](../README.md), D1 a D4 y D10
 
@@ -455,3 +455,38 @@ Los nueve casos de QA en verde en staging; una persona en el modo que ficha deja
 checklog `scheduleApplied.source = "tasks"` con el `taskId` del turno y un `scheduleDay` cuyos
 minutos planificados son la suma de sus tareas; su día aparece en `dim_calendar_days` en
 menos de un ciclo del espejo; y ninguna prueba de las que ya existen cambia de resultado.
+
+## 13. Hecho el 2026-10-15, y lo que queda
+
+**En la rama `feat/horario-por-tareas` de `encodebiz-api`**, siete commits por capa: shared
+(modelo, generador, repositorios, resolutores, 14 pruebas unitarias con `node:test`),
+checkinbiz (activación con comprobación y generación inicial, disponibilidad, `taskId` en el
+fichaje), tasks (D4 en crear, mover, asignar y tareas de sistema), firebase_sdk (`onTaskDay`),
+analytics (espejo y migración 037), reglas, y la prueba de QA
+`qa/tests/con-datos/54-horario-por-tareas.spec.ts` con los nueve casos HPT. Typecheck en verde
+en todos los servicios del monorepo que leen los contratos tocados.
+
+**En `dev-encodebiz` y en el VPS de desarrollo, el mismo día:** la migración 037 aplicada por
+SSH (`ALTER`, `CREATE TABLE`, `CREATE INDEX`, dos `ALTER` del CHECK); las reglas desplegadas con
+`--only firestore:rules --project dev-encodebiz`; la función creada con
+`desplegar.mjs --project dev-encodebiz --solo onTaskDay`
+(`apiV100-firebaseFirestoreTriggersCheckinBiz-onTaskDay`, europe-west1, Node 22); y el índice de
+grupo `calendar_days` (entityId, date) creado con `gcloud`, en estado `CREATING` al cerrar.
+Nada de esto afecta a nadie: no hay ninguna persona en el modo hasta que alguien lo active.
+
+**Lo que queda, en orden:**
+
+1. Fusionar a `develop` y de ahí a `staging` cuando Jose lo decida; el *Staging CI/CD*
+   despliega los contenedores. Hasta entonces la prueba 54 no puede correr: necesita
+   `checkinbiz` y `tasks` con este código.
+2. Lanzar `npx playwright test tests/con-datos/54-horario-por-tareas.spec.ts` y dejar el
+   resultado aquí. Si el índice de `calendar_days` aún está construyéndose, HPT-08 falla con
+   `FAILED_PRECONDITION`; no es regresión, es esperar.
+3. En `encodeBiz-SAAS/firestore.indexes.json`, añadir los dos índices de §8 antes del
+   próximo despliegue del SaaS, o lo podará.
+4. En el pase a producción: migración 037 a mano mirando el resultado, los dos índices con
+   `gcloud`, `onTaskDay` con `desplegar.mjs --project encodebiz-services --solo onTaskDay`, y
+   las reglas. Todo con `--project` explícito.
+
+Lo que cambió respecto al diseño al escribirlo está en §6 (duplicar, `invalid_dates`) y §8
+(los índices tal y como están en dev de verdad).
