@@ -1,0 +1,305 @@
+# Horario por tareas — Documento de Ingeniería
+
+**Proyecto:** encodeBiz SaaS
+**Dominio:** checkinbiz — calendario y fichaje · tasks · alarmas (firebase_sdk) · reports · analytics · app móvil
+**Fecha de inicio:** 2026-10-15
+**Estado:** Diseño decidido en conversación · sin implementar
+**Autor:** Jose Acevedo
+
+---
+
+## Contexto y Motivación
+
+Hay empresas cuya jornada no es un horario sino una lista de trabajos: ayuda a domicilio,
+limpieza por centros, mantenimiento, obra. La persona no entra a las 8 y sale a las 17; va a
+tres sitios, cada uno a su hora, y entre uno y otro no está trabajando. Hoy checkbiz360 les
+obliga a escribir un horario además de las tareas, y las dos cosas dicen lo mismo con
+palabras distintas. La importación de cuadrantes ya lo sufrió: calcula la franja del día a
+partir de las tareas y la escribe como horario, y en cuanto una tarea se mueve el horario
+miente.
+
+Lo que se decide aquí es que, para quien lo active, **el horario se genera a partir de las
+tareas y el fichaje se hace a través de ellas**. Se gana versatilidad sin inventar un segundo
+modelo: el calendario ya sabe de días con varios turnos, el fichaje ya elige el turno en el
+que cae la hora, y las alarmas, los informes y las alertas ya consumen turnos sin preguntar
+de dónde vienen.
+
+## Principio de diseño
+
+> **Cada tarea es un turno. El horario se genera, no se escribe a mano. El fichaje sigue
+> siendo el gesto y el registro legal; la tarea va detrás.**
+
+Y una regla sobre quién escribe: **un solo escritor**. El día generado de una persona lo
+regenera un trigger sobre la colección de tareas, venga la escritura de donde venga. Nadie
+tiene que acordarse de regenerar nada.
+
+## Alcance
+
+**Dentro:** un modo explícito del horario, heredado por entidad, sucursal y empleado; los días
+generados por fecha en el calendario del empleado y su espejo en Postgres; el fichaje que
+inicia y completa la tarea del turno con un solo gesto; las alarmas por tarea; dos líneas
+nuevas en el informe de jornada, la jornada y los huecos entre turnos; las reglas que hacen
+a una tarea incompatible con el modo; y lo que cambia en la app.
+
+**Fuera:** fundir tareas con hueco corto en un mismo turno (decidido que no, ver D2); turnos
+que cruzan la medianoche, que el fichaje de hoy tampoco admite; cualquier cambio en el
+flujo del supervisor, que queda intacto (D5); y cambiar nada a los clientes que no activen
+el modo.
+
+## Lo que se comprobó en el código antes de decidir
+
+Esto es lo que había, leído el 2026-10-15. Cada decisión de abajo se apoya en uno de estos
+puntos; sin ellos el diseño sería otro.
+
+1. **El calendario es una plantilla semanal, no un calendario por fechas.**
+   `WeeklySchedule` en `packages/shared/src/calendar/Calendar.ts` tiene siete claves, lunes a
+   domingo. No hay dónde guardar que el martes 21 tiene tres turnos y el martes 28 dos. La
+   importación de cuadrantes convive con ello escribiendo una semana y dejando que la
+   siguiente la pise (`services/merlin/src/soporte/cuadrantes/application/horario.ts`), y el
+   pasado no sufre porque cada fichaje congela su día.
+
+2. **El fichaje ya sabe vivir sin horario y ya sabe de varios turnos.** Sin ninguna semana
+   configurada aplica una ventana abierta de 00:00 a 23:59 marcada `source: "default"`
+   (`packages/shared/src/calendar/defaultDay.ts`). Con horario, elige el turno en el que cae
+   la hora, admite la entrada desde `notifyBeforeMinutes` antes (15 por defecto), congela en
+   el checklog el día entero con `plannedMinutes` y `weekPlan`, y fija el plazo de jornada
+   incompleta en el fin del turno más seis horas
+   (`services/checkinbiz/src/interfaces/http/checklog/createChecklog.controller.ts`).
+
+3. **La tarea depende hoy de la jornada, no al revés.** Iniciar o completar una tarea desde la
+   app exige jornada abierta: `task/no_open_session`
+   (`services/tasks/src/interfaces/http/task/task.helpers.ts`, `ensureOpenWorkSession`). El
+   back office está exento. Pausar es libre; reanudar pide jornada y geocerca.
+
+4. **Las alarmas de fichaje nacen de madrugada y se apagan por día, no por turno.** El job
+   de las 04:00 (`services/firebase_sdk/src/programadas/checkActiveEmployeeWorker.controller.ts`)
+   lee el día siguiente, crea un recordatorio de entrada y otro de salida por turno con
+   desfases −5, 0 y +5 minutos, con clave `empleado_tipo_fecha_índice`, y marca
+   `lastDayPlanned` para no repetir. Al disparar
+   (`executeEmployeePlanifier.controller.ts`) busca si ese día ya hay un fichaje válido del
+   mismo tipo y, si lo hay, calla con `already_marked`. **Mira el día entero, así que en una
+   jornada partida los recordatorios del segundo turno nunca suenan.** Leído en código, no
+   reproducido en producción. El aviso de tarea no iniciada es otro worker
+   (`taskStartNotificationWorker.ts`), a los 15 minutos de `scheduledStartAt`.
+
+5. **La tarea solo tiene obligatorio el vencimiento.** `scheduledStartAt` es opcional en
+   `packages/shared/src/checkbiz/entities/Task.ts`.
+
+6. **El informe de jornada es una tabla plana por ciclo.** `BuildEmployeeDailyReports.ts`
+   calcula por ciclo bruto, descansos y neto; con descanso fijo (`disableBreak` y
+   `timeBreak`) **resta el fijo en cada ciclo**. El PDF y el Excel pintan una fila por ciclo:
+   Fecha, Entrada, Salida, Descanso (min), Horas netas, Ajustado, Estricto, y un total de
+   horas trabajadas. Nada agrupa por día.
+
+7. **Las alertas no miran el horario en vivo.** Los avisos de patrón y de ventana los decide
+   el trigger del SaaS a partir de lo congelado en el checklog
+   (`CheckbizOperationals.ts`); «no vino» y «llegó tarde» las calcula analytics cruzando
+   quién debía venir, que sale del calendario espejado en Postgres
+   (`BuildOperationalDay.ts`), con quién fichó; el sanitizador cierra por el plazo del
+   checklog; los eventos `attendance.clock_rejected` y `workday.closed` llevan motivo y
+   minutos planificados del propio registro.
+
+8. **Firebase no llega a Postgres.** Postgres no está expuesto fuera de la red de
+   contenedores, y las alarmas corren en Firebase.
+
+## Decisiones
+
+### D1. Un modo explícito del horario, heredado
+
+El modo «horario por tareas» es un valor del calendario, no un interruptor suelto, y se
+hereda como el resto: entidad, sucursal, empleado. Es distinto de «sin horario», que hoy
+abre el día entero y hace que el panel avise de que falta configurar. El interruptor puede
+ponerse en la sucursal para no activarlo veinte veces; **lo generado vive siempre en el
+empleado**, porque las tareas son de personas.
+
+### D2. Cada tarea es un turno; no se funden
+
+El día de una persona en el modo es la lista de sus tareas de esa fecha, cada una un turno
+de `scheduledStartAt` a `dueAt`. Entre dos turnos la persona está fuera, y ese hueco no es
+tiempo trabajado. Se descartó fundir tareas con hueco corto: el hueco se enseña en el
+informe (D8) y la empresa decide qué hace con él.
+
+Consecuencia para ayuda a domicilio: con el lunes real del cuadrante de ServiSAD, tres
+servicios de 8:00 a 10:00, 10:05 a 12:05 y 12:10 a 14:40, hoy el horario es un turno de 8:00
+a 14:40 y la jornada mide 6 h 40, lo mismo que imprime el papel. En el modo son tres turnos
+y lo trabajado suma 6 h 30; los 10 minutos de calle quedan fuera. **A ese cliente no se le
+cambia nada**: el modo es opcional, y pasarse a él es una decisión de nómina suya.
+
+### D3. Los días generados se guardan por fecha, en Firestore, y se espejan en Postgres
+
+Se materializan, no se calculan al leer, por dos razones: un día ya pasado **no se regenera
+nunca**, y eso deja constancia de lo que estaba planificado aunque nadie fichara, que hoy
+solo existe cuando hay un fichaje que lo congele; y lo que lee el panel sale de Postgres,
+que es donde la analítica ya cruza esperados con fichados.
+
+Viven en Firestore porque el fichaje resuelve el día contra Firestore y las alarmas corren
+en Firebase (punto 8). Una subcolección de días por empleado, un documento por fecha
+`YYYY-MM-DD`, con sus turnos y la tarea de cada uno. El resolutor del día efectivo, en el
+modo, mira esa subcolección antes que la plantilla semanal; sin documento para esa fecha,
+el día está cerrado: sin tareas no hay jornada. La plantilla semanal no se toca en el modo,
+así que no hay días que «pisar» ni aviso que dar. El espejo a Postgres va como el resto del
+calendario, y el resolutor de analytics lee de ahí.
+
+**Un solo escritor.** Un trigger de Firestore sobre `tasks` regenera el día de cada asignado
+afectado, el de antes y el de después si la tarea cambió de fecha o de persona, y con él las
+alarmas de ese día (D7). Cubre el panel, la app, el cuadrante, el sync de Rentman y las
+tareas de sistema sin que ninguno sepa que existe. Qué estados cuentan queda en «Lo que
+queda por decidir».
+
+### D4. Lo que es incompatible con el modo se rechaza
+
+Para quien está en el modo, al crear o editar una tarea se rechaza, con código propio:
+
+- una tarea que empieza y vence en fechas locales distintas (el fichaje de hoy tampoco
+  admite un turno que cruce la medianoche);
+- una tarea sin hora de inicio, porque un turno sin inicio no existe;
+- una tarea que se solape en el tiempo con otra de la misma persona, porque Entrar tiene que
+  arrancar una sola. Dos cosas a la vez en el mismo sitio son una tarea con una lista en la
+  descripción, que ya existe en Markdown.
+
+Y al activar el modo a alguien que ya tiene tareas así, se rechaza también y la respuesta
+las enumera.
+
+### D5. El fichaje manda; la tarea va detrás
+
+El gesto es el de siempre. En el modo, **Entrar inicia la tarea del turno, Salir la completa,
+Descanso la pausa y Fin de descanso la reanuda.** Los botones de iniciar y completar de la
+tarea desaparecen de la app; la pantalla de la tarea sigue para leerla, dejar notas y subir
+evidencias. Explícito en los dos lados: el botón dice qué va a hacer («Entrar · Limpieza en
+calle Albuñuelas, 10:05»); el fichaje guarda la tarea que arrancó, la tarea guarda el fichaje
+y su historial anota «iniciada por fichaje».
+
+Qué tarea arranca Entrar lo decide el fichaje como hoy: el turno en el que cae la hora, con
+sus quince minutos de margen por delante, y en el modo cada turno lleva su tarea. Si no hay
+ninguna a esa hora, el rechazo es el `out_of_schedule` de siempre, con el mismo evento y
+motivo, pero el texto dice «no tienes ninguna tarea ahora».
+
+Orden: primero el fichaje, con todas sus comprobaciones, ausencia, festivo, geocerca de la
+sucursal, secuencia; después la tarea. Si el fichaje falla, la tarea no arranca y el error es
+el del fichaje. Si la tarea fallara después, la jornada queda abierta y repetir Entrar
+funciona, que es el fallo bueno. La app manda posición siempre, también en tareas sin lugar
+propio, porque ahora es un fichaje. Salir completa la tarea y, si la tarea exige algo al
+completar, la app lo pide en la salida.
+
+Iniciar una segunda tarea con otra en marcha no vuelve a fichar, y completar una mientras
+otra sigue abierta no cierra; en el modo no debería ocurrir por D4, pero el servidor no
+depende de que no ocurra. En tareas de varias personas con política de que completen todas,
+el Salir de cada una cierra su turno y marca su parte, y la tarea se completa cuando sale la
+última: el turno es de la persona, el estado es de la tarea.
+
+**El supervisor queda intacto.** El fichaje solo dispara las transiciones que ya son del
+trabajador. Validar, rechazar con motivo, puntuar, notas, cancelar y completar desde el panel
+la tarea de alguien que ya se fue siguen igual, y validada, rechazada o cancelada siguen
+selladas. Completar desde el panel no toca el fichaje de la persona; si quedó abierto lo
+cierra el sanitizador. **Deshacer la completada** desde la app no está disponible en el
+modo: la salida ya está escrita y es registro legal. Si salió por error, vuelve a Entrar si
+todavía le cabe el turno, o pide la jornada manual, que existe.
+
+### D6. Pausa y descanso son lo mismo
+
+Pausar la tarea escribe el inicio de descanso del fichaje y reanudar lo cierra; el neto del
+informe y el tiempo de la tarea restan lo mismo. En el modo **no aplica el descanso fijo**
+de la sucursal: con un turno por tarea restaría el fijo en cada tarea (punto 6). Cuenta el
+real.
+
+### D7. Las alarmas pertenecen a la tarea
+
+El trigger de D3 regenera, con el día, las alarmas de ese día: borra las que había y crea
+las nuevas con la tarea como clave. Una tarea que se mueve mueve su alarma, una cancelada la
+pierde, y una creada a las diez para las cuatro tiene la suya sin esperar a las 04:00. Antes
+de sonar, la alarma pregunta a su tarea, no a los fichajes: iniciada o completada, calla; si
+no, suena. Eso quita de en medio el `already_marked` por día del punto 4. Los textos nombran
+la tarea: «entra, a las 10:05 empieza tal».
+
+Regla del hueco: al generar las alarmas del día se miran las tareas de dos en dos; si entre
+el fin de una y el inicio de la siguiente no caben los dos trenes de tres avisos, menos de
+diez minutos con los desfases de hoy, se tira el tren de salida de la primera y el de entrada
+de la segunda y queda **un solo aviso al inicio de la segunda**, que dice las dos cosas. Si
+caben, cada tarea lleva sus seis como un turno normal.
+
+### D8. El informe agrupa por día y enseña la jornada y los huecos
+
+Las filas por ciclo siguen; lo nuevo es agruparlas por fecha y añadir dos líneas, solo cuando
+la fecha tiene más de un ciclo:
+
+```
+Lunes 21   Jornada 8:00 – 14:40                       6 h 40
+           Turno 1   8:00 – 10:00                     2 h 00
+           Turno 2   10:05 – 12:05                    2 h 00
+           Turno 3   12:10 – 14:40                    2 h 30
+           Trabajado                                  6 h 30
+           Huecos entre turnos                        0 h 10
+```
+
+La jornada es de la primera entrada real a la última salida real; lo trabajado es la suma
+de los turnos con sus descansos quitados; los huecos son la diferencia, medidos de los
+fichajes y no de las tareas: si terminó el primero a las 10:03 y empezó el segundo a las
+10:06, el hueco son 3 minutos. Se mantiene aparte de los descansos, que van dentro de un
+ciclo. **No se reutilizan «bruto» y «neto»**, que ya significan otra cosa en el informe. El
+total del mes sigue siendo lo trabajado y lleva al lado la suma de huecos. Sale de los
+fichajes, así que vale para cualquier jornada partida, no solo para el modo. Panel y app
+enseñan el día igual: la jornada con sus turnos dentro, nunca un bloque único.
+
+### D9. Las alertas siguen igual, con una apagada
+
+Todas se apoyan en los turnos del día y en la copia congelada del fichaje (punto 7), y en el
+modo las dos cosas tienen la misma forma. Rechazos en el acto, patrón y ventana, sospechoso
+por horas, `workday.closed`, jornada sin cerrar seis horas después del vencimiento, «no
+vino» y «llegó tarde» desde el espejo de los días generados: iguales.
+
+Se apaga en el modo la de **salida antes de tiempo**: completar una tarea antes de su
+vencimiento casi siempre es bueno, y avisar de algo que está bien enseña a ignorar la lista.
+El cumplimiento de la tarea ya dice si acabó a tiempo o tarde.
+
+### D10. El cuadrante, en el modo, solo crea tareas
+
+Para una persona en el modo el importador de cuadrantes no escribe horario: crea las tareas
+y el día se genera solo. Para quien no está en el modo sigue escribiendo la franja entera
+como hasta ahora.
+
+## Lo que cambia en la app
+
+Es Flutter, se publica a mano y es el peldaño más lento de la cadena. En el modo: los botones
+de iniciar y completar de la tarea se esconden; Entrar, Salir, Descanso y Fin de descanso
+llevan el nombre de la tarea del turno; se manda posición siempre; Salir pide lo que la
+tarea exija al completar; el estado de asistencia cambia con la respuesta del fichaje; no
+hay deshacer la completada; la pantalla de horario enseña los turnos etiquetados con su
+tarea. La app detecta el modo en la lectura con la que arranca, la misma que trae el horario.
+
+## Fases
+
+Ordenadas por lo que la persona ve primero, no por comodidad técnica.
+
+1. **Modelo y generación.** El modo en el calendario y su herencia; la subcolección de días
+   generados; el trigger escritor; el resolutor del día en ambos lados, Firestore y Postgres;
+   el espejo; las reglas de D4; las reglas de Firestore y los índices que haga falta. Al
+   acabar, una persona en el modo ficha contra los turnos de sus tareas con el gesto doble de
+   hoy, y el panel la ve esperada. Sirve para validar todo lo demás sin tocar la app.
+2. **Gesto único.** El fichaje inicia, completa, pausa y reanuda la tarea (D5, D6); enlace
+   guardado en los dos lados; descanso fijo apagado en el modo. Después, la app.
+3. **Alarmas por tarea** (D7) en `firebase_sdk`, y apagar la salida anticipada en el modo (D9).
+4. **Informe** (D8): agrupación por día, jornada y huecos, PDF y Excel, total mensual.
+5. **Cuadrantes en el modo** (D10).
+
+Cada fase lleva su TDR en `tdr/` cuando arranca, y entra por `develop`; a `staging` sube una
+versión usable, no cada peldaño.
+
+## Lo que queda por decidir
+
+- **Cuál de los tres avisos de entrada tarde se queda** en el modo: el recordatorio de
+  entrada, el de tarea no iniciada a los quince minutos y el de entrada fuera del patrón
+  dicen lo mismo y la persona recibiría tres.
+- **Qué estados de tarea forman turno.** Propuesta: todos menos borrador y cancelada.
+- **Las tareas que crea el sync de Rentman.** Si un proyecto de Rentman genera tareas de más
+  de un día o solapadas, esa persona no puede estar en el modo (D4) o el adaptador tiene que
+  partirlas. Hay que mirarlo contra lo que escribe hoy el adaptador antes de la fase 1.
+- **El nombre definitivo de la línea de huecos** en el informe, en los tres idiomas.
+
+## Documentos
+
+- Importación de cuadrantes: [cuadrantes/README.md](../cuadrantes/README.md), que escribe
+  hoy la franja de la primera tarea a la última.
+- Pausas de tarea: [tasks-service/08_pausas.md](../tasks-service/08_pausas.md).
+- Geocerca de la tarea: [tasks-service/tdr/TDR-005](../tasks-service/tdr/TDR-005-worksite-y-geocerca-de-tarea.md).
+- Disponibilidad y el espejo del calendario en Postgres: [disponibilidad/README.md](../disponibilidad/README.md).
+- Catálogo de eventos: [eventos-webhooks/03_catalogo-de-eventos.md](../eventos-webhooks/03_catalogo-de-eventos.md).
