@@ -73,12 +73,14 @@ GET /.well-known/oauth-protected-resource/api/v1/assistant/mcp/e/{entityId}
 ```
 
 **Metadatos del servidor de autorización** (RFC 8414). Con el camino del emisor insertado, y
-el alias de OpenID Connect con el mismo cuerpo, porque la especificación obliga a los clientes
-a soportar los dos y alguno empieza por el segundo:
+también en la raíz del dominio sin camino, que es donde miran algunos clientes antiguos (en
+este dominio no hay otro servidor de autorización que confundir). **Sin alias de OpenID
+Connect**: no somos un proveedor OIDC (no emitimos `id_token`), y un documento OIDC a medias
+puede hacer fallar a un cliente estricto; los clientes MCP prueban primero la ruta OAuth.
 
 ```
 GET /.well-known/oauth-authorization-server/api/v1/assistant
-GET /.well-known/openid-configuration/api/v1/assistant
+GET /.well-known/oauth-authorization-server
 ```
 ```json
 {
@@ -456,7 +458,7 @@ cuenta de servicio de Firebase, como los demás):
 |---|---|
 | `PORT` | `3017` |
 | `ASSISTANT_PUBLIC_URL` | `https://api-staging.checkbiz360.com/api/v1/assistant` (el `issuer`; el MCP de cada empresa es `+ /mcp/e/{entityId}`) |
-| `ASSISTANT_FIREBASE_WEB_CONFIG` | JSON público del proyecto `dev-encodebiz` (`apiKey`, `authDomain`, `projectId`, `appId`) |
+| `ASSISTANT_FIREBASE_API_KEY`, `_AUTH_DOMAIN`, `_PROJECT_ID`, `_APP_ID` | Config web pública del proyecto `dev-encodebiz`, en `.env.staging` |
 | `ASSISTANT_COOKIE_SECRET` | 32 bytes aleatorios; en `secrets/` |
 | `ASSISTANT_CLIENT_HOSTS` | `claude.ai,claude.com,chatgpt.com,openai.com` |
 | `ASSISTANT_ALLOW_LOCALHOST` | sin definir (sólo `1` en local, para Claude Code) |
@@ -471,7 +473,6 @@ con `^~`, por lo mismo que el de Let's Encrypt (que gane a cualquier regex):
 ```nginx
 location ^~ /.well-known/oauth-authorization-server { proxy_pass http://assistant_service; }
 location ^~ /.well-known/oauth-protected-resource   { proxy_pass http://assistant_service; }
-location ^~ /.well-known/openid-configuration       { proxy_pass http://assistant_service; }
 location = /api/v1/assistant  { proxy_pass http://assistant_service/api/v1/assistant; }
 location /api/v1/assistant/   { proxy_pass http://assistant_service/api/v1/assistant/; }
 ```
@@ -543,3 +544,51 @@ Las cuatro decisiones del README quedaron cerradas el 2026-10-15 con su valor po
 los tres ADR están aceptados. Queda una sola pregunta, para después de la prueba: si ChatGPT
 presenta `private_key_jwt`, se implementa en la semana siguiente o se le da el registro
 dinámico como alternativa (lo soporta como segunda opción).
+
+## 16. Lo implementado (2026-10-15) y en qué se separa de lo escrito arriba
+
+Código en `encodebiz-api`, rama `feat/conector-asistente` (`services/assistant`), y en el
+panel, rama `feat/conector-asistente`. 49 pruebas por HTTP del flujo entero, sin Firebase
+(almacén en memoria e identidad de mentira). Sin desplegar.
+
+**Lo que cambió al escribirlo:**
+
+- **Config web de Firebase en cuatro variables** (`ASSISTANT_FIREBASE_API_KEY`, `_AUTH_DOMAIN`,
+  `_PROJECT_ID`, `_APP_ID`) en vez de un JSON: un JSON dentro de un `.env` es fácil de romper
+  con unas comillas.
+- **Sin alias de OpenID Connect** y con los metadatos del servidor de autorización también en
+  la raíz (§2).
+- **El último paso no responde 302**: la página hace un `fetch` y el servicio devuelve la URL
+  de retorno en JSON; la página navega. Un `fetch` no sigue una redirección a otro dominio de
+  forma útil.
+- **Sin `rotatedTo`**: la reutilización de un refresco se detecta porque ya está usado, y la
+  conexión se corta con `revokedBy: "reuse"` (nuevo valor, también para el código canjeado
+  dos veces).
+- **Sin índices compuestos**: las consultas son sólo de igualdad (`uid`, `entityId`,
+  `clientId`; `connectionId`) y Firestore las resuelve con los índices de campo. No se toca
+  `firestore.indexes.json`.
+- **Idioma de la pantalla**: el del navegador, español o inglés, con el inglés como último
+  recurso. El servidor devuelve códigos; la página los traduce.
+- **CSP**: además de lo de §11, `script-src` y `frame-src` admiten `apis.google.com` (y
+  `www.gstatic.com` para scripts), que el inicio de sesión con Google de Firebase necesita.
+- **MCP**: límite también por IP (cinco veces el de la conexión), delante del guardián.
+- **Reglas**: las colecciones `assistant_*` entran en `soloServidor` (`collection.matches`),
+  que cierra a la vez el comodín y las consultas de grupo.
+
+**Adelantado de la fase 3, a petición de Jose:** la dirección de conexión de cada empresa se
+copia desde el panel, en «Entorno de trabajo», junto a la descarga del certificado CA, con el
+paso a paso para Claude y para ChatGPT y en los cinco idiomas del panel. Variable pública
+`NEXT_PUBLIC_ASSISTANT_CONNECTOR_BASE` (`<API_BASE>/api/v1/assistant`); sin ella, el apartado
+dice que la conexión no está disponible. Los pasos de ChatGPT describen su pantalla de
+conectores de memoria y hay que revisarlos en la primera prueba.
+
+**Para llevarlo a staging** (cuando Jose lo diga, por la cadena `develop → staging`):
+
+1. En el `.env.staging` del VPS: `ASSISTANT_COOKIE_SECRET` (32 bytes aleatorios) y las cuatro
+   `ASSISTANT_FIREBASE_*` del proyecto `dev-encodebiz`.
+2. En la consola de Firebase de `dev-encodebiz`: `api-staging.checkbiz360.com` en dominios
+   autorizados.
+3. Reglas de Firestore: `firebase deploy --only firestore:rules --project dev-encodebiz`.
+4. Política TTL sobre `expiresAt` en `assistant_auth_requests` y `assistant_tokens` (opcional:
+   mientras no esté, el servicio barre lo vencido al escribir).
+5. Después del despliegue, reiniciar nginx (lo hace el workflow).
