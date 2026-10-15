@@ -308,8 +308,14 @@ Dónde se llama, que son **todos** los sitios que escriben una tarea con persona
 | `createTask.controller.ts` | si hay `assignedEmployeeIds` |
 | `updateTask.controller.ts` | si cambian `scheduledStartAt` o `dueAt`, contra los asignados actuales |
 | `assignTaskWorkers.controller.ts` | contra las personas nuevas |
-| `duplicateTask.controller.ts` | como crear |
 | `createSystemTask.controller.ts` | como crear; es por donde entran Rentman y las tareas de sistema |
+
+`duplicateTask` no la necesita: la copia nace en `draft` y sin nadie, y la gente entra después
+por `assignTaskWorkers`, que sí la hace. (Corregido al implementar: el borrador decía «como crear».)
+
+Al implementar apareció un cuarto motivo, `invalid_dates`: un vencimiento que no es fecha o que
+no va después del inicio. No es «sin inicio» ni «de dos días», y esconderlo bajo uno de los dos
+sería mentir en la lista.
 
 Rentman: `importCatalogue.ts` crea tareas de `plannedStart` a `plannedEnd` de la función del
 proyecto, que normalmente son de varios días. Con una persona en el modo, esa creación
@@ -359,24 +365,25 @@ disponibilidad. Desde el cliente, nada, ni leer: es el plan de una persona y, en
 registro.
 
 **Índices.** Este repositorio no tiene `firestore.indexes.json` ni lo declara en
-`firebase.json`; el fichero vive en `encodeBiz-SAAS/firestore.indexes.json` (114 índices) y
-es el que poda en cada despliegue del SaaS. Lo que ya existe sobre `tasks` y sirve: nada para
-la consulta del generador, que es «tareas de una persona que empiezan ese día» sin sucursal;
-el índice de grupo `assignedEmployeeIds` + `branchId` + `scheduledStartAt` no la cubre. Hacen
-falta dos:
+`firebase.json`; el fichero vive en `encodeBiz-SAAS/firestore.indexes.json` y es el que poda en
+cada despliegue del SaaS. Hacen falta dos:
 
 | Colección | Ámbito | Campos | Para |
 |---|---|---|---|
 | `tasks` | colección | `assignedEmployeeIds` CONTAINS, `scheduledStartAt` ASC | generador, D4, activación |
 | `calendar_days` | grupo de colecciones | `entityId` ASC, `date` ASC | disponibilidad por rango |
 
+**Comprobado en dev el 2026-10-15 con `gcloud firestore indexes composite list`:** el de
+`tasks` **ya existe** en `dev-encodebiz` (145 índices desplegados), y **no está en el fichero
+del SaaS**, que solo tiene la variante de grupo con `branchId` en medio. Es la deriva de la
+que avisa «Índices Firestore: deriva» al revés: lo desplegado tiene más que el fichero, y el
+siguiente despliegue desde el SaaS lo podaría. El de `calendar_days` se creó ese día en dev con
+`gcloud … --async`. Queda pendiente, en el repositorio del SaaS, **añadir los dos al fichero**
+antes de su próximo despliegue; en producción, los dos con `gcloud` en el pase y el fichero ya
+al día.
+
 La lectura del espejo y la del resolutor van por la subcolección de una persona con un solo
 campo (`date`), que no necesita índice compuesto.
-
-Se crean con `gcloud firestore indexes composite create --project dev-encodebiz …`, que no
-poda, **y** se añaden al fichero del SaaS en el mismo cambio, porque el siguiente
-`firebase deploy` desde allí borraría lo que no esté en él (ya pasó: ver
-«Índices Firestore: deriva»). En producción, lo mismo en el pase.
 
 ## 9. Inventario de cambios
 
