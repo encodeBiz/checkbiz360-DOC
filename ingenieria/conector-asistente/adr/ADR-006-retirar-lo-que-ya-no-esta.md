@@ -36,8 +36,8 @@ sigue teniéndolo en el móvil.
 ## Consecuencias
 
 - La propuesta gana el recuento y la lista de lo que se retirará.
-- `limpiar.cli.ts` busca con un rango cuyo límite superior es el propio prefijo, así que hoy no
-  encuentra nada; la consulta nueva usa el límite correcto (`prefijo + ""`) y el script
-  se corrige con ella.
+- La búsqueda usa el mismo rango que `limpiar.cli.ts`: el prefijo y el carácter U+F8FF detrás.
+  (Una primera lectura de ese script en consola no enseñaba ese carácter, que va escrito
+  literal, y se anotó aquí como un fallo que no existe.)
 - Una semana con días ya fichados sigue reescribiéndose igual, pero lo que ya empezó no se
   retira, que es lo que protegía a esos días.
