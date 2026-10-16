@@ -3,7 +3,7 @@
 **Proyecto:** encodebiz-api
 **Dominio:** `services/assistant` (nuevo) — acceso de un asistente de IA a checkbiz360 en nombre de un cliente
 **Fecha de inicio:** 2026-10-15
-**Estado:** Diseño abierto. **Fase 1 (acceso) en diseño**; ADR-001, ADR-002 y ADR-003 aceptados; decisiones abiertas cerradas el 2026-10-15. Las funcionalidades (fase 2) se aterrizan después de conectar.
+**Estado:** Fase 1 (acceso) en staging desde el 2026-10-15 y probada con ChatGPT el 2026-10-16. Fase 2 (la semana) diseñada el 2026-10-16: ADR-004 a ADR-006 y TDR-002.
 **Autor:** Jose Acevedo
 
 ---
@@ -57,9 +57,11 @@ emisión y rotación de tokens, revocación) y el servidor MCP con **una sola he
 prueba** que dice quién está conectado y a qué empresa. Probado en staging desde claude.ai y
 desde ChatGPT. Detalle en [TDR-001](./tdr/TDR-001-servidor-de-autorizacion-sobre-firebase-auth.md).
 
-**Fase 2 — funcionalidades:** las herramientas de la semana (ver, copiar, proponer, aprobar),
-sobre el ciclo de propuesta del lector de cuadrantes. **Se diseñan después de conectar**, con
-el lunes real de un cliente delante. No se adelanta nada aquí.
+**Fase 2 — la semana** ([TDR-002](./tdr/TDR-002-herramientas-de-la-semana.md)): el asistente
+es un lector más del lote de la plantilla de cuadrantes (copiar la semana, de cero o desde un
+documento que el cliente sube a su IA), con el Excel relleno para revisar; cambios sueltos de
+tareas y la semana tipo del modo estándar por una puerta delegada que respeta los permisos de
+la persona; y una semana propuesta de nuevo retira lo que ya no trae.
 
 **Fase 3 — panel y producto:** pantalla «Conexiones» en el panel para ver y cortar accesos,
 ficha del add-on en el catálogo con la URL de conexión de cada empresa para copiar, cobro, condiciones (los nombres de los empleados viajan al
@@ -87,7 +89,11 @@ cambiar el conector del CRM, que sigue como está.
 | [ADR-001 — La identidad es la de Firebase Auth](./adr/ADR-001-la-identidad-es-la-de-firebase-auth.md) | Aceptado (Jose, 2026-10-15) |
 | [ADR-002 — Una conexión es una persona en una empresa, y la empresa va en la URL](./adr/ADR-002-una-conexion-es-una-persona-en-una-empresa.md) | Aceptado (Jose, 2026-10-15) |
 | [ADR-003 — Sólo clientes conocidos](./adr/ADR-003-solo-clientes-conocidos.md) | Aceptado (Jose, 2026-10-15) |
-| [TDR-001 — Servidor de autorización sobre Firebase Auth](./tdr/TDR-001-servidor-de-autorizacion-sobre-firebase-auth.md) | Diseño propuesto |
+| [TDR-001 — Servidor de autorización sobre Firebase Auth](./tdr/TDR-001-servidor-de-autorizacion-sobre-firebase-auth.md) | Implementado, en staging |
+| [ADR-004 — El asistente es un lector más del lote](./adr/ADR-004-el-asistente-es-un-lector-mas-del-lote.md) | Aceptado (Jose, 2026-10-16) |
+| [ADR-005 — La persona delegada por la puerta de servicio](./adr/ADR-005-la-persona-delegada-por-la-puerta-de-servicio.md) | Aceptado (Jose, 2026-10-16) |
+| [ADR-006 — Retirar lo que ya no está](./adr/ADR-006-retirar-lo-que-ya-no-esta.md) | Aceptado (Jose, 2026-10-16) |
+| [TDR-002 — Las herramientas de la semana](./tdr/TDR-002-herramientas-de-la-semana.md) | En implementación |
 
 ## Decisiones cerradas (Jose, 2026-10-15)
 
