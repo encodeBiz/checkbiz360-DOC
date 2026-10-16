@@ -346,16 +346,34 @@ versión usable, no cada peldaño.
 
 - **Cuál de los tres avisos de entrada tarde se queda** en el modo: el recordatorio de
   entrada, el de tarea no iniciada a los quince minutos y el de entrada fuera del patrón
-  dicen lo mismo y la persona recibiría tres.
-- **Qué estados de tarea forman turno.** Propuesta: todos menos borrador y cancelada.
-- **El nombre definitivo de la línea de huecos** en el informe, en los tres idiomas.
+  dicen lo mismo y la persona recibiría tres. Es lo que bloquea la fase 3.
+
+Cerradas al implementar:
+
+- **Qué estados forman turno:** todos menos borrador y cancelada (TDR-001 §3.3).
+- **El nombre de la línea de huecos:** «Huecos entre turnos». El informe de jornada solo existe
+  en español, así que no hay otros idiomas que nombrar (TDR-004 §2).
+
+## Estado de las fases (2026-10-16)
+
+| Fase | Estado |
+|---|---|
+| 1. Modelo y generación | En `develop` y `staging` (API), QA 15/15 contra staging |
+| — Selector en el panel, solo en el empleado | En `develop` del panel (TDR-002) |
+| 2. El fichaje mueve la tarea | En `develop` y `staging` (API) y en `develop` de la app (TDR-003) |
+| 3. Alarmas por tarea | **Sin empezar**: espera la decisión de arriba. Jose la dejó para el final |
+| 4. Informe: jornada y huecos | En `develop` (API, TDR-004); sin subir a `staging` |
+| 5. Cuadrantes en el modo | Hecho por otra sesión con D10 y D11: `aplicar` no escribe horario a quien está en el modo, solo tareas; la plantilla de sucursal pasa por el mismo `aprobar → aplicar`; prueba en `services/merlin/test/plantilla.test.ts` |
 
 ## Documentos
 
 - [TDR-001](./tdr/TDR-001-modo-dias-generados-y-escritor.md): fase 1, el modo, los días
   generados y quién los escribe.
-- [TDR-002](./tdr/TDR-002-selector-en-el-panel.md): el selector del modo en el panel, dentro
-  del horario propio de empresa, sucursal y empleado.
+- [TDR-002](./tdr/TDR-002-selector-en-el-panel.md): el selector del modo en el panel, en la
+  ficha del empleado.
+- [TDR-003](./tdr/TDR-003-el-fichaje-mueve-la-tarea.md): fase 2, el fichaje mueve la tarea.
+- [TDR-004](./tdr/TDR-004-jornada-y-huecos-en-el-informe.md): fase 4, la jornada y los huecos en
+  el informe.
 - Importación de cuadrantes: [cuadrantes/README.md](../cuadrantes/README.md), que escribe
   hoy la franja de la primera tarea a la última.
 - Pausas de tarea: [tasks-service/08_pausas.md](../tasks-service/08_pausas.md).
