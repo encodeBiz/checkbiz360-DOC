@@ -141,3 +141,21 @@ nuevas. Diseño visual pendiente de retoque. Las dos ramas están empujadas a or
 
 Para probarla de punta a punta hacen falta los contenedores de staging con la rama de la API:
 hoy staging no la tiene.
+
+## 12. En develop y en staging, 2026-10-16
+
+- **API:** `feat/horario-por-tareas-fase2` → `develop` (f3cb851) → `staging` (5094c14). Por
+  indicación de Jose, **sin el workflow**: el merge a `staging` lleva `[skip ci]`, y en el
+  servidor de desarrollo se hizo `git pull --ff-only origin staging` con la clave
+  `~/.ssh/github_deploy`, `up --build -d checkinbiz tasks reports` y
+  `up -d --force-recreate nginx`. Los tres sanos; rutas 401/400 sin 502; `checkinbiz` con el
+  código nuevo, `ENCODEBIZ_API_KEY` y `TASKS_INTERNAL_URL` por defecto. `onTaskDay` redesplegada
+  en `dev-encodebiz` con `--solo`.
+- **QA contra staging:** `54-horario-por-tareas` entera, 15 de 15, con HPT-11..14. HPT-07
+  fallaba en el último CI de otra sesión porque D11 cambió lo que pasa al salir del modo (manda
+  la plantilla propia, que era el espejo, no la de la sucursal); ajustado (4935cad).
+- **App:** `feat/horario-por-tareas-fase2` → `develop` (28cf76e), fusionada en un worktree
+  sobre `origin/develop` para no tocar el checkout de otra sesión. 157 pruebas en verde y sin
+  errores de análisis.
+- **Pendiente:** retoque visual de la app; devolver `plantillaAnterior` al quitar el modo (D11
+  dice que es manual hasta que el selector lo haga solo); el pase.

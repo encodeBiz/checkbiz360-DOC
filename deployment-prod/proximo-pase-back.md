@@ -63,6 +63,7 @@ TDR-003. El fichaje mueve la tarea.
 |---|---|---|---|
 | 1b.1 | `checkinbiz` llega a `tasks` | `TASKS_INTERNAL_URL` (por defecto `http://tasks:3006`, vale en prod) y `ENCODEBIZ_API_KEY` en el entorno de `checkinbiz` de prod: comprobar que la tiene | PENDIENTE |
 | 1b.2 | `onTaskDay` con la salida temprana | Redesplegar la función: `desplegar.mjs --project encodebiz-services --solo onTaskDay` (va con 1.5 si es el mismo pase) | PENDIENTE |
+| 1b.0 | Staging se desplegó a mano el 16-oct | Para producción no vale: va por `staging → main` y su workflow, como siempre. En staging, el siguiente push sin `[skip ci]` vuelve a dejarlo todo en manos del CI | NOTA |
 | 1b.3 | App | Versión de la app con la fase 2 publicada en las tiendas **antes** de activar el modo a nadie en prod | PENDIENTE |
 
 ---
