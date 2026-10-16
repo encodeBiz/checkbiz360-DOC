@@ -134,3 +134,25 @@ las reglas de Firestore: lleva correos, teléfonos y DNI.
 - La plantilla generada y releída sin pérdidas en los cinco idiomas.
 - Contra dev: una plantilla con dos sucursales nuevas, una existente, cinco personas nuevas, una
   existente con una sucursal nueva, un correo repetido y una dirección que no se resuelve.
+
+## 8. Comprobado el 2026-10-16, y lo que queda
+
+- **API** en develop y staging (`feat/importacion-plantilla`). 7 pruebas de la parte pura
+  (plantilla en cinco idiomas releída, columnas de gestoría, errores por fila, planificación frente
+  a lo existente) y la suite del monorepo en verde.
+- **QA contra staging, ALT-01 a ALT-05, en verde** (`qa/tests/con-datos/56-alta-por-plantilla.spec.ts`):
+  plantilla y permisos; la propuesta no escribe; confirmar crea la sucursal con su dirección
+  resuelta por Google (zona `Europe/Madrid`, radio del fichero), dos personas activas con acceso y
+  responsabilidades (supervisora con precio 14,5) y añade la sucursal nueva a un trabajador que ya
+  existía; el mismo fichero otra vez sale todo «ya existe / sin cambios»; la bienvenida sale sólo
+  al pedirla (al simulador de SES).
+- **Panel** en develop, sin probar en un navegador. Para probarlo: el panel en local contra
+  staging, con `NEXT_BACKEND_URI_STAFF_IMPORT_HANDLER` en `.env.development`. No está en la rama
+  `staging` del panel.
+- **Lo que cambió al escribirlo:** el lote vive en `staff_imports` con las filas en trozos de 300; el
+  descartar es `DELETE /import/:id`; el diálogo es un componente compartido
+  (`src/components/features/staffImport/`) que pinta las dos listas con un mismo botón.
+
+Pendiente: la variable del proxy en Vercel cuando suba a producción; el tope de diez empleados del
+panel en el plan gratuito, que con «no hay cupo» queda incoherente (decisión de Jose); la fase 2,
+el asistente.
