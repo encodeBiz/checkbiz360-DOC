@@ -54,6 +54,17 @@ Orden: 1.1 antes que nada; 1.3 antes de que el job `dimensiones` corra con el c�
 (al minuto 20 de cada hora), o su `INSERT` con `schedule_mode` fallará y lo dejará en
 `dim_sync_log`; 1.2 antes de 1.5.
 
+
+### 1b. Horario por tareas, fase 2 — PENDIENTE
+
+TDR-003. El fichaje mueve la tarea.
+
+| # | Paso | Cómo | Estado |
+|---|---|---|---|
+| 1b.1 | `checkinbiz` llega a `tasks` | `TASKS_INTERNAL_URL` (por defecto `http://tasks:3006`, vale en prod) y `ENCODEBIZ_API_KEY` en el entorno de `checkinbiz` de prod: comprobar que la tiene | PENDIENTE |
+| 1b.2 | `onTaskDay` con la salida temprana | Redesplegar la función: `desplegar.mjs --project encodebiz-services --solo onTaskDay` (va con 1.5 si es el mismo pase) | PENDIENTE |
+| 1b.3 | App | Versión de la app con la fase 2 publicada en las tiendas **antes** de activar el modo a nadie en prod | PENDIENTE |
+
 ---
 
 ## 2. Conector de Claude y ChatGPT, fase 1 — PENDIENTE, por detallar

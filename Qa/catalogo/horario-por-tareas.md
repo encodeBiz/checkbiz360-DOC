@@ -33,7 +33,19 @@ volver la petición. Se mueve la sucursal, no el reloj: una zona en la que ahora
 | HPT-07-01 | PROP | Quitar el modo (`scheduleMode: null`); leer | 200; `scheduleMode: "weekly"`, `sources.schedule: "branch"`, el día de la plantilla |
 | HPT-06-01 | PROP | Activar el modo a alguien con una tarea sin hora de inicio | 400 `calendar/tasks_mode_conflict` con `details.conflicts[]` `{employeeId, taskId, reason: "no_start"}`; el modo no se escribe |
 
+## Fase 2: el fichaje mueve la tarea (TDR-003)
+
+| Id | Actor | Qué | Esperado |
+|---|---|---|---|
+| HPT-10-01 | PROP | Poner el modo en la sucursal y en la empresa | 400 `calendar/schedule_mode_employee_only` en los dos; nadie cambia |
+| HPT-11-01 | OP en el modo con tarea ahora | Entrar | 201 con `task: {action: "start", ok: true}`; la tarea `in_progress`; su actividad `started` lleva `metadata.viaChecklog` = id del fichaje |
+| HPT-14-01 | OP | Descanso y Fin de descanso | 201 con `task.action` `pause` y `resume`, `ok: true`; `pausedAt` puesto y quitado |
+| HPT-12-01 | OP | Salir | 201 con `task: {action: "complete", ok: true}`; la tarea `completed` |
+| HPT-13-01 | OP con tarea que exige evidencia y no la tiene | Entrar y Salir | Salir 400 `task/evidence_required`; la tarea sigue `in_progress` y un segundo Salir da lo mismo: la salida no se escribió |
+
 ## Fuera de la prueba automática, por ahora
+
+- Que un fichaje de administrador no mueva la tarea (TDR-003 §3).
 
 - El espejo a Postgres (`dim_calendar_days`): se comprueba en el patrón de
   `45-espejo-y-programadas`, lanzando `POST /api/analytics/dimensions/sync?entityId=…`.
