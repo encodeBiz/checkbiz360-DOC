@@ -490,3 +490,10 @@ Nada de esto afecta a nadie: no hay ninguna persona en el modo hasta que alguien
 
 Lo que cambió respecto al diseño al escribirlo está en §6 (duplicar, `invalid_dates`) y §8
 (los índices tal y como están en dev de verdad).
+
+**Actualización 2026-10-16.** Fusionado a `develop` (7ea74f2, con un conflicto en
+`firestore.rules` resuelto sumando `calendar_days` a lo que ya cerraban cuadrantes y el
+conector; reglas redesplegadas en dev) y a `staging` (a475180). *Staging CI/CD* 38879951324:
+despliegue en verde y suite de QA entera en verde, 462 de 462, con los nueve casos HPT
+pasando contra staging. El índice de `calendar_days` en dev, `READY`. Quedan los pasos 3 y 4
+de arriba.
