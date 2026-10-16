@@ -48,10 +48,12 @@ ofrece **«Enviar bienvenidas»** a las personas que se acaban de crear, y el cl
 cuando ha revisado que todo está bien. Así no salen doscientos correos con contraseña a mitad
 del montaje (puesta en marcha 07, problema 1).
 
-**D4. El cupo del plan se ve en la propuesta, no en la fila once.** Hoy el alta de empleados y
-de sucursales responde `403 subscription/limit_off` al pasar del máximo del plan. La propuesta
-calcula las plazas libres y marca como «fuera del plan» lo que no cabe; lo que cabe se aplica.
-La regla del cupo no se cambia aquí.
+**D4. No hay cupo** (Jose, 2026-10-16: «no hay cupo»). El plan nunca para una operación; si
+el cliente se pasa, se le cobra. La importación no calcula plazas ni deja filas fuera. Y como
+cada fila pasa por las reglas del alta a mano (D2), **el alta a mano tampoco bloquea ya por
+cupo**: `canCreateEmployee` y `canCreateBranch` sólo exigen que la empresa tenga suscripción,
+que no es un cupo. Era la pieza pendiente de la regla general (sin `409`/`403` por cupo). El
+tope de diez empleados que el panel aplica en el plan gratuito es del panel y se decide aparte.
 
 **D5. La factura se dice antes del botón.** Las personas nuevas nacen activas y cuentan en la
 facturación por uso. La propuesta dice cuántas personas se añaden.
