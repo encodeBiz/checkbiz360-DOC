@@ -130,4 +130,14 @@ API en `feat/horario-por-tareas-fase2` de `encodebiz-api`, sin fusionar: `checki
 completar, pausar y reanudar), `reports` (descanso real), `shared` (`affectsGeneratedDay`) y
 `firebase_sdk` (salida temprana de `onTaskDay`). Typecheck en verde en los servicios tocados y
 27 pruebas unitarias. QA HPT-11..14 escrita, sin ejecutar: necesita los contenedores con este
-código. La app, en su rama propia (§8).
+código.
+
+App en `feat/horario-por-tareas-fase2` de `checkbiz360` (d9fa7d0), sin fusionar, desde `develop`:
+modelo del horario con el modo y la tarea de cada turno, la tarea que toca bajo los botones de
+fichar, la ficha de la tarea sin iniciar/completar/pausar/reanudar para quien la tiene
+asignada, y los avisos de «no tienes ninguna tarea ahora», evidencia al salir y tarea que no
+se movió. `flutter analyze` sin nada nuevo y 157 pruebas de asistencia y tareas en verde, 4
+nuevas. Diseño visual pendiente de retoque. Las dos ramas están empujadas a origin.
+
+Para probarla de punta a punta hacen falta los contenedores de staging con la rama de la API:
+hoy staging no la tiene.
