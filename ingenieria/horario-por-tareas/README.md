@@ -313,6 +313,8 @@ versión usable, no cada peldaño.
 
 - [TDR-001](./tdr/TDR-001-modo-dias-generados-y-escritor.md): fase 1, el modo, los días
   generados y quién los escribe.
+- [TDR-002](./tdr/TDR-002-selector-en-el-panel.md): el selector del modo en el panel, dentro
+  del horario propio de empresa, sucursal y empleado.
 - Importación de cuadrantes: [cuadrantes/README.md](../cuadrantes/README.md), que escribe
   hoy la franja de la primera tarea a la última.
 - Pausas de tarea: [tasks-service/08_pausas.md](../tasks-service/08_pausas.md).
