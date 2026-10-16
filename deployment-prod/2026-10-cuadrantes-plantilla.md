@@ -200,6 +200,20 @@ Sobre una sucursal de pruebas, con dos o tres personas:
 | encodebiz con «horario por tareas» activado | 7 días generados de su semana, un turno por tarea; el horario semanal propio también se escribe y no se usa |
 | Aviso de tolerancia de entrada | Sale en todas: el viaje de la primera tarea (18–20 min) pasa de los 15 de tolerancia. El fichero de prueba pone en «Viaje» el tiempo hasta la **siguiente** tarea; la plantilla lo entiende como el tiempo hasta **esa** tarea |
 
+## 7b2. Funciones de Firebase que lleva este pase (horario por tareas, D11)
+
+No las despliega el CI: van por nombre, `node scripts/desplegar.mjs --project encodebiz-services
+--solo onTaskDay,weeklyFromTaskDays` desde `services/firebase_sdk`, con su `.env.encodebiz-services`.
+
+- `onTaskDay` (ya existe del frente de horario por tareas): ahora además copia la semana activa
+  a la plantilla propia de quien está en el modo.
+- `weeklyFromTaskDays` (nueva, `onSchedule` 03:00 y 15:00 Madrid, 540 s): el cambio de semana del
+  lunes. La primera versión recorría a todos los empleados y se cortaba por tiempo (504 dos veces
+  en dev el 16-oct); la buena va por entidad con el índice de grupo de `calendar_days` y en dev
+  terminó en 12 s (329 entidades, 20 personas en el modo, 14 plantillas escritas, 0 fallos).
+  Sigue siendo una pasada sobre todas las entidades: cuando se haga
+  [programadas-a-escala](../ingenieria/programadas-a-escala/README.md), entra en su reparto.
+
 ## 7c. Manual de clientes
 
 Artículo nuevo el 2026-10-16, en los tres idiomas y sin commitear: `Clients/04-calendario-y-horarios/108-importar-el-cuadrante-semanal.md`
