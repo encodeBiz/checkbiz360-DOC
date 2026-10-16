@@ -361,8 +361,8 @@ Nada abierto del diseño. Cerradas al implementar:
 | 1. Modelo y generación | En `develop` y `staging` (API), QA 15/15 contra staging |
 | — Selector en el panel, solo en el empleado | En `develop` del panel (TDR-002) |
 | 2. El fichaje mueve la tarea | En `develop` y `staging` (API) y en `develop` de la app (TDR-003) |
-| 3. Alarmas por tarea | En `develop` (API, TDR-005); sin subir a `staging` ni desplegar las funciones |
-| 4. Informe: jornada y huecos | En `develop` (API, TDR-004); sin subir a `staging` |
+| 3. Alarmas por tarea | En `develop` y `staging` (API, TDR-005), funciones en `dev-encodebiz`; QA 15/15 y alarmas generadas por el trigger real |
+| 4. Informe: jornada y huecos | En `develop` y `staging` (API, TDR-004) |
 | 5. Cuadrantes en el modo | Hecho por otra sesión con D10 y D11: `aplicar` no escribe horario a quien está en el modo, solo tareas; la plantilla de sucursal pasa por el mismo `aprobar → aplicar`; prueba en `services/merlin/test/plantilla.test.ts` |
 
 ## Documentos

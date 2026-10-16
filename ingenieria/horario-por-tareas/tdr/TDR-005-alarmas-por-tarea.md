@@ -1,7 +1,7 @@
 # TDR-005 — Fase 3: las alarmas pertenecen a la tarea
 
 **Fecha:** 2026-10-16
-**Estado:** Implementado el 2026-10-16 en `develop` (d838de9); sin subir a `staging` ni desplegar las funciones
+**Estado:** En `develop` y en `staging` (1ed0b71) desde el 2026-10-16, con las funciones desplegadas en `dev-encodebiz`
 **Componente:** `encodebiz-api` — `packages/shared` (calendar, notifications), `services/firebase_sdk` (planificador, aviso de tarea no iniciada), `services/checkinbiz` (activación)
 **Decisiones de referencia:** [README](../README.md) D7 y D9
 
@@ -75,3 +75,14 @@ las 07:55 y el cambio de las 10:05 lleva un solo aviso. Borrado al acabar.
 **Para que funcione en staging** hacen falta, a la vez: el contenedor `checkinbiz` de `develop`
 (activación) y desplegar en `dev-encodebiz` con `--solo` `onTaskDay`,
 `employeePlanifierWorker`, `planifierNotificationWorker` y `taskStartNotificationWorker`.
+
+## 6. En staging, 2026-10-16
+
+Por indicación de Jose, igual que la fase 2: merge a `staging` con `[skip ci]` (1ed0b71), y en el
+servidor de desarrollo `git pull`, `up --build -d checkinbiz reports` y
+`up -d --force-recreate nginx`. Desplegadas en `dev-encodebiz` con `--solo`: `onTaskDay`,
+`employeePlanifierWorker`, `planifierNotificationWorker` y `taskStartNotificationWorker`.
+
+QA `54-horario-por-tareas` contra staging: 15/15. Y en Firestore, las tareas de esa ejecución
+generaron por el trigger real 5 alarmas de tarea —1 entrada, 3 salidas y 1 cambio de tarea— y
+ninguna por turno del job de las 04:00.
