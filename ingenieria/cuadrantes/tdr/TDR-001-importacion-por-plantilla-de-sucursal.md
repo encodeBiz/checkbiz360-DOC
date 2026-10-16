@@ -244,6 +244,12 @@ intervenga y sin esperar más que lo que tarda en geocodificar.
   dev. Falta subir una plantilla real desde el panel de staging, ver la propuesta y confirmar
   sobre una sucursal de pruebas.
 
+**2026-10-16 — la regla de §6 no cerraba nada.** `soloServidor` solo miraba la colección raíz y
+estas cuelgan de `entities/{e}`. Corregida (se cierra si cualquier tramo de la ruta es una colección
+cerrada) y probada con el emulador, 26 casos en verde (`qa/reglas/`). El pase a producción, con
+todo lo que lleva, está en
+[deployment-prod/2026-10-cuadrantes-plantilla.md](../../../deployment-prod/2026-10-cuadrantes-plantilla.md).
+
 Pendiente, en este orden:
 
 1. Probar en local contra dev o en staging (arriba) y fusionar las dos ramas a `develop` y,

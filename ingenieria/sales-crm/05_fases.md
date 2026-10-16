@@ -116,3 +116,34 @@ del CRM tal como estaban validadas en staging). Fuera, a propósito: inventario 
 
 Queda apagado en producción: el barrido de la PLACSP (`CRM_PLACSP_SWEEP`). El evento
 `sales_lead_qualified` sale a GA4 con la configuración de GA4 que ya tiene producción.
+
+---
+
+## Fase 6 — Merlin investiga (2026-10-16)
+
+**Rama:** `feat/crm-investigacion-merlin` · **Diseño:** [ADR-009](./adr/ADR-009-merlin-investiga-en-el-servidor.md),
+[TDR-007](./tdr/TDR-007-investigacion-con-merlin.md), [08](./08_el-prompt-de-investigacion.md)
+
+- Merlin investiga con la API de OpenAI y búsqueda web; `sales` guarda solo lo que tiene
+  prueba en una página consultada. Migración `038` (`sales_research_runs`).
+- Botón «Investigar con Merlin» en la ficha y script `investigar-merlin.js` (simula por
+  defecto). Cola diaria apagada (`CRM_INVESTIGACION`) hasta la prueba de 10.
+
+**Primera ejecución real (2026-10-16, Serlimar, en seco):** 13 búsquedas, identidad confirmada
+por CIF en tres fuentes, dossier correcto, 81 s, ~3 céntimos. Salió `insuficiente` porque las
+anotaciones de cita de la API llegan vacías con `gpt-5-mini`; corregido pidiendo las fuentes
+de la búsqueda (`include`). La regla hizo lo que debía: ante la duda, no guardar.
+
+**Prueba de 10 (2026-10-16, en seco, `gpt-5-mini`):** 9 de 10 con perfil; identidad
+confirmada en las 10; GESPROLIM salió `insuficiente` (identificada, sin dolor con prueba).
+Entre 6 y 25 búsquedas y ~5 céntimos por empresa. Comparadas con las de Claude: correctas y
+mejor documentadas en fuentes, menos afiladas en el gancho (Claude encuentra el detalle que
+engancha; Merlin se queda en el dolor del nicho probado). Siguiente: probar el modelo grande
+en dos cuentas y decidir.
+
+**Ajustes del CRM** ([TDR-008](./tdr/TDR-008-ajustes-del-crm.md)): los topes diarios
+(empresas nuevas por licitaciones, investigaciones) y el resto de la configuración pasan a
+editarse en el panel, sin redesplegar.
+
+**Criterio de éxito:** las 10 cuentas de limpieza investigadas por Claude, reinvestigadas en
+seco por Merlin, y Jose decide con las dos delante si la calidad basta y con qué modelo.

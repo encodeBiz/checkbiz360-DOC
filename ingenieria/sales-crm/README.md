@@ -57,6 +57,8 @@ Limpieza es el que más resultado está dando (Jose, 2026-10-13).
 | 04 | [Contratos de API](./04_contratos-api.md) | Rutas `/api/v1/sales/crm/*`, auth, request/response |
 | 05 | [Fases de implementación](./05_fases.md) | Orden por uso: primero lo que permite vender |
 | 06 | [Decisiones abiertas](./06_decisiones-abiertas.md) | Lo que falta por responder antes o durante la implementación |
+| 07 | [Verificación de fuentes de señales](./07_verificacion-fuentes-senales.md) | PLACSP, BORME y portales de empleo: qué se puede leer y cómo |
+| 08 | [El prompt de investigación](./08_el-prompt-de-investigacion.md) | Lo que se le pide a Merlin, por qué, y cómo se comprueba que no inventa |
 
 ## Architecture Decision Records (ADRs)
 
@@ -70,6 +72,7 @@ Limpieza es el que más resultado está dando (Jose, 2026-10-13).
 | [ADR-006](./adr/ADR-006-claude-prepara-la-persona-envia.md) | Sin envío automático: Claude prepara, la persona envía | Propuesto |
 | [ADR-007](./adr/ADR-007-sales-lead-qualified-lo-emite-el-crm.md) | `sales_lead_qualified` lo emite el CRM al entrar en conversación | Propuesto |
 | [ADR-008](./adr/ADR-008-acciones-planificadas-por-contacto.md) | Acciones planificadas por contacto; la etapa sigue siendo de la empresa | Aceptado |
+| [ADR-009](./adr/ADR-009-merlin-investiga-en-el-servidor.md) | Merlin investiga en el servidor con la API de OpenAI; solo cuenta la prueba citada | Aceptado |
 
 ## Technical Design Records (TDRs)
 
@@ -81,6 +84,8 @@ Limpieza es el que más resultado está dando (Jose, 2026-10-13).
 | [TDR-004](./tdr/TDR-004-backoffice-proxy-permisos-y-paginas.md) | `SalesClient`, permisos `crm:*` y páginas Pipeline / Cuenta | 3 |
 | [TDR-005](./tdr/TDR-005-importacion-enriquecimiento-y-senales.md) | Importación CSV, enriquecimiento en cascada y fuentes de señales | 4 |
 | [TDR-006](./tdr/TDR-006-acciones-planificadas.md) | Acciones planificadas: modelo, reglas, API, MCP y panel | 5 |
+| [TDR-007](./tdr/TDR-007-investigacion-con-merlin.md) | Investigación con Merlin: dos llamadas, comprobaciones, cola y prueba de 10 | 6 |
+| [TDR-008](./tdr/TDR-008-ajustes-del-crm.md) | Ajustes del CRM: topes diarios y configuración en un sitio, sin redesplegar | 6 |
 
 ## Referencias
 
