@@ -21,7 +21,7 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 
 | Rama | Qué | Necesita fuera del código | Sección |
 |---|---|---|---|
-| `feat/horario-por-tareas` | Horario por tareas, fase 1 | migración 037, dos índices, función `onTaskDay`, reglas | §1 |
+| `feat/horario-por-tareas*`, `fix/horario-por-tareas-*` y otras sesiones (D11, importación) | Horario por tareas, fases 1 y 2, D11 | migraciones 037 y 040, dos índices, `onTaskDay` y `weeklyFromTaskDays`, reglas, panel y app | §1 |
 | `feat/conector-asistente` | Conector de Claude y ChatGPT, fase 1 | servicio `assistant` nuevo, nginx, secretos, reglas | §2 |
 | `feat/cuadrantes-plantilla` (×2) | Cuadrante por plantilla de sucursal y de persona | nginx (`client_max_body_size`), reglas | §3 |
 | `feat/material-por-destino` | Material hacia tarea, persona o sucursal | migración 034 | §4 |
@@ -35,37 +35,46 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 
 ---
 
-## 1. Horario por tareas, fase 1 — PENDIENTE
+## 1. Horario por tareas (fases 1 y 2, selector del panel, D11) — PENDIENTE
 
-Diseño: `DOCS/ingenieria/horario-por-tareas` (README y `tdr/TDR-001`, §13). En staging desde
-el 2026-10-16, QA 462/462 con HPT-01..09. Nadie entra en el modo hasta que alguien lo active,
-así que el pase no cambia nada a ningún cliente.
+Diseño: `DOCS/ingenieria/horario-por-tareas` (README D1–D11, TDR-001, TDR-002, TDR-003). En
+staging desde el 2026-10-16, QA `54-horario-por-tareas` 15/15 contra staging. Nadie está en el
+modo hasta que alguien lo active, así que subirlo no cambia nada a ningún cliente; **activarlo a
+alguien en producción exige antes la app publicada** (1.12).
 
-| # | Paso | Cómo | Estado |
-|---|---|---|---|
-| 1.1 | Índices en el fichero del SaaS, **antes** de cualquier despliegue desde allí | Añadir a `encodeBiz-SAAS/firestore.indexes.json`: `tasks` colección `assignedEmployeeIds` CONTAINS + `scheduledStartAt` ASC (ya existe en dev, falta en el fichero) y `calendar_days` grupo `entityId` ASC + `date` ASC. Si no, el próximo `firebase deploy` del SaaS los poda | PENDIENTE |
-| 1.2 | Índices en prod | `gcloud firestore indexes composite list --project encodebiz-services` y crear solo los que falten con `gcloud firestore indexes composite create … --project encodebiz-services`. Esperar a `READY` antes del 1.5 | PENDIENTE |
-| 1.3 | Migración 037 | A mano, por SSH, sola y leyendo la salida: `docker compose … exec -T postgres psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/037_horario_por_tareas.sql`. Esperado: `ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, `ALTER TABLE`, `ALTER TABLE` | PENDIENTE |
-| 1.4 | Reglas de Firestore | Con el fichero de `main` ya fusionado (§5). `calendar_days` en `soloServidor`. Guardar antes el ruleset vivo, como el 14-oct | PENDIENTE |
-| 1.5 | Función `onTaskDay` | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onTaskDay`. Nunca el codebase entero | PENDIENTE |
-| 1.6 | Comprobación | `firebase functions:list --project encodebiz-services \| grep onTaskDay`; `\d dim_calendar_days` en prod; `GET /calendar` de cualquier empleado devuelve `scheduleMode: "weekly"` | PENDIENTE |
-| 1.7 | Panel: el selector del modo, solo en la ficha del empleado (16-oct) | `feat/horario-por-tareas` de `encodebiz-front-saas` → develop → main y promoción en Vercel. Sin variables nuevas. Antes, probarlo en local contra staging (TDR-002 §4) | PENDIENTE |
+Lo que sube, para tenerlo delante:
 
-Orden: 1.1 antes que nada; 1.3 antes de que el job `dimensiones` corra con el código nuevo
-(al minuto 20 de cada hora), o su `INSERT` con `schedule_mode` fallará y lo dejará en
-`dim_sync_log`; 1.2 antes de 1.5.
+| Pieza | Dónde | Lo hizo |
+|---|---|---|
+| Modo por empleado, días generados, reglas D4, resolutor, disponibilidad | `shared`, `checkinbiz`, `tasks`, `analytics` | fase 1, solo empleado (16-oct) |
+| El fichaje mueve la tarea; descanso real en el informe | `checkinbiz`, `tasks`, `reports` | fase 2 |
+| `onTaskDay` (regenera días; sale si la escritura no cambia el día; copia la semana, D11) | `firebase_sdk` | fases 1–2 y otra sesión (D11) |
+| `weeklyFromTaskDays` (copia la semana activa a las 03:00 y 15:00 de Madrid) | `firebase_sdk` | otra sesión (D11) |
+| Modo de cada persona en la importación por plantilla | `employees` (`horario.ts`, `importacion.ts`) | otra sesión |
+| Cuadrante: en el modo solo crea tareas | `merlin` (`cuadrantes/application/aplicar.ts`) | otra sesión, por confirmar (fase 5) |
+| Selector «Horario semanal / por tareas» en la ficha del empleado | panel | TDR-002 |
+| Fichar mueve la tarea, tarea del turno bajo los botones, avisos | app | TDR-003 §8 |
 
-
-### 1b. Horario por tareas, fase 2 — PENDIENTE
-
-TDR-003. El fichaje mueve la tarea.
+### Guion, en orden
 
 | # | Paso | Cómo | Estado |
 |---|---|---|---|
-| 1b.1 | `checkinbiz` llega a `tasks` | `TASKS_INTERNAL_URL` (por defecto `http://tasks:3006`, vale en prod) y `ENCODEBIZ_API_KEY` en el entorno de `checkinbiz` de prod: comprobar que la tiene | PENDIENTE |
-| 1b.2 | `onTaskDay` con la salida temprana | Redesplegar la función: `desplegar.mjs --project encodebiz-services --solo onTaskDay` (va con 1.5 si es el mismo pase) | PENDIENTE |
-| 1b.0 | Staging se desplegó a mano el 16-oct | Para producción no vale: va por `staging → main` y su workflow, como siempre. En staging, el siguiente push sin `[skip ci]` vuelve a dejarlo todo en manos del CI | NOTA |
-| 1b.3 | App | Versión de la app con la fase 2 publicada en las tiendas **antes** de activar el modo a nadie en prod | PENDIENTE |
+| 1.1 | **Índices en el fichero del SaaS**, antes de cualquier `firebase deploy` desde allí | Añadir a `encodeBiz-SAAS/firestore.indexes.json`: `tasks` colección `assignedEmployeeIds` CONTAINS + `scheduledStartAt` ASC (ya existe en dev y falta en el fichero) y `calendar_days` grupo de colecciones `entityId` ASC + `date` ASC. Si no, el próximo despliegue del SaaS los poda en el proyecto en el que se despliegue | PENDIENTE |
+| 1.2 | Índices en prod | `gcloud firestore indexes composite list --project encodebiz-services` y crear solo los que falten con `gcloud firestore indexes composite create … --project encodebiz-services`. Esperar a `READY` antes de 1.6 | PENDIENTE |
+| 1.3 | Migración 037 | A mano, sola y leyendo la salida: `… exec -T postgres psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/037_horario_por_tareas.sql`. Esperado: `ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, `ALTER TABLE`, `ALTER TABLE`. **Antes** de que corra el job `dimensiones` con el código nuevo (minuto 20 de cada hora), o su `INSERT` con `schedule_mode` falla y queda en `dim_sync_log` | PENDIENTE |
+| 1.4 | Migración 040 (otra sesión: índice del calendario semanal de tareas) | Igual que 1.3, con `040_tareas_calendario.sql`. Esperado: `CREATE INDEX` | PENDIENTE |
+| 1.5 | Reglas de Firestore | Con el fichero de `main` ya fusionado (§5): `calendar_days` en `soloServidor`. Guardar antes el ruleset vivo | PENDIENTE |
+| 1.6 | Contenedores | Los despliega el workflow al fusionar `staging → main`: `checkinbiz`, `tasks`, `reports`, `analytics`, `employees`, `merlin` con el código nuevo. **Nunca a mano en prod** | PENDIENTE |
+| 1.7 | Entorno de prod | Comprobar que `checkinbiz` y `employees` reciben `ENCODEBIZ_API_KEY` (los dos llaman a otros servicios con la clave S2S). `TASKS_INTERNAL_URL`, `CHECKINBIZ_INTERNAL_URL` y `BRANCHES_INTERNAL_URL` tienen valor por defecto en el código (`http://tasks:3006`, `http://checkinbiz:3002`, `http://branches:3014`) y valen en prod: no hay que añadirlas | PENDIENTE |
+| 1.8 | Funciones de Firebase | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onTaskDay`, y lo mismo con `--solo weeklyFromTaskDays`. Nunca el codebase entero (README de `firebase_sdk`) | PENDIENTE |
+| 1.9 | Comprobación de la API | `firebase functions:list --project encodebiz-services` con las dos; `\d dim_calendar_days` en prod; `GET /calendar` de cualquier empleado devuelve `scheduleMode: "weekly"`; `PATCH /calendar` con `scope: "branch"` y `scheduleMode: "tasks"` responde 400 `calendar/schedule_mode_employee_only` | PENDIENTE |
+| 1.10 | Panel | `encodebiz-front-saas`: `develop → main` y promoción en Vercel. Sin variables nuevas. El selector está solo en la ficha del empleado, al apagar «Usar horario base» | PENDIENTE |
+| 1.11 | App | `checkbiz360`: `develop` con la fase 2 → versión nueva publicada en las dos tiendas | PENDIENTE |
+| 1.12 | **No activar el modo a nadie en prod** hasta que 1.11 esté publicada y la persona la tenga instalada | Con una app vieja la persona vería los botones de la tarea y la jornada en blanco | PENDIENTE |
+
+> **Staging se desplegó a mano el 16-oct** (merge con `[skip ci]`, `git pull` y
+> `up --build -d checkinbiz tasks reports` en el servidor, por indicación de Jose). Para
+> producción no vale: va por `staging → main` y su workflow (1.6).
 
 ---
 
