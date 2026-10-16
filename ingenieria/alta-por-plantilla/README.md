@@ -3,7 +3,7 @@
 **Proyecto:** encodebiz-api · encodebiz-front-saas
 **Dominio:** `services/employees` (la importación) · `services/branches` (puerta delegada) · panel, listas de empleados y sucursales
 **Fecha de inicio:** 2026-10-16
-**Estado:** Fase 1 (plantilla y panel) diseñada e implementándose en `feat/importacion-plantilla`
+**Estado:** Fase 1 (plantilla y panel) y fase 2 (el asistente) hechas el 2026-10-16; API en staging, panel en develop
 **Autor:** Jose Acevedo
 
 ---
@@ -79,8 +79,11 @@ geocodificar al aplicar.
    las listas de empleados y de sucursales.
 2. **El asistente.** Las mismas filas por el conector: el lote desde filas, como el cuadrante
    (conector-asistente ADR-004), con las herramientas de proponer, ver, confirmar y enviar
-   bienvenidas. Se hace cuando algún cliente haya usado las herramientas del cuadrante (Jose y
-   Claude, 2026-10-16: no apilar herramientas que nadie ha probado).
+   bienvenidas. **Hecha el 2026-10-16** a petición de Jose («era la guinda del pastel»):
+   `POST /import/rows` y `GET /import/:id/excel` en `employees` (también por la puerta delegada) y
+   las herramientas `proponer_alta_masiva`, `ver_alta_masiva`, `confirmar_alta_masiva`,
+   `descartar_alta_masiva` y `enviar_bienvenidas`. Además, altas sueltas: `crear_empleado` y
+   `crear_sucursal`. QA ALT-06 contra staging.
 3. **Editar y cambiar estados por el asistente.** Editar a una persona, cambiar su estado,
    despedirla —que es una baja blanda y deja huérfanas sus tareas futuras: la vista previa las
    lista y ofrece reasignarlas—, y vacaciones o bajas como ausencias del calendario.
