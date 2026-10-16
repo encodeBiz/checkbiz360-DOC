@@ -344,12 +344,12 @@ versión usable, no cada peldaño.
 
 ## Lo que queda por decidir
 
-- **Cuál de los tres avisos de entrada tarde se queda** en el modo: el recordatorio de
-  entrada, el de tarea no iniciada a los quince minutos y el de entrada fuera del patrón
-  dicen lo mismo y la persona recibiría tres. Es lo que bloquea la fase 3.
+Nada abierto del diseño. Cerradas al implementar:
 
-Cerradas al implementar:
-
+- **Cuál de los avisos de entrada tarde manda en el modo:** el recordatorio de entrada (Jose,
+  2026-10-16). El de tarea no iniciada deja de ir a esa persona. Los de patrón van a
+  supervisores y se calculan en el SaaS; apagar ahí la salida anticipada (D9) queda pendiente
+  de que esa heurística salga del SaaS (TDR-005 §1).
 - **Qué estados forman turno:** todos menos borrador y cancelada (TDR-001 §3.3).
 - **El nombre de la línea de huecos:** «Huecos entre turnos». El informe de jornada solo existe
   en español, así que no hay otros idiomas que nombrar (TDR-004 §2).
@@ -361,7 +361,7 @@ Cerradas al implementar:
 | 1. Modelo y generación | En `develop` y `staging` (API), QA 15/15 contra staging |
 | — Selector en el panel, solo en el empleado | En `develop` del panel (TDR-002) |
 | 2. El fichaje mueve la tarea | En `develop` y `staging` (API) y en `develop` de la app (TDR-003) |
-| 3. Alarmas por tarea | **Sin empezar**: espera la decisión de arriba. Jose la dejó para el final |
+| 3. Alarmas por tarea | En `develop` (API, TDR-005); sin subir a `staging` ni desplegar las funciones |
 | 4. Informe: jornada y huecos | En `develop` (API, TDR-004); sin subir a `staging` |
 | 5. Cuadrantes en el modo | Hecho por otra sesión con D10 y D11: `aplicar` no escribe horario a quien está en el modo, solo tareas; la plantilla de sucursal pasa por el mismo `aprobar → aplicar`; prueba en `services/merlin/test/plantilla.test.ts` |
 
@@ -374,6 +374,7 @@ Cerradas al implementar:
 - [TDR-003](./tdr/TDR-003-el-fichaje-mueve-la-tarea.md): fase 2, el fichaje mueve la tarea.
 - [TDR-004](./tdr/TDR-004-jornada-y-huecos-en-el-informe.md): fase 4, la jornada y los huecos en
   el informe.
+- [TDR-005](./tdr/TDR-005-alarmas-por-tarea.md): fase 3, las alarmas pertenecen a la tarea.
 - Importación de cuadrantes: [cuadrantes/README.md](../cuadrantes/README.md), que escribe
   hoy la franja de la primera tarea a la última.
 - Pausas de tarea: [tasks-service/08_pausas.md](../tasks-service/08_pausas.md).

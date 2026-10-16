@@ -48,6 +48,8 @@ Lo que sube, para tenerlo delante:
 |---|---|---|
 | Modo por empleado, días generados, reglas D4, resolutor, disponibilidad | `shared`, `checkinbiz`, `tasks`, `analytics` | fase 1, solo empleado (16-oct) |
 | El fichaje mueve la tarea; descanso real en el informe | `checkinbiz`, `tasks`, `reports` | fase 2 |
+| Jornada y huecos entre turnos en el informe (PDF y Excel) | `reports` | fase 4 |
+| Alarmas por tarea; el aviso de tarea no iniciada no va a quien está en el modo | `shared`, `firebase_sdk`, `checkinbiz` | fase 3 |
 | `onTaskDay` (regenera días; sale si la escritura no cambia el día; copia la semana, D11) | `firebase_sdk` | fases 1–2 y otra sesión (D11) |
 | `weeklyFromTaskDays` (copia la semana activa a las 03:00 y 15:00 de Madrid) | `firebase_sdk` | otra sesión (D11) |
 | Modo de cada persona en la importación por plantilla | `employees` (`horario.ts`, `importacion.ts`) | otra sesión |
@@ -66,7 +68,7 @@ Lo que sube, para tenerlo delante:
 | 1.5 | Reglas de Firestore | Con el fichero de `main` ya fusionado (§5): `calendar_days` en `soloServidor`. Guardar antes el ruleset vivo | PENDIENTE |
 | 1.6 | Contenedores | Los despliega el workflow al fusionar `staging → main`: `checkinbiz`, `tasks`, `reports`, `analytics`, `employees`, `merlin` con el código nuevo. **Nunca a mano en prod** | PENDIENTE |
 | 1.7 | Entorno de prod | Comprobar que `checkinbiz` y `employees` reciben `ENCODEBIZ_API_KEY` (los dos llaman a otros servicios con la clave S2S). `TASKS_INTERNAL_URL`, `CHECKINBIZ_INTERNAL_URL` y `BRANCHES_INTERNAL_URL` tienen valor por defecto en el código (`http://tasks:3006`, `http://checkinbiz:3002`, `http://branches:3014`) y valen en prod: no hay que añadirlas | PENDIENTE |
-| 1.8 | Funciones de Firebase | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onTaskDay`, y lo mismo con `--solo weeklyFromTaskDays`. Nunca el codebase entero (README de `firebase_sdk`) | PENDIENTE |
+| 1.8 | Funciones de Firebase | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo <nombre>` con cada una: `onTaskDay`, `weeklyFromTaskDays` y, por la fase 3 (TDR-005), `employeePlanifierWorker`, `planifierNotificationWorker` y `taskStartNotificationWorker`. Nunca el codebase entero (README de `firebase_sdk`). Las tres de la fase 3 cambian también para quien NO está en el modo solo en que el job de las 04:00 salta a quien sí lo está | PENDIENTE |
 | 1.9 | Comprobación de la API | `firebase functions:list --project encodebiz-services` con las dos; `\d dim_calendar_days` en prod; `GET /calendar` de cualquier empleado devuelve `scheduleMode: "weekly"`; `PATCH /calendar` con `scope: "branch"` y `scheduleMode: "tasks"` responde 400 `calendar/schedule_mode_employee_only` | PENDIENTE |
 | 1.10 | Panel | `encodebiz-front-saas`: `develop → main` y promoción en Vercel. Sin variables nuevas. El selector está solo en la ficha del empleado, al apagar «Usar horario base» | PENDIENTE |
 | 1.11 | App | `checkbiz360`: `develop` con la fase 2 → versión nueva publicada en las dos tiendas | PENDIENTE |
@@ -223,6 +225,24 @@ son aditivas y pueden quedarse.
 | 8.5 | Front: pasar `develop → staging → main` del panel DESPUÉS de 8.3 (los merges `35167ec2` y anteriores del calendario). Sin variables nuevas en Vercel: `NEXT_BACKEND_URI_CHECKINBIZ_TASKS_HANDLER` ya apunta a `api.checkbiz360.com/api/v1/tasks` | PENDIENTE |
 | 8.6 | Prueba con sesión real en producción: Gestión de tareas → pestaña «Calendario semanal» → la semana carga, los contadores de la leyenda cuadran con la tabla filtrada por estado, una tarjeta «N tareas» abre la lista y «Abrir ficha» lleva a la tarea. Probar también la fila «Fecha límite» y el filtro por empleado | PENDIENTE |
 | 8.7 | Si falla 8.6 y no es evidente: deshacer sólo el front (revert del merge del calendario en `main` del panel). El back se queda | — |
+
+---
+
+## 9. Análisis a escala: panel, cierre diario, patrones y Merlin — 🔴 URGENTE, por detallar
+
+Diseño en [ingenieria/analisis-a-escala](../ingenieria/analisis-a-escala/README.md). El resumen
+del panel hace unas quince consultas sin caché con subconsultas correladas y carga el mes en
+memoria; el trigger de patrones pierde salidas simultáneas de la misma sucursal; Merlin se
+queda en «analizando» 7 días si el contenedor se reinicia a mitad. Lo que necesita en prod,
+según se vaya haciendo:
+
+1. La migración de índices es la **misma** que §7 (añade `checklogs_raw (entity_id, timestamp DESC)`).
+2. Variables nuevas en `.env.production`: tamaño del pool y `statement_timeout` por servicio.
+3. El trigger `onWhriteChecklog` con `retry: true`, desplegado por nombre.
+4. Verificación: `/panel/overview` de la entidad más grande en menos de 3 s; dos salidas
+   simultáneas en una sucursal suben `dataPoints` en dos.
+
+Estado: PENDIENTE, por detallar.
 
 ---
 
