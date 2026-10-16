@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-10-16
 **Estado:** Diseño aceptado; implementación en `feat/importacion-plantilla` (API y panel)
-**Componentes:** `services/employees` (importación, bienvenidas), `services/branches` (puerta delegada), `packages/shared` (plazas libres), panel
+**Componentes:** `services/employees` (importación, bienvenidas), `services/branches` (puerta delegada), `packages/shared` (el cupo deja de bloquear), panel
 **Referencias:** [README](../README.md); [inventario TDR-007](../../inventario/tdr/TDR-007-importacion-masiva-por-plantilla.md), que es el calco; [cuadrantes TDR-001](../../cuadrantes/tdr/TDR-001-importacion-por-plantilla-de-sucursal.md); [conector-asistente ADR-005](../../conector-asistente/adr/ADR-005-la-persona-delegada-por-la-puerta-de-servicio.md)
 
 ---
@@ -48,21 +48,20 @@ mecanismo de vocabulario que la plantilla de cuadrantes.
 devuelve una propuesta fila a fila, guardada como lote. **No se escribe nada.**
 
 **Estados de una sucursal:** `nueva` (con la dirección resuelta y su precisión), `existe` (se usa
-tal cual), `fuera del plan`, `ignorada` (ejemplo), `error` (sin nombre, dirección que no se
+tal cual), `ignorada` (ejemplo), `error` (sin nombre, dirección que no se
 resuelve o sólo a ciudad, nombre repetido en el fichero).
 
 **Estados de una persona:** `nueva`, `existe, se le añaden sucursales` (con cuáles),
-`existe, sin cambios`, `fuera del plan`, `ignorada`, `error` (sin nombre o correo, correo mal
+`existe, sin cambios`, `ignorada`, `error` (sin nombre o correo, correo mal
 escrito, correo repetido en el fichero, sucursal que no está ni en el fichero ni en la empresa,
 responsabilidad o tipo desconocidos, persona dada de baja con ese correo).
 
-**Plazas libres.** `plazasLibres(entityId)` en `shared` (junto a `canCreateEmployee`) devuelve
-cuántas sucursales y cuántas personas caben en el plan, o `null` si no hay límite; sin
-suscripción, cero. Las filas nuevas se marcan «fuera del plan» por orden del fichero a partir de
-la primera que no cabe.
+**Sin cupo** (README D4): no se calculan plazas ni se deja nada fuera. El alta de empleados y de
+sucursales deja de bloquear por cupo en `subscriptionLimits.ts`: sin suscripción no se crea
+nada; con suscripción, siempre.
 
 **Totales:** sucursales nuevas, personas nuevas, personas a las que se añaden sucursales, sin
-cambios, fuera del plan, ignoradas, errores; y la frase de la factura: «N personas nuevas
+cambios, ignoradas, errores; y la frase de la factura: «N personas nuevas
 pasarán a contar en tu factura».
 
 ## 3. Confirmar
@@ -77,9 +76,9 @@ Orden: sucursales (de dos en dos), después personas (de cuatro en cuatro), y po
 responsabilidades.
 
 - **Sucursal**: `POST /api/v1/branches/delegated` con la persona que confirma; la validación,
-  el cupo, el índice y el evento son los del alta a mano.
+  el índice y el evento son los del alta a mano.
 - **Persona**: `darDeAlta(uid, datos, {sendWelcome: false})`, la función que la ruta de alta usa
-  desde ahora, con la validación, el cupo y el control de duplicados de siempre.
+  desde ahora, con la validación y el control de duplicados de siempre.
 - **Responsabilidad**: `asignarResponsabilidad(uid, …)`, la de la ruta de responsabilidades, con
   el oficio del puesto (o «Trabajador») y el precio hora.
 
@@ -130,7 +129,7 @@ las reglas de Firestore: lleva correos, teléfonos y DNI.
 
 ## 7. Pruebas
 
-- La parte pura (leer la plantilla, cruzar con lo que hay, plazas libres, estados de cada fila)
+- La parte pura (leer la plantilla, cruzar con lo que hay, estados de cada fila)
   con ficheros en memoria y repositorios de mentira.
 - La plantilla generada y releída sin pérdidas en los cinco idiomas.
 - Contra dev: una plantilla con dos sucursales nuevas, una existente, cinco personas nuevas, una

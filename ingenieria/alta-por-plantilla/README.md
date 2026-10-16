@@ -37,7 +37,7 @@ o a una que ya existe. Se baja y se sube igual desde la lista de empleados que d
 sucursales.
 
 **D2. Cada fila por las reglas del alta a mano.** La sucursal se crea por la ruta de
-`branches`, con su validación, su cupo, su índice y su evento, a través de la puerta delegada
+`branches`, con su validación, su índice y su evento, a través de la puerta delegada
 (conector-asistente ADR-005). La persona y su responsabilidad, por las mismas funciones que
 usan las rutas de `employees`, que se sacan de los controladores a la capa de aplicación para
 que la importación las comparta.
