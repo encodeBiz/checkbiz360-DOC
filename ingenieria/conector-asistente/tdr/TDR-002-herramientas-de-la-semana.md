@@ -45,7 +45,7 @@ escriben, `destructiveHint`, para que Claude y ChatGPT pidan permiso antes de ej
 
 | Herramienta | Entrada | Devuelve |
 |---|---|---|
-| `proponer_cuadrante` | `sucursalId`, `personas: [{personaId, trabajos: [{fecha, inicio, fin, cliente?, direccion?, trabajo?, viajeMinutos?}], minutosImpresos?}]`, `origen?` | El lote: por persona estado, trabajos, horas, días, **a retirar**, hallazgos; totales; y `excel`, un enlace a la plantilla rellena |
+| `proponer_cuadrante` | `sucursalId`, `personas: [{personaId, trabajos: [{fecha, inicio, fin, cliente?, direccion?, trabajo?, viajeMinutos?}], minutosImpresos?}]`, `origen?`, `loteId?` (añade a un lote propuesto, ADR-007) | El lote: por persona estado, trabajos, horas, días, **a retirar**, hallazgos; totales; y `excel`, un enlace a la plantilla rellena |
 | `ver_cuadrante` | `loteId` | Estado, avance y resultado por persona |
 | `confirmar_cuadrante` | `loteId` | Arranca la aplicación (en segundo plano) y devuelve el lote *aplicando* |
 | `descartar_cuadrante` | `loteId` | El lote descartado |

@@ -93,6 +93,7 @@ cambiar el conector del CRM, que sigue como está.
 | [ADR-004 — El asistente es un lector más del lote](./adr/ADR-004-el-asistente-es-un-lector-mas-del-lote.md) | Aceptado (Jose, 2026-10-16) |
 | [ADR-005 — La persona delegada por la puerta de servicio](./adr/ADR-005-la-persona-delegada-por-la-puerta-de-servicio.md) | Aceptado (Jose, 2026-10-16) |
 | [ADR-006 — Retirar lo que ya no está](./adr/ADR-006-retirar-lo-que-ya-no-esta.md) | Aceptado (Jose, 2026-10-16) |
+| [ADR-007 — El cuadrante se llena por tandas](./adr/ADR-007-el-lote-se-llena-por-tandas.md) | Aceptado (Jose, 2026-10-16) |
 | [TDR-002 — Las herramientas de la semana](./tdr/TDR-002-herramientas-de-la-semana.md) | En implementación |
 
 ## Decisiones cerradas (Jose, 2026-10-15)
