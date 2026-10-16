@@ -9,6 +9,13 @@
 
 ## 1. Dónde está
 
+
+> **Cambiado el 2026-10-16, por decisión de Jose:** el modo es **solo de cada empleado**.
+> Nadie comparte tareas con nadie, así que heredarlo de la empresa o de la sucursal no tiene
+> sentido. Solo la ficha del empleado lo fija; la empresa y la sucursal responden 400
+> `calendar/schedule_mode_employee_only`, y el panel solo enseña el selector en la ficha del
+> empleado. Lo que este documento diga de herencia por niveles queda sustituido por esto.
+
 En **Horarios y festivos** de los tres niveles: la empresa, la ficha de la sucursal y la ficha
 del empleado. Las tres pintan el mismo componente, `CalendarSection`.
 

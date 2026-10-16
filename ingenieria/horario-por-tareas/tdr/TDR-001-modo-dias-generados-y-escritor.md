@@ -32,6 +32,13 @@ Lo que la fase deja hecho, en orden de uso:
 
 ## 2. El modo en el calendario
 
+
+> **Cambiado el 2026-10-16, por decisión de Jose:** el modo es **solo de cada empleado**.
+> Nadie comparte tareas con nadie, así que heredarlo de la empresa o de la sucursal no tiene
+> sentido. Solo la ficha del empleado lo fija; la empresa y la sucursal responden 400
+> `calendar/schedule_mode_employee_only`, y el panel solo enseña el selector en la ficha del
+> empleado. Lo que este documento diga de herencia por niveles queda sustituido por esto.
+
 ### 2.1 Campo
 
 `BaseCalendar` (`packages/shared/src/calendar/Calendar.ts`) gana un campo opcional:

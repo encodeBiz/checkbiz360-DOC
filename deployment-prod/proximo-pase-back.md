@@ -48,7 +48,7 @@ así que el pase no cambia nada a ningún cliente.
 | 1.4 | Reglas de Firestore | Con el fichero de `main` ya fusionado (§5). `calendar_days` en `soloServidor`. Guardar antes el ruleset vivo, como el 14-oct | PENDIENTE |
 | 1.5 | Función `onTaskDay` | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onTaskDay`. Nunca el codebase entero | PENDIENTE |
 | 1.6 | Comprobación | `firebase functions:list --project encodebiz-services \| grep onTaskDay`; `\d dim_calendar_days` en prod; `GET /calendar` de cualquier empleado devuelve `scheduleMode: "weekly"` | PENDIENTE |
-| 1.7 | Panel: el selector del modo | `feat/horario-por-tareas` de `encodebiz-front-saas` → develop → main y promoción en Vercel. Sin variables nuevas. Antes, probarlo en local contra staging (TDR-002 §4) | PENDIENTE |
+| 1.7 | Panel: el selector del modo, solo en la ficha del empleado (16-oct) | `feat/horario-por-tareas` de `encodebiz-front-saas` → develop → main y promoción en Vercel. Sin variables nuevas. Antes, probarlo en local contra staging (TDR-002 §4) | PENDIENTE |
 
 Orden: 1.1 antes que nada; 1.3 antes de que el job `dimensiones` corra con el código nuevo
 (al minuto 20 de cada hora), o su `INSERT` con `schedule_mode` fallará y lo dejará en

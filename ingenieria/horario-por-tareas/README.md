@@ -106,6 +106,13 @@ puntos; sin ellos el diseño sería otro.
 
 ### D1. Un modo explícito del horario, heredado, que se llama «Horario por tareas»
 
+
+> **Cambiado el 2026-10-16, por decisión de Jose:** el modo es **solo de cada empleado**.
+> Nadie comparte tareas con nadie, así que heredarlo de la empresa o de la sucursal no tiene
+> sentido. Solo la ficha del empleado lo fija; la empresa y la sucursal responden 400
+> `calendar/schedule_mode_employee_only`, y el panel solo enseña el selector en la ficha del
+> empleado. Lo que este documento diga de herencia por niveles queda sustituido por esto.
+
 El modo es un valor del calendario, no un interruptor suelto, y se hereda como el resto:
 entidad, sucursal, empleado. Es distinto de «sin horario», que hoy abre el día entero y hace
 que el panel avise de que falta configurar. El interruptor puede ponerse en la sucursal para
@@ -272,6 +279,40 @@ El cumplimiento de la tarea ya dice si acabó a tiempo o tarde.
 Para una persona en el modo el importador de cuadrantes no escribe horario: crea las tareas
 y el día se genera solo. Para quien no está en el modo sigue escribiendo la franja entera
 como hasta ahora.
+
+### D11. La plantilla semanal es el espejo de la semana activa (2026-10-16)
+
+Decidido por Jose el 2026-10-16, al probar el cuadrante en staging: «el calendario por días es
+la fuente de verdad; solo hay que sincronizar la plantilla semanal con la semana
+correspondiente; eso cierra el círculo sin inventar nada». Y «sin sorpresas peligrosas».
+
+Por qué: la app enseña la semana con la plantilla semanal (`data.weeklySchedule` de
+`GET /calendar`) y solo el día de hoy con el día efectivo. El panel lee la plantilla de
+Firestore. Sin esto, quien está en el modo ve en la app y en el panel una semana que no es la
+suya, aunque el fichaje use bien los días generados. Corrige lo que D3 decía de la plantilla
+(«no se toca en el modo»): se toca, pero solo como copia.
+
+- **La fuente es el día generado.** La plantilla propia de la persona en el modo se reescribe
+  con los turnos de los días generados de la **semana activa** (de lunes a domingo, en su zona
+  horaria): un turno por tarea, y un día sin día generado sale **libre**, que es lo que aplica
+  el fichaje.
+- **Cuándo.** Cuando el trigger regenera un día que cae en la semana activa, y además dos veces
+  al día (03:00 y 15:00 hora de Madrid) para el cambio de semana del lunes y para curar
+  cualquier desajuste. Un cambio en una tarea de otra semana no toca la plantilla: se recoge
+  cuando esa semana pase a ser la activa.
+- **Sin sorpresas:**
+  - solo personas cuyo modo resuelto es `tasks`, y solo su plantilla **propia**; nunca la de la
+    sucursal ni la de la empresa, nunca a nadie en modo semanal;
+  - solo se escribe si cambia algo;
+  - enciende el horario propio (`overridesDisabled: false`), porque si no ni la app ni el
+    panel lo enseñan;
+  - la **primera vez** guarda la plantilla que la persona tenía (`plantillaAnterior`), para
+    poder devolvérsela si sale del modo; devolverla es manual hasta que el selector del modo lo
+    haga solo;
+  - un fallo en la sincronización se registra y no corta la generación de los días ni las
+    alarmas.
+- **El cuadrante (D10)** sigue sin escribir horario para quien está en el modo: crea las tareas,
+  el trigger genera los días y el espejo hace el resto.
 
 ## Lo que cambia en la app
 
