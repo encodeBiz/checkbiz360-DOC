@@ -60,6 +60,7 @@ La API de tareas pasa a un microservicio dedicado (`tasks`, puerto 3006). Firest
 | [ADR-005](./adr/ADR-005-notificaciones-a-shared.md) | Extraer el framework de notificaciones a `@encodebiz/shared` | Aceptado (implementado) |
 | [ADR-006](./adr/ADR-006-informe-tareas-en-reports.md) | El informe de tareas (Excel) vive en el servicio `reports` | Aceptado (implementado) |
 | [ADR-007](./adr/ADR-007-geocerca-en-la-tarea.md) | La geocerca de un trabajo vive en la tarea, no en una sucursal por encargo | Aceptado |
+| [ADR-008](./adr/ADR-008-calendario-semanal-resumido-en-el-servidor.md) | El calendario semanal se resume en Postgres sobre el espejo `tasks_raw`, no en el navegador | Aceptado |
 
 ## Technical Design Records (TDRs)
 

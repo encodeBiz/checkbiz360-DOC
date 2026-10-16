@@ -15,6 +15,19 @@ Query: `entityId` (obligatorio), `branchId?`, `status?`, `timeComplianceStatus?`
 Scoping: un actor con `level < supervisor` (y no entityWriter) solo ve sus tareas (`employeeId` forzado).
 `200` → `Task[]`. `400` si falta `entityId`.
 
+### `GET /calendar` — resumen semanal para el calendario
+Query: `entityId` (obligatorio), `from`, `to` (instantes ISO: el lunes a las 00:00 y el lunes siguiente a las 00:00 en la zona del navegador; como mucho 31 días), `tz` (zona IANA del navegador; sin ella, UTC), `branchId?`, `status?`, `priority?`, `employeeId?`, `excludeStatus?` (estados separados por comas que la leyenda tiene ocultos: se quitan de las celdas, no de `countsByStatus`).
+Fuente: el espejo `tasks_raw` en Postgres, no Firestore (ver [ADR-008](./adr/ADR-008-calendario-semanal-resumido-en-el-servidor.md)). Una tarea va a la hora local en que empieza; sin inicio previsto, a `deadlines` del día en que vence; si empieza y vence en días distintos, a `spans`. Queda fuera la que empieza antes de `from` y vence después de `to`.
+Scoping: igual que `GET /`.
+`200` → `{ ok, from, to, timeZone, total, countsByStatus, days: [{ date, hours: [{ hour, count, byStatus, sample: TaskCalendarItem[] }], deadlines: { count, sample: TaskCalendarItem[] } }], spans: TaskCalendarItem[] }`. `sample` trae como mucho dos tareas por celda; `total` cuenta con las exclusiones, `countsByStatus` sin ellas.
+`TaskCalendarItem` = `{ id, title, status, priority, branchId, assignedEmployeeIds, scheduledStartAt, dueAt, pausedAt }`.
+`400` sin `entityId`, rango inválido, `tz` desconocida o estado/prioridad fuera de catálogo. `403` sin permiso.
+
+### `GET /calendar/cell` — tareas de una celda del calendario
+Query: `entityId`, `tz`, `date` (`YYYY-MM-DD`, día local), `hour` (0–23) o `kind=deadline`, los mismos filtros y `excludeStatus` que `/calendar`, `limit?` (50 por defecto, 200 como mucho), `offset?`.
+`200` → `{ ok, total, items: TaskCalendarItem[], nextOffset }` (`nextOffset` es `null` cuando no queda más).
+`400` fecha u hora inválidas. `403` sin permiso.
+
 ### `POST /` — crear tarea
 Permiso: `canManageTask`.
 Body: `entityId`, `branchId`, `title`, `description?`, `priority?`, `scheduledStartAt?`, `dueAt`, `assignedEmployeeIds?`, `config` (`TaskConfig`), `workSite?` (`TaskWorkSite`, ver [TDR-005](./tdr/TDR-005-worksite-y-geocerca-de-tarea.md) §2).
