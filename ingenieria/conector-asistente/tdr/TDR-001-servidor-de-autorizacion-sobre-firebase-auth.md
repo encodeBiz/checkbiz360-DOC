@@ -592,3 +592,21 @@ conectores de memoria y hay que revisarlos en la primera prueba.
 4. Política TTL sobre `expiresAt` en `assistant_auth_requests` y `assistant_tokens` (opcional:
    mientras no esté, el servicio barre lo vencido al escribir).
 5. Después del despliegue, reiniciar nginx (lo hace el workflow).
+
+## 17. La primera prueba (2026-10-16)
+
+- **Codex** (la herramienta de programación de OpenAI, `codex-mcp-client`) se presenta con
+  `https://chatgpt.com/oauth/codex/client.json` y pide volver a `http://127.0.0.1:{puerto}/callback`.
+  Queda fuera por el ADR-003, como estaba previsto. La pantalla decía «aplicación no
+  conocida»; ahora dice que la dirección de retorno no vale.
+- **ChatGPT** (web) se presenta con `https://chatgpt.com/oauth/client.json`, retorno
+  `https://chatgpt.com/connector_platform_oauth_redirect` (la estable, porque emitimos `iss`),
+  y `token_endpoint_auth_method: private_key_jwt` con RS256 y claves en
+  `https://chatgpt.com/oauth/jwks.json`; declara también `none`. Resuelve la pregunta del §15:
+  **se implementa `private_key_jwt`** (RFC 7523): firma contra el `jwks_uri` (sólo dominios
+  de la lista, en caché), `iss = sub = client_id`, `aud` el endpoint de token o el emisor,
+  vida máxima de 10 minutos y `jti` de un solo uso en `assistant_assertions`. Sin aserción,
+  un cliente que declara `none` vale como público con PKCE.
+- El descubrimiento funcionó a la primera en los dos: metadatos del recurso, del servidor de
+  autorización, PKCE y `resource`. ChatGPT prueba además los alias de OpenID Connect, recibe
+  404 y sigue.
