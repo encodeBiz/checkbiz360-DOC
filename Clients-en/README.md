@@ -131,6 +131,7 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | [Strict and flexible workday](04-calendar-and-schedules/28-flexible-schedule.md) | How hours and breaks are counted under each mode |
 | [Public holidays and non-working days](04-calendar-and-schedules/29-public-holidays-and-non-working-days.md) | Holiday types, employee absences, blocking clock-ins, sectors that work on holidays |
 | [Availability board](04-calendar-and-schedules/98-availability-board.md) | Coverage by branch and day, breakdown of who is missing and days off from the board |
+| [Import the weekly schedule](04-calendar-and-schedules/108-import-the-weekly-schedule.md) | The week of a branch's whole staff in one upload, or one person's week from their profile |
 
 ---
 
@@ -463,7 +464,7 @@ DOCS/Clients-en/
 ├── 01-getting-started/                 (5 articles)
 ├── 02-employees/                       (8 articles)
 ├── 03-time-tracking/                   (10 articles)
-├── 04-calendar-and-schedules/          (8 articles)
+├── 04-calendar-and-schedules/          (9 articles)
 ├── 05-document-management/             (9 articles)
 ├── 06-tasks/                           (10 articles)
 ├── 07-operational-intelligence/        (8 articles)
@@ -478,4 +479,4 @@ DOCS/Clients-en/
 └── 16-inventory/                       (7 articles)
 ```
 
-**Total: 104 articles**
+**Total: 105 articles**

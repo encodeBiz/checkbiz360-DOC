@@ -131,6 +131,7 @@ Configuración de turnos, horarios base, calendarios laborales y excepciones ind
 | [Jornada estricta y jornada flexible](04-calendario-y-horarios/28-horario-flexible.md) | Cómo se computan las horas y las pausas según la modalidad elegida |
 | [Festivos y días no laborables](04-calendario-y-horarios/29-festivos-y-dias-no-laborables.md) | Tipos de festivo, ausencias de empleado, bloqueo de fichajes, sectores que trabajan en festivo |
 | [Tablero de disponibilidad](04-calendario-y-horarios/98-tablero-de-disponibilidad.md) | Cobertura por sucursal y día, desglose de quién falta y días libres desde el tablero |
+| [Importar el cuadrante semanal](04-calendario-y-horarios/108-importar-el-cuadrante-semanal.md) | La semana de toda la plantilla de una sucursal en una subida, o la de una persona desde su ficha |
 
 ---
 
@@ -463,7 +464,7 @@ DOCS/Clients/
 ├── 01-primeros-pasos/                 (5 artículos)
 ├── 02-empleados/                      (8 artículos)
 ├── 03-control-horario/                (10 artículos)
-├── 04-calendario-y-horarios/          (8 artículos)
+├── 04-calendario-y-horarios/          (9 artículos)
 ├── 05-gestion-documental/             (9 artículos)
 ├── 06-tareas/                         (10 artículos)
 ├── 07-inteligencia-operativa/         (8 artículos)
@@ -478,4 +479,4 @@ DOCS/Clients/
 └── 16-inventario/                     (7 artículos)
 ```
 
-**Total: 104 artículos**
+**Total: 105 artículos**
