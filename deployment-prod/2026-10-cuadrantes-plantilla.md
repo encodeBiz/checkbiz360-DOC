@@ -1,6 +1,6 @@
 # Pase a producción — cuadrante por plantilla (octubre 2026)
 
-**Estado: pendiente, sin fecha. El guion del día del pase está en [proximo-pase-back.md](./proximo-pase-back.md) §3** (y §1, §5 para lo compartido); este registro guarda el detalle, las pruebas y las decisiones. Jose, 2026-10-16: «ve documentando el pase a prod como pendiente
+**Estado: EJECUTADO el 2026-10-17 (API, reglas y panel); quedan la prueba con sesión real en prod, su limpieza y el manual (§7 pasos 8 y 7c). El guion y el registro del día están en [proximo-pase-back.md](./proximo-pase-back.md) §3** (y §1, §5 para lo compartido); este registro guarda el detalle, las pruebas y las decisiones. Jose, 2026-10-16: «ve documentando el pase a prod como pendiente
 para que no se olviden cosas». Se va completando; el día del pase se ejecuta en el orden de §7 y
 cada paso se anota en §8 con hora y resultado, como en
 [2026-10-inventario-firma-back.md](./2026-10-inventario-firma-back.md).
@@ -227,6 +227,7 @@ producción; si su pase va después, ese párrafo se quita hasta entonces.
 | Paso | Cuándo | Quién | Qué y resultado |
 |---|---|---|---|
 | Reglas a dev (§3.1) | 2026-10-16 | Claude, con el «ok» de Jose | Copia del ruleset vivo de dev antes de tocarlo: [2026-10-16-firestore-rules-dev-antes.rules](./2026-10-16-firestore-rules-dev-antes.rules) (desplegado ese mismo día a las 09:21 UTC por otra sesión, con el fallo de la raíz). `firebase deploy --only firestore:rules --project dev-encodebiz` desde `origin/develop` (`93c67ac`), fichero idéntico al probado con el emulador. Comprobado en dev sin sesión, con una entidad inexistente y consultas que no devuelven documentos: `calendar` y `employees` abiertas (404 por documento inexistente; 200 en consulta de grupo); `cuadrante_proposals`, `cuadrante_lotes`, `calendar_days` y `signing_keys` 403 por documento, y las tres primeras 403 en consulta de grupo. |
+| Pase a producción (§7, pasos 0 a 7) | 2026-10-17, 10:40–11:31 UTC | Claude, por orden de Jose | Detalle en el registro de [proximo-pase-back.md](./proximo-pase-back.md). Reglas a prod a las 10:58 con el fichero que además cierra la lectura anónima (paso 1 de reglas-firestore); `merlin` desplegado por el PR #160 a las 11:17 y `GET /api/v1/gpt/cuadrantes/plantilla` sin token → 401; `client_max_body_size 4m` comprobado en el nginx desplegado; panel por el PR #106, Vercel Ready a las 11:31. La aceptación de §5 no se repitió: vale la de Jose del 16-oct en staging (§7b) y el QA de staging en verde (473). **Pendiente:** paso 8 (plantilla de una sucursal real o de la entidad de pruebas, con sesión), la limpieza y el manual 108 sin el párrafo de horario por tareas hasta que la app esté publicada. |
 
 
 ---

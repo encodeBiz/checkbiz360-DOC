@@ -1,7 +1,11 @@
 # Próximo pase a producción — API (documento vivo)
 
-**Abierto:** 2026-10-16
-**Estado:** Abierto. Todo lo de abajo está **PENDIENTE** mientras no lleve fecha y resultado.
+**Abierto:** 2026-10-16 · **Ejecutado:** 2026-10-17, de 10:40 a 11:31 UTC, por Claude con la
+orden de Jose («hoy es el pase, encárgate de todo»). Registro al final.
+**Estado:** EJECUTADO en todo lo que depende del servidor, de Firebase, de Vercel y del panel
+(§1 a §6 y §8). Queda lo que necesita a Jose con sesión real (2.17, 3.5 y 3.6, 8.6), la app
+(1.11 y 1.12), el manual (3.7, 2.18), las TTL opcionales (2.11) y las §7 y §9, que no tienen
+código todavía. Cada fila de los guiones dice «HECHO 17-oct» o por qué no.
 **Regla del documento:** cada cosa que entra en `staging` y necesita algo fuera del código
 (migración, índice, variable, servicio, regla, función, dato) se apunta aquí **el mismo día**,
 como pendiente. El día del pase se ejecuta de arriba abajo y cada fila se marca con hora,
@@ -36,7 +40,7 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 
 ---
 
-## 1. Horario por tareas (fases 1 y 2, selector del panel, D11) — PENDIENTE
+## 1. Horario por tareas (fases 1 a 4, selector del panel, D11) — EJECUTADO el 2026-10-17 (API, funciones y panel); la app, pendiente
 
 Diseño: `DOCS/ingenieria/horario-por-tareas` (README D1–D11, TDR-001, TDR-002, TDR-003). En
 staging desde el 2026-10-16, QA `54-horario-por-tareas` 15/15 contra staging. Nadie está en el
@@ -62,17 +66,17 @@ Lo que sube, para tenerlo delante:
 
 | # | Paso | Cómo | Estado |
 |---|---|---|---|
-| 1.2 | Índices en prod, solo con `gcloud` | `gcloud firestore indexes composite list --project encodebiz-services` y crear solo los que falten con `gcloud firestore indexes composite create … --project encodebiz-services`: `tasks` colección `assignedEmployeeIds` CONTAINS + `scheduledStartAt` ASC y `calendar_days` grupo de colecciones `entityId` ASC + `date` ASC. Esperar a `READY` antes de 1.6. No hay fichero de índices que actualizar: el SaaS está retirado y `encodebiz-api` no declara índices en su `firebase.json`, así que ningún despliegue los poda | PENDIENTE |
-| 1.3 | Migración 037 | A mano, sola y leyendo la salida: `… exec -T postgres psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/037_horario_por_tareas.sql`. Esperado: `ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, `ALTER TABLE`, `ALTER TABLE`. **Antes** de que corra el job `dimensiones` con el código nuevo (minuto 20 de cada hora), o su `INSERT` con `schedule_mode` falla y queda en `dim_sync_log` | PENDIENTE |
-| 1.4 | Migración 040 (otra sesión: índice del calendario semanal de tareas) | Igual que 1.3, con `040_tareas_calendario.sql`. Esperado: `CREATE INDEX` | PENDIENTE |
-| 1.5 | Reglas de Firestore | Con el fichero de `main` ya fusionado (§5): `calendar_days` en `soloServidor`. Guardar antes el ruleset vivo | PENDIENTE |
-| 1.6 | Contenedores | Los despliega el workflow al fusionar `staging → main`: `checkinbiz`, `tasks`, `reports`, `analytics`, `employees`, `merlin` con el código nuevo. **Nunca a mano en prod** | PENDIENTE |
-| 1.7 | Entorno de prod | Comprobar que `checkinbiz` y `employees` reciben `ENCODEBIZ_API_KEY` (los dos llaman a otros servicios con la clave S2S). `TASKS_INTERNAL_URL`, `CHECKINBIZ_INTERNAL_URL` y `BRANCHES_INTERNAL_URL` tienen valor por defecto en el código (`http://tasks:3006`, `http://checkinbiz:3002`, `http://branches:3014`) y valen en prod: no hay que añadirlas. **Corregido el 17-oct:** `branches` no corre en prod hasta que lo arranque §2.2; sin él, lo que llama a `branches:3014` falla | PENDIENTE |
-| 1.8 | Funciones de Firebase | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo <nombre>` con cada una: `onTaskDay`, `weeklyFromTaskDays` y, por la fase 3 (TDR-005), `employeePlanifierWorker`, `planifierNotificationWorker` y `taskStartNotificationWorker`. Nunca el codebase entero (README de `firebase_sdk`). Las tres de la fase 3 cambian también para quien NO está en el modo solo en que el job de las 04:00 salta a quien sí lo está | PENDIENTE |
-| 1.9 | Comprobación de la API | `firebase functions:list --project encodebiz-services` con las dos; `\d dim_calendar_days` en prod; `GET /calendar` de cualquier empleado devuelve `scheduleMode: "weekly"`; `PATCH /calendar` con `scope: "branch"` y `scheduleMode: "tasks"` responde 400 `calendar/schedule_mode_employee_only` | PENDIENTE |
-| 1.10 | Panel | `encodebiz-front-saas`: `develop → main` y promoción en Vercel. Sin variables nuevas. El selector está solo en la ficha del empleado, al apagar «Usar horario base» | PENDIENTE |
-| 1.11 | App | `checkbiz360`: `develop` con la fase 2 → versión nueva publicada en las dos tiendas | PENDIENTE |
-| 1.12 | **No activar el modo a nadie en prod** hasta que 1.11 esté publicada y la persona la tenga instalada | Con una app vieja la persona vería los botones de la tarea y la jornada en blanco | PENDIENTE |
+| 1.2 | Índices en prod, solo con `gcloud` | `gcloud firestore indexes composite list --project encodebiz-services` y crear solo los que falten con `gcloud firestore indexes composite create … --project encodebiz-services`: `tasks` colección `assignedEmployeeIds` CONTAINS + `scheduledStartAt` ASC y `calendar_days` grupo de colecciones `entityId` ASC + `date` ASC. Esperar a `READY` antes de 1.6. No hay fichero de índices que actualizar: el SaaS está retirado y `encodebiz-api` no declara índices en su `firebase.json`, así que ningún despliegue los poda | HECHO 17-oct, ver registro |
+| 1.3 | Migración 037 | A mano, sola y leyendo la salida: `… exec -T postgres psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/037_horario_por_tareas.sql`. Esperado: `ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, `ALTER TABLE`, `ALTER TABLE`. **Antes** de que corra el job `dimensiones` con el código nuevo (minuto 20 de cada hora), o su `INSERT` con `schedule_mode` falla y queda en `dim_sync_log` | HECHO 17-oct, ver registro |
+| 1.4 | Migración 040 (otra sesión: índice del calendario semanal de tareas) | Igual que 1.3, con `040_tareas_calendario.sql`. Esperado: `CREATE INDEX` | HECHO 17-oct, ver registro |
+| 1.5 | Reglas de Firestore | Con el fichero de `main` ya fusionado (§5): `calendar_days` en `soloServidor`. Guardar antes el ruleset vivo | HECHO 17-oct, ver registro |
+| 1.6 | Contenedores | Los despliega el workflow al fusionar `staging → main`: `checkinbiz`, `tasks`, `reports`, `analytics`, `employees`, `merlin` con el código nuevo. **Nunca a mano en prod** | HECHO 17-oct, ver registro |
+| 1.7 | Entorno de prod | Comprobar que `checkinbiz` y `employees` reciben `ENCODEBIZ_API_KEY` (los dos llaman a otros servicios con la clave S2S). `TASKS_INTERNAL_URL`, `CHECKINBIZ_INTERNAL_URL` y `BRANCHES_INTERNAL_URL` tienen valor por defecto en el código (`http://tasks:3006`, `http://checkinbiz:3002`, `http://branches:3014`) y valen en prod: no hay que añadirlas. **Corregido el 17-oct:** `branches` no corre en prod hasta que lo arranque §2.2; sin él, lo que llama a `branches:3014` falla | HECHO 17-oct, ver registro |
+| 1.8 | Funciones de Firebase | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo <nombre>` con cada una: `onTaskDay`, `weeklyFromTaskDays` y, por la fase 3 (TDR-005), `employeePlanifierWorker`, `planifierNotificationWorker` y `taskStartNotificationWorker`. Nunca el codebase entero (README de `firebase_sdk`). Las tres de la fase 3 cambian también para quien NO está en el modo solo en que el job de las 04:00 salta a quien sí lo está | HECHO 17-oct, ver registro |
+| 1.9 | Comprobación de la API | `firebase functions:list --project encodebiz-services` con las dos; `\d dim_calendar_days` en prod; `GET /calendar` de cualquier empleado devuelve `scheduleMode: "weekly"`; `PATCH /calendar` con `scope: "branch"` y `scheduleMode: "tasks"` responde 400 `calendar/schedule_mode_employee_only` | HECHO 17-oct, ver registro |
+| 1.10 | Panel | `encodebiz-front-saas`: `develop → main` y promoción en Vercel. Sin variables nuevas. El selector está solo en la ficha del empleado, al apagar «Usar horario base» | HECHO 17-oct, ver registro |
+| 1.11 | App | `checkbiz360`: `develop` con la fase 2 → versión nueva publicada en las dos tiendas | PENDIENTE: el 17-oct `master` y `staging` siguen en 1.7.0+57 y `develop` en 1.8.0+61 con la fase 2 y el material; falta promover y subir a las tiendas |
+| 1.12 | **No activar el modo a nadie en prod** hasta que 1.11 esté publicada y la persona la tenga instalada | Con una app vieja la persona vería los botones de la tarea y la jornada en blanco | SIGUE EN PIE hasta 1.11 |
 
 > **Staging se desplegó a mano el 16-oct** (merge con `[skip ci]`, `git pull` y
 > `up --build -d checkinbiz tasks reports` en el servidor, por indicación de Jose). Para
@@ -80,7 +84,7 @@ Lo que sube, para tenerlo delante:
 
 ---
 
-## 2. Conector de Claude y ChatGPT y alta por plantilla — PENDIENTE, guion completo
+## 2. Conector de Claude y ChatGPT y alta por plantilla — EJECUTADO el 2026-10-17; quedan 2.11 (opcional), 2.17 y 2.18
 
 **Detallado el 2026-10-17.** Jose lo da por probado para una primera versión: conectado de
 punta a punta con ChatGPT web y con Claude en staging, sobre la empresa de demo (Álvarez), con
@@ -136,24 +140,24 @@ que este pase no necesita.
 
 | # | Paso | Cómo | Estado |
 |---|---|---|---|
-| 2.1 | Código | Entra con el despliegue normal (`staging → main`, action *CI/CD*). Comprobar antes en el PR que `main` recibe `services/assistant`, los cambios de `merlin`, `employees`, `branches`, `tasks`, `checkinbiz` y `shared`, y `5c38f5e` (las tandas) | PENDIENTE |
-| 2.2 | `docker-compose.yml` de prod: `branches` | Bloque calcado de `docker-compose.staging.yml` (`<<: *service`, `PORT=3014`, `expose: 3014`, healthcheck a `/health`), **sin** `ports:`. Va en el mismo PR que 2.1 | PENDIENTE |
-| 2.3 | `docker-compose.yml` de prod: `assistant` | Calcado del de staging con `ASSISTANT_PUBLIC_URL=https://api.checkbiz360.com/api/v1/assistant` y `ASSISTANT_CLIENT_HOSTS=claude.ai,claude.com,chatgpt.com,openai.com`. Las `*_INTERNAL_URL` (checkinbiz, tasks, merlin, employees, branches) tienen el valor por defecto correcto; ponerlas igual que en staging para que se lean. **Nunca** `ASSISTANT_ALLOW_LOCALHOST`. Mismo PR | PENDIENTE |
-| 2.4 | `employees` en prod: `BRANCHES_INTERNAL_URL=http://branches:3014` | En el bloque `employees` de `docker-compose.yml`, como en staging (el código ya lo tiene por defecto; se pone para que se vea). Mismo PR | PENDIENTE |
-| 2.5 | `nginx/nginx.conf` de prod: el conector | `upstream assistant_service { server assistant:3017; }` (hoy **no** está, contra lo que decía este documento); `location = /api/v1/assistant`; `location ^~ /.well-known/oauth-authorization-server` y `location ^~ /.well-known/oauth-protected-resource` hacia `assistant_service`; `location /api/v1/assistant/` con `client_max_body_size 4m` (ADR-007). Todo como en `nginx.staging.conf`. Mismo PR | PENDIENTE |
-| 2.6 | `nginx/nginx.conf` de prod: la importación | Hoy prod abre solo `/api/v1/employees/teams`, y a propósito (el comentario lo explica). Abrir **solo** `location /api/v1/employees/import/` y `location = /api/v1/employees/import` con `client_max_body_size 4m`, y `location = /api/v1/employees/welcome`. **No** abrir el prefijo entero: el alta, la edición y la baja de producción siguen en Firebase. Las rutas `/delegated/*` no se abren: son internas del conector. Mismo PR | PENDIENTE |
-| 2.7 | `.env.production` | `ASSISTANT_COOKIE_SECRET` (32 bytes nuevos, `openssl rand -base64 32`, **distinto** del de staging) y la config web de Firebase de **`encodebiz-services`**: `ASSISTANT_FIREBASE_API_KEY`, `_AUTH_DOMAIN`, `_PROJECT_ID`, `_APP_ID` (de la consola de Firebase, app web del panel; `vercel env pull` las devuelve vacías). Copia antes: `cp .env.production .env.production.bak-$(date +%F)`. Sin estas variables el servicio arranca con la autorización apagada y lo avisa en el log | PENDIENTE |
-| 2.8 | Firebase Auth de prod: dominio autorizado | Añadir `api.checkbiz360.com` a los dominios autorizados de `encodebiz-services`. Como en dev el 16-oct: leer primero la lista (`GET` de la config de Identity Toolkit admin v2) y hacer `PATCH … ?updateMask=authorizedDomains` con **la lista entera más el dominio**, nunca solo el nuevo. O desde la consola. Sin esto, la pantalla de consentimiento no deja entrar | PENDIENTE |
-| 2.9 | Reglas | En el despliegue único de §5. Comprobar que el fichero que sale lleva `assistant_.*` y `staff_imports` en `soloServidor` | PENDIENTE |
+| 2.1 | Código | Entra con el despliegue normal (`staging → main`, action *CI/CD*). Comprobar antes en el PR que `main` recibe `services/assistant`, los cambios de `merlin`, `employees`, `branches`, `tasks`, `checkinbiz` y `shared`, y `5c38f5e` (las tandas) | HECHO 17-oct, ver registro |
+| 2.2 | `docker-compose.yml` de prod: `branches` | Bloque calcado de `docker-compose.staging.yml` (`<<: *service`, `PORT=3014`, `expose: 3014`, healthcheck a `/health`), **sin** `ports:`. Va en el mismo PR que 2.1 | HECHO 17-oct, ver registro |
+| 2.3 | `docker-compose.yml` de prod: `assistant` | Calcado del de staging con `ASSISTANT_PUBLIC_URL=https://api.checkbiz360.com/api/v1/assistant` y `ASSISTANT_CLIENT_HOSTS=claude.ai,claude.com,chatgpt.com,openai.com`. Las `*_INTERNAL_URL` (checkinbiz, tasks, merlin, employees, branches) tienen el valor por defecto correcto; ponerlas igual que en staging para que se lean. **Nunca** `ASSISTANT_ALLOW_LOCALHOST`. Mismo PR | HECHO 17-oct, ver registro |
+| 2.4 | `employees` en prod: `BRANCHES_INTERNAL_URL=http://branches:3014` | En el bloque `employees` de `docker-compose.yml`, como en staging (el código ya lo tiene por defecto; se pone para que se vea). Mismo PR | HECHO 17-oct, ver registro |
+| 2.5 | `nginx/nginx.conf` de prod: el conector | `upstream assistant_service { server assistant:3017; }` (hoy **no** está, contra lo que decía este documento); `location = /api/v1/assistant`; `location ^~ /.well-known/oauth-authorization-server` y `location ^~ /.well-known/oauth-protected-resource` hacia `assistant_service`; `location /api/v1/assistant/` con `client_max_body_size 4m` (ADR-007). Todo como en `nginx.staging.conf`. Mismo PR | HECHO 17-oct, ver registro |
+| 2.6 | `nginx/nginx.conf` de prod: la importación | Hoy prod abre solo `/api/v1/employees/teams`, y a propósito (el comentario lo explica). Abrir **solo** `location /api/v1/employees/import/` y `location = /api/v1/employees/import` con `client_max_body_size 4m`, y `location = /api/v1/employees/welcome`. **No** abrir el prefijo entero: el alta, la edición y la baja de producción siguen en Firebase. Las rutas `/delegated/*` no se abren: son internas del conector. Mismo PR | HECHO 17-oct, ver registro |
+| 2.7 | `.env.production` | `ASSISTANT_COOKIE_SECRET` (32 bytes nuevos, `openssl rand -base64 32`, **distinto** del de staging) y la config web de Firebase de **`encodebiz-services`**: `ASSISTANT_FIREBASE_API_KEY`, `_AUTH_DOMAIN`, `_PROJECT_ID`, `_APP_ID` (de la consola de Firebase, app web del panel; `vercel env pull` las devuelve vacías). Copia antes: `cp .env.production .env.production.bak-$(date +%F)`. Sin estas variables el servicio arranca con la autorización apagada y lo avisa en el log | HECHO 17-oct, ver registro |
+| 2.8 | Firebase Auth de prod: dominio autorizado | Añadir `api.checkbiz360.com` a los dominios autorizados de `encodebiz-services`. Como en dev el 16-oct: leer primero la lista (`GET` de la config de Identity Toolkit admin v2) y hacer `PATCH … ?updateMask=authorizedDomains` con **la lista entera más el dominio**, nunca solo el nuevo. O desde la consola. Sin esto, la pantalla de consentimiento no deja entrar | HECHO 17-oct, ver registro |
+| 2.9 | Reglas | En el despliegue único de §5. Comprobar que el fichero que sale lleva `assistant_.*` y `staff_imports` en `soloServidor` | HECHO 17-oct, ver registro |
 | 2.10 | Índices | **Ninguno.** Las consultas del conector y de la importación son de igualdad y van con los índices de campo (TDR-001 §16) | — |
-| 2.11 | TTL (opcional) | Política TTL sobre `expiresAt` en `assistant_auth_requests` y `assistant_tokens`. Mientras no esté, el servicio barre lo vencido al escribir | PENDIENTE |
-| 2.12 | Arranque | Tras el deploy: `docker compose -p encodebiz-api --env-file .env.production -f docker-compose.yml ps assistant branches employees merlin` → los cuatro `healthy`. Reiniciar nginx (el action lo hace; a mano, `restart nginx`). Log de `assistant` **sin** «la autorización está apagada» | PENDIENTE |
-| 2.13 | Sondas sin sesión | `curl -s -o /dev/null -w '%{http_code}' https://api.checkbiz360.com/.well-known/oauth-authorization-server` → `200`; `…/.well-known/oauth-protected-resource/api/v1/assistant/mcp/e/<entityId>` → `200`; `curl -s -X POST https://api.checkbiz360.com/api/v1/assistant/mcp/e/<entityId>` → `401` con cabecera `WWW-Authenticate`. `GET https://api.checkbiz360.com/api/v1/employees/import/template` sin token → `401`, **no** `404` (el `404` es nginx sin la ruta de 2.6) | PENDIENTE |
-| 2.14 | `branches` desde dentro | `docker compose … exec -T employees wget -qO- http://branches:3014/health` → responde. Si no, el alta de sucursales del conector y de la plantilla fallará | PENDIENTE |
-| 2.15 | Panel: variables en Vercel (producción) | `NEXT_PUBLIC_ASSISTANT_CONNECTOR_BASE=https://api.checkbiz360.com/api/v1/assistant` y `NEXT_BACKEND_URI_STAFF_IMPORT_HANDLER=https://api.checkbiz360.com/api/v1/employees`. **Antes** del despliegue del panel: la primera es pública y se compila dentro | PENDIENTE |
-| 2.16 | Panel: código | `develop → staging → main` del panel **después** de 2.12. Hoy `staging` del panel no tiene ni la sección del conector (`94d39ab6`) ni el diálogo de importación (`24440960`, `5d285adc` y anteriores). Ojo: `develop` del panel lleva también el calendario de §8 y otras sesiones. Se sube junto, en el orden de §8.5 | PENDIENTE |
-| 2.17 | Prueba con sesión real (con Jose) | En una empresa de prueba de producción, nunca en la de un cliente: (a) Entorno de trabajo → copiar la dirección del conector; (b) en Claude y en ChatGPT web, añadir el conector, entrar con la cuenta del panel y el 2FA, aceptar; (c) `conexion_actual`, `listar_sucursales`, `ver_semana`; (d) `proponer_cuadrante` de una persona **sin confirmar**, abrir el enlace del Excel y descartar; (e) en el panel, «Importar plantilla» con dos personas y una sucursal: proponer, confirmar, comprobar que aparecen en el buscador; (f) en el panel, revocar la conexión y comprobar que el asistente pierde el acceso | PENDIENTE |
-| 2.18 | Instrucciones para clientes | El texto para el proyecto de ChatGPT (17-oct, en la conversación con Jose) va al manual de clientes antes de anunciarlo | PENDIENTE |
+| 2.11 | TTL (opcional) | Política TTL sobre `expiresAt` en `assistant_auth_requests` y `assistant_tokens`. Mientras no esté, el servicio barre lo vencido al escribir | OPCIONAL, no hecho el 17-oct |
+| 2.12 | Arranque | Tras el deploy: `docker compose -p encodebiz-api --env-file .env.production -f docker-compose.yml ps assistant branches employees merlin` → los cuatro `healthy`. Reiniciar nginx (el action lo hace; a mano, `restart nginx`). Log de `assistant` **sin** «la autorización está apagada» | HECHO 17-oct, ver registro |
+| 2.13 | Sondas sin sesión | `curl -s -o /dev/null -w '%{http_code}' https://api.checkbiz360.com/.well-known/oauth-authorization-server` → `200`; `…/.well-known/oauth-protected-resource/api/v1/assistant/mcp/e/<entityId>` → `200`; `curl -s -X POST https://api.checkbiz360.com/api/v1/assistant/mcp/e/<entityId>` → `401` con cabecera `WWW-Authenticate`. `GET https://api.checkbiz360.com/api/v1/employees/import/template` sin token → `401`, **no** `404` (el `404` es nginx sin la ruta de 2.6) | HECHO 17-oct, ver registro |
+| 2.14 | `branches` desde dentro | `docker compose … exec -T employees wget -qO- http://branches:3014/health` → responde. Si no, el alta de sucursales del conector y de la plantilla fallará | HECHO 17-oct, ver registro |
+| 2.15 | Panel: variables en Vercel (producción) | `NEXT_PUBLIC_ASSISTANT_CONNECTOR_BASE=https://api.checkbiz360.com/api/v1/assistant` y `NEXT_BACKEND_URI_STAFF_IMPORT_HANDLER=https://api.checkbiz360.com/api/v1/employees`. **Antes** del despliegue del panel: la primera es pública y se compila dentro | HECHO 17-oct, ver registro |
+| 2.16 | Panel: código | `develop → staging → main` del panel **después** de 2.12. Hoy `staging` del panel no tiene ni la sección del conector (`94d39ab6`) ni el diálogo de importación (`24440960`, `5d285adc` y anteriores). Ojo: `develop` del panel lleva también el calendario de §8 y otras sesiones. Se sube junto, en el orden de §8.5 | HECHO 17-oct, ver registro |
+| 2.17 | Prueba con sesión real (con Jose) | En una empresa de prueba de producción, nunca en la de un cliente: (a) Entorno de trabajo → copiar la dirección del conector; (b) en Claude y en ChatGPT web, añadir el conector, entrar con la cuenta del panel y el 2FA, aceptar; (c) `conexion_actual`, `listar_sucursales`, `ver_semana`; (d) `proponer_cuadrante` de una persona **sin confirmar**, abrir el enlace del Excel y descartar; (e) en el panel, «Importar plantilla» con dos personas y una sucursal: proponer, confirmar, comprobar que aparecen en el buscador; (f) en el panel, revocar la conexión y comprobar que el asistente pierde el acceso | PENDIENTE: Jose, con sesión real (la infraestructura está sondeada, ver registro) |
+| 2.18 | Instrucciones para clientes | El texto para el proyecto de ChatGPT (17-oct, en la conversación con Jose) va al manual de clientes antes de anunciarlo | PENDIENTE: manual |
 
 ### Si algo falla
 
@@ -169,7 +173,7 @@ Todo es aditivo y nada de lo existente depende de ello:
 
 ---
 
-## 3. Cuadrantes por plantilla — PENDIENTE, listo para ejecutar
+## 3. Cuadrantes por plantilla — EJECUTADO el 2026-10-17; quedan 3.5, 3.6 y 3.7
 
 Diseño: [cuadrantes/tdr/TDR-001](../ingenieria/cuadrantes/tdr/TDR-001-importacion-por-plantilla-de-sucursal.md).
 Detalle, pruebas y decisiones: [2026-10-cuadrantes-plantilla.md](./2026-10-cuadrantes-plantilla.md).
@@ -200,26 +204,26 @@ con solo su pestaña. Y todos los buscadores del panel encuentran con varias pal
 
 | # | Paso | Cómo | Estado |
 |---|---|---|---|
-| 3.1 | Código de la API | Llega con `staging → main` (§1.6): solo `merlin` cambia por esto. Sonda sin token: `curl -s -o /dev/null -w "%{http_code}" "https://api.checkbiz360.com/api/v1/gpt/cuadrantes/plantilla?entityId=x&branchId=y"` → **401** (un 404 es contenedor viejo; 502, nginx con IPs viejas) | PENDIENTE |
-| 3.2 | nginx | Comprobar en el servidor que el fichero desplegado lleva el límite: `grep -n -A2 "location /api/v1/gpt/ {" /opt/encodebiz-api/nginx/nginx.conf` → `client_max_body_size 4m;` | PENDIENTE |
-| 3.3 | Reglas | En el único despliegue de la §5 (o en el de la §6 si va antes, con el fichero de `develop`). Comprobación propia, sin sesión, con una entidad que no exista: `GET …/documents/entities/zz-prueba/cuadrante_proposals/x` y `…/cuadrante_lotes/x` → **403**; `…/entities/zz-prueba/calendar/x` → 404 (permitido y no existe) | PENDIENTE |
-| 3.4 | Panel | Con el resto del panel (§1.10 y §8.5): entran el modal de la sucursal, la plantilla desde la ficha del empleado, la ruta del proxy (`/plantilla` y `/lotes` en `cuadrantes_handler`) y el arreglo del buscador. **Después de 3.1**: el panel nuevo contra la API vieja da 404 al descargar la plantilla | PENDIENTE |
-| 3.5 | Prueba con sesión real en prod | En la entidad de pruebas, no en la de un cliente: descargar la plantilla de una sucursal (una pestaña por persona); rellenar una persona y subir; ver «Lista»; confirmar; en su ficha, el horario de esa semana y las tareas con dirección; volver a subir el mismo fichero y comprobar que no duplica. En un buscador del panel, dos palabras («nombre apellido») encuentran a alguien | PENDIENTE |
-| 3.6 | Limpiar la prueba | Desde el contenedor `merlin` de prod, `node services/merlin/dist/soporte/cuadrantes/cli/limpiar.cli.js --entity <e> --employee <p>` (simula; `--apply` para borrar), con autorización | PENDIENTE |
-| 3.7 | Manual de clientes | Publicar `Clients*/04-*/108-*` (ya en DOCS `main`). El párrafo de «Horario por tareas» solo si la §1 sube en el mismo pase; si no, quitarlo hasta entonces | PENDIENTE |
+| 3.1 | Código de la API | Llega con `staging → main` (§1.6): solo `merlin` cambia por esto. Sonda sin token: `curl -s -o /dev/null -w "%{http_code}" "https://api.checkbiz360.com/api/v1/gpt/cuadrantes/plantilla?entityId=x&branchId=y"` → **401** (un 404 es contenedor viejo; 502, nginx con IPs viejas) | HECHO 17-oct, ver registro |
+| 3.2 | nginx | Comprobar en el servidor que el fichero desplegado lleva el límite: `grep -n -A2 "location /api/v1/gpt/ {" /opt/encodebiz-api/nginx/nginx.conf` → `client_max_body_size 4m;` | HECHO 17-oct, ver registro |
+| 3.3 | Reglas | En el único despliegue de la §5 (o en el de la §6 si va antes, con el fichero de `develop`). Comprobación propia, sin sesión, con una entidad que no exista: `GET …/documents/entities/zz-prueba/cuadrante_proposals/x` y `…/cuadrante_lotes/x` → **403**; `…/entities/zz-prueba/calendar/x` → 404 (permitido y no existe) | HECHO 17-oct, ver registro |
+| 3.4 | Panel | Con el resto del panel (§1.10 y §8.5): entran el modal de la sucursal, la plantilla desde la ficha del empleado, la ruta del proxy (`/plantilla` y `/lotes` en `cuadrantes_handler`) y el arreglo del buscador. **Después de 3.1**: el panel nuevo contra la API vieja da 404 al descargar la plantilla | HECHO 17-oct, ver registro |
+| 3.5 | Prueba con sesión real en prod | En la entidad de pruebas, no en la de un cliente: descargar la plantilla de una sucursal (una pestaña por persona); rellenar una persona y subir; ver «Lista»; confirmar; en su ficha, el horario de esa semana y las tareas con dirección; volver a subir el mismo fichero y comprobar que no duplica. En un buscador del panel, dos palabras («nombre apellido») encuentran a alguien | PENDIENTE: Jose, con sesión real |
+| 3.6 | Limpiar la prueba | Desde el contenedor `merlin` de prod, `node services/merlin/dist/soporte/cuadrantes/cli/limpiar.cli.js --entity <e> --employee <p>` (simula; `--apply` para borrar), con autorización | PENDIENTE: tras 3.5 |
+| 3.7 | Manual de clientes | Publicar `Clients*/04-*/108-*` (ya en DOCS `main`). El párrafo de «Horario por tareas» solo si la §1 sube en el mismo pase; si no, quitarlo hasta entonces | PENDIENTE: publicar; la §1 subió en la API y el panel, pero la app no (1.11), así que el párrafo de «Horario por tareas» espera a la app |
 | 3.8 | Si algo falla | El panel se deshace solo (revert de sus merges en `main`); la API es aditiva —rutas nuevas y una lectura más tolerante— y se queda. Las reglas se deshacen redesplegando la copia guardada en la §5 | — |
 
-## 4. Material por destino — PENDIENTE
+## 4. Material por destino — EJECUTADO el 2026-10-17
 
 | # | Paso | Estado |
 |---|---|---|
-| 4.1 | Migración 034 (`034_inventario_cuentas_destino.sql`), a mano y antes que la 037. El registro del 14-oct dice que se dejó fuera a propósito; ver `inventario/tdr/TDR-008` | PENDIENTE |
+| 4.1 | Migración 034 (`034_inventario_cuentas_destino.sql`), a mano y antes que la 037. El registro del 14-oct dice que se dejó fuera a propósito; ver `inventario/tdr/TDR-008` | HECHO 17-oct, ver registro |
 
 ---
 
-## 5. Reglas de Firestore: un solo despliegue — PENDIENTE
+## 5. Reglas de Firestore: un solo despliegue — EJECUTADO el 2026-10-17 (con el fichero de la §6)
 
-`firestore.rules` no existe en `main` (desde el 09-oct). El arreglo de las consultas de grupo
+`firestore.rules` en `main` estaba en la versión del 09-oct (el 16-oct se dijo aquí que no existía; existía, viejo). El arreglo de las consultas de grupo
 ya corre en prod desde el 14-oct, desplegado desde rama. El pase tiene que dejar `main` con el
 fichero que suma las cuatro cosas: consultas de grupo, cuadrantes, conector y `calendar_days`,
 y desplegarlo **una vez**:
@@ -239,11 +243,13 @@ y desplegarlo **una vez**:
 > está desplegado y comprobado desde el 16-oct
 > ([2026-10-cuadrantes-plantilla.md](./2026-10-cuadrantes-plantilla.md) §8).
 
-Estado: PENDIENTE.
+Estado: EJECUTADO el 2026-10-17 a las 10:58 UTC, en un solo despliegue con el fichero de la §6
+(`3d036ac` de staging: consultas de grupo, cuadrantes, conector, `calendar_days`, `staff_imports`
+y lectura con sesión). `main` lo tiene desde el PR #160. Copia previa y sondas en el registro.
 
 ---
 
-## 6. Reglas de Firestore: lectura sólo con sesión — 🔴 ALERTA MÁXIMA, 17/18-oct
+## 6. Reglas de Firestore: lectura sólo con sesión — EJECUTADO el 2026-10-17 a las 10:58 UTC (paso 1); el paso 2 sigue pendiente
 
 Diseño y plan de ejecución completos en
 [ingenieria/reglas-firestore](../ingenieria/reglas-firestore/README.md). Hoy cualquiera lee
@@ -267,7 +273,11 @@ arreglo del 14-oct, con autorización de Jose paso a paso:
 Cuando se haga, §5 sigue en pie: `main` tiene que acabar con **este** fichero, que ya suma
 todo lo anterior.
 
-Estado: PENDIENTE.
+Estado: EJECUTADO el 2026-10-17 (paso 1). Emulador 38/38 con `qa/reglas/probar-reglas.sh`
+reescrito; dev a las 10:53 y prod a las 10:58 UTC, con copias previas de los dos rulesets y
+sondas por REST con y sin sesión (registro). La vigilancia de media hora con un cliente real
+(punto 4) no la hizo nadie: Jose la hace al abrir el panel y la app. **El paso 2 (aislar por
+entidad) sigue pendiente** en [ingenieria/reglas-firestore](../ingenieria/reglas-firestore/README.md).
 
 ---
 
@@ -291,7 +301,7 @@ Estado: PENDIENTE, por detallar.
 
 ---
 
-## 8. Calendario semanal de tareas resumido en Postgres — PENDIENTE
+## 8. Calendario semanal de tareas resumido en Postgres — EJECUTADO el 2026-10-17; queda 8.6
 
 Entró en `staging` el 2026-10-16 (merges `74c7471` y el fix de doble respuesta que le sigue;
 pase a mano por SSH sin el action: pull, migración, sólo el contenedor `tasks` y nginx
@@ -333,12 +343,12 @@ son aditivas y pueden quedarse.
 
 | # | Qué | Estado |
 |---|---|---|
-| 8.1 | Comprobar el espejo: `docker compose -p encodebiz-api --env-file .env.production -f docker-compose.yml exec -T postgres psql -U encodebiz -d encodebiz_analytics -Atc "SELECT count(*) FROM tasks_raw WHERE deleted_at IS NULL"` y cruzar con Firestore. Si falta, backfill antes de seguir | PENDIENTE |
-| 8.2 | Migración 040 (`040_tareas_calendario.sql`): índice parcial `idx_tasks_raw_entity_start` sobre `tasks_raw (entity_id, scheduled_start_at) WHERE deleted_at IS NULL`. A mano, por SSH, sola y leyendo la salida: `docker compose -p encodebiz-api --env-file .env.production -f docker-compose.yml exec -T postgres psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/040_tareas_calendario.sql`. Esperado: `CREATE INDEX`. Es `IF NOT EXISTS`: repetirla no hace daño. Bloquea escrituras en `tasks_raw` mientras se construye; en staging fue instantáneo. Verificar: `SELECT indexname FROM pg_indexes WHERE tablename='tasks_raw' AND indexname='idx_tasks_raw_entity_start'` | PENDIENTE |
-| 8.3 | Código: entra con el despliegue normal (`staging → main`, action *CI/CD*), que reconstruye `tasks` y reinicia nginx. Sonda: `curl -s https://api.checkbiz360.com/api/v1/tasks/calendar` debe responder `400 {"code":"task/bad_request","error":"entityId is required"}`; lo mismo `/calendar/cell`. `404` = contenedor viejo; `502` = nginx con IPs viejas | PENDIENTE |
-| 8.4 | Logs limpios: `docker compose … logs --tail=50 tasks` sin «Cannot set headers after they are sent» tras las sondas (era el fallo de doble respuesta, ya corregido en staging) | PENDIENTE |
-| 8.5 | Front: pasar `develop → staging → main` del panel DESPUÉS de 8.3 (los merges `35167ec2` y anteriores del calendario). Sin variables nuevas en Vercel: `NEXT_BACKEND_URI_CHECKINBIZ_TASKS_HANDLER` ya apunta a `api.checkbiz360.com/api/v1/tasks` | PENDIENTE |
-| 8.6 | Prueba con sesión real en producción: Gestión de tareas → pestaña «Calendario semanal» → la semana carga, los contadores de la leyenda cuadran con la tabla filtrada por estado, una tarjeta «N tareas» abre la lista y «Abrir ficha» lleva a la tarea. Probar también la fila «Fecha límite» y el filtro por empleado | PENDIENTE |
+| 8.1 | Comprobar el espejo: `docker compose -p encodebiz-api --env-file .env.production -f docker-compose.yml exec -T postgres psql -U encodebiz -d encodebiz_analytics -Atc "SELECT count(*) FROM tasks_raw WHERE deleted_at IS NULL"` y cruzar con Firestore. Si falta, backfill antes de seguir | HECHO 17-oct, ver registro |
+| 8.2 | Migración 040 (`040_tareas_calendario.sql`): índice parcial `idx_tasks_raw_entity_start` sobre `tasks_raw (entity_id, scheduled_start_at) WHERE deleted_at IS NULL`. A mano, por SSH, sola y leyendo la salida: `docker compose -p encodebiz-api --env-file .env.production -f docker-compose.yml exec -T postgres psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/040_tareas_calendario.sql`. Esperado: `CREATE INDEX`. Es `IF NOT EXISTS`: repetirla no hace daño. Bloquea escrituras en `tasks_raw` mientras se construye; en staging fue instantáneo. Verificar: `SELECT indexname FROM pg_indexes WHERE tablename='tasks_raw' AND indexname='idx_tasks_raw_entity_start'` | HECHO 17-oct, ver registro |
+| 8.3 | Código: entra con el despliegue normal (`staging → main`, action *CI/CD*), que reconstruye `tasks` y reinicia nginx. Sonda: `curl -s https://api.checkbiz360.com/api/v1/tasks/calendar` debe responder `400 {"code":"task/bad_request","error":"entityId is required"}`; lo mismo `/calendar/cell`. `404` = contenedor viejo; `502` = nginx con IPs viejas | HECHO 17-oct, ver registro |
+| 8.4 | Logs limpios: `docker compose … logs --tail=50 tasks` sin «Cannot set headers after they are sent» tras las sondas (era el fallo de doble respuesta, ya corregido en staging) | HECHO 17-oct, ver registro |
+| 8.5 | Front: pasar `develop → staging → main` del panel DESPUÉS de 8.3 (los merges `35167ec2` y anteriores del calendario). Sin variables nuevas en Vercel: `NEXT_BACKEND_URI_CHECKINBIZ_TASKS_HANDLER` ya apunta a `api.checkbiz360.com/api/v1/tasks` | HECHO 17-oct, ver registro |
+| 8.6 | Prueba con sesión real en producción: Gestión de tareas → pestaña «Calendario semanal» → la semana carga, los contadores de la leyenda cuadran con la tabla filtrada por estado, una tarjeta «N tareas» abre la lista y «Abrir ficha» lleva a la tarea. Probar también la fila «Fecha límite» y el filtro por empleado | PENDIENTE: Jose, con sesión real (la ruta responde 200 con sesión, ver registro) |
 | 8.7 | Si falla 8.6 y no es evidente: deshacer sólo el front (revert del merge del calendario en `main` del panel). El back se queda | — |
 
 ---
@@ -361,9 +371,37 @@ Estado: PENDIENTE, por detallar.
 
 ---
 
-## Registro del día del pase
+## Registro del día del pase — 2026-10-17
 
-Vacío hasta el día del pase.
+Ejecutado por Claude con la orden de Jose de las 10:44 UTC («hoy es el pase, ahora mismo,
+encárgate de todo»). El hook `block-prod.sh` estaba desarmado desde antes y se dejó así durante
+el pase; se rearmó al cerrar, con `assistant`, `branches` y `entities` en su lista de
+contenedores. Nada se desplegó a mano: la API por `staging → main` y su workflow, el panel por
+Vercel, las funciones por nombre con `desplegar.mjs`, las reglas con `--only firestore:rules`.
 
 | Paso | Hora (UTC) | Quién | Resultado y lo que se vio |
 |---|---|---|---|
+| Lectura previa y fusión de prueba | 10:40 | Claude | `git merge-tree` staging→main limpio en API y panel, pese a los PR `release/*` del CRM con SHAs distintos. Prod: ninguna de 034/037/040 aplicada; índice `tasks` (assignedEmployeeIds + scheduledStartAt) ya existía, `calendar_days` no. `tasks_raw` 100 vivas y `backfill-tasks` en simulación coincide entidad a entidad (78/11/4/3/3/1): espejo completo (8.1). `.env.production` ya tenía `FIREBASE_WEB_*`. Staging venía con el QA en rojo: EMP-09-01 por la ocupación en minúsculas (regla del 16-oct) y CHK-08-70 a las 10:06 con «en su casa son las 23h» tras pasar a las 09:41. |
+| Copia del ruleset vivo de prod | 10:49 | Claude | [2026-10-17-firestore-rules-prod-antes.rules](./2026-10-17-firestore-rules-prod-antes.rules) (3428 bytes: el del 14-oct ya con la regla de consultas de grupo). Dominios autorizados de Auth leídos: localhost, firebaseapp, web.app, saas.encodebiz.com. |
+| Código: reglas con sesión, prueba del emulador, infra de prod, QA | 10:50 | Claude | `firestore.rules` paso 1 (`publica('app_config')`; lectura y consultas de grupo con sesión). `qa/reglas/probar-reglas.sh` reescrito: 38 comprobaciones, `fallos: 0` con el JDK 26. `docker-compose.yml` de prod: `branches` (sin `ports`) y `assistant` (URL pública de prod, `INTERNAL_URL`s), `employees` con `BRANCHES_INTERNAL_URL` (2.2–2.4). `nginx/nginx.conf`: upstream `assistant_service`, `= /api/v1/assistant`, los dos `.well-known`, `/api/v1/assistant/`, `= /api/v1/employees/import`, `/api/v1/employees/import/`, `= /api/v1/employees/welcome` (2.5–2.6). QA EMP-09-01 adaptada a la ocupación en minúsculas. |
+| Vercel (Production) | 10:51 | Claude | `NEXT_PUBLIC_ASSISTANT_CONNECTOR_BASE=https://api.checkbiz360.com/api/v1/assistant` (Config) y `NEXT_BACKEND_URI_STAFF_IMPORT_HANDLER=https://api.checkbiz360.com/api/v1/employees` (Sensitive), con la CLI. Comprobado con `env pull` (2.15). |
+| Índice `calendar_days` en prod | 10:51 | Claude | `gcloud firestore indexes composite create`, grupo de colecciones, `entityId` ASC + `date` ASC, `--async`. SUCCESSFUL a las 11:02. El de `tasks` ya existía (1.2). |
+| Firebase Auth de prod: dominio | 10:51 | Claude | PATCH `authorizedDomains` con la lista entera más `api.checkbiz360.com`; la respuesta trae los cinco (2.8). |
+| Copias en el servidor de prod | 10:51 | Claude | `~/backups/encodebiz_analytics_antes_pase_2026-10-17.sql.gz` (2,2 MB) y `~/backups/env.production.antes_pase_2026-10-17`. |
+| `.env.production`: conector | 10:51 | Claude | Añadidas `ASSISTANT_COOKIE_SECRET` (`openssl rand -base64 32`, distinto del de staging) y `ASSISTANT_FIREBASE_{API_KEY,AUTH_DOMAIN,PROJECT_ID,APP_ID}` copiadas de `FIREBASE_WEB_*` del mismo fichero (proyecto `encodebiz-services`). Los valores no se vieron desde aquí (2.7). |
+| Validación de la infra de prod | 10:52 | Claude | `docker compose config` con el compose nuevo en el servidor de prod: 19 servicios, `ASSISTANT_PUBLIC_URL` y `BRANCHES_INTERNAL_URL` resueltos. `nginx -t` del `nginx.conf` de prod en la red `encodebiz-dev` del VPS (certificados de staging montados): «syntax is ok / test is successful». Docker no corre en el portátil. |
+| Migración 034 | 10:52 | Claude | `ALTER TABLE`, `UPDATE 1`, `CREATE INDEX`, rc 0 (4.1). |
+| Reglas a dev | 10:53 | Claude | Copia previa [2026-10-17-firestore-rules-dev-antes.rules](./2026-10-17-firestore-rules-dev-antes.rules). `firebase deploy --only firestore:rules --project dev-encodebiz`. REST sin sesión: grupo `employees`/`calendar` 403, `entities` 403, `users` 403, `app_config` 200. Con sesión (custom token de un usuario de dev): grupo `employees`/`calendar` 200, `entities` 200, `signing_keys` 403, escribir `app_config` 403. |
+| Migración 037 | 10:54 | Claude | `ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX`, `ALTER TABLE`, `ALTER TABLE`, rc 0 (1.3). Antes del job de dimensiones de las 11:20, que ya corrió con el código nuevo y escribió `calendar_days` con `success`. |
+| Migración 040 | 10:54 | Claude | `CREATE INDEX`, rc 0 (1.4, 8.2). Verificadas las tres: `account_kind`, `dim_calendar_days`, `schedule_mode`, `idx_tasks_raw_entity_start`. |
+| Rama, develop y staging | 10:55 | Claude | `feat/pase-prod-2026-10-17` (`f392729`) → develop (`540d658`) → staging (`3d036ac`). Staging CI/CD 39026746896. |
+| Panel: develop → staging | 10:57 | Claude | Al hacer el pull, otra sesión había fundido ya «calendario de MUI unificado» en develop y staging (`ebe3ead4`); el merge de aquí quedó vacío. |
+| Reglas a PRODUCCIÓN | 10:58 | Claude | `firebase deploy --only firestore:rules --project encodebiz-services` con el fichero de staging. Sondas desde el contenedor `tasks` de prod (solo códigos, el token no sale del contenedor): sin sesión grupo `employees`/`calendar`/`checklogs` 403, `entities` 403, `users` 403, `app_config/global` 200. Con sesión (jose@encodebiz.com por custom token): grupo `employees`/`calendar` 200, `entities` 200, escribir `app_config` 403, `signing_keys` 403, `calendar_days` 403, `cuadrante_proposals` 403 (§5, §6, 1.5, 2.9, 3.3). |
+| PR API staging → main | 10:59 | Claude | #160 abierto; lleva `services/assistant` (47 ficheros), `services/branches`, compose, nginx, reglas y 034/037/040 (2.1). |
+| Funciones de Firebase a prod | 11:02–11:05 | Claude | `desplegar.mjs --project encodebiz-services --solo onTaskDay,weeklyFromTaskDays,employeePlanifierWorker,planifierNotificationWorker,taskStartNotificationWorker`. Antes: las dos primeras no existían en prod; los tres workers sí, en `default`. Ninguna usa `EVENTS_API_*` (la función que lo exige no la llama nadie, y dev corre igual sin ellas). Resultado: dos creadas en europe-west1, tres actualizadas en us-central1, «Deploy complete». `functions:list` las enseña en `default`, nodejs22; Cloud Scheduler `0 3,15 * * *` Europe/Madrid, ENABLED (1.8, 1.9). |
+| QA de staging | 11:13 | CI | 473 pasadas, 0 fallos (EMP-09-01 con la expectativa nueva y CHK-08-70 pasan). |
+| PR #160 fusionado, despliegue de producción | 11:14–11:17 | Claude / CI | Merge `c0cc926`. Production CI/CD 39027939538 en verde a las 11:17. `ps`: 19 servicios, todos `healthy`, `assistant` y `branches` incluidos. Log de `assistant`: «Listening on :3017 — issuer https://api.checkbiz360.com/api/v1/assistant», sin «autorización apagada». `branches` responde desde `employees`. nginx desplegado con el `4m` del gpt y las rutas nuevas. `tasks` sin «Cannot set headers» (1.6, 1.7, 2.12, 2.14, 3.2, 8.4). |
+| Sondas sin sesión | 11:18 | Claude | `/health` 200; `gpt/cuadrantes/plantilla` 401 (3.1); `tasks/calendar` y `/cell` 400 «entityId is required» (8.3); `.well-known/oauth-authorization-server` 200 con el issuer de prod; `POST mcp/e/x` 401 con `WWW-Authenticate … resource_metadata`; `employees/import/template` 401; `employees/welcome` 401; `/api/v1/branches/` 404 y `/api/v1/employees/` 404, cerrados como se quería (2.13). El `protected-resource` con un id inventado da 404 `not_found` del propio servicio, igual que en staging; con la entidad real, 200. |
+| Comprobación 1.9 con sesión | 11:29 | Claude | Desde el contenedor `tasks`, con la sesión de jose@encodebiz.com en la entidad `OdX1eMPbRpwxjDfwdNkN`: `GET /calendar` 200 con `scheduleMode: weekly`; `PATCH` scope `branch` + `tasks` → 400 `calendar/schedule_mode_employee_only`; `GET /tasks/calendar` 200 con `countsByStatus`. |
+| Panel a producción | 11:30 | Claude | PR encodebiz-front-saas-clean#106 (staging → main, 85 commits, con «calendario de MUI unificado» de otra sesión) fusionado. Vercel: deployment de producción **Ready** a las 11:31 (37 s) (1.10, 2.16, 3.4, 8.5). |
+| Cierre | 11:35 | Claude | Hook `block-prod.sh` rearmado en `.claude/settings.json` con los tres contenedores nuevos. Registro escrito; `2026-10-cuadrantes-plantilla.md` §8 con su fila. |

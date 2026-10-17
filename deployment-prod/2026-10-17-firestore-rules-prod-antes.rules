@@ -1,0 +1,63 @@
+rules_version = '2';
+
+// Reglas de Firestore de la plataforma. Viven aquí porque quien escribe en Firestore con
+// autoridad es este repo (los servicios, por Admin SDK, que no pasa por estas reglas).
+//
+// El comodín heredado NO era el mismo en los dos entornos, y este fichero sirve a los dos:
+//   · dev (leído el 2026-10-09): leer y escribir abiertos a cualquiera hasta 2030;
+//   · producción (leído el 2026-10-11, copia en DOCS/deployment-prod/2026-10-11-firestore-
+//     rules-prod-antes.rules): leer abierto sin fecha, escribir SOLO con sesión.
+// Manda el de producción, que es el más estrecho: desplegar el de dev allí habría abierto las
+// escrituras anónimas. Cerrar el comodín es otro trabajo —el panel y la app leen y escriben
+// colecciones directamente—; aquí solo se le quita lo que el módulo de firma necesita que
+// solo escriba el servidor (DOCS/ingenieria/firma/README.md §Reglas de Firestore). Las reglas
+// se combinan con OR, así que la única forma de denegar es que el comodín no alcance: por
+// eso la condición va dentro del comodín y no en un match aparte.
+//
+// Despliegue: SIEMPRE con proyecto explícito y solo las reglas, nunca un deploy completo
+// (podaría los índices, que este firebase.json no declara a propósito), y dev antes que prod:
+//   firebase deploy --only firestore:rules --project dev-encodebiz
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // El comodín heredado de producción: escribir pide sesión. Cuando se cierre, se cierra aquí.
+    function conSesion() {
+      return request.auth != null;
+    }
+
+    // Lo que solo escribe y lee el servidor: el registro de claves de firma (nunca se borra)
+    // y los retos de un solo uso. Desde el cliente, nada.
+    function soloServidor(collection) {
+      return collection == 'signing_keys' || collection == 'signing_challenges';
+    }
+
+    // El documento del dispositivo (`notification_tokens/{e}/devices/{d}`) lo mantiene la app
+    // —su token de notificaciones— pero `signingKey` es del servidor: se puede dejar como
+    // está (o dejar que una escritura sin merge lo omita: el registro es la fuente), pero no
+    // crearlo ni cambiarlo desde el cliente. Borrar el documento entero (cerrar sesión) sigue
+    // permitido: el registro no se entera.
+    function noTocaSigningKey() {
+      return request.method == 'delete'
+        || !('signingKey' in request.resource.data)
+        || (resource != null
+            && 'signingKey' in resource.data
+            && request.resource.data.signingKey == resource.data.signingKey);
+    }
+
+    match /{collection}/{document=**} {
+      allow read: if !soloServidor(collection);
+      allow write: if conSesion() && !soloServidor(collection)
+        && (collection != 'notification_tokens' || noTocaSigningKey());
+    }
+
+    // Las consultas de grupo de colecciones (`collectionGroup`) solo las evalúan reglas que
+    // empiezan por un comodín recursivo, y `/{collection}/{document=**}` no lo es. El
+    // comodín viejo (`/{document=**}`) sí las cubría; sin esta regla, desde el 2026-10-11
+    // el panel no listaba los presets de calendario (`calendar`) y la app no veía a qué
+    // entidades pertenece un empleado (`employees`). Solo lectura: una consulta de grupo
+    // no escribe. Se nombra la colección final, no la raíz, así que la firma sigue cerrada.
+    match /{path=**}/{sub}/{document} {
+      allow read: if !soloServidor(sub);
+    }
+  }
+}
