@@ -38,7 +38,7 @@ De ahí salen las decisiones que gobiernan el resto:
    No hay usuarios nuevos ni un proveedor de identidad aparte: el administrador entra con su
    correo y contraseña (o Google) y su segundo factor, igual que en el panel. La plataforma
    emite los tokens OAuth que Claude y ChatGPT necesitan, apoyándose en esa identidad.
-2. **Una conexión es una persona en una empresa** ([ADR-002](./adr/ADR-002-una-conexion-es-una-persona-en-una-empresa.md)).
+2. **Una conexión es una persona, con todas sus empresas** ([ADR-009](./adr/ADR-009-una-conexion-es-una-persona.md), que sustituye a [ADR-002](./adr/ADR-002-una-conexion-es-una-persona-en-una-empresa.md)).
    La empresa va en la URL del conector: cada empresa es un conector distinto para Claude o
    ChatGPT, el token queda atado a un `uid` y a esa empresa, el modelo nunca maneja ids de
    empresa y la revocación es por empresa.
@@ -87,7 +87,7 @@ cambiar el conector del CRM, que sigue como está.
 | Documento | Estado |
 |---|---|
 | [ADR-001 — La identidad es la de Firebase Auth](./adr/ADR-001-la-identidad-es-la-de-firebase-auth.md) | Aceptado (Jose, 2026-10-15) |
-| [ADR-002 — Una conexión es una persona en una empresa, y la empresa va en la URL](./adr/ADR-002-una-conexion-es-una-persona-en-una-empresa.md) | Aceptado (Jose, 2026-10-15) |
+| [ADR-002 — Una conexión es una persona en una empresa, y la empresa va en la URL](./adr/ADR-002-una-conexion-es-una-persona-en-una-empresa.md) | Sustituido por ADR-009 (2026-10-17); sus URL siguen valiendo |
 | [ADR-003 — Sólo clientes conocidos](./adr/ADR-003-solo-clientes-conocidos.md) | Aceptado (Jose, 2026-10-15) |
 | [TDR-001 — Servidor de autorización sobre Firebase Auth](./tdr/TDR-001-servidor-de-autorizacion-sobre-firebase-auth.md) | Implementado, en staging |
 | [ADR-004 — El asistente es un lector más del lote](./adr/ADR-004-el-asistente-es-un-lector-mas-del-lote.md) | Aceptado (Jose, 2026-10-16) |
@@ -95,6 +95,7 @@ cambiar el conector del CRM, que sigue como está.
 | [ADR-006 — Retirar lo que ya no está](./adr/ADR-006-retirar-lo-que-ya-no-esta.md) | Aceptado (Jose, 2026-10-16) |
 | [ADR-007 — El cuadrante se llena por tandas](./adr/ADR-007-el-lote-se-llena-por-tandas.md) | Aceptado (Jose, 2026-10-16) |
 | [ADR-008 — El asistente lee lo que la plataforma ya calcula](./adr/ADR-008-el-asistente-lee-lo-que-la-plataforma-ya-calcula.md) | Aceptado (Jose, 2026-10-17) |
+| [ADR-009 — Una conexión es una persona, con todas sus empresas](./adr/ADR-009-una-conexion-es-una-persona.md) | Aceptado (Jose, 2026-10-17); sustituye a ADR-002 |
 | [TDR-002 — Las herramientas de la semana](./tdr/TDR-002-herramientas-de-la-semana.md) | En implementación |
 | [TDR-003 — Fase 3: el gestor operativo](./tdr/TDR-003-el-gestor-operativo.md) | En implementación |
 

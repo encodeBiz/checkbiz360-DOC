@@ -1,7 +1,7 @@
 # ADR-002 — Una conexión es una persona en una empresa, y la empresa va en la URL
 
 **Fecha:** 2026-10-15
-**Estado:** Aceptado
+**Estado:** Sustituido por [ADR-009](./ADR-009-una-conexion-es-una-persona.md) el 2026-10-17. Las URL por empresa siguen funcionando.
 **Decisionario:** Jose Acevedo («eso es», ante la URL por empresa)
 
 ---
