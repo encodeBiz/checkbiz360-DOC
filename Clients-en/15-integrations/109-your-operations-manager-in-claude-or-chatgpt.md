@@ -28,7 +28,7 @@ It does all this with the permissions of whoever connects: no more and no less t
 
 ## 1. Connect
 
-Use this connection address. It is the same for every company you administer:
+Use this connection address. It is the same for every company you administer, and you also have it in the panel under **Tools** (in the menu, for owners and administrators), with a button to copy it:
 
 ```
 https://api.checkbiz360.com/api/v1/assistant/mcp
@@ -48,7 +48,7 @@ https://api.checkbiz360.com/api/v1/assistant/mcp
 
 When you authorise, you will see the list of companies it will have access to: the ones you administer. If you are given access to another company later, the assistant sees it without reconnecting; if your access is removed, it stops seeing it.
 
-> **If you already connected a company with its own address** (the one shown under **Workspace**, in the company settings), it keeps working for that company. To work with all of them from a single connector, add the address above.
+> **If you connected a company earlier with its own address**, it keeps working for that company. To work with all of them from a single connector, add the address above.
 
 > **Before you start:** you need two-factor authentication enabled and to be an owner or administrator of at least one company. If the connection will not let you in, it is almost always one of those two.
 
@@ -120,6 +120,7 @@ A single person or site, or many at once from your accountant's list, an Excel f
 - **Nothing is saved without your yes.** Anything that changes the operation is proposed first and applied when you confirm. If you close the conversation without confirming, nothing happens.
 - **It acts with your permissions, checked on every request.** It cannot do anything you could not do in the panel.
 - **Whoever stops administering stops getting in, immediately.** If you remove or deactivate a collaborator in the company, their assistant loses access to it at that very moment. If they no longer administer any company, their connection is cut entirely.
+- **You see who has an assistant connected, and you disconnect it.** Under **Tools**, the **Assistants connected to this company** block lists every assistant that reaches your company: whose it is, whether it is Claude or ChatGPT, and when it was last used. With **Disconnect**, it loses access immediately. In the company settings, the **Collaborators** tab also shows each person's assistants under their name. To use it again, that person will have to connect it again with their user and verification code.
 - **It does not guess who you mean.** If a name is unclear or two people look alike, it asks, showing each person's email.
 - **Times are the site's times.** "At ten" means ten in the branch's time zone, even if you are somewhere else.
 
@@ -127,7 +128,7 @@ A single person or site, or many at once from your accountant's list, an Excel f
 
 ## Privacy
 
-When you connect, your employees' names and operational data are sent to the Claude or ChatGPT account you use. It is best to use a company account, not a personal one, and to check what that service does with your data. You can remove the connector at any time from Claude or ChatGPT: from that moment the assistant no longer has access.
+When you connect, your employees' names and operational data are sent to the Claude or ChatGPT account you use. It is best to use a company account, not a personal one, and to check what that service does with your data. You can remove the connector at any time from Claude or ChatGPT, or disconnect it under **Tools**: from that moment the assistant no longer has access.
 
 ---
 
@@ -141,7 +142,7 @@ When you connect, your employees' names and operational data are sent to the Cla
 | I am not sure which company it is working with | Ask it. Tell it the company if you want to switch. |
 | It says it cannot find a person | Their record may use a different name. Give it that person's email. |
 | It proposes but does not apply | Say it clearly: "confirm", "apply it". It makes no changes without an explicit yes. |
-| It suddenly stopped working | Reconnect from Claude or ChatGPT. If your access to your companies was removed, the connection is cut and you have to sign in again. |
+| It suddenly stopped working | Reconnect from Claude or ChatGPT. It happens if someone disconnected it under **Tools** or your access to your companies was removed. |
 
 ---
 
@@ -159,5 +160,5 @@ Owners and administrators with two-factor authentication enabled. Each person on
 | [Availability board](../04-calendar-and-schedules/98-availability-board.md) | The availability the assistant cross-checks to cover for someone |
 | [Import the weekly schedule](../04-calendar-and-schedules/108-import-the-weekly-schedule.md) | The same thing you ask the assistant for, done with an Excel sheet from the panel |
 | [Add branches and staff from Excel](../02-employees/110-add-branches-and-staff-from-excel.md) | Bulk onboarding from the panel |
-| [Organisation configuration](../08-branches-and-organisation/61-organisation-settings.md) | Where the Workspace tab is |
+| [Organisation configuration](../08-branches-and-organisation/61-organisation-settings.md) | Where the Collaborators tab is |
 | [Two-factor authentication](../02-employees/09-two-factor-authentication.md) | The second factor the connection requires |

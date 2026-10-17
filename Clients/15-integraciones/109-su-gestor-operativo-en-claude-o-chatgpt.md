@@ -28,7 +28,7 @@ Todo esto lo hace con los permisos de quien conecta: ni más ni menos de lo que 
 
 ## 1. Conectar
 
-Use esta dirección de conexión. Es la misma para todas las empresas que administra:
+Use esta dirección de conexión. Es la misma para todas las empresas que administra, y también la tiene en el panel, en **Herramientas** (en el menú, para propietarios y administradores), con un botón para copiarla:
 
 ```
 https://api.checkbiz360.com/api/v1/assistant/mcp
@@ -48,7 +48,7 @@ https://api.checkbiz360.com/api/v1/assistant/mcp
 
 Al autorizar verá la lista de empresas a las que tendrá acceso: las que usted administra. Si mañana le dan acceso a otra, el asistente la verá sin volver a conectar; si se lo quitan, deja de verla.
 
-> **Si ya tenía conectada una empresa con su dirección propia** (la que aparece en **Entorno de trabajo**, en la configuración de la empresa), sigue funcionando para esa empresa. Para trabajar con todas desde un mismo conector, añada la dirección de arriba.
+> **Si conectó antes una empresa con su dirección propia**, sigue funcionando para esa empresa. Para trabajar con todas desde un mismo conector, añada la dirección de arriba.
 
 > **Antes de empezar:** necesita el segundo factor activado y ser propietario o administrador de al menos una empresa. Si al conectar no le deja entrar, es casi siempre una de esas dos cosas.
 
@@ -120,6 +120,7 @@ Una persona o un centro sueltos, o muchos de una vez a partir de la lista de la 
 - **Nada se guarda sin su sí.** Lo que cambia la operación se propone primero y se aplica cuando usted confirma. Si cierra la conversación sin confirmar, no pasa nada.
 - **Actúa con sus permisos, comprobados en cada petición.** No puede hacer nada que usted no pueda hacer en el panel.
 - **Quien deja de administrar, deja de entrar en el acto.** Si quita a un colaborador o lo desactiva en la empresa, su asistente pierde el acceso a ella en ese mismo momento, sin esperar a nada. Si ya no administra ninguna empresa, su conexión se corta entera.
+- **Usted ve quién tiene un asistente conectado, y lo desconecta.** En **Herramientas**, el bloque **Asistentes conectados a esta empresa** lista cada asistente que llega a su empresa: de quién es, si es de Claude o ChatGPT y cuándo se usó por última vez. Con **Desconectar**, deja de tener acceso en el acto. En la configuración de la empresa, la pestaña **Colaboradores** enseña también los asistentes de cada persona bajo su nombre. Para volver a usarlo, esa persona tendrá que conectarlo de nuevo con su usuario y su código de verificación.
 - **No adivina a quién se refiere.** Si un nombre no está claro o hay dos personas parecidas, pregunta enseñando el correo de cada una.
 - **Las horas son las del centro.** «A las diez» es a las diez en la zona horaria de la sucursal, aunque usted esté en otra.
 
@@ -127,7 +128,7 @@ Una persona o un centro sueltos, o muchos de una vez a partir de la lista de la 
 
 ## Privacidad
 
-Al conectar, los nombres de sus empleados y los datos de la operación se envían a la cuenta de Claude o ChatGPT que use. Conviene que sea una cuenta de la empresa, no una personal, y revisar en ese servicio qué hace con sus datos. Puede quitar el conector cuando quiera desde Claude o ChatGPT: desde ese momento el asistente deja de tener acceso.
+Al conectar, los nombres de sus empleados y los datos de la operación se envían a la cuenta de Claude o ChatGPT que use. Conviene que sea una cuenta de la empresa, no una personal, y revisar en ese servicio qué hace con sus datos. Puede quitar el conector cuando quiera desde Claude o ChatGPT, o desconectarlo desde **Herramientas**: desde ese momento el asistente deja de tener acceso.
 
 ---
 
@@ -141,7 +142,7 @@ Al conectar, los nombres de sus empleados y los datos de la operación se envía
 | No sé con qué empresa está trabajando | Pregúntele. Dígale la empresa si quiere cambiar. |
 | Dice que no encuentra a una persona | Puede que en la ficha se llame de otra forma. Dígale el correo de esa persona. |
 | Propone pero no aplica | Dígaselo con claridad: «confirma», «aplícalo». No hace cambios sin un sí explícito. |
-| Ha dejado de funcionar de repente | Vuelva a conectar desde Claude o ChatGPT. Si le han quitado el acceso a sus empresas, la conexión se corta y hay que entrar otra vez. |
+| Ha dejado de funcionar de repente | Vuelva a conectar desde Claude o ChatGPT. Pasa si alguien lo desconectó desde **Herramientas** o si le han quitado el acceso a sus empresas. |
 
 ---
 
@@ -159,5 +160,5 @@ Propietarios y administradores con el segundo factor activado. Cada uno ve solo 
 | [Tablero de disponibilidad](../04-calendario-y-horarios/98-tablero-de-disponibilidad.md) | La disponibilidad que el asistente cruza para cubrir a alguien |
 | [Importar el cuadrante semanal](../04-calendario-y-horarios/108-importar-el-cuadrante-semanal.md) | Lo mismo que le pide al asistente, hecho con una hoja de Excel desde el panel |
 | [Dar de alta sucursales y plantilla desde Excel](../02-empleados/110-dar-de-alta-sucursales-y-plantilla-desde-excel.md) | Las altas en bloque desde el panel |
-| [Configuración de entidad](../08-sucursales-y-entidad/61-configuracion-de-entidad.md) | Dónde está la pestaña Entorno de trabajo |
+| [Configuración de entidad](../08-sucursales-y-entidad/61-configuracion-de-entidad.md) | Dónde está la pestaña Colaboradores |
 | [Autenticación en dos factores](../02-empleados/09-autenticacion-dos-factores.md) | El segundo factor que la conexión exige |

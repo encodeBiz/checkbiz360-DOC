@@ -28,7 +28,7 @@ Faz tudo isto com as permissões de quem liga: nem mais nem menos do que essa pe
 
 ## 1. Ligar
 
-Use este endereço de ligação. É o mesmo para todas as empresas que administra:
+Use este endereço de ligação. É o mesmo para todas as empresas que administra, e também o tem no painel, em **Ferramentas** (no menu, para proprietários e administradores), com um botão para o copiar:
 
 ```
 https://api.checkbiz360.com/api/v1/assistant/mcp
@@ -48,7 +48,7 @@ https://api.checkbiz360.com/api/v1/assistant/mcp
 
 Ao autorizar verá a lista de empresas a que terá acesso: as que administra. Se mais tarde lhe derem acesso a outra, o assistente vê-a sem voltar a ligar; se lho retirarem, deixa de a ver.
 
-> **Se já tinha ligado uma empresa com o seu endereço próprio** (o que aparece em **Ambiente de trabalho**, na configuração da empresa), continua a funcionar para essa empresa. Para trabalhar com todas a partir de um mesmo conector, adicione o endereço acima.
+> **Se ligou antes uma empresa com o seu endereço próprio**, continua a funcionar para essa empresa. Para trabalhar com todas a partir de um mesmo conector, adicione o endereço acima.
 
 > **Antes de começar:** precisa da verificação em dois passos ativada e de ser proprietário ou administrador de pelo menos uma empresa. Se ao ligar não o deixar entrar, é quase sempre uma dessas duas coisas.
 
@@ -120,6 +120,7 @@ Uma pessoa ou um centro soltos, ou muitos de uma vez a partir da lista da contab
 - **Nada é guardado sem o seu sim.** O que muda a operação é proposto primeiro e aplicado quando confirmar. Se fechar a conversa sem confirmar, não acontece nada.
 - **Atua com as suas permissões, verificadas em cada pedido.** Não pode fazer nada que o senhor não possa fazer no painel.
 - **Quem deixa de administrar deixa de entrar de imediato.** Se retirar ou desativar um colaborador na empresa, o assistente dele perde o acesso a ela nesse mesmo momento. Se já não administrar nenhuma empresa, a ligação é cortada por completo.
+- **O senhor vê quem tem um assistente ligado, e desliga-o.** Em **Ferramentas**, o bloco **Assistentes ligados a esta empresa** lista cada assistente que chega à sua empresa: de quem é, se é do Claude ou do ChatGPT e quando foi usado pela última vez. Com **Desligar**, deixa de ter acesso de imediato. Na configuração da empresa, o separador **Colaboradores** mostra também os assistentes de cada pessoa sob o seu nome. Para voltar a usá-lo, essa pessoa terá de o ligar de novo com o seu utilizador e o seu código de verificação.
 - **Não adivinha a quem se refere.** Se um nome não estiver claro ou houver duas pessoas parecidas, pergunta mostrando o e-mail de cada uma.
 - **As horas são as do centro.** «Às dez» é às dez no fuso horário da sucursal, mesmo que o senhor esteja noutro.
 
@@ -127,7 +128,7 @@ Uma pessoa ou um centro soltos, ou muitos de uma vez a partir da lista da contab
 
 ## Privacidade
 
-Ao ligar, os nomes dos seus funcionários e os dados da operação são enviados para a conta do Claude ou do ChatGPT que usar. Convém que seja uma conta da empresa, não pessoal, e verificar nesse serviço o que faz com os seus dados. Pode retirar o conector quando quiser a partir do Claude ou do ChatGPT: a partir desse momento o assistente deixa de ter acesso.
+Ao ligar, os nomes dos seus funcionários e os dados da operação são enviados para a conta do Claude ou do ChatGPT que usar. Convém que seja uma conta da empresa, não pessoal, e verificar nesse serviço o que faz com os seus dados. Pode retirar o conector quando quiser a partir do Claude ou do ChatGPT, ou desligá-lo em **Ferramentas**: a partir desse momento o assistente deixa de ter acesso.
 
 ---
 
@@ -141,7 +142,7 @@ Ao ligar, os nomes dos seus funcionários e os dados da operação são enviados
 | Não sei com que empresa está a trabalhar | Pergunte-lhe. Diga-lhe a empresa se quiser mudar. |
 | Diz que não encontra uma pessoa | Talvez na ficha tenha outro nome. Diga-lhe o e-mail dessa pessoa. |
 | Propõe mas não aplica | Diga-lho com clareza: «confirma», «aplica». Não faz mudanças sem um sim explícito. |
-| Deixou de funcionar de repente | Volte a ligar a partir do Claude ou do ChatGPT. Se lhe retiraram o acesso às suas empresas, a ligação é cortada e é preciso entrar outra vez. |
+| Deixou de funcionar de repente | Volte a ligar a partir do Claude ou do ChatGPT. Acontece se alguém o desligou em **Ferramentas** ou se lhe retiraram o acesso às suas empresas. |
 
 ---
 
@@ -159,5 +160,5 @@ Proprietários e administradores com a verificação em dois passos ativada. Cad
 | [Quadro de disponibilidade](../04-calendario-e-horarios/98-quadro-de-disponibilidade.md) | A disponibilidade que o assistente cruza para cobrir alguém |
 | [Importar a escala semanal](../04-calendario-e-horarios/108-importar-a-escala-semanal.md) | O mesmo que pede ao assistente, feito com uma folha de Excel a partir do painel |
 | [Dar entrada a sucursais e equipa a partir de Excel](../02-funcionarios/110-dar-entrada-a-sucursais-e-equipa-a-partir-de-excel.md) | As entradas em bloco a partir do painel |
-| [Configuração da entidade](../08-sucursais-e-entidade/61-configuracao-da-entidade.md) | Onde está o separador Ambiente de trabalho |
+| [Configuração da entidade](../08-sucursais-e-entidade/61-configuracao-da-entidade.md) | Onde está o separador Colaboradores |
 | [Autenticação de dois fatores](../02-funcionarios/09-autenticacao-de-dois-fatores.md) | O segundo fator que a ligação exige |
