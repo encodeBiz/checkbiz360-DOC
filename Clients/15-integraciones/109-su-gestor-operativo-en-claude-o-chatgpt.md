@@ -1,15 +1,16 @@
 # Su gestor operativo en Claude o ChatGPT
 
-Montar la semana, dar de alta a la gente nueva, mover un servicio porque alguien se ha puesto enfermo: es el trabajo que se come las tardes de quien lleva la operación. Si ya usa Claude o ChatGPT, puede delegárselo. Conecte su empresa de CheckBiz360 a su asistente y pídale las cosas en sus propias palabras: él las hace en CheckBiz360 con sus permisos, le enseña lo que va a hacer y no guarda nada hasta que usted diga que sí.
+Montar la semana, dar de alta a la gente nueva, saber quién no ha fichado esta mañana y quién puede cubrirle: es el trabajo que se come las tardes de quien lleva la operación. Si ya usa Claude o ChatGPT, puede delegárselo. Conecte CheckBiz360 a su asistente y pídale las cosas en sus propias palabras: él las hace en CheckBiz360 con sus permisos, le enseña lo que va a hacer y no guarda nada hasta que usted diga que sí.
 
 ---
 
 ## Qué resuelve
 
-- **«Monta la semana de la cuadrilla de Norte igual que la pasada, pero Marta libra el jueves.»** El asistente prepara la semana entera, se la enseña y la aplica cuando usted confirma.
+- **«¿Cómo va hoy?»** Quién ha fichado, quién no, quién llegó tarde y qué tareas no han empezado a su hora, centro por centro, empezando por lo que pide atención.
+- **«Lucía no ha fichado, ¿quién puede cubrir su servicio de las diez?»** El asistente le dice quién está libre a esa hora, quién podría con reparos y quién no está, y hace el cambio cuando usted elige.
+- **«Monta la semana de la cuadrilla de Norte igual que la pasada, pero Marta libra el jueves.»** Prepara la semana entera, se la enseña y la aplica cuando usted confirma.
 - **«Da de alta a estas doce personas y estos tres centros.»** Pegue la lista que le mandó la gestoría, un Excel o una foto: el asistente la lee, le dice qué va a crear y lo crea.
-- **«Mueve la limpieza del portal 12 al martes a las diez.»** Un cambio suelto, con el antes y el después delante, y la persona avisada en su móvil.
-- **«¿Quién trabaja mañana en Alcalá?»** Pregunte por la semana, por un centro o por una persona, sin abrir el panel.
+- **«¿Vamos mejor o peor que el mes pasado?»** Compara semanas, costes y alertas, y le saca el informe de jornada que necesite.
 
 Todo esto lo hace con los permisos de quien conecta: ni más ni menos de lo que esa persona puede hacer en el panel.
 
@@ -19,17 +20,19 @@ Todo esto lo hace con los permisos de quien conecta: ni más ni menos de lo que 
 
 | Paso | Qué pasa |
 |---|---|
-| **1. Conectar** | Una vez por empresa, desde el panel. Tarda dos minutos. |
-| **2. Pedir** | En Claude o en ChatGPT, con sus palabras: «monta», «cambia», «da de alta», «¿quién…?». |
+| **1. Conectar** | Una sola vez, con una dirección que sirve para todas sus empresas. Tarda dos minutos. |
+| **2. Pedir** | En Claude o en ChatGPT, con sus palabras: «¿cómo va hoy?», «monta», «cambia», «da de alta», «¿quién…?». |
 | **3. Revisar y confirmar** | El asistente enseña lo que va a hacer. Solo lo aplica cuando usted dice que sí. |
 
 ---
 
-## 1. Conectar su empresa
+## 1. Conectar
 
-1. En el panel, vaya a la configuración de la empresa y abra la pestaña **Entorno de trabajo**.
-2. En **Conectar con Claude o ChatGPT**, copie la **dirección de conexión de esta empresa**.
-3. Siga los pasos del asistente que use:
+Use esta dirección de conexión. Es la misma para todas las empresas que administra:
+
+```
+https://api.checkbiz360.com/api/v1/assistant/mcp
+```
 
 **En Claude**
 
@@ -43,19 +46,47 @@ Todo esto lo hace con los permisos de quien conecta: ni más ni menos de lo que 
 2. Escriba un nombre, pegue la dirección como URL del servidor, elija la autenticación **OAuth** y confirme.
 3. Entre con su usuario de CheckBiz360 y su código de verificación, y autorice el acceso.
 
-Cada empresa tiene su propia dirección. Si gestiona varias, añada un conector por cada una y póngale el nombre de la empresa para no confundirlas.
+Al autorizar verá la lista de empresas a las que tendrá acceso: las que usted administra. Si mañana le dan acceso a otra, el asistente la verá sin volver a conectar; si se lo quitan, deja de verla.
 
-> **Antes de empezar:** necesita el segundo factor activado y permisos de propietario o administración en la empresa. Si al conectar no le deja entrar, es casi siempre una de esas dos cosas.
+> **Si ya tenía conectada una empresa con su dirección propia** (la que aparece en **Entorno de trabajo**, en la configuración de la empresa), sigue funcionando para esa empresa. Para trabajar con todas desde un mismo conector, añada la dirección de arriba.
+
+> **Antes de empezar:** necesita el segundo factor activado y ser propietario o administrador de al menos una empresa. Si al conectar no le deja entrar, es casi siempre una de esas dos cosas.
 
 ---
 
-## 2. Qué puede pedirle
+## 2. Con qué empresa trabaja
 
-No hay que aprender ningún comando. Cuente lo que necesita como se lo contaría a una persona de su equipo. Algunas cosas que ya hace:
+Si administra más de una empresa, el asistente le pregunta al empezar con cuál quiere trabajar. A partir de ahí:
 
-### Ver cómo está la semana
+- **Dice siempre la empresa** cuando le propone un cambio, para que no haya dudas.
+- **No mezcla empresas** en una misma acción.
+- **Para cambiar**, dígaselo: «ahora en Limpiezas Sur». Puede tener dos conversaciones abiertas con empresas distintas sin que se pisen.
 
-Quién trabaja cada día y en qué centro, qué tareas tiene cada persona, qué centros hay. Pregunte por un día, por una persona o por un centro.
+---
+
+## 3. Qué puede pedirle
+
+No hay que aprender ningún comando. Cuente lo que necesita como se lo contaría a una persona de su equipo.
+
+### Saber cómo va el día
+
+Quién está trabajando, quién está en pausa, quién no ha fichado, quién llegó tarde y cuánto, jornadas sin cerrar o abiertas desde ayer, fichajes pendientes de validar y tareas que vencen hoy o no han empezado a su hora. Son los mismos datos de la portada del panel. Si le pregunta «¿qué miro primero?», empieza por las alertas.
+
+El asistente dice lo que ve, no lo que supone: «no ha fichado», nunca «no ha venido». CheckBiz360 sabe lo primero; lo segundo solo lo sabe usted.
+
+### Cubrir a alguien
+
+Pregúntele quién puede cubrir una tarea. Le responde con tres grupos:
+
+- **Libres:** su horario cubre esa franja y no tienen nada a esa hora.
+- **Con reparos:** su turno no cubre la franja entera, o ya tienen otra tarea a esa hora; le dice cuál.
+- **No disponibles:** de vacaciones, de baja, en un festivo o sin turno ese día, con el motivo.
+
+Si la tarea es de hoy, le dice además quién ha fichado. Usted elige a la persona; el asistente hace el cambio con el antes y el después delante.
+
+### Ver la disponibilidad
+
+Cuánta gente tiene disponible cada día y en cada centro, y quién falta un día concreto y por qué. Sirve para ver de un vistazo el día flojo de la semana que viene antes de que llegue. En empresas muy grandes la consulta va centro a centro.
 
 ### Montar la semana entera
 
@@ -65,26 +96,30 @@ Quién trabaja cada día y en qué centro, qué tareas tiene cada persona, qué 
 
 En los tres casos le enseña la propuesta persona por persona, con los avisos que conviene mirar (dos servicios que se solapan, un día que es festivo para alguien), y un enlace a un Excel con todo para revisarlo con calma. Cada persona recibe su semana en el móvil, con sus horarios y la dirección de cada servicio, solo cuando usted confirma.
 
-Si la semana cambia, pídale que la proponga otra vez con la versión buena: lo que ya estaba se actualiza y no se duplica nada. Los servicios que la persona ya había empezado se quedan.
+No hay límite de tareas: si el cuadrante es muy grande, el asistente lo carga por partes y usted confirma una sola vez al final. Si la semana cambia, pídale que la proponga otra vez con la versión buena: lo que ya estaba se actualiza y no se duplica nada. Los servicios que la persona ya había empezado se quedan.
 
 ### Cambios sueltos
 
-Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarla. También cambiar la semana tipo de alguien. Antes de tocar nada le enseña el antes y el después y espera su sí.
+Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarla. También cambiar la semana tipo de alguien o pasarle al horario por tareas. Antes de tocar nada le enseña el antes y el después y espera su sí.
 
 ### Dar de alta gente y centros
 
 Una persona o un centro sueltos, o muchos de una vez a partir de la lista de la gestoría, de un Excel o de un documento. El asistente comprueba quién existe ya, le dice qué va a crear y qué dirección ha entendido de cada centro, y crea todo cuando usted confirma. La bienvenida a la app no se manda sola: pídasela cuando haya comprobado que todo está bien.
 
-### Y lo que vaya llegando
+### Analizar
 
-El asistente va aprendiendo a hacer más cosas sin que usted tenga que tocar nada. Si no sabe si puede pedirle algo, pregúnteselo: le dirá qué sabe hacer en su empresa.
+- **La evolución por semanas:** cobertura de fichaje, retrasos, tareas a tiempo, horas y coste, de toda la empresa o por centro.
+- **Los costes del mes** frente al mes anterior. Si a alguien le falta la tarifa, el importe sale como parcial y el asistente se lo dice.
+- **Las alertas** que el panel considera importantes, ordenadas por gravedad.
+- **El informe de jornada** en PDF o Excel, de la empresa, de un centro o de una persona, entre las fechas que diga. Le da un enlace que caduca en una hora, y el informe queda también en el histórico de informes del panel.
 
 ---
 
-## 3. Lo que le protege
+## 4. Lo que le protege
 
 - **Nada se guarda sin su sí.** Lo que cambia la operación se propone primero y se aplica cuando usted confirma. Si cierra la conversación sin confirmar, no pasa nada.
-- **Actúa con sus permisos.** No puede hacer nada que usted no pueda hacer en el panel.
+- **Actúa con sus permisos, comprobados en cada petición.** No puede hacer nada que usted no pueda hacer en el panel.
+- **Quien deja de administrar, deja de entrar en el acto.** Si quita a un colaborador o lo desactiva en la empresa, su asistente pierde el acceso a ella en ese mismo momento, sin esperar a nada. Si ya no administra ninguna empresa, su conexión se corta entera.
 - **No adivina a quién se refiere.** Si un nombre no está claro o hay dos personas parecidas, pregunta enseñando el correo de cada una.
 - **Las horas son las del centro.** «A las diez» es a las diez en la zona horaria de la sucursal, aunque usted esté en otra.
 
@@ -101,16 +136,18 @@ Al conectar, los nombres de sus empleados y los datos de la operación se envía
 | Qué pasa | Qué hacer |
 |---|---|
 | En ChatGPT no aparece **Crear** | Active el modo desarrollador en **Configuración avanzada** y vuelva a **Aplicaciones y conectores**. |
-| Al conectar no me deja entrar | Compruebe que tiene el segundo factor activado y que es propietario o administrador de esa empresa. |
+| Al conectar no me deja entrar | Compruebe que tiene el segundo factor activado y que es propietario o administrador de alguna empresa. |
+| Dice que no tiene acceso a una empresa | No la administra, o le han quitado el acceso. Pídale que le enseñe sus empresas: son las que usted administra hoy. |
+| No sé con qué empresa está trabajando | Pregúntele. Dígale la empresa si quiere cambiar. |
 | Dice que no encuentra a una persona | Puede que en la ficha se llame de otra forma. Dígale el correo de esa persona. |
 | Propone pero no aplica | Dígaselo con claridad: «confirma», «aplícalo». No hace cambios sin un sí explícito. |
-| Gestiono varias empresas y mezcla cosas | Cada empresa tiene su conector. Compruebe cuál tiene activo en la conversación. |
+| Ha dejado de funcionar de repente | Vuelva a conectar desde Claude o ChatGPT. Si le han quitado el acceso a sus empresas, la conexión se corta y hay que entrar otra vez. |
 
 ---
 
 ## Quién puede conectar
 
-Propietarios y administradores de la empresa con el segundo factor activado.
+Propietarios y administradores con el segundo factor activado. Cada uno ve solo las empresas que administra.
 
 ---
 
@@ -118,6 +155,8 @@ Propietarios y administradores de la empresa con el segundo factor activado.
 
 | Artículo | Descripción |
 |---|---|
+| [La portada: el hoy, las alertas y las últimas semanas](../07-inteligencia-operativa/112-la-portada-el-hoy-las-alertas-y-las-ultimas-semanas.md) | Los mismos datos que el asistente le cuenta, en el panel |
+| [Tablero de disponibilidad](../04-calendario-y-horarios/98-tablero-de-disponibilidad.md) | La disponibilidad que el asistente cruza para cubrir a alguien |
 | [Importar el cuadrante semanal](../04-calendario-y-horarios/108-importar-el-cuadrante-semanal.md) | Lo mismo que le pide al asistente, hecho con una hoja de Excel desde el panel |
 | [Dar de alta sucursales y plantilla desde Excel](../02-empleados/110-dar-de-alta-sucursales-y-plantilla-desde-excel.md) | Las altas en bloque desde el panel |
 | [Configuración de entidad](../08-sucursales-y-entidad/61-configuracion-de-entidad.md) | Dónde está la pestaña Entorno de trabajo |
