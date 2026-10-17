@@ -159,3 +159,30 @@ hoy staging no la tiene.
   errores de análisis.
 - **Pendiente:** retoque visual de la app; devolver `plantillaAnterior` al quitar el modo (D11
   dice que es manual hasta que el selector lo haga solo); el pase.
+
+## 13. Hotfix del 2026-10-17: el fichaje en el lugar de la tarea
+
+**Lo que pasó en producción.** Jose probó el modo con una tarea creada desde el asistente con
+«Calle de la Alondra, Carabanchel, 28025 Madrid», sin número. Google devolvió el centro
+geométrico de la calle (`precision: center`) y la API lo aceptó como geocerca de 150 m. Jose
+fichó desde la calle de la Alondra 3 —la propia oficina, a ~10 m del punto de la sucursal—, a
+232 m de ese centro, y las tres entradas (17:35, 17:36, 17:40) se rechazaron con
+`checklog/out_of_radius`. El GPS y el fichaje hicieron lo que debían; el fallo era aceptar una
+calle sin número como lugar.
+
+**Al revisarlo apareció otro:** §4 decía que solo Entrar se medía contra el lugar de la tarea, y
+Descanso, Fin de descanso y Salir contra la sucursal. Quien entraba en un domicilio no habría
+podido salir desde él.
+
+**Arreglos (PR #162, en producción desde el 2026-10-17, f55c9f3):**
+- Todo el fichaje de una tarea con lugar propio se mide en ese lugar (§4 queda así).
+- El geocodificador marca `wholeStreet` (`route` sin `street_number`) y una tarea con ese lugar
+  responde 400 `task/worksite_imprecise`. Comprobado en staging contra Google: sin número, 400;
+  «Calle de la Alondra 3», 201 con `rooftop` a ~10 m de donde fichó Jose.
+- 500 m por defecto en todas las geocercas (Jose, 2026-10-17): lugar de la tarea (o el de la
+  sucursal si es mayor), sucursal, asistente, cuadrantes, puesta en marcha y Rentman.
+
+QA HPT-15-01 (entrar, descansar y salir desde el lugar de la tarea, a 500 km de la sucursal):
+16/16 en staging. Las funciones `onChecklogWrite` y `onActivateCheckbiz` también llevan el
+cambio a 500 en el código, pero en producción siguen con código desplegado antes del porte a
+`firebase_sdk` (29-jul y 4-sep): se despliegan aparte, con las demás.
