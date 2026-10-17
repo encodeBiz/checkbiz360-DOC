@@ -162,7 +162,10 @@ que este pase no necesita.
 | 2.17b | Prueba de la fase 3 (con Jose) | En la misma empresa de prueba: «¿cómo va hoy?» (`ver_alertas`, `ver_hoy`), «¿quién puede cubrir esta tarea?» sobre una tarea de hoy, y un `informe_jornada` corto. El informe queda en el histórico de informes del panel: hacerlo en la empresa de prueba | PENDIENTE |
 | 2.18 | Instrucciones para clientes | El texto para el proyecto de ChatGPT (17-oct, en la conversación con Jose) va al manual de clientes antes de anunciarlo | PENDIENTE: manual |
 
-### 🔴 Hallazgo de seguridad al margen del pase: Merlin sin control de empresa
+### ✅ Hallazgo de seguridad al margen del pase: Merlin sin control de empresa — RESUELTO el 17-oct
+
+**Arreglado en producción el 2026-10-17 a las 15:30 UTC** (PR #161, `cdfb499`, action *Production CI/CD* en verde). Las dos rutas exigen pertenecer a la empresa (`requireEntityMember`: asiento o ficha de empleado). Probado antes en staging con sesiones reales: una cuenta ajena y una owner pidiendo otra empresa reciben 403. Comprobado después en el contenedor de prod. También en `develop` y `staging`. Lo que sigue es el texto original del hallazgo.
+
 
 Visto el 17-oct al diseñar la fase 3 (ADR-008, Consecuencias). `POST /api/v1/gpt/panel` y
 `POST /api/v1/gpt/interpret` de `merlin` exigen sesión de Firebase, pero **no comprueban que
