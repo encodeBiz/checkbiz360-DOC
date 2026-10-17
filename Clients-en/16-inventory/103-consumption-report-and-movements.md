@@ -13,7 +13,7 @@ Open it from **Inventory → Stock → More actions → Report**.
 3. If needed, filter by warehouse, item, branch or employee.
 4. Click **Generate**.
 
-Each line shows the quantity consumed, the cost (valued at the unit cost on the item's record), the number of entries and the date of the first and last one. It can be **exported to CSV**.
+Each line shows the quantity consumed, the cost (valued at the unit cost on the item's record), the number of entries and the date of the first and last one. It is downloaded in **Excel** with **Download → Consumption report (Excel)**.
 
 It tells you which customer or site consumes the most, which person uses more than usual or which warehouse empties first.
 

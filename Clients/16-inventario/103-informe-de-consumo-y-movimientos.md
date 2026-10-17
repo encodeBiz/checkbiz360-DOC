@@ -13,7 +13,7 @@ Se abre desde **Inventario → Existencias → Más acciones → Informe**.
 3. Si lo necesita, filtre por almacén, artículo, sucursal o empleado.
 4. Pulse **Generar**.
 
-Cada línea muestra la cantidad consumida, el coste (valorado al coste unitario de la ficha del artículo), el número de apuntes y la fecha del primero y del último. Se puede **exportar a CSV**.
+Cada línea muestra la cantidad consumida, el coste (valorado al coste unitario de la ficha del artículo), el número de apuntes y la fecha del primero y del último. Se descarga en **Excel** con **Descargar → Informe de consumo (Excel)**.
 
 Sirve para saber qué cliente o qué centro consume más, qué persona gasta por encima de lo normal o qué almacén se vacía antes.
 

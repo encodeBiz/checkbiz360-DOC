@@ -129,3 +129,22 @@ GET /warehouses/:warehouseId/history-report?entityId&lang&itemId?&from?&to?
   historial de ese artículo en todos los almacenes. Informe de consumo: «Historial del periodo
   (Excel)» con su periodo, almacén y artículo. El exportador CSV de movimientos se ha borrado;
   el CSV de la tabla del informe de consumo sigue.
+
+## 8. Norma: consultas masivas en Postgres, informes en el servidor (2026-10-17)
+
+> Jose: «hay que pasarlo al back: todo lo que es consultas masivas es Postgres, reportes e
+> informes salen de backend».
+
+- **`NameCache` vive en `shared`** (`packages/shared/src/reporting/NameCache.ts`): caché de
+  proceso → dimensiones de Postgres → Firestore agrupado, una vez por id; `namePeople` resuelve
+  empleados y cuentas sin ficha. Lo usan `inventory` y `reports`.
+- **`GET /movements`** devuelve `taskTitle`, `employeeName`, `registeredByName`,
+  `registeredByAutomatic` y `destinationName`.
+- **Ejemplares** (`GET /items/:id/units`) y **reservas afectadas** al editar un ejemplar llevan
+  `taskTitle`.
+- **Informe de consumo** (`reports`): `keyName` en cada línea y `format=xlsx&lang` devuelve el
+  Excel generado en el servidor (es/en/pt), con empresa, periodo, agrupado, filtros y total.
+- **Panel**: fuera `useNames` y el último exportador CSV; el informe de consumo descarga el Excel
+  del servidor y la ficha del artículo ya no pide tareas una a una.
+- **Pendiente fuera de inventario**: la disponibilidad del calendario
+  (`calendar/components/AvailabilityTab.tsx`) monta su CSV en el navegador.

@@ -13,7 +13,7 @@ Abre-se em **Inventário → Existências → Mais ações → Relatório**.
 3. Se precisar, filtre por armazém, artigo, sucursal ou funcionário.
 4. Clique em **Gerar**.
 
-Cada linha mostra a quantidade consumida, o custo (valorizado ao custo unitário da ficha do artigo), o número de registos e a data do primeiro e do último. Pode **exportar-se para CSV**.
+Cada linha mostra a quantidade consumida, o custo (valorizado ao custo unitário da ficha do artigo), o número de registos e a data do primeiro e do último. Descarrega-se em **Excel** com **Descarregar → Relatório de consumo (Excel)**.
 
 Serve para saber que cliente ou que centro consome mais, que pessoa gasta acima do normal ou que armazém se esvazia primeiro.
 
