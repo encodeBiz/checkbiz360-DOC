@@ -90,6 +90,18 @@ número de cobertura incompleto es peor que ninguno.
 
 ---
 
+### `format=xlsx` — la rejilla en Excel (2026-10-17)
+
+Con `format=xlsx` (y `lang`, `groupId` opcional) la misma ruta devuelve el fichero generado en el
+servidor, en `data`: `{ filename, mimeType, base64 }`. Dos hojas: la rejilla como se ve —equipos en
+filas, días en columnas, coloreada con los umbrales del panel (70 % y 55 %)— y el detalle día a
+día. «Sin …» usa la etiqueta de sucursal de la empresa (`config.labels.branch.singular`). Idiomas
+`es`, `en` y `pt`; cualquier otro, en inglés. Los errores son los de la rejilla.
+
+Jose, 2026-10-17: «reportes e informes salen de backend». Sustituye al CSV que montaba el panel.
+
+---
+
 ## `GET /availability/day` — desglose de un día
 
 Quién está disponible ese día en ese grupo, y por qué no lo está el resto.

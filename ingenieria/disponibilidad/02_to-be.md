@@ -55,7 +55,8 @@ bucle.
 | Qué día se considera cerrado | **Backend** | Depende del `source` de los festivos, que el cliente no tiene |
 | El motivo de cada ausencia, y si es reversible | **Backend** | Es lo que habilita o bloquea el gesto de escritura del ADR-003 |
 | Umbrales de color (≥70% verde, ≥55% ámbar) | **Front** | Es lectura visual. La API devuelve `available` y `total` |
-| Agrupación visible, orden, búsqueda, export | **Front** | Presentación sobre una rejilla ya calculada |
+| Agrupación visible, orden, búsqueda | **Front** | Presentación sobre una rejilla ya calculada |
+| Export (Excel) | **Contenedor** | `format=xlsx` en la rejilla (2026-10-17): los informes salen del servidor |
 | Navegación de mes/semana | **Front** | Sobre el rango ya pedido; sólo vuelve a llamar si sale de él |
 
 ## El desglose no es solo lectura

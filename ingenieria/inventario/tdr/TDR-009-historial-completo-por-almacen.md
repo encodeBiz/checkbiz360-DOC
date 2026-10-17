@@ -146,5 +146,6 @@ GET /warehouses/:warehouseId/history-report?entityId&lang&itemId?&from?&to?
   Excel generado en el servidor (es/en/pt), con empresa, periodo, agrupado, filtros y total.
 - **Panel**: fuera `useNames` y el último exportador CSV; el informe de consumo descarga el Excel
   del servidor y la ficha del artículo ya no pide tareas una a una.
-- **Pendiente fuera de inventario**: la disponibilidad del calendario
-  (`calendar/components/AvailabilityTab.tsx`) monta su CSV en el navegador.
+- **Fuera de inventario**: la disponibilidad del calendario también descarga un Excel generado en
+  `checkinbiz` (`format=xlsx`, ver `disponibilidad/03_contratos-api.md`). Con esto el panel ya no
+  monta ningún fichero.
