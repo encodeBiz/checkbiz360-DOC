@@ -16,19 +16,19 @@ Tudo sai dos registos de ponto, das tarefas e dos horários que já tem no Check
 
 ---
 
-## O que requer atenção
+## Requer atenção
 
-Mesmo em cima, se houver algo a ver, uma lista de alertas com um **Ver** que leva ao ecrã onde se resolve. Quando não há nada, di-lo: *Sem alertas: não há nada que requeira a sua atenção neste momento*.
+Mesmo em cima, se houver algo a ver, uma lista de alertas com um **Ver** que leva ao ecrã onde se resolve. Quando não há nada, di-lo: *Sem alertas: nada precisa da sua atenção agora*.
 
 | Alerta | O que aconteceu |
 |---|---|
-| **Ninguém no centro** | Havia pessoas previstas num centro e ninguém registou a entrada. |
-| **Registo baixo hoje** | De quem já devia estar, registaram menos do que o esperado. |
+| **Ninguém no local** | Havia pessoas previstas num centro e ninguém registou a entrada. |
+| **Poucos registos hoje** | De quem já devia estar, registaram menos do que o esperado. |
 | **Muitos atrasos** | Uma parte alta de quem registou hoje chegou tarde. |
-| **Registo baixo** | Na semana passada registou-se uma parte pequena das jornadas previstas. |
-| **Tarefas vencidas** / **Tarefas por começar** | Há tarefas vencidas por fechar, ou que não começaram à hora. |
+| **Poucos registos** | Na semana passada registou-se uma parte pequena das jornadas previstas. |
+| **Tarefas vencidas** / **Tarefas por iniciar** | Há tarefas vencidas por fechar, ou que não começaram à hora. |
 | **Jornadas por fechar** | Ontem ficaram jornadas abertas: pessoas que registaram a entrada e não a saída. |
-| **Custo em alta** | O custo diário está acima do do mês passado. |
+| **Custo a subir** | O custo diário está acima do do mês passado. |
 | **Faltam tarifas** | Uma parte das horas do mês não tem tarifa: o custo estimado fica curto. |
 | **Muitas saídas** | Este mês há muitas saídas em proporção à equipa ativa. |
 | **Disponibilidade baixa** | Um dia desta semana tem menos de um terço das pessoas disponíveis. |
@@ -42,7 +42,7 @@ Três números e uma tabela por centro. Em cima à direita diz quando se atualiz
 | Número | O que conta |
 |---|---|
 | **Jornada** | *X de Y dentro*: das pessoas previstas hoje, quantas registaram a entrada e continuam em jornada ou em pausa. Por baixo, quantas estão **sem registo** e quantas **com atraso**. O atraso mede-se contra a tolerância de entrada configurada no centro. |
-| **Tarefas** | Quantas **vencem hoje**, quantas estão **por começar à hora** e quantas já estão **vencidas**, contadas contra a hora atual. |
+| **Tarefas** | Quantas **vencem hoje**, quantas estão **não iniciadas à hora** e quantas já estão **vencidas**, contadas contra a hora atual. |
 | **Horas** | As horas registadas hoje e o que custam: **mão de obra** (cada jornada pela sua tarifa) e, se tiver inventário, o **material** consumido. Se a alguém faltar tarifa, o valor leva *parcial: faltam tarifas*. |
 
 A tabela mostra, centro a centro, previstos, dentro, sem registo, atraso, tarefas de hoje e custo. Os centros que pedem mais atenção vêm primeiro; **Ver todos** abre o resto. Um centro a vermelho é um onde devia haver pessoas e ninguém registou a entrada. Um centro fechado hoje diz *Sem jornada prevista hoje*.
@@ -51,8 +51,8 @@ A tabela mostra, centro a centro, previstos, dentro, sem registo, atraso, tarefa
 
 Cada número tem um **Ver mais** que abre o detalhe sem sair da página inicial:
 
-- **Jornada:** por centro, a lista de pessoas pela ordem que importa: primeiro quem está **sem registo** (com os minutos de atraso se já devia estar), depois quem está **em jornada** ou **em pausa**, quem já **terminou**, quem tem a **jornada por fechar** e quem está **noutro centro** seu. Por baixo, à parte, quem **registou sem estar previsto** e quem tem a **jornada de ontem por fechar**. Se alguém tentou registar e foi recusado, também se vê.
-- **Tarefas:** cada tarefa com o seu centro, os atribuídos, a hora prevista e o prazo, e o que se passa com ela (*vence hoje*, *por começar à hora*, *vencida*, *em pausa*). Cada linha abre a ficha da tarefa.
+- **Jornada:** por centro, a lista de pessoas pela ordem que importa: primeiro quem está **sem registo** (com os minutos de atraso se já devia estar), depois quem está **em jornada** ou **em pausa**, quem já **terminou**, quem tem a **jornada por fechar** e quem está **noutro local** seu. Por baixo, à parte, quem **registou sem estar previsto** e quem tem a **jornada de ontem por fechar**. Se alguém tentou registar e foi recusado, também se vê.
+- **Tarefas:** cada tarefa com o seu centro, os atribuídos, a hora prevista e o prazo, e o que se passa com ela (*vence hoje*, *não iniciada à hora*, *vencida*, *pausada*). Cada linha abre a ficha da tarefa.
 - **Horas:** por centro, as horas e o que custam, que parte das jornadas tem tarifa, e os movimentos de material. É o custo do que já foi registado hoje: não inclui o previsto de quem ainda não registou.
 
 ---
@@ -66,7 +66,7 @@ O mesmo quadro, semana a semana, para os últimos dois meses:
 - **Tarefas a tempo**: que parte das tarefas da semana se fez à hora.
 - **Custo por semana**: horas pela tarifa, mais material.
 
-Cada número leva a diferença face à semana anterior, e por baixo a tabela por centro. A semana em curso aparece como *semana incompleta*. As semanas anteriores a a página inicial começar a guardar o dia a dia marcam-se *Reconstruído com o calendário atual*: servem para orientar, não para discutir um recibo de vencimento. No início, enquanto não houver semanas fechadas, o bloco di-lo.
+Cada número leva a diferença face à semana anterior, e por baixo a tabela por centro. A semana em curso aparece como *semana incompleta*. As semanas de antes de a página inicial começar a guardar o dia a dia marcam-se *Reconstruído com o calendário atual*: servem para orientar, não para discutir um recibo de vencimento. No início, enquanto não houver semanas fechadas, o bloco di-lo.
 
 **Tendência** liga a **Ver em Análise**, que abre o painel de Operação na última semana fechada.
 
@@ -80,7 +80,7 @@ Os próximos sete dias, centro a centro: quantas pessoas estão disponíveis em 
 
 ## Equipa ao longo do tempo
 
-Quantas pessoas a empresa tinha no fecho de cada mês, separando **ativos**, **inativos** e **despedidos**, com as **entradas** e **saídas** de cada mês e o número de **hoje**. **Ver funcionários** leva à lista. Os meses anteriores a a plataforma começar a seguir as mudanças de estado vão marcados como estimados: os despedimentos datam-se pela última edição da ficha.
+Quantas pessoas a empresa tinha no fecho de cada mês, separando **ativos**, **inativos** e **despedidos**, com as **entradas** e **saídas** de cada mês e o número de **hoje**. **Ver colaboradores** leva à lista. Os meses de antes de a plataforma começar a seguir as mudanças de estado vão marcados como estimados: os despedimentos datam-se pela última edição da ficha e os inativos contam como ativos.
 
 ---
 

@@ -485,7 +485,7 @@ DOCS/Clients-en/
 ├── 13-support-and-incidents/           (4 articles)
 ├── 14-reference/                       (4 articles)
 ├── 15-integrations/                    (6 articles)
-└── 16-inventory/                       (7 articles)
+└── 16-inventory/                       (8 articles)
 ```
 
-**Total: 109 articles**
+**Total: 112 articles**

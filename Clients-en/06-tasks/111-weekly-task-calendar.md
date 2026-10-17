@@ -20,11 +20,13 @@ You will find it under **Task management** → **Weekly calendar** tab, next to 
 One column per day of the week and one row per hour. Each task sits at the hour it is planned to start, in the colour of its status. **Today** is highlighted, and the arrows move between weeks.
 
 - **Status legend.** At the top, each status with its colour and how many tasks are in that status this week. Click a status to hide it or show it again, for example to keep only what is pending.
-- **Several tasks at the same time.** They are grouped in an "N tasks" card. Clicking it opens the list of those tasks.
+- **More than two tasks at the same time.** They are grouped in an "N tasks" card; clicking it opens the list. With one or two, they show separately.
+- **Several days.** Tasks spanning more than one day go in their own row, at the top.
+- **Create from a gap.** Click an empty hour to create a task at that time.
 - **"Deadline" row.** Tasks with no planned start time do not fit in any hour: they appear in this row, on the day they are due.
 - **Unassigned tasks.** Shown like the others, marked *Unassigned*, so they do not get lost.
 
-The list filters (branch, status, person) also apply here: switching tabs does not lose them.
+The list filters (branch, status, priority and person) also apply here: switching tabs does not lose them. Times are shown in your own time zone, your browser's, and the calendar says so at the foot.
 
 ---
 

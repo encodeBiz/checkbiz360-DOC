@@ -57,7 +57,7 @@ An address without a street number is not enough: if it can only be located appr
 | **Branch** * | The name of their site, as in the Branches sheet or as it is already called in CheckBiz360. If they work at several, separate them with semicolons. |
 | **Responsibility** | **Worker**, **Supervisor** or **Manager** at that site. Blank means worker. |
 | **Hourly rate** | The one that feeds the cost analysis. Blank means the job title's rate, if it already exists. |
-| **Schedule** | **Weekly** (the usual one) or **From tasks**. Blank means weekly. |
+| **Schedule** | Leave it blank. The **From tasks** option appears in the template, but your app needs the next version to show it: do not use it yet. |
 
 Columns marked with an asterisk are required.
 
@@ -79,8 +79,8 @@ Before confirming you see two tables, **Branches** and **People**, each row with
 |---|---|
 | **New** | Will be created. For branches, with the address as it was located (exact or approximate on the street). |
 | **Already exists** | Not touched. |
-| **Branches added** | The person already existed and gains the new sites in their row. |
-| **Schedule updated** | Only their schedule mode changes. |
+| **Gets branches added** | The person already existed and gains the new sites in their row. |
+| **Schedule is updated** | Only their schedule mode changes. |
 | **No changes** | Nothing to do with that row. |
 | **Error** | That row is not imported: the note says why (an imprecise address, a mistyped email, a branch that does not exist). The other rows are imported. |
 

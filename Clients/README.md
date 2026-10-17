@@ -485,7 +485,7 @@ DOCS/Clients/
 ├── 13-soporte-e-incidencias/          (4 artículos)
 ├── 14-referencia/                     (4 artículos)
 ├── 15-integraciones/                  (6 artículos)
-└── 16-inventario/                     (7 artículos)
+└── 16-inventario/                     (8 artículos)
 ```
 
-**Total: 109 artículos**
+**Total: 112 artículos**

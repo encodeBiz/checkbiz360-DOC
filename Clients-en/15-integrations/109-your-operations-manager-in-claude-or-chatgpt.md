@@ -42,7 +42,7 @@ https://api.checkbiz360.com/api/v1/assistant/mcp
 
 **In ChatGPT**
 
-1. Open **Settings → Apps and connectors** and click **Create**. If it is not there, first enable developer mode under **Advanced settings**.
+1. Open **Settings → Apps & Connectors** and click **Create**. If it is not there, first enable developer mode under **Advanced settings**.
 2. Type a name, paste the address as the server URL, choose **OAuth** authentication and confirm.
 3. Sign in with your CheckBiz360 user and your verification code, and authorise access.
 
@@ -100,7 +100,7 @@ There is no limit on the number of tasks: if the rota is very large, the assista
 
 ### Single changes
 
-Create a task, move it to another day or time, hand it to someone else, cancel it. Also change someone's standard week or move them to task-based scheduling. Before touching anything it shows you the before and after and waits for your yes.
+Create a task, move it to another day or time, hand it to someone else, cancel it. Also change someone's standard week. Before touching anything it shows you the before and after and waits for your yes.
 
 ### Add people and sites
 
@@ -136,7 +136,7 @@ When you connect, your employees' names and operational data are sent to the Cla
 
 | What happens | What to do |
 |---|---|
-| **Create** does not appear in ChatGPT | Enable developer mode under **Advanced settings** and go back to **Apps and connectors**. |
+| **Create** does not appear in ChatGPT | Enable developer mode under **Advanced settings** and go back to **Apps & Connectors**. |
 | The connection will not let me in | Check that two-factor authentication is enabled and that you are an owner or administrator of a company. |
 | It says it has no access to a company | You do not administer it, or your access was removed. Ask it to show your companies: they are the ones you administer today. |
 | I am not sure which company it is working with | Ask it. Tell it the company if you want to switch. |

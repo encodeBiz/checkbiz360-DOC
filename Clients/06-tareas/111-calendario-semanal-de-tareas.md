@@ -20,11 +20,13 @@ Se encuentra en **Gestión de tareas** → pestaña **Calendario semanal**, al l
 Una columna por día de la semana y una fila por hora. Cada tarea se coloca en la hora en que está previsto que empiece, con el color de su estado. **Hoy** queda marcado, y con las flechas se cambia de semana.
 
 - **Leyenda de estados.** Arriba, cada estado con su color y cuántas tareas hay en ese estado esa semana. Pulse un estado para ocultarlo o volver a mostrarlo: así se queda, por ejemplo, solo con lo pendiente.
-- **Varias tareas a la misma hora.** Se agrupan en una tarjeta «N tareas». Al pulsarla se abre la lista de esas tareas.
+- **Más de dos tareas a la misma hora.** Se agrupan en una tarjeta «N tareas»; al pulsarla se abre la lista. Con una o dos, se ven sueltas.
+- **Varios días.** Las tareas que abarcan más de un día van en su propia fila, arriba.
+- **Crear desde el hueco.** Pulse en una hora libre para crear una tarea a esa hora.
 - **Fila «Fecha límite».** Las tareas que no tienen hora prevista de inicio no caben en ninguna hora: salen en esta fila, el día en que vencen.
 - **Tareas sin asignar.** Se ven como las demás, marcadas como *Sin asignar*, para que no se pierdan.
 
-Los filtros de la lista (sucursal, estado, persona) valen también aquí: cambiar de pestaña no los pierde.
+Los filtros de la lista (sucursal, estado, prioridad y persona) valen también aquí: cambiar de pestaña no los pierde. Las horas se ven en su zona horaria, la de su navegador, y el calendario lo indica al pie.
 
 ---
 

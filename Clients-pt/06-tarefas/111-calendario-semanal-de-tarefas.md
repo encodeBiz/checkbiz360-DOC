@@ -20,11 +20,13 @@ Encontra-se em **Gestão de tarefas** → separador **Calendário semanal**, ao 
 Uma coluna por dia da semana e uma linha por hora. Cada tarefa fica na hora em que está previsto começar, com a cor do seu estado. **Hoje** fica marcado, e com as setas muda-se de semana.
 
 - **Legenda de estados.** Em cima, cada estado com a sua cor e quantas tarefas há nesse estado nessa semana. Carregue num estado para o ocultar ou voltar a mostrar: assim fica, por exemplo, só com o pendente.
-- **Várias tarefas à mesma hora.** Agrupam-se num cartão «N tarefas». Ao carregar nele abre-se a lista dessas tarefas.
+- **Mais de duas tarefas à mesma hora.** Agrupam-se num cartão «N tarefas»; ao carregar nele abre-se a lista. Com uma ou duas, veem-se soltas.
+- **Vários dias.** As tarefas que abrangem mais de um dia vão na sua própria linha, em cima.
+- **Criar a partir do intervalo.** Carregue numa hora livre para criar uma tarefa a essa hora.
 - **Linha «Prazo».** As tarefas que não têm hora prevista de início não cabem em nenhuma hora: aparecem nesta linha, no dia em que vencem.
 - **Tarefas sem atribuição.** Veem-se como as outras, marcadas como *Sem atribuição*, para que não se percam.
 
-Os filtros da lista (sucursal, estado, pessoa) valem também aqui: mudar de separador não os perde.
+Os filtros da lista (sucursal, estado, prioridade e pessoa) valem também aqui: mudar de separador não os perde. As horas veem-se no seu fuso horário, o do seu navegador, e o calendário indica-o no rodapé.
 
 ---
 

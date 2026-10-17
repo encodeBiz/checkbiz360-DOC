@@ -100,7 +100,7 @@ No hay límite de tareas: si el cuadrante es muy grande, el asistente lo carga p
 
 ### Cambios sueltos
 
-Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarla. También cambiar la semana tipo de alguien o pasarle al horario por tareas. Antes de tocar nada le enseña el antes y el después y espera su sí.
+Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarla. También cambiar la semana tipo de alguien. Antes de tocar nada le enseña el antes y el después y espera su sí.
 
 ### Dar de alta gente y centros
 

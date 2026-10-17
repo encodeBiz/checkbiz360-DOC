@@ -27,9 +27,9 @@ O primeiro dia com o CheckBiz360 costuma começar com uma lista: a contabilidade
 ## 1. Descarregar o modelo
 
 1. Vá a **Funcionários** (ou a **Sucursais**) e carregue em **Importar**.
-2. Na janela **Importar sucursais e equipa**, carregue em **Descarregar modelo**.
+2. Na janela **Importar sucursais e pessoal**, carregue em **Descarregar modelo**.
 
-O modelo traz dois separadores, **Sucursais** e **Funcionários**, com **linhas de exemplo que começam por ELIMINAR**: pode apagá-las ou deixá-las, não se importam.
+O modelo traz dois separadores, **Sucursais** e **Funcionários**, com **linhas de exemplo que começam por EXCLUIR**: pode apagá-las ou deixá-las, não se importam.
 
 > Se uma sucursal já existe no CheckBiz360, não é preciso repeti-la no separador Sucursais: basta escrever o seu nome na linha de cada pessoa.
 
@@ -53,11 +53,11 @@ Uma morada sem número de porta não chega: se só se localizar de forma aproxim
 | **Email** * | Com ele entra na aplicação e recebe as boas-vindas. É o que identifica a pessoa: se já existir, não se cria outra. |
 | **Telefone**, **NIF/CC** | Opcionais. |
 | **Cargo** | A sua ocupação. Se ainda não existir no seu catálogo de cargos, é adicionada; a revisão avisa quais são novos. |
-| **Tipo** | **Pessoal** ou **Colaborador**. Em branco, pessoal. |
+| **Tipo** | **Quadro** ou **Colaborador**. Em branco, quadro. |
 | **Sucursal** * | O nome do seu centro, tal como está no separador Sucursais ou como já se chama no CheckBiz360. Se trabalha em várias, separe-as com ponto e vírgula. |
 | **Responsabilidade** | **Trabalhador**, **Supervisor** ou **Gerente** nesse centro. Em branco, trabalhador. |
 | **Preço hora** | O que alimenta a análise de custos. Em branco, o do cargo, se já existir. |
-| **Horário** | **Semanal** (o habitual) ou **Por tarefas**. Em branco, semanal. |
+| **Horário** | Deixe-o em branco. A opção **Por tarefas** aparece no modelo, mas a sua aplicação precisa da próxima versão para a mostrar: não a use ainda. |
 
 As colunas com asterisco são obrigatórias.
 

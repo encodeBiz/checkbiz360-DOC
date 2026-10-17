@@ -485,7 +485,7 @@ DOCS/Clients-pt/
 ├── 13-apoio-e-incidencias/             (4 artigos)
 ├── 14-referencia/                      (4 artigos)
 ├── 15-integracoes/                     (6 artigos)
-└── 16-inventario/                      (7 artigos)
+└── 16-inventario/                      (8 artigos)
 ```
 
-**Total: 109 artigos**
+**Total: 112 artigos**

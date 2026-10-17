@@ -72,7 +72,7 @@ Não é preciso aprender nenhum comando. Conte o que precisa como o contaria a a
 
 Quem está a trabalhar, quem está em pausa, quem não picou o ponto, quem chegou tarde e quanto, jornadas por fechar ou abertas desde ontem, picagens pendentes de validação e tarefas que vencem hoje ou não começaram à hora. São os mesmos dados da página inicial do painel. Se lhe perguntar «o que vejo primeiro?», começa pelos alertas.
 
-O assistente diz o que vê, não o que supõe: «não picou o ponto», nunca «não veio». O CheckBiz360 sabe o primeiro; o segundo só o sabe o senhor.
+O assistente diz o que vê, não o que supõe: «não picou o ponto», nunca «não veio». O CheckBiz360 sabe o primeiro; o segundo só o sabe quem gere a equipa.
 
 ### Cobrir alguém
 
@@ -82,7 +82,7 @@ Pergunte-lhe quem pode cobrir uma tarefa. Responde com três grupos:
 - **Com reservas:** o turno não cobre o intervalo inteiro, ou já têm outra tarefa a essa hora; diz-lhe qual.
 - **Não disponíveis:** de férias, de baixa, num feriado ou sem turno nesse dia, com o motivo.
 
-Se a tarefa for de hoje, diz-lhe também quem picou o ponto. É o senhor que escolhe a pessoa; o assistente faz a mudança com o antes e o depois à frente.
+Se a tarefa for de hoje, diz-lhe também quem picou o ponto. Quem escolhe a pessoa é quem gere; o assistente faz a mudança com o antes e o depois à frente.
 
 ### Ver a disponibilidade
 
@@ -96,11 +96,11 @@ Quantas pessoas tem disponíveis em cada dia e em cada centro, e quem falta num 
 
 Nos três casos mostra-lhe a proposta pessoa a pessoa, com os avisos que convém ver (dois serviços que se sobrepõem, um dia que é feriado para alguém), e uma ligação a um Excel com tudo para rever com calma. Cada pessoa recebe a sua semana no telemóvel, com os horários e a morada de cada serviço, só quando confirmar.
 
-Não há limite de tarefas: se a escala for muito grande, o assistente carrega-a por partes e o senhor confirma uma única vez no fim. Se a semana mudar, peça-lhe que a proponha outra vez com a versão boa: o que já estava é atualizado e nada se duplica. Os serviços que a pessoa já tinha começado mantêm-se.
+Não há limite de tarefas: se a escala for muito grande, o assistente carrega-a por partes e só se confirma uma vez no fim. Se a semana mudar, peça-lhe que a proponha outra vez com a versão boa: o que já estava é atualizado e nada se duplica. Os serviços que a pessoa já tinha começado mantêm-se.
 
 ### Mudanças pontuais
 
-Criar uma tarefa, mudá-la de dia ou de hora, passá-la a outra pessoa, cancelá-la. Também mudar a semana-tipo de alguém ou passá-lo ao horário por tarefas. Antes de mexer em nada mostra-lhe o antes e o depois e espera pelo seu sim.
+Criar uma tarefa, mudá-la de dia ou de hora, passá-la a outra pessoa, cancelá-la. Também mudar a semana-tipo de alguém. Antes de mexer em nada mostra-lhe o antes e o depois e espera pelo seu sim.
 
 ### Dar entrada a pessoas e centros
 
@@ -118,11 +118,11 @@ Uma pessoa ou um centro soltos, ou muitos de uma vez a partir da lista da contab
 ## 4. O que o protege
 
 - **Nada é guardado sem o seu sim.** O que muda a operação é proposto primeiro e aplicado quando confirmar. Se fechar a conversa sem confirmar, não acontece nada.
-- **Atua com as suas permissões, verificadas em cada pedido.** Não pode fazer nada que o senhor não possa fazer no painel.
+- **Atua com as suas permissões, verificadas em cada pedido.** Não pode fazer nada que não possa fazer no painel.
 - **Quem deixa de administrar deixa de entrar de imediato.** Se retirar ou desativar um colaborador na empresa, o assistente dele perde o acesso a ela nesse mesmo momento. Se já não administrar nenhuma empresa, a ligação é cortada por completo.
-- **O senhor vê quem tem um assistente ligado, e desliga-o.** Em **Ferramentas**, o bloco **Assistentes ligados a esta empresa** lista cada assistente que chega à sua empresa: de quem é, se é do Claude ou do ChatGPT e quando foi usado pela última vez. Com **Desligar**, deixa de ter acesso de imediato. Na configuração da empresa, o separador **Colaboradores** mostra também os assistentes de cada pessoa sob o seu nome. Para voltar a usá-lo, essa pessoa terá de o ligar de novo com o seu utilizador e o seu código de verificação.
+- **Vê quem tem um assistente ligado, e desliga-o.** Em **Ferramentas**, o bloco **Assistentes ligados a esta empresa** lista cada assistente que chega à sua empresa: de quem é, se é do Claude ou do ChatGPT e quando foi usado pela última vez. Com **Desligar**, deixa de ter acesso de imediato. Na configuração da empresa, o separador **Colaboradores** mostra também os assistentes de cada pessoa sob o seu nome. Para voltar a usá-lo, essa pessoa terá de o ligar de novo com o seu utilizador e o seu código de verificação.
 - **Não adivinha a quem se refere.** Se um nome não estiver claro ou houver duas pessoas parecidas, pergunta mostrando o e-mail de cada uma.
-- **As horas são as do centro.** «Às dez» é às dez no fuso horário da sucursal, mesmo que o senhor esteja noutro.
+- **As horas são as do centro.** «Às dez» é às dez no fuso horário da sucursal, mesmo que esteja noutro.
 
 ---
 

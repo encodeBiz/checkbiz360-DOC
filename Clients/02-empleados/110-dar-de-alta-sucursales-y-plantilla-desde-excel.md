@@ -57,7 +57,7 @@ Una dirección sin número de portal no sirve: si solo se localiza de forma apro
 | **Sucursal** * | El nombre de su centro, tal como está en la pestaña Sucursales o como ya se llama en CheckBiz360. Si trabaja en varias, sepárelas con punto y coma. |
 | **Responsabilidad** | **Trabajador**, **Supervisor** o **Gerente** en ese centro. En blanco, trabajador. |
 | **Precio hora** | El que alimenta el análisis de costes. En blanco, el del puesto si ya existe. |
-| **Horario** | **Semanal** (el de siempre) o **Por tareas**. En blanco, semanal. |
+| **Horario** | Déjelo en blanco. La opción **Por tareas** sale en la plantilla, pero su app necesita la próxima versión para mostrarlo: no la use todavía. |
 
 Las columnas con asterisco son obligatorias.
 

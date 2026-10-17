@@ -16,7 +16,7 @@ Todo sale de los fichajes, las tareas y los horarios que ya tiene en CheckBiz360
 
 ---
 
-## Lo que requiere atención
+## Requiere atención
 
 Arriba del todo, si hay algo que mirar, una lista de alertas con un **Ver** que lleva a la pantalla donde se arregla. Cuando no hay nada, lo dice: *Sin alertas: no hay nada que requiera tu atención ahora mismo*.
 
@@ -80,7 +80,7 @@ Los próximos siete días, centro a centro: cuántas personas están disponibles
 
 ## Plantilla en el tiempo
 
-Cuánta gente tenía la empresa al cierre de cada mes, separando **activos**, **inactivos** y **despedidos**, con las **altas** y **bajas** de cada mes y la cifra de **hoy**. **Ver empleados** lleva a la lista. Los meses anteriores a que la plataforma empezara a seguir los cambios de estado van marcados como estimados: los despidos se fechan con la última edición de la ficha.
+Cuánta gente tenía la empresa al cierre de cada mes, separando **activos**, **inactivos** y **despedidos**, con las **altas** y **bajas** de cada mes y la cifra de **hoy**. **Ver empleados** lleva a la lista. Los meses anteriores a que la plataforma empezara a seguir los cambios de estado van marcados como estimados: los despidos se fechan con la última edición de la ficha y los inactivos cuentan como activos.
 
 ---
 

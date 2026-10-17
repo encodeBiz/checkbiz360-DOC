@@ -16,21 +16,21 @@ It all comes from the clock-ins, tasks and schedules you already have in CheckBi
 
 ---
 
-## What needs attention
+## Needs attention
 
 At the very top, if there is something to look at, a list of alerts with a **View** link that takes you to the screen where it is fixed. When there is nothing, it says so: *No alerts: nothing needs your attention right now*.
 
 | Alert | What happened |
 |---|---|
-| **Nobody at the site** | People were expected at a site and nobody has clocked in. |
-| **Low clock-in today** | Of those who should already be in, fewer than expected have clocked in. |
+| **No one on site** | People were expected at a site and nobody has clocked in. |
+| **Low check-ins today** | Of those who should already be in, fewer than expected have clocked in. |
 | **Many late arrivals** | A high share of those who clocked in today arrived late. |
-| **Low clock-in** | Last week, only a small share of the planned working days had a clock-in. |
+| **Low check-ins** | Last week, only a small share of the planned working days had a clock-in. |
 | **Overdue tasks** / **Tasks not started** | There are overdue tasks still open, or tasks that did not start on time. |
-| **Unclosed working days** | Yesterday some working days were left open: people clocked in and never clocked out. |
+| **Workdays not closed** | Yesterday some working days were left open: people clocked in and never clocked out. |
 | **Rising cost** | The daily cost is running above last month's. |
 | **Missing rates** | Part of this month's hours has no rate: the estimated cost falls short. |
-| **Many leavers** | This month there are many leavers relative to the active headcount. |
+| **Many exits** | This month there are many leavers relative to the active headcount. |
 | **Low availability** | One day this week has fewer than a third of the people available. |
 
 ---
@@ -41,17 +41,17 @@ Three figures and a table by site. Top right it shows when it last refreshed and
 
 | Figure | What it counts |
 |---|---|
-| **Attendance** | *X of Y in*: of the people expected today, how many have clocked in and are still working or on a break. Below, how many are **not clocked in** and how many are **late**. Lateness is measured against the entry tolerance configured for the site. |
+| **Workday** | *X of Y in*: of the people expected today, how many have clocked in and are still working or on a break. Below, how many are **not checked in** and how many are **late**. Lateness is measured against the entry tolerance configured for the site. |
 | **Tasks** | How many are **due today**, how many have **not started on time** and how many are already **overdue**, counted against the current time. |
 | **Hours** | The hours clocked today and what they cost: **labour** (each working day at its rate) and, if you have inventory, the **materials** consumed. If someone has no rate, the amount is marked *partial: missing rates*. |
 
-The table shows, site by site, expected, in, not clocked in, late, today's tasks and cost. The sites that need most attention come first; **View all** unfolds the rest. A site in red is one where people should be and nobody has clocked in. A site closed today says *No working day planned today*.
+The table shows, site by site, expected, in, not clocked in, late, today's tasks and cost. The sites that need most attention come first; **See all** unfolds the rest. A site in red is one where people should be and nobody has clocked in. A site closed today says *No workday scheduled today*.
 
-### View more
+### See more
 
-Each figure has a **View more** that opens the detail without leaving the home page:
+Each figure has a **See more** that opens the detail without leaving the home page:
 
-- **Attendance:** by site, the list of people in the order that matters: first those **not clocked in** (with the minutes late if they should already be in), then those **working** or **on a break**, those who have **finished**, those with an **unclosed working day** and those **at another site** of theirs. Below, separately, those who **clocked in without being expected** and those with **yesterday's working day unclosed**. If someone tried to clock in and was rejected, that shows too.
+- **Workday:** by site, the list of people in the order that matters: first those **not checked in** (with the minutes late if they should already be in), then those **working** or **on break**, those whose **workday is finished**, those with a **workday not closed** and those **at another site** of theirs. Below, separately, those who **clocked in without being expected** and those with **yesterday's workday not closed**. If someone tried to clock in and was rejected, that shows too.
 - **Tasks:** each task with its site, its assignees, the planned time and the deadline, and what is happening to it (*due today*, *not started on time*, *overdue*, *paused*). Each row opens the task record.
 - **Hours:** by site, the hours and what they cost, what share of working days has a rate, and the material movements. It is the cost of what has been clocked today: it does not include what is planned for those who have not clocked in yet.
 
@@ -78,9 +78,9 @@ The next seven days, site by site: how many people are available each day accord
 
 ---
 
-## Headcount over time
+## Workforce over time
 
-How many people the company had at the close of each month, split into **active**, **inactive** and **dismissed**, with each month's **joiners** and **leavers** and today's figure. **View employees** takes you to the list. Months before the platform started tracking status changes are marked as estimated: dismissals are dated by the last edit of the record.
+How many people the company had at the close of each month, split into **active**, **inactive** and **dismissed**, with each month's **hires** and **exits** and today's figure. **See employees** takes you to the list. Months before the platform started tracking status changes are marked as estimated: dismissals are dated by the last edit of the record, and inactive people count as active.
 
 ---
 
@@ -88,9 +88,9 @@ How many people the company had at the close of each month, split into **active*
 
 What the operation is costing in hours worked, **this month** against **last month**:
 
-- **Cost per hour worked** and **cost per working day**, with the hours and working days behind them.
+- **Cost per hour worked** and **cost per shift**, with the hours and working days behind them.
 - How far the cost **per day** is above or below last month.
-- **Unclosed working days** do not add up: nobody knows when they ended.
+- **Workdays not closed** do not add up: nobody knows when they ended.
 - If part of the hours has no rate, the amount is marked **incomplete** and says what percentage does.
 - **Materials consumed**, if you have inventory.
 
