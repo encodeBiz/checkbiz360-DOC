@@ -94,7 +94,9 @@ cambiar el conector del CRM, que sigue como está.
 | [ADR-005 — La persona delegada por la puerta de servicio](./adr/ADR-005-la-persona-delegada-por-la-puerta-de-servicio.md) | Aceptado (Jose, 2026-10-16) |
 | [ADR-006 — Retirar lo que ya no está](./adr/ADR-006-retirar-lo-que-ya-no-esta.md) | Aceptado (Jose, 2026-10-16) |
 | [ADR-007 — El cuadrante se llena por tandas](./adr/ADR-007-el-lote-se-llena-por-tandas.md) | Aceptado (Jose, 2026-10-16) |
+| [ADR-008 — El asistente lee lo que la plataforma ya calcula](./adr/ADR-008-el-asistente-lee-lo-que-la-plataforma-ya-calcula.md) | Aceptado (Jose, 2026-10-17) |
 | [TDR-002 — Las herramientas de la semana](./tdr/TDR-002-herramientas-de-la-semana.md) | En implementación |
+| [TDR-003 — Fase 3: el gestor operativo](./tdr/TDR-003-el-gestor-operativo.md) | En implementación |
 
 ## Decisiones cerradas (Jose, 2026-10-15)
 
