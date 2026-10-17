@@ -421,3 +421,18 @@ Vercel, las funciones por nombre con `desplegar.mjs`, las reglas con `--only fir
 | Comprobación 1.9 con sesión | 11:29 | Claude | Desde el contenedor `tasks`, con la sesión de jose@encodebiz.com en la entidad `OdX1eMPbRpwxjDfwdNkN`: `GET /calendar` 200 con `scheduleMode: weekly`; `PATCH` scope `branch` + `tasks` → 400 `calendar/schedule_mode_employee_only`; `GET /tasks/calendar` 200 con `countsByStatus`. |
 | Panel a producción | 11:30 | Claude | PR encodebiz-front-saas-clean#106 (staging → main, 85 commits, con «calendario de MUI unificado» de otra sesión) fusionado. Vercel: deployment de producción **Ready** a las 11:31 (37 s) (1.10, 2.16, 3.4, 8.5). |
 | Cierre | 11:35 | Claude | Hook `block-prod.sh` rearmado en `.claude/settings.json` con los tres contenedores nuevos. Registro escrito; `2026-10-cuadrantes-plantilla.md` §8 con su fila. |
+
+## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
+
+Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está
+migrado a `services/firebase_sdk` (24 funciones, `npm run deploy:listar -w services/firebase_sdk`),
+pero en producción la mayoría corre lo desplegado antes del porte (`onChecklogWrite` 29-jul,
+`onActivateCheckbiz` 4-sep, `onTaskPattern` 3-jul); solo las cinco del horario por tareas salen
+de `firebase_sdk`. Orden decidido por Jose: **primero staging (`dev-encodebiz`), validar todo, y
+después producción**, una a una con `desplegar.mjs --solo`.
+
+| # | Paso | Estado |
+|---|---|---|
+| 6.1 | Inventario en dev: fecha de despliegue de cada una de las 24 frente al porte (12-sep) | PENDIENTE |
+| 6.2 | Desplegar en `dev-encodebiz` las que falten, con `--solo`, y validar cada una (QA `45-espejo-y-programadas` y la prueba propia de cada trigger) | PENDIENTE |
+| 6.3 | Producción, una a una, comprobando cada una | PENDIENTE |
