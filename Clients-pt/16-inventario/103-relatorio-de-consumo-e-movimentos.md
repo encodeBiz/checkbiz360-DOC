@@ -23,7 +23,16 @@ Serve para saber que cliente ou que centro consome mais, que pessoa gasta acima 
 
 Tudo o que acontece no inventário fica registado: entradas, reservas, saídas, consumos, devoluções, contagens e transferências, com quem o registou, em nome de quem e em que tarefa.
 
-Descarrega-se em **CSV** a partir do relatório de consumo, da ficha de cada artigo e da ficha de cada armazém. É o registo a que recorrer quando uma contagem não bate certo.
+Descarrega-se em **Excel**, com todo o histórico desde o primeiro dia:
+
+| A partir de | Botão | O que traz |
+|---|---|---|
+| A ficha de um armazém | **Descarregar histórico** | Esse armazém |
+| A lista de armazéns | **Descarregar histórico de todos** | Um resumo geral e uma folha por armazém |
+| A ficha de um artigo | **Descarregar histórico** | Esse artigo, em cada armazém onde esteve |
+| O relatório de consumo | **Histórico do período (Excel)** | O período, o armazém e o artigo escolhidos |
+
+Cada armazém traz o seu **resumo por artigo** (entradas, transferências, saídas, devoluções, ajustes, o gasto, as existências e o seu valor), os **movimentos** por ordem com as existências depois de cada um e para que foi cada saída (uma tarefa, uma pessoa ou uma sucursal, pelo nome), os seus **equipamentos** e **onde esteve** cada um. Se as existências refeitas a partir do histórico não coincidirem com as de agora, a linha diz **Rever**. É o registo a que recorrer quando uma contagem não bate certo.
 
 ---
 

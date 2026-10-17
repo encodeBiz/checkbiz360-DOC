@@ -23,7 +23,16 @@ It tells you which customer or site consumes the most, which person uses more th
 
 Everything that happens in inventory is recorded: receipts, reservations, issues, consumption, returns, recounts and transfers, with who recorded it, in whose name and on which task.
 
-It is downloaded in **CSV** from the consumption report, from each item's record and from each warehouse's record. It is the record to turn to when a count does not add up.
+It is downloaded in **Excel**, with the whole history from day one:
+
+| From | Button | What it contains |
+|---|---|---|
+| A warehouse record | **Download history** | That warehouse |
+| The warehouse list | **Download history of all** | An overall summary and one sheet per warehouse |
+| An item record | **Download history** | That item, in every warehouse it has been in |
+| The consumption report | **History for the period (Excel)** | The chosen period, warehouse and item |
+
+Each warehouse comes with its **summary per item** (receipts, transfers, issues, returns, adjustments, usage, stock and its value), the **movements** in order with the stock after each one and what each issue was for (a task, a person or a workplace, by name), its **equipment** and **where each unit has been**. If the stock rebuilt from the history does not match the current stock, the row says **Review**. It is the record to turn to when a count does not add up.
 
 ---
 

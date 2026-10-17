@@ -23,7 +23,16 @@ Sirve para saber qué cliente o qué centro consume más, qué persona gasta por
 
 Todo lo que pasa en el inventario queda apuntado: entradas, reservas, salidas, consumos, devoluciones, recuentos y traspasos, con quién lo registró, a nombre de quién y en qué tarea.
 
-Se descarga en **CSV** desde el informe de consumo, desde la ficha de cada artículo y desde la ficha de cada almacén. Es el registro al que recurrir cuando un recuento no cuadra.
+Se descarga en **Excel**, con todo el historial desde el primer día:
+
+| Desde | Botón | Qué trae |
+|---|---|---|
+| La ficha de un almacén | **Descargar historial** | Ese almacén |
+| El listado de almacenes | **Descargar historial de todos** | Un resumen general y una hoja por almacén |
+| La ficha de un artículo | **Descargar historial** | Ese artículo, en cada almacén donde ha estado |
+| El informe de consumo | **Historial del periodo (Excel)** | El periodo, el almacén y el artículo elegidos |
+
+Cada almacén trae su **resumen por artículo** (entradas, traspasos, salidas, devoluciones, ajustes, lo gastado, las existencias y su valor), los **movimientos** en orden con las existencias después de cada uno y a qué fue cada salida (una tarea, una persona o una sucursal, por su nombre), sus **equipos** y **dónde ha estado** cada uno. Si las existencias rehechas desde el historial no coinciden con las de ahora, la fila dice **Revisar**. Es el registro al que recurrir cuando un recuento no cuadra.
 
 ---
 

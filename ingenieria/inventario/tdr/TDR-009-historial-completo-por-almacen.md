@@ -80,13 +80,13 @@ GET /warehouses/:warehouseId/history-report?entityId&lang
 → 200 { filename, mimeType, base64 }   el fichero en base64, como la plantilla de importación
 ```
 
-Permiso: supervisor o superior (`seesEverything`). Idiomas: los textos del fichero en `es` y
-`en`; cualquier otro, en inglés. Allowlist del proxy del panel: `warehouses/:id/history-report`.
+Permiso: supervisor o superior (`seesEverything`). Idiomas: los textos del fichero en `es`, `en`
+y `pt` (desde el 2026-10-17); cualquier otro, en inglés. Allowlist del proxy del panel: `warehouses/:id/history-report`.
 
 ## 5. Lo que no cambia
 
-El informe de consumo sigue igual. La descarga CSV de movimientos queda hasta que el fichero
-por almacén la sustituya en el panel.
+El informe de consumo sigue igual. La descarga CSV de movimientos **se retira** (§7): todas las
+descargas del libro son este fichero.
 
 ## 6. Implementación (2026-10-17)
 
@@ -102,3 +102,30 @@ por almacén la sustituya en el panel.
   coincide con las existencias de ahora en todos los artículos. Segunda descarga: de 2,0 s a 0,5 s
   por la caché.
 - Las horas van en la zona de la primera sucursal del almacén (`dim_branches.tz`), o Madrid.
+
+## 7. El de todos los almacenes, los filtros y el fin del CSV (2026-10-17)
+
+> Jose: «Y el general de todos los almacenes por hojas es desde el listado de almacenes».
+
+```
+GET /warehouses/history-report?entityId&lang&itemId?&from?&to?
+GET /warehouses/:warehouseId/history-report?entityId&lang&itemId?&from?&to?
+→ 200 { filename, mimeType, base64, staleness? }
+```
+
+- **General.** Hoja «Resumen general», una fila por almacén (activos primero): desde cuándo,
+  artículos, entradas, salidas, gastado, valor, cuántos a revisar, equipos y movimientos. Detrás,
+  una hoja por almacén con su resumen, movimientos, equipos y rastro, uno debajo de otro. Los
+  dos ficheros salen de la misma carga, así que dicen lo mismo.
+- **Filtros.** `itemId` y un periodo `from`–`to` (días en la zona del almacén, ambos incluidos).
+  El saldo se rehace siempre desde el primer apunte; del periodo se enseña lo que cae dentro, con
+  «Existencias al empezar». Un periodo ya cerrado da «Existencias al terminar» y no se compara con
+  las de ahora. Con un artículo, el general solo lleva los almacenes donde ese artículo tiene algo.
+- **Sin ids, también en artículos.** Un artículo borrado o sin espejar sale por su nombre (caché →
+  `dim_items` → Firestore) o como «Artículo eliminado». Comprobado celda a celda en Alvarez y en
+  Cuidama: cero ids.
+- **`staleness`.** Si quedan apuntes sin llegar a Postgres, la respuesta lo dice y el panel avisa.
+- **Panel.** Listado de almacenes: «Descargar historial de todos». Ficha del artículo: el
+  historial de ese artículo en todos los almacenes. Informe de consumo: «Historial del periodo
+  (Excel)» con su periodo, almacén y artículo. El exportador CSV de movimientos se ha borrado;
+  el CSV de la tabla del informe de consumo sigue.

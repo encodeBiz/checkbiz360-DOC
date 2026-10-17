@@ -90,7 +90,7 @@ barras y QR; mantenimiento preventivo por contador de uso; tiempo mínimo entre 
 | [TDR-006](./tdr/TDR-006-material-en-el-panel-y-en-merlin.md) | El material en el panel operativo y en Merlin: motivos de centro, quinto eje de la persona, claves para el relato | — | Diseño aprobado, sin código |
 | [TDR-007](./tdr/TDR-007-importacion-masiva-por-plantilla.md) | Importación masiva por plantilla de almacén: dos modelos, dos ejemplos con `ELIMINAR`, propuesta antes de aplicar | — | Implementado en rama, sin fusionar |
 | [TDR-008](./tdr/TDR-008-cuentas-de-material-por-destino.md) | Cuentas de material por destino: `material_accounts`, `accountKind` en el libro, rutas `/materials`, declarar desde la jornada | — | Implementado: API y panel en staging, app en develop |
-| [TDR-009](./tdr/TDR-009-historial-completo-por-almacen.md) | El historial completo de cada almacén en Excel: resumen, movimientos con saldo, equipos y su rastro, sin ids | — | Implementado: API y panel en staging |
+| [TDR-009](./tdr/TDR-009-historial-completo-por-almacen.md) | El historial en Excel: de un almacén o de todos (una hoja por almacén), por artículo y periodo; sustituye al CSV de movimientos | — | Implementado: API y panel en staging |
 
 ---
 
