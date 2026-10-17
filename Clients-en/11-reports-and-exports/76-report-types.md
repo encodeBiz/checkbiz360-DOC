@@ -19,6 +19,7 @@ The attendance report is the module's base document. It gathers employees' prese
 - Total hours worked by employee in the selected period.
 - Breakdown by shift, branch or period.
 - Status of each workday: complete, justified absence, unjustified absence, partial workday.
+- On days with more than one clock-in and clock-out (split shifts, several jobs in a row): the **working day**, from the first clock-in to the last clock-out, and the **gaps between shifts**, measured from the clock-ins. The report shows what was measured; what gets paid is the company's decision.
 
 > **Important:** the report gathers **staff** personnel. Employees marked as **collaborators** do not appear, because time recording is an obligation of the employment relationship and does not apply to a self-employed professional who invoices the company. Employees with no relationship type recorded are still included. See [Roles and responsibility levels](../02-employees/07-roles-and-responsibility-levels.md#relationship-type-internal-versus-contractor).
 

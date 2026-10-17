@@ -229,6 +229,7 @@ Análise de padrões de comportamento, índices de desempenho, custos e deteçã
 | Fluxo de revisão de anomalias (estados pendente/revisto) | **Planeada** | Planeado para uma versão futura. |
 | Alertas de excesso de custo configuráveis | **Planeada** | Planeados para uma versão futura. |
 | Exportação de dados dos painéis (CSV/PDF) | **Planeada** | Planeada para uma versão futura. |
+| Página inicial «Início»: o hoje por centro, alertas, últimas semanas, disponibilidade da semana, equipa ao longo do tempo e custos estimados | **Disponível** | A primeira coisa que se vê ao entrar; atualiza-se sozinha e mostra só o que requer atenção. |
 
 | Artigo | Descrição |
 |---|---|
@@ -240,6 +241,7 @@ Análise de padrões de comportamento, índices de desempenho, custos e deteçã
 | [Análise de custos](07-inteligencia-operacional/54-analise-de-custos.md) | Tarifa por sucursal, indicadores de custo e alertas no roadmap |
 | [Deteção de anomalias](07-inteligencia-operacional/55-detecao-de-anomalias.md) | Indicador automático na V1; fluxo de revisão no roadmap |
 | [O painel de Operação](07-inteligencia-operacional/56-paineis-de-controlo.md) | Os três índices, os três separadores e como se lê |
+| [A página inicial: o hoje, os alertas e as últimas semanas](07-inteligencia-operacional/112-a-pagina-inicial-o-hoje-os-alertas-e-as-ultimas-semanas.md) | O que vê ao entrar: jornada, tarefas e custo de hoje por centro, alertas, histórico semanal, equipa e custos estimados |
 
 ---
 
@@ -254,7 +256,7 @@ Criação e configuração de sucursais, atribuição de funcionários e vista g
 | Atribuir funcionários a sucursais com responsabilidades | **Disponível** | Multi-sucursal com calendário efetivo por atribuição. |
 | Configuração da entidade (dados fiscais, fuso horário) | **Disponível** | Propagação de alterações às sucursais dependentes. |
 | Colaboradores do backoffice (proprietário e administrador) | **Disponível** | Convite, mudança de perfil e remoção; a entidade nunca fica sem proprietário ativo. |
-| Vista global multi-sucursal com KPI consolidados | **Disponível** | Painel de comparações entre sucursais no backoffice. |
+| Vista global multi-sucursal | **Disponível** | A página inicial mostra o hoje por centro e os alertas; o painel de Operação compara os centros por período. |
 
 | Artigo | Descrição |
 |---|---|
@@ -263,7 +265,7 @@ Criação e configuração de sucursais, atribuição de funcionários e vista g
 | [Estados de uma sucursal](08-sucursais-e-entidade/59-estados-de-uma-sucursal.md) | Ativa/inativa, impacto nos registos e histórico |
 | [Atribuir funcionários a sucursais](08-sucursais-e-entidade/60-atribuir-funcionarios-a-sucursais.md) | Multi-sucursal, responsabilidades e calendário efetivo |
 | [Configuração da entidade](08-sucursais-e-entidade/61-configuracao-da-entidade.md) | Dados fiscais, ambiente de trabalho, colaboradores, fuso horário global e propagação de alterações |
-| [Vista global multi-sucursal](08-sucursais-e-entidade/62-vista-global-multi-sucursal.md) | Painel consolidado, KPI globais e comparações entre sucursais |
+| [Vista global multi-sucursal](08-sucursais-e-entidade/62-vista-global-multi-sucursal.md) | Onde está cada vista de conjunto: a página inicial de hoje por centros, o painel de Operação e a disponibilidade |
 
 ---
 
@@ -474,7 +476,7 @@ DOCS/Clients-pt/
 ├── 04-calendario-e-horarios/           (9 artigos)
 ├── 05-gestao-documental/               (9 artigos)
 ├── 06-tarefas/                         (11 artigos)
-├── 07-inteligencia-operacional/        (8 artigos)
+├── 07-inteligencia-operacional/        (9 artigos)
 ├── 08-sucursais-e-entidade/            (6 artigos)
 ├── 09-notificacoes/                    (6 artigos)
 ├── 10-aplicacao-movel/                 (7 artigos)
@@ -486,4 +488,4 @@ DOCS/Clients-pt/
 └── 16-inventario/                      (7 artigos)
 ```
 
-**Total: 108 artigos**
+**Total: 109 artigos**

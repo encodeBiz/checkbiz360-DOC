@@ -229,6 +229,7 @@ Analysis of behaviour patterns, performance indices, costs and anomaly detection
 | Anomaly review workflow (pending/reviewed states) | **Planned** | Planned for a future version. |
 | Configurable cost-overrun alerts | **Planned** | Planned for a future version. |
 | Dashboard data export (CSV/PDF) | **Planned** | Planned for a future version. |
+| "Home" page: today by site, alerts, recent weeks, this week's availability, headcount over time and estimated costs | **Available** | The first thing you see when you sign in; it refreshes on its own and shows only what needs attention. |
 
 | Article | Description |
 |---|---|
@@ -240,6 +241,7 @@ Analysis of behaviour patterns, performance indices, costs and anomaly detection
 | [Cost analysis](07-operational-intelligence/54-cost-analysis.md) | Rate per branch, cost indicators and alerts on the roadmap |
 | [Anomaly detection](07-operational-intelligence/55-anomaly-detection.md) | Automatic indicator in V1; review workflow on the roadmap |
 | [The Operations dashboard](07-operational-intelligence/56-dashboards.md) | The three indices, the three tabs and how to read them |
+| [The home page: today, alerts and recent weeks](07-operational-intelligence/112-the-home-page-today-alerts-and-recent-weeks.md) | What you see on signing in: today's attendance, tasks and cost by site, alerts, weekly history, headcount and estimated costs |
 
 ---
 
@@ -254,7 +256,7 @@ Creating and configuring branches, assigning employees and the multi-branch glob
 | Assign employees to branches with responsibilities | **Available** | Multi-branch with an effective calendar per assignment. |
 | Organisation configuration (tax details, time zone) | **Available** | Changes propagated to dependent branches. |
 | Back office collaborators (owner and administrator) | **Available** | Invitation, role change and removal; the organisation is never left without an active owner. |
-| Multi-branch global view with consolidated KPIs | **Available** | Branch comparison dashboard in the back office. |
+| Multi-branch global view | **Available** | The home page shows today by site and the alerts; the Operations panel compares sites by period. |
 
 | Article | Description |
 |---|---|
@@ -263,7 +265,7 @@ Creating and configuring branches, assigning employees and the multi-branch glob
 | [Branch statuses](08-branches-and-organisation/59-branch-statuses.md) | Active/inactive, impact on clock-ins and history |
 | [Assign employees to branches](08-branches-and-organisation/60-assign-employees-to-branches.md) | Multi-branch, responsibilities and the effective calendar |
 | [Organisation configuration](08-branches-and-organisation/61-organisation-settings.md) | Tax details, workspace, collaborators, global time zone and propagation of changes |
-| [Multi-branch global view](08-branches-and-organisation/62-multi-branch-global-view.md) | Consolidated dashboard, global KPIs and branch comparisons |
+| [Multi-branch global view](08-branches-and-organisation/62-multi-branch-global-view.md) | Where each overview lives: today's home page by site, the Operations panel and availability |
 
 ---
 
@@ -474,7 +476,7 @@ DOCS/Clients-en/
 ├── 04-calendar-and-schedules/          (9 articles)
 ├── 05-document-management/             (9 articles)
 ├── 06-tasks/                           (11 articles)
-├── 07-operational-intelligence/        (8 articles)
+├── 07-operational-intelligence/        (9 articles)
 ├── 08-branches-and-organisation/       (6 articles)
 ├── 09-notifications/                   (6 articles)
 ├── 10-mobile-app/                      (7 articles)
@@ -486,4 +488,4 @@ DOCS/Clients-en/
 └── 16-inventory/                       (7 articles)
 ```
 
-**Total: 108 articles**
+**Total: 109 articles**

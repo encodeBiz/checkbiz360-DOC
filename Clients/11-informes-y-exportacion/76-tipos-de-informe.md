@@ -19,6 +19,7 @@ El informe de asistencia es el documento base del módulo. Recoge los datos de p
 - Horas trabajadas totales por empleado en el periodo seleccionado.
 - Desglose por turno, sucursal o periodo.
 - Estado de cada jornada: completa, ausencia justificada, ausencia sin justificar, jornada parcial.
+- En los días con más de una entrada y salida (jornada partida, varios servicios seguidos): la **jornada**, de la primera entrada a la última salida, y los **huecos entre turnos**, medidos de los fichajes. El informe enseña lo medido; qué se paga lo decide la empresa.
 
 > **Importante:** el informe recoge al personal de **plantilla**. Los empleados marcados como **colaboradores** no aparecen, porque el registro horario es una obligación de la relación laboral y no se aplica a un autónomo que factura a la empresa. Los empleados sin tipo de relación registrado se siguen incluyendo. Consulte [Roles y niveles de responsabilidad](../02-empleados/07-roles-y-niveles-de-responsabilidad.md#tipo-de-relación-interno-frente-a-colaborador).
 

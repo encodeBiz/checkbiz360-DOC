@@ -229,6 +229,7 @@ Análisis de patrones de comportamiento, índices de rendimiento, costes y detec
 | Workflow de revisión de anomalías (estados pendiente/revisado) | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Alertas de sobrecoste configurables | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Exportación de datos de paneles (CSV/PDF) | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Portada «Inicio»: el hoy por centro, alertas, últimas semanas, disponibilidad de la semana, plantilla en el tiempo y costes estimados | **Disponible** | Lo primero que se ve al entrar; se actualiza sola y enseña solo lo que requiere atención. |
 
 | Artículo | Descripción |
 |---|---|
@@ -240,6 +241,7 @@ Análisis de patrones de comportamiento, índices de rendimiento, costes y detec
 | [Análisis de costes](07-inteligencia-operativa/54-analisis-de-costes.md) | Tarifa por sucursal, indicadores de coste y alertas en roadmap |
 | [Detección de anomalías](07-inteligencia-operativa/55-deteccion-de-anomalias.md) | Indicador automático en V1; workflow de revisión en roadmap |
 | [El panel de Operación](07-inteligencia-operativa/56-paneles-de-mando.md) | Los tres índices, las tres pestañas y cómo se lee |
+| [La portada: el hoy, las alertas y las últimas semanas](07-inteligencia-operativa/112-la-portada-el-hoy-las-alertas-y-las-ultimas-semanas.md) | Lo que ve al entrar: jornada, tareas y coste de hoy por centro, alertas, histórico semanal, plantilla y costes estimados |
 
 ---
 
@@ -254,7 +256,7 @@ Creación y configuración de sucursales, asignación de empleados y vista globa
 | Asignar empleados a sucursales con responsabilidades | **Disponible** | Multi-sucursal con calendario efectivo por asignación. |
 | Configuración de entidad (datos fiscales, zona horaria) | **Disponible** | Propagación de cambios a sucursales dependientes. |
 | Colaboradores del backoffice (propietario y administrador) | **Disponible** | Invitación, cambio de rol y retirada; nunca se queda la entidad sin propietario activo. |
-| Vista global multi-sucursal con KPIs consolidados | **Disponible** | Panel de comparativas entre sucursales en el backoffice. |
+| Vista global multi-sucursal | **Disponible** | La portada enseña el hoy por centro y las alertas; el panel de Operación compara los centros por periodo. |
 
 | Artículo | Descripción |
 |---|---|
@@ -263,7 +265,7 @@ Creación y configuración de sucursales, asignación de empleados y vista globa
 | [Estados de una sucursal](08-sucursales-y-entidad/59-estados-de-una-sucursal.md) | Activa/inactiva, impacto en fichajes e histórico |
 | [Asignar empleados a sucursales](08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md) | Multi-sucursal, responsabilidades y calendario efectivo |
 | [Configuración de entidad](08-sucursales-y-entidad/61-configuracion-de-entidad.md) | Datos fiscales, entorno de trabajo, colaboradores, zona horaria global y propagación de cambios |
-| [Vista global multi-sucursal](08-sucursales-y-entidad/62-vista-global-multi-sucursal.md) | Panel consolidado, KPIs globales y comparativas entre sucursales |
+| [Vista global multi-sucursal](08-sucursales-y-entidad/62-vista-global-multi-sucursal.md) | Dónde está cada vista de conjunto: la portada de hoy por centros, el panel de Operación y la disponibilidad |
 
 ---
 
@@ -474,7 +476,7 @@ DOCS/Clients/
 ├── 04-calendario-y-horarios/          (9 artículos)
 ├── 05-gestion-documental/             (9 artículos)
 ├── 06-tareas/                         (11 artículos)
-├── 07-inteligencia-operativa/         (8 artículos)
+├── 07-inteligencia-operativa/         (9 artículos)
 ├── 08-sucursales-y-entidad/           (6 artículos)
 ├── 09-notificaciones/                 (6 artículos)
 ├── 10-app-movil/                      (7 artículos)
@@ -486,4 +488,4 @@ DOCS/Clients/
 └── 16-inventario/                     (7 artículos)
 ```
 
-**Total: 108 artículos**
+**Total: 109 artículos**

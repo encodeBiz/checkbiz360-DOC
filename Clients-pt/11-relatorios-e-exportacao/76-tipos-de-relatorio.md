@@ -19,6 +19,7 @@ O relatório de assiduidade é o documento base do módulo. Reúne os dados de p
 - Horas trabalhadas totais por funcionário no período selecionado.
 - Desagregação por turno, sucursal ou período.
 - Estado de cada jornada: completa, ausência justificada, ausência não justificada, jornada parcial.
+- Nos dias com mais do que uma entrada e saída (jornada partida, vários serviços seguidos): a **jornada**, da primeira entrada à última saída, e os **intervalos entre turnos**, medidos a partir dos registos. O relatório mostra o que foi medido; o que se paga decide-o a empresa.
 
 > **Importante:** o relatório reúne o **pessoal** da empresa. Os funcionários marcados como **colaboradores** não aparecem, porque o registo de horários é uma obrigação da relação laboral e não se aplica a um trabalhador independente que fatura à empresa. Os funcionários sem tipo de relação registado continuam a ser incluídos. Consulte [Perfis e níveis de responsabilidade](../02-funcionarios/07-perfis-e-niveis-de-responsabilidade.md#tipo-de-relação-interno-face-a-colaborador).
 
