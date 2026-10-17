@@ -136,3 +136,4 @@ Para uma descrição detalhada de todos os tipos de notificação, consulte o ar
 | [Notificações de tarefas](./47-notificacoes-de-tarefas.md) | Tipos de aviso e canais de notificação |
 | [Relatórios de tarefas](./48-relatorios-de-tarefas.md) | Métricas de acompanhamento e exportação |
 | [Atribuir tarefas a funcionários](./41-atribuir-tarefas-a-funcionarios.md) | Como atribuir e reatribuir tarefas |
+| [Calendário semanal de tarefas](./111-calendario-semanal-de-tarefas.md) | A semana num relance, dia a dia e hora a hora, com os buracos e as sobreposições |

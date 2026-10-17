@@ -29,7 +29,7 @@ Los empleados que no tienen sucursal asignada aparecen agrupados en una fila apa
 
 - **Vista mensual o semanal.** Cambie entre **Mensual** y **Semanal**, y avance o retroceda con las flechas de periodo.
 - **Filtrar por sucursal.** Por defecto se ven **Todas**; elija una para centrarse en ella.
-- **Exportar.** El botón **Exportar** descarga un fichero CSV con una fila por sucursal y día: equipo, fecha, disponibles, plantilla y porcentaje de cobertura.
+- **Exportar.** El botón **Exportar** descarga un Excel con una fila por sucursal y día: equipo, fecha, disponibles, plantilla y porcentaje de cobertura, listo para abrir o compartir.
 
 > **Nota:** si la plantilla es demasiado grande para calcularla entera de una vez, el tablero le pedirá que elija una sucursal para ver su cobertura.
 

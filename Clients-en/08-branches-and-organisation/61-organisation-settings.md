@@ -25,6 +25,8 @@ It is reached from **Organisation** in the side menu, and the screen is organise
 
 It used to be called *Visual identity*. It no longer configures colours or images: it is used to adapt the name of the workplaces to your organisation's vocabulary. If your sites are projects or building sites, the back office will say so in the menu, in the lists and in the records —for example, "Site details"—. Leaving the field blank uses the default name.
 
+The same tab holds **Connect with Claude or ChatGPT**: your company's connection address and the steps to add it to your assistant, so you can ask it for the week, new hires and changes in your own words. See [Your operations manager in Claude or ChatGPT](../15-integrations/109-your-operations-manager-in-claude-or-chatgpt.md).
+
 ---
 
 ## Collaborators

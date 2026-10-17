@@ -88,8 +88,7 @@ Quando estiver de acordo, clique em **Confirmar**. Com muitas pessoas demora um 
 
 Na app, a semana importada: o seu horário de cada dia e os seus trabalhos, cada um com a sua hora e a sua morada. Registará na morada de cada trabalho.
 
-- Com o horário habitual, a jornada de cada dia vai do início do primeiro trabalho ao fim do último.
-- Se a pessoa trabalha com **Horário por tarefas**, o seu horário de cada dia são os seus trabalhos, um atrás do outro, com os intervalos entre eles. Um dia sem trabalhos é um dia livre. Na app vê sempre a semana em curso tal como está nesse momento.
+A jornada de cada dia vai do início do primeiro trabalho ao fim do último.
 
 ---
 

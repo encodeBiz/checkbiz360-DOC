@@ -74,6 +74,12 @@ The system will show you a warning indicating how many employees are assigned to
 
 > **Role note:** Creating and editing branches is available to the **Owner** and **Manager** roles with organisation administration permissions. Consulting the branch list is also available to **Supervisor**.
 
+## Adding several branches at once
+
+With many sites, the **Import** button in the branch list saves creating them one by one: an Excel template with your sites and your people, a review of what will be created, and confirmation. See [Add branches and staff from Excel](../02-employees/110-add-branches-and-staff-from-excel.md).
+
+---
+
 ## Related articles
 
 - [Advanced branch configuration](58-advanced-branch-settings.md)

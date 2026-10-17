@@ -108,6 +108,12 @@ A gestão de perfis está disponível para **manager** (nível 3) e **owner** (n
 
 ---
 
+## Dar entrada a muitas pessoas de uma vez
+
+Se começa com uma equipa de trinta ou quarenta pessoas, não é preciso criá-las uma a uma. Na lista de funcionários, **Importar** descarrega um modelo de Excel com uma folha para as sucursais e outra para as pessoas; preenche-o, carrega-o e, antes de se criar o que quer que seja, vê o que vai acontecer com cada linha. As boas-vindas à aplicação enviam-se no fim, quando decidir. Explica-se em [Dar entrada a sucursais e equipa a partir de Excel](./110-dar-entrada-a-sucursais-e-equipa-a-partir-de-excel.md).
+
+---
+
 ## Artigos relacionados
 
 - [Perfis e níveis de responsabilidade](07-perfis-e-niveis-de-responsabilidade.md)

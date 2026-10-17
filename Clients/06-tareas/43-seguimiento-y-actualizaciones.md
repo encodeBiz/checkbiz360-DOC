@@ -136,3 +136,4 @@ Para una descripción detallada de todos los tipos de notificación, consulte el
 | [Notificaciones de tareas](./47-notificaciones-de-tareas.md) | Tipos de aviso y canales de notificación |
 | [Informes de tareas](./48-informes-de-tareas.md) | Métricas de seguimiento y exportación |
 | [Asignar tareas a empleados](./41-asignar-tareas-a-empleados.md) | Cómo asignar y reasignar tareas |
+| [Calendario semanal de tareas](./111-calendario-semanal-de-tareas.md) | La semana de un vistazo, día a día y hora a hora, con los huecos y los solapes |

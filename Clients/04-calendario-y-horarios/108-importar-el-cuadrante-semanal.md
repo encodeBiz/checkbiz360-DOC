@@ -88,8 +88,7 @@ Cuando esté conforme, pulse **Confirmar**. Con mucha gente tarda un poco y se v
 
 En la app, la semana importada: su horario de cada día y sus trabajos, cada uno con su hora y su dirección. Fichará en la dirección de cada trabajo.
 
-- Con el horario de siempre, su jornada de cada día va de la primera hora del primer trabajo a la última del último.
-- Si la persona trabaja con **Horario por tareas**, su horario de cada día son sus trabajos, uno detrás de otro, con los huecos entre medias. Un día sin trabajos es un día libre. En la app ve siempre la semana en curso tal como está en ese momento.
+Su jornada de cada día va de la primera hora del primer trabajo a la última del último.
 
 ---
 

@@ -108,6 +108,12 @@ Profile management is available to **manager** (level 3) and **owner** (level 4)
 
 ---
 
+## Adding many people at once
+
+If you are starting with a staff of thirty or forty people, there is no need to create them one by one. In the employee list, **Import** downloads an Excel template with one sheet for branches and another for people; you fill it in, upload it and, before anything is created, see what will happen with each row. The app welcome is sent at the end, when you decide. See [Add branches and staff from Excel](./110-add-branches-and-staff-from-excel.md).
+
+---
+
 ## Related articles
 
 - [Roles and responsibility levels](07-roles-and-responsibility-levels.md)

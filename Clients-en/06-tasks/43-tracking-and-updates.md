@@ -136,3 +136,4 @@ For a detailed description of all the notification types, see the article [Task 
 | [Task notifications](./47-task-notifications.md) | Alert types and notification channels |
 | [Task reports](./48-task-reports.md) | Tracking metrics and export |
 | [Assign tasks to employees](./41-assign-tasks-to-employees.md) | How to assign and reassign tasks |
+| [Weekly task calendar](./111-weekly-task-calendar.md) | The week at a glance, day by day and hour by hour, with the gaps and overlaps |

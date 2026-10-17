@@ -74,6 +74,12 @@ O sistema mostrar-lhe-á um aviso a indicar quantos funcionários estão atribu�
 
 > **Nota de perfil:** a criação e edição de sucursais está disponível para os perfis **Owner** e **Manager** com permissões de administração de organização. A consulta da listagem de sucursais também está disponível para **Supervisor**.
 
+## Dar entrada a várias sucursais de uma vez
+
+Com muitos centros, o botão **Importar** da lista de sucursais evita criá-los um a um: um modelo de Excel com os seus centros e a sua equipa, revisão do que vai ser criado e confirmação. Explica-se em [Dar entrada a sucursais e equipa a partir de Excel](../02-funcionarios/110-dar-entrada-a-sucursais-e-equipa-a-partir-de-excel.md).
+
+---
+
 ## Artigos relacionados
 
 - [Configuração avançada de sucursal](58-configuracao-avancada-de-sucursal.md)

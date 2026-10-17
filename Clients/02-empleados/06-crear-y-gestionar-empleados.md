@@ -108,6 +108,12 @@ La gestión de perfiles está disponible para **manager** (nivel 3) y **owner** 
 
 ---
 
+## Dar de alta a muchas personas de una vez
+
+Si empieza con una plantilla de treinta o cuarenta personas, no hace falta crearlas una a una. En la lista de empleados, **Importar** descarga una plantilla de Excel con una pestaña para las sucursales y otra para las personas; la rellena, la sube y, antes de crear nada, ve qué va a pasar con cada fila. La bienvenida a la app se manda al final, cuando usted decida. Se explica en [Dar de alta sucursales y plantilla desde Excel](./110-dar-de-alta-sucursales-y-plantilla-desde-excel.md).
+
+---
+
 ## Artículos relacionados
 
 - [Roles y niveles de responsabilidad](07-roles-y-niveles-de-responsabilidad.md)

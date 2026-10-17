@@ -57,7 +57,7 @@ Criação, configuração, perfis e segurança dos funcionários na plataforma.
 | Autenticação de dois fatores (2FA) | **Disponível** | Compatível com aplicações TOTP (Google Authenticator, Authy). |
 | Verificação biométrica e dispositivos de confiança | **Disponível** | Configurável por funcionário a partir da aplicação. |
 | Funcionários atribuídos a várias entidades | **Disponível** | Seletor de entidade no início de sessão. |
-| Importação de funcionários a partir de CSV | **Disponível** | Carregamento inicial do quadro de pessoal com mapeamento de colunas. |
+| Entrada de sucursais e equipa a partir de Excel | **Disponível** | Um modelo com duas folhas; revê-se o que vai ser criado antes de confirmar; as boas-vindas à aplicação enviam-se no fim, quando decidir. |
 | Exportação do diretório de funcionários | **Planeada** | A lista consulta-se e filtra-se no ecrã, sem ficheiro descarregável. |
 
 | Artigo | Descrição |
@@ -70,6 +70,7 @@ Criação, configuração, perfis e segurança dos funcionários na plataforma.
 | [Funcionários multi-entidade](02-funcionarios/11-funcionarios-multi-entidade.md) | Um funcionário em várias organizações, seletor de entidade |
 | [Exportar a lista de funcionários](02-funcionarios/12-exportar-lista-de-funcionarios.md) | Estado da funcionalidade, alternativas disponíveis e RGPD |
 | [Equipas](02-funcionarios/99-equipas.md) | Criar equipas, aplicá-las a uma sucursal e guardar uma sucursal como equipa |
+| [Dar entrada a sucursais e equipa a partir de Excel](02-funcionarios/110-dar-entrada-a-sucursais-e-equipa-a-partir-de-excel.md) | Centros e pessoas de uma vez, com revisão antes de criar o que quer que seja e as boas-vindas à parte |
 
 ---
 
@@ -117,9 +118,11 @@ Configuração de turnos, horários base, calendários laborais e exceções ind
 | Descanso estrito ou flexível | **Disponível** | Duração fixa descontada, ou pausas marcadas pelo funcionário. |
 | Modelos de horário | **Disponível** | Guardar um horário semanal e aplicá-lo a outras sucursais. |
 | Ausências de funcionário por intervalo de datas, com marca de remunerada | **Disponível** | Remunerada, não remunerada ou por definir. |
-| Quadro de disponibilidade | **Disponível** | Cobertura por sucursal e dia, quem falta e porquê, e registo de dias livres a partir do quadro. |
+| Quadro de disponibilidade | **Disponível** | Cobertura por sucursal e dia, quem falta e porquê, registo de dias livres a partir do quadro e exportação para Excel. |
 | Herança de configuração em cascata | **Disponível** | Algoritmo de prioridade para calcular o calendário efetivo. |
 | Turnos rotativos (alternância A/B automática) | **Planeada** | Hoje resolve-se com uma sucursal por turno ou com horário próprio do funcionário. |
+| Escala semanal a partir de um modelo de Excel | **Disponível** | A semana de toda uma sucursal num só carregamento, uma folha por pessoa e revisão antes de aplicar; também a de uma pessoa a partir da sua ficha. |
+| Horário por tarefas (a jornada de cada dia são as suas tarefas) | **Parcialmente disponível** | Escolhe-se por pessoa na sua ficha. A sua aplicação precisa da próxima versão para o mostrar: não o ative ainda. |
 
 | Artigo | Descrição |
 |---|---|
@@ -189,6 +192,7 @@ Criação, atribuição, acompanhamento e avaliação de tarefas operacionais.
 | Estado «vencida» automático ao ultrapassar o prazo | **Planeada** | Hoje o vencimento reflete-se no cumprimento temporal. |
 | Configurar a antecedência dos avisos de vencimento | **Planeada** | Os avisos são emitidos; a sua antecedência não é configurável. |
 | Métricas agregadas de tarefas (conclusão, tempo médio) | **Planeada** | Calculáveis hoje a partir do relatório em Excel. |
+| Calendário semanal de tarefas | **Disponível** | Separador ao lado da lista: a semana por dia e hora, com os buracos, as sobreposições e o que vence; mesmos filtros que a lista. |
 
 | Artigo | Descrição |
 |---|---|
@@ -202,6 +206,7 @@ Criação, atribuição, acompanhamento e avaliação de tarefas operacionais.
 | [Avaliação do trabalhador](06-tarefas/46-avaliacao-do-trabalhador.md) | Escala de pontuação e impacto no índice de eficiência |
 | [Notificações de tarefas](06-tarefas/47-notificacoes-de-tarefas.md) | Eventos notificados na V1; lembretes no roadmap |
 | [Relatórios de tarefas](06-tarefas/48-relatorios-de-tarefas.md) | Métricas no backoffice e relatório em Excel, com as suas colunas de tempo |
+| [Calendário semanal de tarefas](06-tarefas/111-calendario-semanal-de-tarefas.md) | A semana num relance: o que há em cada dia, a que hora, em que estado e o que vence |
 
 ---
 
@@ -410,6 +415,7 @@ Add-ons que ligam o CheckBiz360 a outros programas que a sua empresa já utiliza
 | RentmanBiz — aviso de horas alteradas no Rentman | **Disponível** | O registo de ponto nunca é sobreposto |
 | Ecrã de configuração do add-on | **Pendente de desenvolvimento** | Durante a beta configura-o a equipa da Encodebiz |
 | Envio de tarefas para o Rentman | **Pendente de desenvolvimento** | Prevista numa versão futura |
+| Gestor operacional no Claude ou no ChatGPT | **Disponível** | Ligue a sua empresa ao seu assistente e peça-lhe a semana, as entradas e as alterações nas suas palavras; nada se guarda sem a sua confirmação |
 
 | Artigo | Descrição |
 |---|---|
@@ -418,6 +424,7 @@ Add-ons que ligam o CheckBiz360 a outros programas que a sua empresa já utiliza
 | [Ligar o RentmanBiz passo a passo](15-integracoes/95-ligar-o-rentmanbiz.md) | Do token do Rentman à primeira importação |
 | [O que se importa e o que fica pendente](15-integracoes/97-importacao-e-pendentes.md) | Pessoas, centros, responsabilidades e tarefas; e o que fazer com o pendente |
 | [Horas lançadas e avisos](15-integracoes/96-horas-lancadas-e-avisos.md) | Ler o painel, as divergências e as perguntas frequentes |
+| [O seu gestor operacional no Claude ou no ChatGPT](15-integracoes/109-o-seu-gestor-operacional-no-claude-ou-chatgpt.md) | Ligar a sua empresa ao seu assistente e o que lhe pedir: a semana inteira, entradas em bloco, alterações soltas |
 
 
 ---
@@ -462,11 +469,11 @@ Complemento pago: o material ligado à tarefa, à pessoa, ao sítio e à hora.
 DOCS/Clients-pt/
 ├── README.md                           (este índice)
 ├── 01-primeiros-passos/                (5 artigos)
-├── 02-funcionarios/                    (8 artigos)
+├── 02-funcionarios/                    (9 artigos)
 ├── 03-controlo-de-horarios/            (10 artigos)
 ├── 04-calendario-e-horarios/           (9 artigos)
 ├── 05-gestao-documental/               (9 artigos)
-├── 06-tarefas/                         (10 artigos)
+├── 06-tarefas/                         (11 artigos)
 ├── 07-inteligencia-operacional/        (8 artigos)
 ├── 08-sucursais-e-entidade/            (6 artigos)
 ├── 09-notificacoes/                    (6 artigos)
@@ -475,8 +482,8 @@ DOCS/Clients-pt/
 ├── 12-conformidade-legal/              (4 artigos)
 ├── 13-apoio-e-incidencias/             (4 artigos)
 ├── 14-referencia/                      (4 artigos)
-├── 15-integracoes/                     (5 artigos)
+├── 15-integracoes/                     (6 artigos)
 └── 16-inventario/                      (7 artigos)
 ```
 
-**Total: 105 artigos**
+**Total: 108 artigos**

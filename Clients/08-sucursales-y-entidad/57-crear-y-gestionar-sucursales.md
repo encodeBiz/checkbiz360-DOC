@@ -74,6 +74,12 @@ El sistema le mostrará un aviso indicando cuántos empleados están asignados a
 
 > **Nota de rol:** La creación y edición de sucursales está disponible para los roles **Owner** y **Manager** con permisos de administración de organización. La consulta del listado de sucursales también está disponible para **Supervisor**.
 
+## Dar de alta varias sucursales de una vez
+
+Con muchos centros, el botón **Importar** de la lista de sucursales evita crearlos uno a uno: una plantilla de Excel con sus centros y su gente, revisión de lo que se va a crear y confirmación. Se explica en [Dar de alta sucursales y plantilla desde Excel](../02-empleados/110-dar-de-alta-sucursales-y-plantilla-desde-excel.md).
+
+---
+
 ## Artículos relacionados
 
 - [Configuración avanzada de sucursal](58-configuracion-avanzada-de-sucursal.md)

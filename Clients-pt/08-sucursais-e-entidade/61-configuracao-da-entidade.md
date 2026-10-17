@@ -25,6 +25,8 @@ Acede-se a partir de **Entidade** no menu lateral, e o ecrã está organizado em
 
 Antes chamava-se *Identidade visual*. Já não configura cores nem imagens: serve para adaptar o nome dos locais de trabalho ao vocabulário da sua organização. Se os seus locais forem projetos ou obras, o backoffice di-lo-á assim no menu, nas listagens e nas fichas —por exemplo, «Detalhes de Obra»—. Deixar o campo em branco usa o nome por omissão.
 
+Neste mesmo separador está **Ligar ao Claude ou ao ChatGPT**: o endereço de ligação da sua empresa e os passos para o adicionar ao seu assistente, para lhe poder pedir a semana, as entradas e as alterações nas suas próprias palavras. Explica-se em [O seu gestor operacional no Claude ou no ChatGPT](../15-integracoes/109-o-seu-gestor-operacional-no-claude-ou-chatgpt.md).
+
 ---
 
 ## Colaboradores

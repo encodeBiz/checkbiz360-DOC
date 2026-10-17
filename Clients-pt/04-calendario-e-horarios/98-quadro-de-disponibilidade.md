@@ -29,7 +29,7 @@ Os funcionários que não têm sucursal atribuída aparecem agrupados numa linha
 
 - **Vista mensal ou semanal.** Alterne entre **Mensal** e **Semanal**, e avance ou recue com as setas de período.
 - **Filtrar por sucursal.** Por omissão veem-se **Todas**; escolha uma para se centrar nela.
-- **Exportar.** O botão **Exportar** descarrega um ficheiro CSV com uma linha por sucursal e dia: equipa, data, disponíveis, efetivos e percentagem de cobertura.
+- **Exportar.** O botão **Exportar** descarrega um Excel com uma linha por sucursal e dia: equipa, data, disponíveis, efetivos e percentagem de cobertura, pronto a abrir ou partilhar.
 
 > **Nota:** se os efetivos forem demasiados para serem calculados de uma só vez, o quadro pedir-lhe-á que escolha uma sucursal para ver a sua cobertura.
 

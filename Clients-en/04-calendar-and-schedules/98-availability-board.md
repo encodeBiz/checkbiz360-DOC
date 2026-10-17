@@ -29,7 +29,7 @@ Employees who have no branch assigned appear grouped in a separate row.
 
 - **Monthly or weekly view.** Switch between **Monthly** and **Weekly**, and move forwards or backwards with the period arrows.
 - **Filter by branch.** By default **All** are shown; choose one to focus on it.
-- **Export.** The **Export** button downloads a CSV file with one row per branch and day: team, date, available, headcount and coverage percentage.
+- **Export.** The **Export** button downloads an Excel file with one row per branch and day: team, date, available, headcount and coverage percentage, ready to open or share.
 
 > **Note:** if the workforce is too large to be calculated all at once, the board will ask you to choose a branch to see its coverage.
 

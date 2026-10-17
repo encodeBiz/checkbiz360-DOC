@@ -57,7 +57,7 @@ Creating, configuring and securing employees on the platform, and their roles.
 | Two-factor authentication (2FA) | **Available** | Compatible with TOTP apps (Google Authenticator, Authy). |
 | Biometric verification and trusted devices | **Available** | Configurable per employee from the app. |
 | Employees assigned to several organisations | **Available** | Organisation picker at sign-in. |
-| Importing employees from CSV | **Available** | Initial headcount upload with column mapping. |
+| Adding branches and staff from Excel | **Available** | One template with two sheets; you review what will be created before confirming; the app welcome goes out at the end, when you decide. |
 | Exporting the employee directory | **Planned** | The list is viewed and filtered on screen, with no downloadable file. |
 
 | Article | Description |
@@ -70,6 +70,7 @@ Creating, configuring and securing employees on the platform, and their roles.
 | [Multi-organisation employees](02-employees/11-multi-organisation-employees.md) | One employee in several organisations, organisation picker |
 | [Export the employee list](02-employees/12-export-employee-list.md) | Status of the feature, available alternatives and GDPR |
 | [Teams](02-employees/99-teams.md) | Create teams, apply them to a branch and save a branch as a team |
+| [Add branches and staff from Excel](02-employees/110-add-branches-and-staff-from-excel.md) | Sites and people in one go, reviewed before anything is created, with the welcome sent separately |
 
 ---
 
@@ -117,9 +118,11 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | Strict or flexible break | **Available** | A fixed duration deducted, or pauses marked by the employee. |
 | Schedule templates | **Available** | Save a weekly schedule and apply it to other branches. |
 | Employee absences by date range, with a paid mark | **Available** | Paid, unpaid or not set. |
-| Availability board | **Available** | Coverage by branch and day, who is missing and why, and adding days off from the board. |
+| Availability board | **Available** | Coverage by branch and day, who is missing and why, adding days off from the board and export to Excel. |
 | Cascading configuration inheritance | **Available** | Priority algorithm used to calculate the effective calendar. |
 | Rotating shifts (automatic A/B alternation) | **Planned** | Covered today with one branch per shift or with an employee-specific schedule. |
+| Weekly schedule from an Excel template | **Available** | A whole branch's week in one upload, one sheet per person, reviewed before applying; also one person's week from their profile. |
+| Schedule from tasks (each day's working time is its tasks) | **Partially available** | Chosen per person on their profile. Their app needs the next version to show it: do not enable it yet. |
 
 | Article | Description |
 |---|---|
@@ -189,6 +192,7 @@ Creating, assigning, tracking and rating operational tasks.
 | Automatic "overdue" status once the deadline passes | **Planned** | Today the deadline is reflected in the time-compliance indicator. |
 | Configuring how far in advance due warnings are sent | **Planned** | The warnings are issued; their lead time is not configurable. |
 | Aggregate task metrics (completion rate, average time) | **Planned** | Calculable today from the Excel report. |
+| Weekly task calendar | **Available** | A tab next to the list: the week by day and hour, with the gaps, the overlaps and what is due; same filters as the list. |
 
 | Article | Description |
 |---|---|
@@ -202,6 +206,7 @@ Creating, assigning, tracking and rating operational tasks.
 | [Employee rating](06-tasks/46-employee-rating.md) | Rating scale and its impact on the efficiency index |
 | [Task notifications](06-tasks/47-task-notifications.md) | Events notified in V1; reminders on the roadmap |
 | [Task reports](06-tasks/48-task-reports.md) | Metrics in the back office and the Excel report, with its time columns |
+| [Weekly task calendar](06-tasks/111-weekly-task-calendar.md) | The week at a glance: what there is each day, at what time, in what status and what is due |
 
 ---
 
@@ -410,6 +415,7 @@ Add-ons that connect CheckBiz360 with other software your company already uses, 
 | RentmanBiz — alert when hours are edited in Rentman | **Available** | The clock-in is never overwritten |
 | Add-on configuration screen | **Pending development** | During the beta the Encodebiz team sets it up |
 | Sending tasks to Rentman | **Pending development** | Planned for a future release |
+| Operations manager in Claude or ChatGPT | **Available** | Connect your company to your assistant and ask it for the week, new hires and changes in your own words; nothing is saved without your confirmation |
 
 | Article | Description |
 |---|---|
@@ -418,6 +424,7 @@ Add-ons that connect CheckBiz360 with other software your company already uses, 
 | [Connecting RentmanBiz step by step](15-integrations/95-connect-rentmanbiz.md) | From the Rentman token to the first import |
 | [What gets imported and what stays pending](15-integrations/97-import-and-pending.md) | People, sites, responsibilities and tasks; and what to do with pending items |
 | [Posted hours and alerts](15-integrations/96-posted-hours-and-alerts.md) | Reading the panel, discrepancies and FAQs |
+| [Your operations manager in Claude or ChatGPT](15-integrations/109-your-operations-manager-in-claude-or-chatgpt.md) | Connecting your company to your assistant and what to ask it: the whole week, bulk onboarding, single changes |
 
 
 ---
@@ -462,11 +469,11 @@ Paid add-on: material tied to the task, the person, the place and the time.
 DOCS/Clients-en/
 ├── README.md                           (this index)
 ├── 01-getting-started/                 (5 articles)
-├── 02-employees/                       (8 articles)
+├── 02-employees/                       (9 articles)
 ├── 03-time-tracking/                   (10 articles)
 ├── 04-calendar-and-schedules/          (9 articles)
 ├── 05-document-management/             (9 articles)
-├── 06-tasks/                           (10 articles)
+├── 06-tasks/                           (11 articles)
 ├── 07-operational-intelligence/        (8 articles)
 ├── 08-branches-and-organisation/       (6 articles)
 ├── 09-notifications/                   (6 articles)
@@ -475,8 +482,8 @@ DOCS/Clients-en/
 ├── 12-regulatory-compliance/           (4 articles)
 ├── 13-support-and-incidents/           (4 articles)
 ├── 14-reference/                       (4 articles)
-├── 15-integrations/                    (5 articles)
+├── 15-integrations/                    (6 articles)
 └── 16-inventory/                       (7 articles)
 ```
 
-**Total: 105 articles**
+**Total: 108 articles**

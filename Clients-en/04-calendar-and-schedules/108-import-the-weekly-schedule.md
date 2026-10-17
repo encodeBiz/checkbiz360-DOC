@@ -88,8 +88,7 @@ When you are happy, click **Confirm**. With many people it takes a moment and yo
 
 In the app, the imported week: their schedule for each day and their jobs, each with its time and address. They will clock in at the address of each job.
 
-- With the usual schedule, their working day runs from the start of the first job to the end of the last one.
-- If the person works with **Schedule from tasks**, their schedule for each day is their jobs, one after another, with the gaps in between. A day without jobs is a day off. In the app they always see the current week as it stands.
+Their working day runs from the start of the first job to the end of the last one.
 
 ---
 
