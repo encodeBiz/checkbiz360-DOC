@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-10-15
 **Estado:** Implementado el 2026-10-15 en `feat/horario-por-tareas` de `encodebiz-api` (7 commits, c80b34f..35e8d67), sin fusionar a `develop`; en dev ya están la migración, las reglas, la función y el índice. Lo hecho y lo que queda, en el §13.
-**Componente:** `encodebiz-api` — `packages/shared` (calendar), `services/checkinbiz` (calendar, checklog), `services/tasks` (validaciones), `services/firebase_sdk` (trigger), `services/analytics` (espejo y resolutor), `firestore.rules`, `firestore.indexes.json`
+**Componente:** `encodebiz-api` — `packages/shared` (calendar), `services/checkinbiz` (calendar, checklog), `services/tasks` (validaciones), `services/firebase_sdk` (trigger), `services/analytics` (espejo y resolutor), `firestore.rules`
 **Decisiones de referencia:** [README](../README.md), D1 a D4 y D10
 
 ---
@@ -371,23 +371,18 @@ servidor y lo lee el servidor; la app y el panel lo reciben por `GET /calendar` 
 disponibilidad. Desde el cliente, nada, ni leer: es el plan de una persona y, en parte,
 registro.
 
-**Índices.** Este repositorio no tiene `firestore.indexes.json` ni lo declara en
-`firebase.json`; el fichero vive en `encodeBiz-SAAS/firestore.indexes.json` y es el que poda en
-cada despliegue del SaaS. Hacen falta dos:
+**Índices.** Se gestionan solo con `gcloud`. El SaaS, que era quien desplegaba
+`firestore.indexes.json` y podaba lo que no estuviera en él, está retirado (Jose, 2026-10-17); y
+`encodebiz-api` no declara índices en su `firebase.json`, así que ningún despliegue desde aquí
+los toca. Hacen falta dos:
 
 | Colección | Ámbito | Campos | Para |
 |---|---|---|---|
 | `tasks` | colección | `assignedEmployeeIds` CONTAINS, `scheduledStartAt` ASC | generador, D4, activación |
 | `calendar_days` | grupo de colecciones | `entityId` ASC, `date` ASC | disponibilidad por rango |
 
-**Comprobado en dev el 2026-10-15 con `gcloud firestore indexes composite list`:** el de
-`tasks` **ya existe** en `dev-encodebiz` (145 índices desplegados), y **no está en el fichero
-del SaaS**, que solo tiene la variante de grupo con `branchId` en medio. Es la deriva de la
-que avisa «Índices Firestore: deriva» al revés: lo desplegado tiene más que el fichero, y el
-siguiente despliegue desde el SaaS lo podaría. El de `calendar_days` se creó ese día en dev con
-`gcloud … --async`. Queda pendiente, en el repositorio del SaaS, **añadir los dos al fichero**
-antes de su próximo despliegue; en producción, los dos con `gcloud` en el pase y el fichero ya
-al día.
+Comprobado en dev el 2026-10-15: el de `tasks` ya existía y el de `calendar_days` se creó ese
+día, y está `READY`. En producción, los dos con `gcloud` en el pase.
 
 La lectura del espejo y la del resolutor van por la subcolección de una persona con un solo
 campo (`date`), que no necesita índice compuesto.
@@ -413,7 +408,7 @@ campo (`date`), que no necesita índice compuesto.
 | `services/firebase_sdk/src/calendario/onWriteTaskForDay.ts` (nuevo), exportado como `onTaskDay` | el trigger de §4.1 |
 | `services/analytics/src/infrastructure/PostgresCalendarRepository.ts` y `PostgresAvailabilityRepository.ts` | lecturas desde `dim_calendar_days` |
 | `services/analytics/src/application/SyncDimensions.ts`, `PostgresCalendarRepository.ts`, `migrations/037_horario_por_tareas.sql` | §7 |
-| `firestore.rules`, `firestore.indexes.json` | §8 |
+| `firestore.rules`; índices con `gcloud` | §8 |
 
 Nada de lo anterior cambia la forma de lo que ya existe: campos nuevos, valores nuevos en
 uniones, métodos nuevos. Una persona sin el modo no nota el despliegue.
@@ -489,8 +484,7 @@ Nada de esto afecta a nadie: no hay ninguna persona en el modo hasta que alguien
 2. Lanzar `npx playwright test tests/con-datos/54-horario-por-tareas.spec.ts` y dejar el
    resultado aquí. Si el índice de `calendar_days` aún está construyéndose, HPT-08 falla con
    `FAILED_PRECONDITION`; no es regresión, es esperar.
-3. En `encodeBiz-SAAS/firestore.indexes.json`, añadir los dos índices de §8 antes del
-   próximo despliegue del SaaS, o lo podará.
+3. ~~Añadir los índices al fichero del SaaS~~: no aplica, el SaaS está retirado (2026-10-17).
 4. En el pase a producción: migración 037 a mano mirando el resultado, los dos índices con
    `gcloud`, `onTaskDay` con `desplegar.mjs --project encodebiz-services --solo onTaskDay`, y
    las reglas. Todo con `--project` explícito.
