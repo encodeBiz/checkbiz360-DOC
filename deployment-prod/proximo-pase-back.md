@@ -22,7 +22,7 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 | Rama | Qué | Necesita fuera del código | Sección |
 |---|---|---|---|
 | `feat/horario-por-tareas*`, `fix/horario-por-tareas-*` y otras sesiones (D11, importación) | Horario por tareas, fases 1 y 2, D11 | migraciones 037 y 040, dos índices, `onTaskDay` y `weeklyFromTaskDays`, reglas, panel y app | §1 |
-| `feat/conector-asistente` | Conector de Claude y ChatGPT, fase 1 | servicio `assistant` nuevo, nginx, secretos, reglas | §2 |
+| `feat/conector-asistente`, `feat/importacion-plantilla` | Conector de Claude y ChatGPT (fases 1 y 2, tandas) y alta por plantilla; sin cupo | servicios `assistant` y **`branches`** nuevos en prod, nginx, secretos, dominio en Firebase Auth, reglas, dos variables en Vercel | §2 |
 | `feat/cuadrantes-plantilla` | Cuadrante por plantilla de sucursal y de persona; el Excel de otros programas; el horario propio al aprobar; reglas que cierran las subcolecciones | nginx (`client_max_body_size`), reglas, panel, manual | §3 |
 | `fix/buscador-varias-palabras` (panel) | Los buscadores del índice encuentran con varias palabras («maria campo») | nada: solo panel | §3 |
 | `feat/material-por-destino` | Material hacia tarea, persona o sucursal | migración 034 | §4 |
@@ -67,7 +67,7 @@ Lo que sube, para tenerlo delante:
 | 1.4 | Migración 040 (otra sesión: índice del calendario semanal de tareas) | Igual que 1.3, con `040_tareas_calendario.sql`. Esperado: `CREATE INDEX` | PENDIENTE |
 | 1.5 | Reglas de Firestore | Con el fichero de `main` ya fusionado (§5): `calendar_days` en `soloServidor`. Guardar antes el ruleset vivo | PENDIENTE |
 | 1.6 | Contenedores | Los despliega el workflow al fusionar `staging → main`: `checkinbiz`, `tasks`, `reports`, `analytics`, `employees`, `merlin` con el código nuevo. **Nunca a mano en prod** | PENDIENTE |
-| 1.7 | Entorno de prod | Comprobar que `checkinbiz` y `employees` reciben `ENCODEBIZ_API_KEY` (los dos llaman a otros servicios con la clave S2S). `TASKS_INTERNAL_URL`, `CHECKINBIZ_INTERNAL_URL` y `BRANCHES_INTERNAL_URL` tienen valor por defecto en el código (`http://tasks:3006`, `http://checkinbiz:3002`, `http://branches:3014`) y valen en prod: no hay que añadirlas | PENDIENTE |
+| 1.7 | Entorno de prod | Comprobar que `checkinbiz` y `employees` reciben `ENCODEBIZ_API_KEY` (los dos llaman a otros servicios con la clave S2S). `TASKS_INTERNAL_URL`, `CHECKINBIZ_INTERNAL_URL` y `BRANCHES_INTERNAL_URL` tienen valor por defecto en el código (`http://tasks:3006`, `http://checkinbiz:3002`, `http://branches:3014`) y valen en prod: no hay que añadirlas. **Corregido el 17-oct:** `branches` no corre en prod hasta que lo arranque §2.2; sin él, lo que llama a `branches:3014` falla | PENDIENTE |
 | 1.8 | Funciones de Firebase | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo <nombre>` con cada una: `onTaskDay`, `weeklyFromTaskDays` y, por la fase 3 (TDR-005), `employeePlanifierWorker`, `planifierNotificationWorker` y `taskStartNotificationWorker`. Nunca el codebase entero (README de `firebase_sdk`). Las tres de la fase 3 cambian también para quien NO está en el modo solo en que el job de las 04:00 salta a quien sí lo está | PENDIENTE |
 | 1.9 | Comprobación de la API | `firebase functions:list --project encodebiz-services` con las dos; `\d dim_calendar_days` en prod; `GET /calendar` de cualquier empleado devuelve `scheduleMode: "weekly"`; `PATCH /calendar` con `scope: "branch"` y `scheduleMode: "tasks"` responde 400 `calendar/schedule_mode_employee_only` | PENDIENTE |
 | 1.10 | Panel | `encodebiz-front-saas`: `develop → main` y promoción en Vercel. Sin variables nuevas. El selector está solo en la ficha del empleado, al apagar «Usar horario base» | PENDIENTE |
@@ -80,17 +80,92 @@ Lo que sube, para tenerlo delante:
 
 ---
 
-## 2. Conector de Claude y ChatGPT, fase 1 — PENDIENTE, por detallar
+## 2. Conector de Claude y ChatGPT y alta por plantilla — PENDIENTE, guion completo
 
-Diseño: `DOCS/ingenieria/conector-asistente` (TDR-001). En staging desde el 2026-10-15.
+**Detallado el 2026-10-17.** Jose lo da por probado para una primera versión: conectado de
+punta a punta con ChatGPT web y con Claude en staging, sobre la empresa de demo (Álvarez), con
+las 22 herramientas, el alta masiva y el cuadrante por tandas.
 
-| # | Paso | Estado |
+Diseño: [conector-asistente](../ingenieria/conector-asistente/README.md) (ADR-001 a ADR-007,
+TDR-001 y TDR-002) y [alta-por-plantilla](../ingenieria/alta-por-plantilla/README.md)
+(TDR-001). Van juntos porque el alta masiva del asistente es el lote de la plantilla, y las
+dos crean sucursales por el mismo contenedor.
+
+### Lo que sube
+
+| Pieza | Dónde | En staging desde |
 |---|---|---|
-| 2.1 | `docker-compose.yml` de prod: el bloque `assistant` (puerto 3017) calcado del de staging, con `ASSISTANT_PUBLIC_URL=https://api.checkbiz360.com/api/v1/assistant` | PENDIENTE |
-| 2.2 | `nginx/nginx.conf` de prod: hoy solo tiene el upstream; faltan las rutas `.well-known/oauth-authorization-server`, `.well-known/oauth-protected-resource` (con `^~`) y `/api/v1/assistant/` como en `nginx.staging.conf` | PENDIENTE |
-| 2.3 | `.env.production`: `ASSISTANT_COOKIE_SECRET` y la config web de Firebase de prod (`ASSISTANT_FIREBASE_API_KEY`, `_AUTH_DOMAIN`, `_PROJECT_ID`, `_APP_ID`) | PENDIENTE |
-| 2.4 | Reglas: `assistant_.*` en `soloServidor` (va en el mismo despliegue que 1.4) | PENDIENTE |
-| 2.5 | Lo que diga el TDR del conector sobre su despliegue y pruebas: **leerlo y traer aquí lo que falte** | PENDIENTE |
+| Servidor de autorización OAuth 2.1 (PKCE, CIMD, `private_key_jwt` de ChatGPT), pantalla de consentimiento con el login y el 2FA del panel, MCP por empresa en `/mcp/e/{entityId}` | `services/assistant` (nuevo, 3017) | 15-oct (fase 1) |
+| 22 herramientas: lectura, cuadrante por tandas, cambios de tareas, horario y modo, altas sueltas y masivas, bienvenidas | `services/assistant` | 16-oct (fase 2); tandas, 16-oct (ADR-007) |
+| Persona delegada: la clave S2S más `x-actor-uid` con los permisos de esa persona (ADR-005) | `shared` (`requireDelegatedUser`), montada en `tasks`, `checkinbiz` (calendario), `employees` y `branches` | 16-oct |
+| Cuadrante desde filas, Excel rellenado por el servidor, retirada de lo que ya no está (ADR-006), tandas con `loteId` | `merlin` (`soporte/cuadrantes`) | 16-oct |
+| Alta por plantilla: plantilla en cinco idiomas, propuesta que no escribe, aplicación en segundo plano, ocupaciones del catálogo, modo de horario, bienvenida aparte | `employees` (`/import`, `/welcome`, `/delegated/*`) | 16-oct |
+| Sin cupo: `canCreateBranch` y `canCreateEmployee` solo exigen suscripción activa o en prueba | `shared` (`checkbiz/plan/subscriptionLimits.ts`) | 16-oct |
+| Panel: la dirección del conector y el paso a paso en «Entorno de trabajo»; el diálogo «Importar plantilla» en empleados y sucursales | `encodebiz-front-saas`, solo en `develop` | — |
+
+**Cambio visible para los clientes:** con el «sin cupo», un alta de empleado o de sucursal que
+hoy `checkinbiz` rechaza por el límite del plan pasará a entrar (decisión de Jose, 16-oct). El
+tope de diez empleados que aplica el **panel** en el plan gratuito sigue ahí y queda
+incoherente con la regla: decisión aparte, no bloquea el pase.
+
+### Depende de otras secciones
+
+- **§1 (horario por tareas):** `cambiar_modo_horario` y la columna «Horario» de la plantilla
+  escriben por la ruta delegada del calendario de `checkinbiz`, que es de §1.
+- **§3 (cuadrantes por plantilla):** las herramientas del cuadrante son el lote de §3.
+- **§5 (reglas):** `assistant_.*` y `staff_imports` ya están en `soloServidor` del
+  `firestore.rules` de staging. Van en el despliegue único de §5, no en uno propio.
+
+Orden: §1 y §3 antes que este. Si §1 se aplaza, el conector puede subir igual: la herramienta
+del modo y la columna «Horario» fallarán con un error legible, y el resto funciona.
+
+### 🔴 Lo que no estaba apuntado: el contenedor `branches` no existe en producción
+
+El código de `services/branches` está en `main` desde el 8-sep (salida del monolito, fase 2),
+pero `docker-compose.yml` de producción **no lo arranca**. En prod las sucursales del panel
+siguen en Firebase. El conector (`crear_sucursal`, el alta masiva) y la importación por
+plantilla crean sucursales por `http://branches:3014/api/v1/branches/delegated`. Sin el
+contenedor, esa llamada falla y la persona ve el error de la herramienta.
+
+Decisión para este pase: **arrancar `branches` solo en la red interna**, sin ruta en nginx. El
+panel sigue creando sucursales por Firebase como hoy. Abrir `/api/v1/branches/` al público es
+el corte de la fase 2 de la salida del monolito y **no** entra aquí. Lo mismo con `entities`,
+que este pase no necesita.
+
+### Guion, en orden
+
+| # | Paso | Cómo | Estado |
+|---|---|---|---|
+| 2.1 | Código | Entra con el despliegue normal (`staging → main`, action *CI/CD*). Comprobar antes en el PR que `main` recibe `services/assistant`, los cambios de `merlin`, `employees`, `branches`, `tasks`, `checkinbiz` y `shared`, y `5c38f5e` (las tandas) | PENDIENTE |
+| 2.2 | `docker-compose.yml` de prod: `branches` | Bloque calcado de `docker-compose.staging.yml` (`<<: *service`, `PORT=3014`, `expose: 3014`, healthcheck a `/health`), **sin** `ports:`. Va en el mismo PR que 2.1 | PENDIENTE |
+| 2.3 | `docker-compose.yml` de prod: `assistant` | Calcado del de staging con `ASSISTANT_PUBLIC_URL=https://api.checkbiz360.com/api/v1/assistant` y `ASSISTANT_CLIENT_HOSTS=claude.ai,claude.com,chatgpt.com,openai.com`. Las `*_INTERNAL_URL` (checkinbiz, tasks, merlin, employees, branches) tienen el valor por defecto correcto; ponerlas igual que en staging para que se lean. **Nunca** `ASSISTANT_ALLOW_LOCALHOST`. Mismo PR | PENDIENTE |
+| 2.4 | `employees` en prod: `BRANCHES_INTERNAL_URL=http://branches:3014` | En el bloque `employees` de `docker-compose.yml`, como en staging (el código ya lo tiene por defecto; se pone para que se vea). Mismo PR | PENDIENTE |
+| 2.5 | `nginx/nginx.conf` de prod: el conector | `upstream assistant_service { server assistant:3017; }` (hoy **no** está, contra lo que decía este documento); `location = /api/v1/assistant`; `location ^~ /.well-known/oauth-authorization-server` y `location ^~ /.well-known/oauth-protected-resource` hacia `assistant_service`; `location /api/v1/assistant/` con `client_max_body_size 4m` (ADR-007). Todo como en `nginx.staging.conf`. Mismo PR | PENDIENTE |
+| 2.6 | `nginx/nginx.conf` de prod: la importación | Hoy prod abre solo `/api/v1/employees/teams`, y a propósito (el comentario lo explica). Abrir **solo** `location /api/v1/employees/import/` y `location = /api/v1/employees/import` con `client_max_body_size 4m`, y `location = /api/v1/employees/welcome`. **No** abrir el prefijo entero: el alta, la edición y la baja de producción siguen en Firebase. Las rutas `/delegated/*` no se abren: son internas del conector. Mismo PR | PENDIENTE |
+| 2.7 | `.env.production` | `ASSISTANT_COOKIE_SECRET` (32 bytes nuevos, `openssl rand -base64 32`, **distinto** del de staging) y la config web de Firebase de **`encodebiz-services`**: `ASSISTANT_FIREBASE_API_KEY`, `_AUTH_DOMAIN`, `_PROJECT_ID`, `_APP_ID` (de la consola de Firebase, app web del panel; `vercel env pull` las devuelve vacías). Copia antes: `cp .env.production .env.production.bak-$(date +%F)`. Sin estas variables el servicio arranca con la autorización apagada y lo avisa en el log | PENDIENTE |
+| 2.8 | Firebase Auth de prod: dominio autorizado | Añadir `api.checkbiz360.com` a los dominios autorizados de `encodebiz-services`. Como en dev el 16-oct: leer primero la lista (`GET` de la config de Identity Toolkit admin v2) y hacer `PATCH … ?updateMask=authorizedDomains` con **la lista entera más el dominio**, nunca solo el nuevo. O desde la consola. Sin esto, la pantalla de consentimiento no deja entrar | PENDIENTE |
+| 2.9 | Reglas | En el despliegue único de §5. Comprobar que el fichero que sale lleva `assistant_.*` y `staff_imports` en `soloServidor` | PENDIENTE |
+| 2.10 | Índices | **Ninguno.** Las consultas del conector y de la importación son de igualdad y van con los índices de campo (TDR-001 §16) | — |
+| 2.11 | TTL (opcional) | Política TTL sobre `expiresAt` en `assistant_auth_requests` y `assistant_tokens`. Mientras no esté, el servicio barre lo vencido al escribir | PENDIENTE |
+| 2.12 | Arranque | Tras el deploy: `docker compose -p encodebiz-api --env-file .env.production -f docker-compose.yml ps assistant branches employees merlin` → los cuatro `healthy`. Reiniciar nginx (el action lo hace; a mano, `restart nginx`). Log de `assistant` **sin** «la autorización está apagada» | PENDIENTE |
+| 2.13 | Sondas sin sesión | `curl -s -o /dev/null -w '%{http_code}' https://api.checkbiz360.com/.well-known/oauth-authorization-server` → `200`; `…/.well-known/oauth-protected-resource/api/v1/assistant/mcp/e/<entityId>` → `200`; `curl -s -X POST https://api.checkbiz360.com/api/v1/assistant/mcp/e/<entityId>` → `401` con cabecera `WWW-Authenticate`. `GET https://api.checkbiz360.com/api/v1/employees/import/template` sin token → `401`, **no** `404` (el `404` es nginx sin la ruta de 2.6) | PENDIENTE |
+| 2.14 | `branches` desde dentro | `docker compose … exec -T employees wget -qO- http://branches:3014/health` → responde. Si no, el alta de sucursales del conector y de la plantilla fallará | PENDIENTE |
+| 2.15 | Panel: variables en Vercel (producción) | `NEXT_PUBLIC_ASSISTANT_CONNECTOR_BASE=https://api.checkbiz360.com/api/v1/assistant` y `NEXT_BACKEND_URI_STAFF_IMPORT_HANDLER=https://api.checkbiz360.com/api/v1/employees`. **Antes** del despliegue del panel: la primera es pública y se compila dentro | PENDIENTE |
+| 2.16 | Panel: código | `develop → staging → main` del panel **después** de 2.12. Hoy `staging` del panel no tiene ni la sección del conector (`94d39ab6`) ni el diálogo de importación (`24440960`, `5d285adc` y anteriores). Ojo: `develop` del panel lleva también el calendario de §8 y otras sesiones. Se sube junto, en el orden de §8.5 | PENDIENTE |
+| 2.17 | Prueba con sesión real (con Jose) | En una empresa de prueba de producción, nunca en la de un cliente: (a) Entorno de trabajo → copiar la dirección del conector; (b) en Claude y en ChatGPT web, añadir el conector, entrar con la cuenta del panel y el 2FA, aceptar; (c) `conexion_actual`, `listar_sucursales`, `ver_semana`; (d) `proponer_cuadrante` de una persona **sin confirmar**, abrir el enlace del Excel y descartar; (e) en el panel, «Importar plantilla» con dos personas y una sucursal: proponer, confirmar, comprobar que aparecen en el buscador; (f) en el panel, revocar la conexión y comprobar que el asistente pierde el acceso | PENDIENTE |
+| 2.18 | Instrucciones para clientes | El texto para el proyecto de ChatGPT (17-oct, en la conversación con Jose) va al manual de clientes antes de anunciarlo | PENDIENTE |
+
+### Si algo falla
+
+Todo es aditivo y nada de lo existente depende de ello:
+
+- **Conector:** parar el contenedor (`… stop assistant`). Las conexiones quedan en Firestore, pero
+  sin servicio no hay acceso. Revocar en bloque, si hiciera falta, es borrar
+  `assistant_tokens`. No hay migraciones que deshacer.
+- **Importación:** quitar las rutas de 2.6 y reiniciar nginx. El panel enseña el error en el
+  diálogo y nada más cambia.
+- **`branches`:** pararlo deja sin alta de sucursales al conector y a la plantilla. El panel no se entera.
+- **Sin cupo:** es código de `shared`. Volver atrás es un revert de ese fichero, no un dato.
 
 ---
 
