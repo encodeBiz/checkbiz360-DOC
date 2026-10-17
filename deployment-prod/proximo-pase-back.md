@@ -104,6 +104,7 @@ dos crean sucursales por el mismo contenedor.
 | Persona delegada: la clave S2S más `x-actor-uid` con los permisos de esa persona (ADR-005) | `shared` (`requireDelegatedUser`), montada en `tasks`, `checkinbiz` (calendario), `employees` y `branches` | 16-oct |
 | Cuadrante desde filas, Excel rellenado por el servidor, retirada de lo que ya no está (ADR-006), tandas con `loteId` | `merlin` (`soporte/cuadrantes`) | 16-oct |
 | Alta por plantilla: plantilla en cinco idiomas, propuesta que no escribe, aplicación en segundo plano, ocupaciones del catálogo, modo de horario, bienvenida aparte | `employees` (`/import`, `/welcome`, `/delegated/*`) | 16-oct |
+| Fase 3, el gestor operativo: `ver_hoy`, `ver_alertas`, `ver_disponibilidad`, `ver_disponibilidad_dia`, `quien_puede_cubrir`, `ver_semanas`, `ver_costes`, `informe_jornada` (ADR-008, TDR-003) | `services/assistant`; puerta delegada nueva en `analytics` (`/api/analytics/delegated/panel`) y en `reports` (`POST /api/reports/delegated/generate`) | 17-oct |
 | Sin cupo: `canCreateBranch` y `canCreateEmployee` solo exigen suscripción activa o en prueba | `shared` (`checkbiz/plan/subscriptionLimits.ts`) | 16-oct |
 | Panel: la dirección del conector y el paso a paso en «Entorno de trabajo»; el diálogo «Importar plantilla» en empleados y sucursales | `encodebiz-front-saas`, solo en `develop` | — |
 
@@ -149,6 +150,7 @@ que este pase no necesita.
 | 2.7 | `.env.production` | `ASSISTANT_COOKIE_SECRET` (32 bytes nuevos, `openssl rand -base64 32`, **distinto** del de staging) y la config web de Firebase de **`encodebiz-services`**: `ASSISTANT_FIREBASE_API_KEY`, `_AUTH_DOMAIN`, `_PROJECT_ID`, `_APP_ID` (de la consola de Firebase, app web del panel; `vercel env pull` las devuelve vacías). Copia antes: `cp .env.production .env.production.bak-$(date +%F)`. Sin estas variables el servicio arranca con la autorización apagada y lo avisa en el log | HECHO 17-oct, ver registro |
 | 2.8 | Firebase Auth de prod: dominio autorizado | Añadir `api.checkbiz360.com` a los dominios autorizados de `encodebiz-services`. Como en dev el 16-oct: leer primero la lista (`GET` de la config de Identity Toolkit admin v2) y hacer `PATCH … ?updateMask=authorizedDomains` con **la lista entera más el dominio**, nunca solo el nuevo. O desde la consola. Sin esto, la pantalla de consentimiento no deja entrar | HECHO 17-oct, ver registro |
 | 2.9 | Reglas | En el despliegue único de §5. Comprobar que el fichero que sale lleva `assistant_.*` y `staff_imports` en `soloServidor` | HECHO 17-oct, ver registro |
+| 2.9b | Fase 3: nada fuera del código | Las puertas delegadas de `analytics` y `reports` son internas: **sin** rutas en nginx. El conector las llama por `http://analytics:3004` y `http://reports:3005`, que son los valores por defecto del código; en el compose de prod basta con ponerlas en el bloque `assistant` para que se lean (`ANALYTICS_INTERNAL_URL`, `REPORTS_INTERNAL_URL`). `analytics` y `reports` se reconstruyen con el despliegue normal | PENDIENTE |
 | 2.10 | Índices | **Ninguno.** Las consultas del conector y de la importación son de igualdad y van con los índices de campo (TDR-001 §16) | — |
 | 2.11 | TTL (opcional) | Política TTL sobre `expiresAt` en `assistant_auth_requests` y `assistant_tokens`. Mientras no esté, el servicio barre lo vencido al escribir | OPCIONAL, no hecho el 17-oct |
 | 2.12 | Arranque | Tras el deploy: `docker compose -p encodebiz-api --env-file .env.production -f docker-compose.yml ps assistant branches employees merlin` → los cuatro `healthy`. Reiniciar nginx (el action lo hace; a mano, `restart nginx`). Log de `assistant` **sin** «la autorización está apagada» | HECHO 17-oct, ver registro |
@@ -157,7 +159,18 @@ que este pase no necesita.
 | 2.15 | Panel: variables en Vercel (producción) | `NEXT_PUBLIC_ASSISTANT_CONNECTOR_BASE=https://api.checkbiz360.com/api/v1/assistant` y `NEXT_BACKEND_URI_STAFF_IMPORT_HANDLER=https://api.checkbiz360.com/api/v1/employees`. **Antes** del despliegue del panel: la primera es pública y se compila dentro | HECHO 17-oct, ver registro |
 | 2.16 | Panel: código | `develop → staging → main` del panel **después** de 2.12. Hoy `staging` del panel no tiene ni la sección del conector (`94d39ab6`) ni el diálogo de importación (`24440960`, `5d285adc` y anteriores). Ojo: `develop` del panel lleva también el calendario de §8 y otras sesiones. Se sube junto, en el orden de §8.5 | HECHO 17-oct, ver registro |
 | 2.17 | Prueba con sesión real (con Jose) | En una empresa de prueba de producción, nunca en la de un cliente: (a) Entorno de trabajo → copiar la dirección del conector; (b) en Claude y en ChatGPT web, añadir el conector, entrar con la cuenta del panel y el 2FA, aceptar; (c) `conexion_actual`, `listar_sucursales`, `ver_semana`; (d) `proponer_cuadrante` de una persona **sin confirmar**, abrir el enlace del Excel y descartar; (e) en el panel, «Importar plantilla» con dos personas y una sucursal: proponer, confirmar, comprobar que aparecen en el buscador; (f) en el panel, revocar la conexión y comprobar que el asistente pierde el acceso | PENDIENTE: Jose, con sesión real (la infraestructura está sondeada, ver registro) |
+| 2.17b | Prueba de la fase 3 (con Jose) | En la misma empresa de prueba: «¿cómo va hoy?» (`ver_alertas`, `ver_hoy`), «¿quién puede cubrir esta tarea?» sobre una tarea de hoy, y un `informe_jornada` corto. El informe queda en el histórico de informes del panel: hacerlo en la empresa de prueba | PENDIENTE |
 | 2.18 | Instrucciones para clientes | El texto para el proyecto de ChatGPT (17-oct, en la conversación con Jose) va al manual de clientes antes de anunciarlo | PENDIENTE: manual |
+
+### 🔴 Hallazgo de seguridad al margen del pase: Merlin sin control de empresa
+
+Visto el 17-oct al diseñar la fase 3 (ADR-008, Consecuencias). `POST /api/v1/gpt/panel` y
+`POST /api/v1/gpt/interpret` de `merlin` exigen sesión de Firebase, pero **no comprueban que
+quien pide pertenezca a la empresa**. Cualquier cuenta con sesión obtiene el relato del panel
+o la interpretación de patrones de otra empresa si conoce su `entityId`. **Afecta a
+producción hoy**, con o sin este pase. No se ha tocado: antes hay que saber si la app llama a
+`interpret` con `audience: "employee"` para la propia persona, porque un control de owner o
+admin la rompería. Decisión de Jose.
 
 ### Si algo falla
 
