@@ -95,6 +95,8 @@ TDR-001 y TDR-002) y [alta-por-plantilla](../ingenieria/alta-por-plantilla/READM
 (TDR-001). Van juntos porque el alta masiva del asistente es el lote de la plantilla, y las
 dos crean sucursales por el mismo contenedor.
 
+> **En producción el 2026-10-17, ~16:45 UTC** (PR #163, `461f3fb`, *Production CI/CD* en verde): fase 3 (gestor operativo), multiempresa (ADR-009, URL personal `/api/v1/assistant/mcp`) y corte de sesiones (baja o desactivación de colaborador en `checkinbiz`; corte desde el panel por empresa). Sondas: metadatos de la URL personal 200, MCP personal y por empresa 401 sin token, `/connections?entityId=` 401 sin token, puerta delegada de `analytics` 403 a una cuenta inexistente. Antes, a petición de Jose, se revocó la única conexión viva de prod (Claude de hola@encodebiz.com). **El panel no ha subido** (Jose: «olvida el panel»): el apartado «Conexiones» y las sesiones en la ficha del colaborador están solo en `develop` del panel (`730185ef`).
+
 ### Lo que sube
 
 | Pieza | Dónde | En staging desde |
