@@ -1,6 +1,6 @@
 # Pase a producción — cuadrante por plantilla (octubre 2026)
 
-**Estado: pendiente, sin fecha.** Jose, 2026-10-16: «ve documentando el pase a prod como pendiente
+**Estado: pendiente, sin fecha. El guion del día del pase está en [proximo-pase-back.md](./proximo-pase-back.md) §3** (y §1, §5 para lo compartido); este registro guarda el detalle, las pruebas y las decisiones. Jose, 2026-10-16: «ve documentando el pase a prod como pendiente
 para que no se olviden cosas». Se va completando; el día del pase se ejecuta en el orden de §7 y
 cada paso se anota en §8 con hora y resultado, como en
 [2026-10-inventario-firma-back.md](./2026-10-inventario-firma-back.md).

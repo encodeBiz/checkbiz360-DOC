@@ -23,7 +23,8 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 |---|---|---|---|
 | `feat/horario-por-tareas*`, `fix/horario-por-tareas-*` y otras sesiones (D11, importación) | Horario por tareas, fases 1 y 2, D11 | migraciones 037 y 040, dos índices, `onTaskDay` y `weeklyFromTaskDays`, reglas, panel y app | §1 |
 | `feat/conector-asistente` | Conector de Claude y ChatGPT, fase 1 | servicio `assistant` nuevo, nginx, secretos, reglas | §2 |
-| `feat/cuadrantes-plantilla` (×2) | Cuadrante por plantilla de sucursal y de persona | nginx (`client_max_body_size`), reglas | §3 |
+| `feat/cuadrantes-plantilla` | Cuadrante por plantilla de sucursal y de persona; el Excel de otros programas; el horario propio al aprobar; reglas que cierran las subcolecciones | nginx (`client_max_body_size`), reglas, panel, manual | §3 |
+| `fix/buscador-varias-palabras` (panel) | Los buscadores del índice encuentran con varias palabras («maria campo») | nada: solo panel | §3 |
 | `feat/material-por-destino` | Material hacia tarea, persona o sucursal | migración 034 | §4 |
 | `feat/calendario-tareas-resumen` | Calendario semanal de tareas resumido en Postgres (ADR-008) | migración 040, un índice | §8 |
 | `fix/reglas-collection-group` | Consultas de grupo | **ya en prod desde el 14-oct**; falta que `main` tenga el fichero | §5 |
@@ -53,7 +54,7 @@ Lo que sube, para tenerlo delante:
 | `onTaskDay` (regenera días; sale si la escritura no cambia el día; copia la semana, D11) | `firebase_sdk` | fases 1–2 y otra sesión (D11) |
 | `weeklyFromTaskDays` (copia la semana activa a las 03:00 y 15:00 de Madrid) | `firebase_sdk` | otra sesión (D11) |
 | Modo de cada persona en la importación por plantilla | `employees` (`horario.ts`, `importacion.ts`) | otra sesión |
-| Cuadrante: en el modo solo crea tareas | `merlin` (`cuadrantes/application/aplicar.ts`) | otra sesión, por confirmar (fase 5) |
+| Cuadrante: en el modo solo crea tareas (D10) | `merlin` (`cuadrantes/application/aplicar.ts`) | sesión de cuadrantes, hecho y probado en staging el 16-oct (§3) |
 | Selector «Horario semanal / por tareas» en la ficha del empleado | panel | TDR-002 |
 | Fichar mueve la tarea, tarea del turno bajo los botones, avisos | app | TDR-003 §8 |
 
@@ -93,15 +94,45 @@ Diseño: `DOCS/ingenieria/conector-asistente` (TDR-001). En staging desde el 202
 
 ---
 
-## 3. Cuadrantes por plantilla — PENDIENTE, por detallar
+## 3. Cuadrantes por plantilla — PENDIENTE, listo para ejecutar
 
-| # | Paso | Estado |
-|---|---|---|
-| 3.1 | nginx de prod: `client_max_body_size 4m` en la ruta de cuadrantes (ya está en `nginx/nginx.conf` de staging; comprobar que llega con el merge) | PENDIENTE |
-| 3.2 | Reglas: `cuadrante_proposals` y `cuadrante_lotes` en `soloServidor` (mismo despliegue que 1.4) | PENDIENTE |
-| 3.3 | Lo que diga `cuadrantes/tdr/TDR-001` §11: **leerlo y traer aquí lo que falte** | PENDIENTE |
+Diseño: [cuadrantes/tdr/TDR-001](../ingenieria/cuadrantes/tdr/TDR-001-importacion-por-plantilla-de-sucursal.md).
+Detalle, pruebas y decisiones: [2026-10-cuadrantes-plantilla.md](./2026-10-cuadrantes-plantilla.md).
+En `staging` de la API desde el 2026-10-15 y en `develop` del panel; probado por Jose en staging
+el 16-oct con su panel local (§7b de ese registro).
 
----
+**Qué cambia para el cliente.** En la ficha de la sucursal, «Importar cuadrante»: una plantilla
+de Excel con una pestaña por persona, una subida para toda la plantilla, revisión por persona y
+confirmar. En la ficha del empleado, además del documento de su programa, «Descargar plantilla»
+con solo su pestaña. Y todos los buscadores del panel encuentran con varias palabras.
+
+**Qué no necesita.** Ni contenedor, ni variable, ni migración, ni índice, ni clave de Vercel
+(todo va por `cuadrantes_handler`, en uso en prod desde el 20-sep). Las colecciones nuevas
+(`cuadrante_lotes`) se crean solas.
+
+**Lo que puede fallar y qué se vería.**
+
+- *Sin el `client_max_body_size 4m`* nginx corta en un mega: un Excel de más de unos 750 KB llega
+  como 413 y el panel dice «No se ha podido leer». Va en `nginx/nginx.conf` de `develop`; llega con
+  el merge y el `deploy.yml` reinicia nginx.
+- *Sin las reglas corregidas* (§5) las propuestas y los lotes, con nombres y domicilios de las
+  personas atendidas, se pueden leer desde el navegador. Hoy ya pasa en prod con las propuestas
+  (existen desde el 20-sep) por el comodín de lectura: lo cierra la §6 y lo remata la §5.
+- *Un Excel guardado con otro programa* que no sea Excel ya no falla (se normaliza al abrir).
+- *Personas en «Horario por tareas»*: el cuadrante solo crea tareas y la plantilla la copia
+  `weeklyFromTaskDays`; depende de la §1.8. Sin esas funciones, la importación funciona igual pero
+  la semana de esas personas no se ve en la app hasta que estén.
+
+| # | Paso | Cómo | Estado |
+|---|---|---|---|
+| 3.1 | Código de la API | Llega con `staging → main` (§1.6): solo `merlin` cambia por esto. Sonda sin token: `curl -s -o /dev/null -w "%{http_code}" "https://api.checkbiz360.com/api/v1/gpt/cuadrantes/plantilla?entityId=x&branchId=y"` → **401** (un 404 es contenedor viejo; 502, nginx con IPs viejas) | PENDIENTE |
+| 3.2 | nginx | Comprobar en el servidor que el fichero desplegado lleva el límite: `grep -n -A2 "location /api/v1/gpt/ {" /opt/encodebiz-api/nginx/nginx.conf` → `client_max_body_size 4m;` | PENDIENTE |
+| 3.3 | Reglas | En el único despliegue de la §5 (o en el de la §6 si va antes, con el fichero de `develop`). Comprobación propia, sin sesión, con una entidad que no exista: `GET …/documents/entities/zz-prueba/cuadrante_proposals/x` y `…/cuadrante_lotes/x` → **403**; `…/entities/zz-prueba/calendar/x` → 404 (permitido y no existe) | PENDIENTE |
+| 3.4 | Panel | Con el resto del panel (§1.10 y §8.5): entran el modal de la sucursal, la plantilla desde la ficha del empleado, la ruta del proxy (`/plantilla` y `/lotes` en `cuadrantes_handler`) y el arreglo del buscador. **Después de 3.1**: el panel nuevo contra la API vieja da 404 al descargar la plantilla | PENDIENTE |
+| 3.5 | Prueba con sesión real en prod | En la entidad de pruebas, no en la de un cliente: descargar la plantilla de una sucursal (una pestaña por persona); rellenar una persona y subir; ver «Lista»; confirmar; en su ficha, el horario de esa semana y las tareas con dirección; volver a subir el mismo fichero y comprobar que no duplica. En un buscador del panel, dos palabras («nombre apellido») encuentran a alguien | PENDIENTE |
+| 3.6 | Limpiar la prueba | Desde el contenedor `merlin` de prod, `node services/merlin/dist/soporte/cuadrantes/cli/limpiar.cli.js --entity <e> --employee <p>` (simula; `--apply` para borrar), con autorización | PENDIENTE |
+| 3.7 | Manual de clientes | Publicar `Clients*/04-*/108-*` (ya en DOCS `main`). El párrafo de «Horario por tareas» solo si la §1 sube en el mismo pase; si no, quitarlo hasta entonces | PENDIENTE |
+| 3.8 | Si algo falla | El panel se deshace solo (revert de sus merges en `main`); la API es aditiva —rutas nuevas y una lectura más tolerante— y se queda. Las reglas se deshacen redesplegando la copia guardada en la §5 | — |
 
 ## 4. Material por destino — PENDIENTE
 
@@ -122,6 +153,16 @@ y desplegarlo **una vez**:
 2. `firebase deploy --only firestore:rules --project encodebiz-services` desde `main`.
 3. Probar sin sesión: lectura de `calendar` y `employees` por consulta de grupo 200;
    `signing_keys`, `calendar_days`, `cuadrante_proposals` y `assistant_*` 403.
+
+> **Las tres subcolecciones solo dan 403 con el fichero corregido el 16-oct** (`ac3ee5f`, en
+> `develop` y `staging`): hasta entonces `soloServidor` miraba solo la colección raíz, y
+> `cuadrante_proposals`, `cuadrante_lotes` (bajo `entities/{e}`) y `calendar_days` (bajo
+> `entities/{e}/employees/{p}`) quedaban abiertas aunque estuvieran en la lista. Cualquier rama
+> desde la que se desplieguen reglas —también la del paso 1 de la §6— tiene que llevarlo. Antes
+> de desplegar, la prueba con el emulador, que tiene que acabar en `fallos: 0`:
+> `qa/reglas/probar-reglas.sh` (instrucciones en `qa/reglas/README.md`; Java 21 o más). En dev
+> está desplegado y comprobado desde el 16-oct
+> ([2026-10-cuadrantes-plantilla.md](./2026-10-cuadrantes-plantilla.md) §8).
 
 Estado: PENDIENTE.
 
