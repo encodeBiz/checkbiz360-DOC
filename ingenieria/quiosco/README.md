@@ -209,24 +209,45 @@ y arranca el modo quiosco: **no hay 2FA, ni dispositivo de confianza, ni nada de
 empleado**. El usuario de quiosco no abre el panel ni ninguna otra ruta: su token sólo vale
 para `identify`, `checklogs/kiosk` y `unlock`.
 
-**Sólo en el centro: 200 m.** Antes de dar la sesión, la app manda la posición del dispositivo
+**El dispositivo tiene que cumplir los requisitos; si no, «dispositivo no válido».** Jose,
+2026-10-18: «cuando la tablet no tiene GPS correcto, lo avisa: dispositivo no válido, no admite
+tal cosa o no cumple con los requisitos». Antes de pedir nada al servidor, la app comprueba el
+dispositivo y, si falla algo, enseña **«Este dispositivo no cumple los requisitos del
+quiosco»** con el motivo concreto y **no entra**:
+
+| Requisito | Cómo se comprueba | Motivo que se enseña |
+|---|---|---|
+| Ubicación encendida y permiso concedido a la app | servicios de ubicación activos; permiso «mientras se usa» | «Ubicación desactivada» / «Sin permiso de ubicación» |
+| **Posición correcta**: una lectura con precisión **≤ 100 m** en menos de 30 s | `base_location`, mejor lectura en la ventana | «Este dispositivo no obtiene una posición precisa (±350 m)» |
+| Cámara frontal | lista de cámaras del dispositivo | «Sin cámara frontal» |
+| Android 10 o iOS 15 en adelante, y la app al día | versión del sistema y de la app | «Sistema no admitido» |
+
+El servidor lo comprueba otra vez con lo que recibe en el login (`geo.accuracy`, `device`):
+precisión por encima de la permitida → 400 `kiosk/device_not_eligible` con `reason`. La
+precisión exigida (100 m) es un ajuste de plataforma, no de cliente. Una tablet wifi sin GPS
+que se ubique por red con 20-50 m pasa; una que dé ±500 m, no, y es la tablet la que no vale,
+no el sitio. La guía de compra lo dice: **tablet con GPS** (los modelos con SIM lo llevan).
+
+**Sólo en el centro: 200 m.** Con el dispositivo válido, la app manda la posición
 (`geo`, con `accuracy`) y el servidor comprueba la distancia a `branch.address.geo`:
 más de `activationRadiusMeters` (**200 m por defecto**, ajustable por sucursal entre 50 y 500)
 → 403 `kiosk/out_of_radius` con la distancia, y la tablet lo dice: «Este quiosco sólo se activa
-en <sucursal>». Sin posición (permiso denegado, tablet sin ubicación) → 400
-`kiosk/location_required`; el quiosco **no arranca sin ubicación**. Además:
+en <sucursal>». Además:
 
-- **Al arrancar la app** (y una vez al día en segundo plano) la tablet vuelve a mandar su
-  posición (`POST /auth/kiosk/heartbeat`). Fuera del radio, el servidor pone el quiosco en
-  `suspended`, la pantalla se bloquea con el mismo mensaje y avisa a los administradores; vuelve
-  sola al entrar en el radio.
-- **Con cada fichaje** viaja la posición de la tablet y queda en `metadata.kiosk.distance`. Un
-  fichaje **nunca falla** por la ubicación de la tablet (una tablet wifi sin GPS tiene
-  precisión de decenas de metros y a veces ninguna); fuera del radio se marca
-  `metadata.kiosk.outOfRadius: true` y, al tercero seguido, se suspende como arriba.
-- Tablets wifi sin GPS: la posición sale de la red (Google), con precisión de 20-100 m en
-  interior. Por eso 200 m y no 50: el radio protege contra llevarse el quiosco a otro sitio,
-  no contra estar en la otra punta del centro.
+- **Al arrancar la app** (y una vez al día en segundo plano) la tablet repite la comprobación
+  de requisitos y manda su posición (`POST /auth/kiosk/heartbeat`). Si deja de cumplir
+  (apagaron la ubicación, ya no hay posición precisa) o está fuera del radio, el servidor pone
+  el quiosco en `suspended`, la pantalla se bloquea con el motivo («Dispositivo no válido:
+  ubicación desactivada» / «Este quiosco sólo funciona en <sucursal>») y avisa a los
+  administradores; vuelve sola cuando se cumple otra vez.
+- **Con cada fichaje** viaja la posición de la tablet y queda en `metadata.kiosk.distance` y
+  `accuracy`. Un fichaje **nunca falla** por una lectura puntual de la tablet (la persona está
+  delante y la foto lo prueba); una lectura imprecisa o fuera del radio se marca
+  (`metadata.kiosk.outOfRadius` / `lowAccuracy`) y, a la tercera seguida, el quiosco se
+  suspende como arriba. Lo que se corta es el quiosco, no el fichaje.
+- Por qué 200 m y no 50: incluso con GPS, en interior la posición baila decenas de metros. El
+  radio protege contra llevarse el quiosco a otro sitio, no contra estar en la otra punta del
+  centro.
 
 **Un dispositivo a la vez.** `kiosks/{branchId}.device = { deviceId, model, os, appVersion,
 activatedAt, lastSeenAt }`. Entrar desde otro dispositivo **sustituye** al anterior: el nuevo
@@ -355,7 +376,7 @@ Pantallas, en orden, y sin más:
 
 | Pantalla | Qué enseña | Qué hace |
 |---|---|---|
-| **Entrar** | la pantalla de login de la app, con el usuario de quiosco de la sucursal | pide la ubicación, `login`; fuera del radio o sin ubicación, lo dice y no entra |
+| **Entrar** | la pantalla de login de la app, con el usuario de quiosco de la sucursal | comprueba los requisitos del dispositivo (§1); si no cumple, «Dispositivo no válido» con el motivo y no entra; si cumple, `login` con la posición; fuera del radio, lo dice y no entra |
 | **Inicio** | hora grande, nombre del centro, **la cámara frontal en vivo** con el marco «Acerca tu QR», y el teclado numérico 0-9 debajo o al lado («o teclea tu código») | al leer un QR, o al sexto dígito, llama a `identify` sola (sin botón «OK»); vibración y pitido corto al leer |
 | **Confirmar** | «Hola, Marta», la hora, **la cámara frontal en vivo** («tu foto queda con el fichaje»), y el botón grande que toca (`suggested`) con los otros dos pequeños debajo | al pulsar, **captura el fotograma** y llama a `checklogs/kiosk`; **se cancela sola a los 10 segundos** |
 | **Hecho** | check verde con la foto en miniatura, «Entrada registrada 08:02», 3 segundos | vuelve a Inicio |
@@ -526,8 +547,10 @@ que `signingKey`, [firma/README §Reglas](../firma/README.md)). Índice: `employ
 | `GET /checklogs/:id/kiosk-photo` | ID token, quien ve el fichaje | URL firmada de 5 min |
 | `POST /checklogs/kiosk-signed` | kiosk token | Fase 3: `{ challengeId, signature, type }` |
 
-Códigos nuevos: `kiosk/out_of_radius` (403, con `distanceMeters` y `allowedRadiusMeters`),
-`kiosk/location_required` (400), `kiosk/no_branch_geo` (409, la sucursal no tiene dirección),
+Códigos nuevos: `kiosk/device_not_eligible` (400, con `reason`: `location_off` |
+`location_denied` | `low_accuracy` | `no_front_camera` | `os_unsupported`),
+`kiosk/out_of_radius` (403, con `distanceMeters` y `allowedRadiusMeters`),
+`kiosk/no_branch_geo` (409, la sucursal no tiene dirección),
 `kiosk/replaced` (401), `kiosk/suspended` (423), `kiosk/disabled` (401),
 `kiosk/code_not_found` (404), `kiosk/too_many_attempts` (429, `retryAfter`),
 `kiosk/session_expired` (410), `kiosk/unlock_invalid` (403), `kiosk/photo_required` (400),
@@ -543,7 +566,7 @@ Añadirlos a `DOCS/Clients/14-referencia/90-codigos-de-error-completos.md` al im
 | 1b | Activar el módulo; Sucursal → Quiosco (credenciales, regenerar contraseña, dispositivo activo y cerrar su sesión, radio, **Revisar** con fotos y «No es la persona», **Imprimir tarjetas QR**); «Generar QR» y «Generar código» en la ficha y en lote; texto modelo de información a la plantilla | panel | 3 días |
 | 1b' | Columna «Quiosco» con miniatura en la asistencia del panel. Complemento: no bloquea el piloto | panel | 0,5 día |
 | 1c | `lib/features/kiosk`: login que reconoce el usuario de quiosco (con ubicación), inicio **con lector de QR y teclado**, confirmar **con cámara**, hecho, error; «Mi QR» en el menú de la app; `camera` + ML Kit QR + `kiosk_mode` + `wakelock_plus`; salida con código de administrador; l10n es/en/pt | checkbiz360 | 5 días |
-| 1d | QA contra staging (catálogo `Qa/catalogo/quiosco.md`: activación del módulo, login dentro y fuera del radio, sustitución de dispositivo, códigos, límite de intentos, secuencia, **foto obligatoria, ráfaga, rechazo y regeneración del código**, revocación, bloqueo de pantalla); prueba en una tablet real | QA | 2 días |
+| 1d | QA contra staging (catálogo `Qa/catalogo/quiosco.md`: activación del módulo, dispositivo no válido por cada motivo, login dentro y fuera del radio, sustitución de dispositivo, códigos, límite de intentos, secuencia, **foto obligatoria, ráfaga, rechazo y regeneración del código**, revocación, bloqueo de pantalla); prueba en una tablet real | QA | 2 días |
 | 2 | NFC · cola local con foto | todos | 4-5 días |
 | 3 | QR + firma con el móvil · Android Management API | app + servidor | 4-5 días |
 
@@ -595,9 +618,10 @@ La foto se ve en la demo abriéndola desde Storage, no desde el panel: la column
   pared; una foto negra es un fichaje sin prueba. El quiosco no ficha si la cámara falla, y lo dice.
 - **Tablet sin red.** Fase 1 no ficha sin red y lo dice. Centros sin cobertura: SIM de datos en
   la tablet, o esperar a la Fase 2.
-- **Tablets sin ubicación.** Una tablet con la ubicación apagada no arranca el quiosco; es
-  deliberado («sumamente importante»). En la guía de instalación: ubicación activada y permiso
-  concedido a la app antes de entrar. Una tablet wifi sin GPS funciona con la ubicación de red.
+- **Tablets que no valen.** Una tablet sin posición precisa, sin ubicación o sin cámara
+  frontal es un «dispositivo no válido» y no arranca el quiosco; es deliberado («sumamente
+  importante»). En la guía de compra: tablet **con GPS** (los modelos con SIM lo llevan) y
+  cámara frontal; en la de instalación: ubicación activada y permiso concedido antes de entrar.
 - **Fijación de pantalla no es Lock Task.** En el piloto, quien sepa el PIN de la tablet sale de
   la app. Es el encargado; aceptable para 2-3 centros, no para 500 (Fase 3).
 - **Refactor del controlador de fichaje.** Sacar el núcleo a `RegisterChecklog` toca el camino

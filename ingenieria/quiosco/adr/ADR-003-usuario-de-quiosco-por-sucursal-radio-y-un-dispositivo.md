@@ -26,10 +26,13 @@ es sumamente importante; y sólo puede estar en un dispositivo a la vez».
 2. **Entrar con él en la app arranca el quiosco.** Es el login de siempre; el servidor
    reconoce el claim y devuelve una sesión de quiosco en vez de una de empleado. Sin 2FA ni
    dispositivo de confianza: lo sustituyen el radio y el dispositivo único.
-3. **Sólo se activa a menos de 200 m de la dirección de la sucursal** (ajustable por sucursal
-   entre 50 y 500 m). Sin ubicación no arranca. La tablet vuelve a comprobarlo al arrancar y
-   una vez al día; fuera del radio el quiosco se suspende y avisa. Una sucursal sin dirección
-   no tiene quiosco.
+3. **El dispositivo tiene que cumplir los requisitos, y si no, es «dispositivo no válido»:**
+   ubicación encendida con permiso, una posición con precisión de 100 m o mejor, cámara
+   frontal y sistema admitido. La app lo comprueba antes de entrar y enseña el motivo; el
+   servidor lo vuelve a comprobar. **Sólo se activa a menos de 200 m de la dirección de la
+   sucursal** (ajustable por sucursal entre 50 y 500 m). La tablet vuelve a comprobarlo al
+   arrancar y una vez al día; si deja de cumplir o sale del radio, el quiosco se suspende y
+   avisa. Una sucursal sin dirección no tiene quiosco.
 4. **Un dispositivo a la vez.** Entrar desde otro sustituye al anterior, que se entera en su
    siguiente petición y vuelve al login; los administradores reciben el aviso.
 5. **La misma app checkbiz360**, con el modo quiosco como una forma de entrar, no una
@@ -81,6 +84,7 @@ cerrar la sesión del dispositivo desde el panel.
   intervengan.
 - Un usuario de quiosco nunca aparece en plantilla, informes ni facturación por asientos: no
   es un empleado. `countSource: checkinbiz.employees` no lo cuenta.
-- La guía de cliente del quiosco dice, en una línea, que la tablet es del cliente, que la
-  ubicación tiene que estar activada, que el PIN del sistema lo guarda el encargado y que
-  la contraseña se regenera desde el panel.
+- La guía de cliente del quiosco dice, en una línea, que la tablet es del cliente, que tiene
+  que llevar GPS y cámara frontal con la ubicación activada, que el PIN del sistema lo guarda
+  el encargado y que la contraseña se regenera desde el panel. Una tablet que no cumple no es
+  un caso que haya que soportar: es una tablet que no vale para esto.
