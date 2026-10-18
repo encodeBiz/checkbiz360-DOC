@@ -115,6 +115,8 @@ Uma pessoa ou um centro soltos, ou muitos de uma vez a partir da lista da contab
 - **O perfil de uma pessoa ou de um centro:** o seu padrão de comportamento (regular e pontual, especialista, à sua maneira, precisa de atenção…) e os indicadores avaliados, com a sua leitura, a sua consequência e a ação que a plataforma propõe. É preciso um padrão com pelo menos vinte jornadas.
 - **A trajetória:** como uma pessoa ou um centro derivou nos últimos dias, com as mudanças destacadas e as mudanças de perfil com a sua data. Uma mudança de perfil datada é a melhor pista para perguntar o que aconteceu nesse dia.
 - **A equipa ao longo do tempo:** ativos, inativos e saídas no fecho de cada mês, com as entradas e as saídas.
+- **Qualquer estatística do painel, num intervalo de datas:** custo e horas por sucursal, custo por hora, pontualidade e minutos de atraso, horas extra e em défice, atividade, picagens suspeitas ou falhadas, horas de entrada e saída, distância ao centro e cumprimento geográfico, custo face ao orçamento, tendências semanais, ranking de sucursais, distribuição horária, produtividade por pessoa e estimativa salarial. Os mesmos números do separador Estatísticas: se lá há um dado, aqui pode pedi-lo.
+- **Os dados consolidados de uma pessoa ou de um centro:** o seu horário real médio de entrada e saída e quanto varia, a sua carga semanal dia a dia, o seu custo por hora e por jornada com a sua eficiência e variabilidade, e quantas jornadas válidas sustentam o padrão.
 - **O relatório de jornada** em PDF ou Excel, da empresa, de um centro ou de uma pessoa, entre as datas que indicar. Dá-lhe uma ligação que expira numa hora, e o relatório fica também no histórico de relatórios do painel.
 
 ---

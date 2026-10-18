@@ -115,6 +115,8 @@ Una persona o un centro sueltos, o muchos de una vez a partir de la lista de la 
 - **El perfil de una persona o de un centro:** su patrón de comportamiento (regular y puntual, especialista, a su aire, necesita atención…) y los indicadores evaluados, con su lectura, su consecuencia y la acción que propone la plataforma. Hace falta un patrón con al menos veinte jornadas.
 - **La trayectoria:** cómo ha derivado una persona o un centro en los últimos días, con los cambios destacados y los cambios de perfil con su fecha. Un cambio de perfil fechado es la mejor pista para preguntarse qué pasó ese día.
 - **La plantilla en el tiempo:** activos, inactivos y bajas al cierre de cada mes, con las altas y las salidas.
+- **Cualquier estadística del panel, en un rango de fechas:** coste y horas por sucursal, coste por hora, puntualidad y minutos de retraso, horas extra y déficit, actividad, fichajes sospechosos o fallidos, horas de entrada y salida, distancia al centro y cumplimiento geográfico, coste frente a presupuesto, tendencias semanales, ranking de sucursales, distribución horaria, productividad por persona y estimación salarial. Las mismas cifras que la pestaña Estadísticas: si allí hay un dato, aquí se lo puede pedir.
+- **Los datos consolidados de una persona o de un centro:** su horario real medio de entrada y salida y cuánto varía, su carga semanal día a día, su coste por hora y por jornada con su eficiencia y su variabilidad, y cuántas jornadas válidas sostienen el patrón.
 - **El informe de jornada** en PDF o Excel, de la empresa, de un centro o de una persona, entre las fechas que diga. Le da un enlace que caduca en una hora, y el informe queda también en el histórico de informes del panel.
 
 ---

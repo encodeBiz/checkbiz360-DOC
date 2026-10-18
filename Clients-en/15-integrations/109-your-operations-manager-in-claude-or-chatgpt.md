@@ -115,6 +115,8 @@ A single person or site, or many at once from your accountant's list, an Excel f
 - **A person's or a site's profile:** their behaviour pattern (regular and punctual, specialist, free-spirited, needs attention…) and the evaluated indicators, each with its reading, its consequence and the action the platform suggests. It needs a pattern with at least twenty working days.
 - **The trajectory:** how a person or a site has drifted over recent days, with the key changes and profile changes dated. A dated profile change is the best clue for asking what happened that day.
 - **Headcount over time:** active, inactive and dismissed at the close of each month, with hires and exits.
+- **Any statistic from the panel, for a date range:** cost and hours by site, cost per hour, punctuality and minutes late, overtime and deficit hours, activity, suspicious or failed clock-ins, start and end times, distance to the site and geographic compliance, cost against budget, weekly trends, site ranking, hourly distribution, productivity per person and salary estimate. The same figures as the Statistics tab: if the figure is there, you can ask for it here.
+- **The consolidated data of a person or a site:** their real average start and end times and how much they vary, their weekly load day by day, their cost per hour and per working day with its efficiency and variability, and how many valid working days support the pattern.
 - **The working-time report** as PDF or Excel, for the company, a site or a person, between the dates you say. It gives you a link that expires in one hour, and the report also stays in the panel's report history.
 
 ---
