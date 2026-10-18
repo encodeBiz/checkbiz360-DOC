@@ -137,3 +137,17 @@ Instrucciones que se añaden: para «¿qué está pasando?» o «¿cómo va el m
 para una persona o un centro concretos, `analisis_*` y `trayectoria`. Un hallazgo que comparte
 casi toda la plantilla es de la operación, no de las personas; los avisos de configuración
 son nuestros y no se nombra a nadie; `sin evidencia` no es un suspenso.
+
+## 9. Las estadísticas (añadido el 2026-10-18)
+
+Jose: «¿y todas las estadísticas que da Análisis, por ejemplo desviaciones, costes…? Eso también,
+¿no?». Dos cosas que faltaban, con el mismo principio (ADR-008):
+
+| Herramienta | Entrada | Sale | Fuente |
+|---|---|---|---|
+| `ver_estadistica` | `metrica` (una de las 19 de la pestaña Estadísticas: coste por sucursal, horas por sucursal, coste por hora, tasas de sospecha, horas de entrada y salida, distancia media, personas con más coste, coste frente a presupuesto, actividad, puntualidad, horas extra y déficit, cumplimiento de turno, cumplimiento geográfico, tendencias semanales, productividad por persona, ranking de sucursales, distribución horaria, estimación salarial, distribución del coste), `desde`, `hasta`, `sucursalId?`, `granularidad?` (total, diaria, semanal), `topN?`, y los mismos parámetros que el panel: hora de entrada esperada, tolerancia en minutos, horas esperadas por día, umbral de distancia | Los indicadores y las filas de esa métrica con las claves traducidas a las etiquetas del panel, las tasas en porcentaje y las horas decimales en reloj; las series diarias se recortan a los últimos 31 puntos y las tablas a 20 filas, y se dice | `analytics /panel/stats` (ya tras la puerta delegada del panel) |
+| `estadisticas_sucursal` / `estadisticas_persona` | `sucursalId` o `personaId` | Los datos operativos del patrón, los de la tarjeta de estadísticas del panel: horario real medio de entrada y salida, desviación de cada uno en minutos, carga semanal por día, coste por hora, por jornada y efectivo, eficiencia y variabilidad del coste con su tendencia, horas planificadas medias, distancia media, fiabilidad con madurez y calidad, jornadas válidas y perfil; en una persona, además experiencia, nivel, promoción y eficiencia | El patrón en Firestore (`FirestoreBranchRepository.findPatternByBranch`, `EmployeeFirestoreRepository.findPattern`), leído por el conector como lee sucursales y personas; se comprueba que el patrón es de la empresa |
+
+Los índices de rendimiento que el panel explica en la tarjeta heurística (eficiencia–coste,
+riesgo de coste, salud operativa, desviación de turno…) son los indicadores que ya devuelven
+`analisis_sucursal` y `analisis_persona`: no hay una segunda fuente.
