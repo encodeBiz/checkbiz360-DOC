@@ -1,13 +1,17 @@
 # Quiosco — fichar desde un dispositivo compartido del centro · Documento de Ingeniería
 
 **Proyecto:** encodeBiz SaaS
-**Dominio:** checkinbiz — Fichajes (checklogs) · checkbiz360 — modo quiosco · panel — vinculación de dispositivos
+**Dominio:** checkinbiz — Fichajes (checklogs) y auth · checkbiz360 — modo quiosco · panel — activación del módulo y revisión
 **Fecha de inicio:** 2026-10-18
 **Estado:** **Diseño cerrado el 2026-10-18 · sin implementar.** Jose, 2026-10-18: «hay que
 investigarlo bien pero dejarlo cerrado hoy». Revisado el mismo día: **la foto pasa a la Fase 1
 y es la prueba del fichaje** (Jose: «tenemos que hacer una prueba de fichaje, por ejemplo una
 foto, porque ¿cómo garantizo que es el empleado correcto? En el ayuntamiento hay un caso en que
-uno solo pasaba todas las tarjetas, y eso es inviable»). Primer cliente que lo pide: Serlimar (CRM #3,
+uno solo pasaba todas las tarjetas, y eso es inviable»). **Y por la tarde, la entrada:** el
+quiosco es **un usuario con rol `kiosk`, uno por sucursal, creado solo al activar el módulo**;
+al entrar con él en la app, el quiosco arranca; **sólo se activa a menos de 200 m de la
+dirección de la sucursal** («eso es sumamente importante») y **en un solo dispositivo a la
+vez** (Jose, 2026-10-18). Primer cliente que lo pide: Serlimar (CRM #3,
 limpieza, 1.000 personas, 500 centros; piloto de 2-3 centros en negociación).
 **Autor:** Jose Acevedo
 
@@ -32,8 +36,9 @@ Dos cosas estaban ya decididas antes de empezar, y este diseño las respeta:
 
 ## Qué es
 
-Una **tablet Android en la pared del centro**, con la app checkbiz360 en modo quiosco, vinculada
-a **una sucursal** desde el panel. La persona **acerca su QR a la cámara** (una tarjeta impresa,
+Una **tablet Android en la pared del centro**, con la app checkbiz360 en la que se ha entrado
+con el **usuario de quiosco de esa sucursal** (nace solo al activar el módulo, y sólo entra a
+menos de 200 m del centro y en un dispositivo a la vez). La persona **acerca su QR a la cámara** (una tarjeta impresa,
 o el QR de la app en su móvil) **o teclea su código personal de 6 dígitos**, ve su nombre y su
 cara en la cámara, y pulsa **Entrar**, **Salir** o **Pausa**: **en ese momento la tablet hace
 la foto** y la guarda con el fichaje. Jose, 2026-10-18: «un QR ahorra tiempo y es más ágil»;
@@ -54,14 +59,16 @@ dispositivo ajeno, y no es una cuenta del panel con contraseña en una tablet co
 Razones en [ADR-001](./adr/ADR-001-sin-biometria-en-el-quiosco.md) (por qué sin biometría),
 [ADR-002](./adr/ADR-002-la-llave-es-la-clave-de-firma-no-una-passkey.md) (qué hace el móvil
 propio, y por qué no una passkey WebAuthn) y
-[ADR-003](./adr/ADR-003-vinculacion-por-codigo-no-cuenta-con-contrasena.md) (cómo se vincula
-la tablet).
+[ADR-003](./adr/ADR-003-usuario-de-quiosco-por-sucursal-radio-y-un-dispositivo.md) (el usuario
+de quiosco, el radio de 200 m y el dispositivo único).
 
 ## Alcance
 
 **Dentro (Fase 1, lo que vale para el piloto de Serlimar):**
 
-- Vinculación de una tablet a una sucursal desde el panel, con un código de un solo uso.
+- Un usuario con rol `kiosk` por sucursal, creado automáticamente al activar el módulo (y al
+  crear una sucursal con dirección mientras esté activo). Entrar con él en la app arranca el
+  quiosco; sólo a menos de 200 m de la sucursal y en un dispositivo a la vez.
 - QR personal por empleado (tarjeta impresa desde el panel, y el mismo QR en la app en «Mi QR»)
   y código personal de 6 dígitos, generados en el panel, únicos en la empresa.
 - Modo quiosco en checkbiz360: una sola cámara que **lee el QR y hace la foto**, teclado para el
@@ -183,26 +190,61 @@ nuestra lectura de ingeniería; el DPO del cliente la confirma, no la sustituye.
 
 ## Diseño (To-Be)
 
-### 1. Vincular la tablet a la sucursal (ADR-003)
+### 1. Entrar: el usuario de quiosco de la sucursal (ADR-003)
 
-En el panel, Sucursal → **Quiosco** → «Vincular dispositivo». El panel pide
-`POST /kiosks/enrollments { entityId, branchId, name }` y enseña un **código de 8 caracteres
-válido 10 minutos** (y el mismo como QR, por si la tablet tiene cámara). En la tablet, desde la
-pantalla de login, «Configurar como quiosco» → teclear el código →
-`POST /auth/kiosk/enroll { code, deviceId, device: { model, os, appVersion } }` →
-`{ kioskToken, kioskId, branch: { id, name, timeZone }, entity: { id, name } }`.
+**Nace con el módulo.** Al activar «Quiosco» en la empresa, el servidor crea **un usuario por
+sucursal con dirección**: cuenta de Firebase Auth con correo no enrutable
+(`quiosco.<branchId>@kiosk.checkbiz360.com`), contraseña generada, claims `{ kind: "kiosk",
+entityId, branchId }`, y el documento `entities/{e}/kiosks/{branchId}`. Cada sucursal nueva
+con dirección recibe el suyo mientras el módulo esté activo; una sucursal **sin
+geolocalización no tiene quiosco** hasta que tenga dirección, porque sin centro no hay radio.
+El panel enseña, en Sucursal → **Quiosco**, el correo y la contraseña (con «Regenerar
+contraseña», que expulsa al dispositivo activo), el estado y el dispositivo.
 
-- `kioskToken`: JWT con `kind: "kiosk"`, `kioskId`, `entityId`, `branchId`, firmado con
-  `STAFF_JWT_SECRET`, caducidad 1 año. **Revocable**: cada petición comprueba
-  `entities/{e}/kiosks/{kioskId}.status == active`. Se guarda en almacenamiento seguro del
-  dispositivo. No hay contraseña en la tablet y el token no abre el panel ni nada que no sea
-  fichar en esa sucursal.
-- Desde el panel: ver quiosco (nombre, modelo, última conexión, fichajes de hoy), **desvincular**
-  (status `revoked`: la tablet vuelve a la pantalla de vinculación en la siguiente petición) y
-  regenerar código.
+**Entrar es el login de siempre.** En la tablet, la pantalla de login de la app, con ese correo
+y contraseña. `POST /auth/login` reconoce el claim `kind: "kiosk"` y, en vez de la sesión de
+empleado, responde `{ kind: "kiosk", kioskToken, branch: { id, name, timeZone, geo },
+entity: { id, name }, activationRadiusMeters }`. La app guarda el token en almacenamiento seguro
+y arranca el modo quiosco: **no hay 2FA, ni dispositivo de confianza, ni nada de la sesión de
+empleado**. El usuario de quiosco no abre el panel ni ninguna otra ruta: su token sólo vale
+para `identify`, `checklogs/kiosk` y `unlock`.
+
+**Sólo en el centro: 200 m.** Antes de dar la sesión, la app manda la posición del dispositivo
+(`geo`, con `accuracy`) y el servidor comprueba la distancia a `branch.address.geo`:
+más de `activationRadiusMeters` (**200 m por defecto**, ajustable por sucursal entre 50 y 500)
+→ 403 `kiosk/out_of_radius` con la distancia, y la tablet lo dice: «Este quiosco sólo se activa
+en <sucursal>». Sin posición (permiso denegado, tablet sin ubicación) → 400
+`kiosk/location_required`; el quiosco **no arranca sin ubicación**. Además:
+
+- **Al arrancar la app** (y una vez al día en segundo plano) la tablet vuelve a mandar su
+  posición (`POST /auth/kiosk/heartbeat`). Fuera del radio, el servidor pone el quiosco en
+  `suspended`, la pantalla se bloquea con el mismo mensaje y avisa a los administradores; vuelve
+  sola al entrar en el radio.
+- **Con cada fichaje** viaja la posición de la tablet y queda en `metadata.kiosk.distance`. Un
+  fichaje **nunca falla** por la ubicación de la tablet (una tablet wifi sin GPS tiene
+  precisión de decenas de metros y a veces ninguna); fuera del radio se marca
+  `metadata.kiosk.outOfRadius: true` y, al tercero seguido, se suspende como arriba.
+- Tablets wifi sin GPS: la posición sale de la red (Google), con precisión de 20-100 m en
+  interior. Por eso 200 m y no 50: el radio protege contra llevarse el quiosco a otro sitio,
+  no contra estar en la otra punta del centro.
+
+**Un dispositivo a la vez.** `kiosks/{branchId}.device = { deviceId, model, os, appVersion,
+activatedAt, lastSeenAt }`. Entrar desde otro dispositivo **sustituye** al anterior: el nuevo
+queda activo, el viejo recibe 401 `kiosk/replaced` en su siguiente petición, borra su token y
+vuelve al login con «Este quiosco se ha activado en otro dispositivo», y los administradores
+reciben el aviso (`kiosk_device_replaced`, con modelo y hora). Sustituir y no rechazar, porque
+la tablet rota o perdida es el caso normal y no debe exigir un paso en el panel; y porque
+quien sustituye ha tenido que estar en el centro con la contraseña, y lo que gana es lo mismo
+que ya podía hacer en la tablet. Desde el panel, «Cerrar sesión del dispositivo» deja el
+quiosco sin dispositivo hasta el siguiente login.
+
+**La contraseña en la tablet no es el problema que era.** Sola no sirve de nada: sólo entra a
+menos de 200 m del centro, sólo en un dispositivo (y avisa), y sólo para identificar y fichar.
+Y se regenera desde el panel en un clic.
+
 - Salir del modo quiosco en la propia tablet: código de 6 dígitos de un **administrador de la
   entidad** (se comprueba en el servidor, `POST /auth/kiosk/unlock`), además del bloqueo del
-  sistema (§5).
+  sistema (§5). También cerrar la sesión del dispositivo desde el panel.
 
 ### 2. Identificarse: QR o código
 
@@ -220,12 +262,25 @@ perderla es «Regenerar QR» en la ficha y reimprimir, igual que una tarjeta de 
 - Desde la app, «Mi QR» es el mismo QR de la tarjeta. Quien lleva la app fichará normalmente con
   el móvil y la geocerca; «Mi QR» es para el centro que quiere que todos pasen por la pared.
 
+**Los QR se generan solos al activar el módulo, por lotes.** Jose, 2026-10-18: «al activar
+esto se generan automáticamente los QR de cada empleado, en lotes, no todos a la vez, si no
+es una locura en una empresa de miles de empleados». Activar el módulo encola un trabajo
+`kiosk.setup` por empresa que recorre la plantilla activa **en lotes de 200 empleados por
+tarea** (Cloud Tasks, una tarea por lote encadenada a la siguiente, el mismo patrón de
+[programadas-a-escala](../programadas-a-escala/README.md)), genera el QR de quien no lo tenga
+y escribe el avance en `entities/{e}/kiosks_setup = { total, done, status, startedAt,
+finishedAt }`. Mil empleados son cinco lotes y menos de un minuto; el panel enseña «Generando
+QR: 600 de 1.000» y no bloquea nada. Idempotente: se puede relanzar y sólo toca a quien falte.
+Mientras el módulo esté activo, **cada empleado nuevo nace con su QR** (en el alta, dentro
+del mismo caso de uso), y los que entran por alta masiva lo reciben en el mismo lote de alta.
+Las tarjetas (PDF) no se generan al activar: se piden por sucursal cuando se van a imprimir.
+
 **El código es el respaldo.** `employees/{id}.kioskCode = { hmac, updatedAt, updatedBy }`. Seis
 dígitos, **único en la empresa**, generado por el servidor al pulsar «Generar código de
 quiosco» en la ficha del empleado (o para toda la plantilla de una sucursal de una vez). Se
 enseña **una sola vez** al administrador, que lo entrega en papel; se puede regenerar; el
 trabajador lo ve también en la app en «Mi código de quiosco», si la tiene. Sirve para quien se
-dejó la tarjeta.
+dejó la tarjeta. No se genera en lote: un código que nadie ve no sirve, y el QR ya cubre a todos.
 - Se guarda `HMAC-SHA256(secreto del servidor, entityId + código)`, no el código. Un espacio de
   un millón de valores no lo protege ningún hash lento: lo protege que la búsqueda sea por
   igualdad con un secreto que no está en la base de datos, y el límite de intentos.
@@ -261,11 +316,11 @@ Lo que hace el servidor, en `checkinbiz`, **con el mismo núcleo que `POST /chec
    calendario, secuencia, horario por tareas, escritura y eventos» a un servicio de aplicación
    (`application/use-cases/checklog/RegisterChecklog.ts`) que recibe **un actor**:
    `{ kind: "employee", deviceId }`, `{ kind: "admin", uid, requestedAt? }` o
-   `{ kind: "kiosk", kioskId, identification }`. El controlador de siempre y el del quiosco lo
+   `{ kind: "kiosk", branchId, deviceId, identification }`. El controlador de siempre y el del quiosco lo
    llaman; no hay tercera copia (misma regla que
    [checklogs-http ADR-003](../checklogs-http/adr/ADR-003-promocion-a-shared-sin-tercera-copia.md)).
 2. Para el actor `kiosk`: **no** se comprueba dispositivo de confianza (el dispositivo es el
-   quiosco, ya vinculado) y **no** se evalúa geocerca: `geo = branch.address.geo`,
+   quiosco, ya activado en el centro) y **no** se evalúa geocerca del empleado: `geo = branch.address.geo`,
    `metadata.geoSource = "kiosk"`, `metadata.distance = 0`. La hora es la del servidor.
 3. **La foto.** Obligatoria mientras la empresa tenga la prueba activada (y lo está por
    defecto): sin `photo`, 400 `kiosk/photo_required`. Se guarda en el **bucket europeo**
@@ -273,9 +328,9 @@ Lo que hace el servidor, en `checkinbiz`, **con el mismo núcleo que `POST /chec
    lado mayor, unos 60 KB) **antes** de escribir el fichaje, sumando al contador de
    almacenamiento de la empresa ([almacenamiento/README](../almacenamiento/README.md)); si la
    subida falla, no hay fichaje y la tablet lo dice.
-4. Marca: `metadata.source = "kiosk"` y `metadata.kiosk = { kioskId, identification: "qr+photo" |
+4. Marca: `metadata.source = "kiosk"` y `metadata.kiosk = { branchId, deviceId, identification: "qr+photo" |
    "code+photo" | "nfc+photo" | "device_signature", sessionId, photoPath, burst?: { windowSeconds, count } }`.
-   El `requestUpdates[0]` lleva `action: "created"` y `updateBy: "kiosk:<kioskId>"`.
+   El `requestUpdates[0]` lleva `action: "created"` y `updateBy: "kiosk:<branchId>"`.
 5. **Ráfaga.** Al escribir, el servidor cuenta los fichajes de esa tablet en los últimos 90 s.
    Si con éste son **tres o más**, marca `metadata.kiosk.burst` en todos ellos y avisa al
    supervisor de la sucursal (push + in-app `kiosk_burst_review`, con enlace a la revisión). No
@@ -293,13 +348,14 @@ gana la columna.
 ### 4. La tablet (checkbiz360, feature `lib/features/kiosk`)
 
 Misma app, misma tienda: un **modo**, no una app aparte (ADR-003 §Por qué la misma app). Arranca
-en modo quiosco si hay `kioskToken` guardado; si no, la app de siempre.
+en modo quiosco si hay `kioskToken` guardado (y comprueba la posición, §1); si no, la app de
+siempre, y el login decide por el claim del usuario.
 
 Pantallas, en orden, y sin más:
 
 | Pantalla | Qué enseña | Qué hace |
 |---|---|---|
-| **Vincular** | nombre de la empresa, campo del código de 8 caracteres | `enroll`; error claro si caducó |
+| **Entrar** | la pantalla de login de la app, con el usuario de quiosco de la sucursal | pide la ubicación, `login`; fuera del radio o sin ubicación, lo dice y no entra |
 | **Inicio** | hora grande, nombre del centro, **la cámara frontal en vivo** con el marco «Acerca tu QR», y el teclado numérico 0-9 debajo o al lado («o teclea tu código») | al leer un QR, o al sexto dígito, llama a `identify` sola (sin botón «OK»); vibración y pitido corto al leer |
 | **Confirmar** | «Hola, Marta», la hora, **la cámara frontal en vivo** («tu foto queda con el fichaje»), y el botón grande que toca (`suggested`) con los otros dos pequeños debajo | al pulsar, **captura el fotograma** y llama a `checklogs/kiosk`; **se cancela sola a los 10 segundos** |
 | **Hecho** | check verde con la foto en miniatura, «Entrada registrada 08:02», 3 segundos | vuelve a Inicio |
@@ -322,8 +378,8 @@ y botones grandes (mínimo 56 dp), orientación libre, l10n como todo lo demás,
 check verde falso; la cola local es Fase 2.
 
 Salir del modo quiosco: pulsación larga 3 s sobre el logo → código de administrador → `unlock` →
-se borra el token y se vuelve al login. Desvincular desde el panel hace lo mismo sin tocar la
-tablet.
+se borra el token y se vuelve al login. Cerrar la sesión del dispositivo o regenerar la
+contraseña desde el panel hace lo mismo sin tocar la tablet.
 
 ### 5. Que la tablet no sirva para otra cosa
 
@@ -396,8 +452,8 @@ valida el DPO del cliente.
 ### 7. Fase 3: el móvil propio como llave en el quiosco (ADR-002)
 
 Para quien sí lleva la app, el quiosco puede ser también un punto de fichaje sin teclear nada:
-la tablet enseña un QR que rota cada 30 s (`{ kioskId, nonce }`), la app lo lee («Fichar en el
-quiosco»), pide un reto con `purpose: "checklog.kiosk"` y `subject: { kioskId, nonce, branchId,
+la tablet enseña un QR que rota cada 30 s (`{ branchId, deviceId, nonce }`), la app lo lee («Fichar en el
+quiosco»), pide un reto con `purpose: "checklog.kiosk"` y `subject: { branchId, deviceId, nonce,
 type }`, lo firma con la clave del chip (huella o cara **en su móvil**) y manda
 `POST /checklogs/kiosk-signed { challengeId, signature, type }`. El servidor verifica con
 `verifySignedChallenge` y crea el fichaje con `identification: "device_signature"` y la
@@ -411,22 +467,22 @@ resuelve la objeción de Serlimar (quien no quiere la app no la va a sacar delan
 ## Modelo de datos
 
 ```text
-entities/{entityId}/kiosks/{kioskId}
-  name, branchId, status: active | revoked, deviceId,
-  device: { model, os, appVersion }, enrolledAt, enrolledBy (uid), lastSeenAt, revokedAt?, revokedBy?
+entities/{entityId}/kiosks/{branchId}                       # uno por sucursal, lo crea el módulo
+  uid (usuario de Firebase Auth, claims { kind: "kiosk", entityId, branchId }), email,
+  status: active | suspended | disabled, activationRadiusMeters: 200,
+  device?: { deviceId, model, os, appVersion, activatedAt, activatedGeo, lastSeenAt, lastGeo },
+  createdAt, passwordRotatedAt?, suspendedAt?, suspendedReason?: out_of_radius
   settings: { methods: ["code"] | ["code","nfc"] }
 
 entities/{entityId}.settings.kiosk = { photo: true, photoRetention: 30 }   # 15|30|60|90|365|1460
+entities/{entityId}/kiosks_setup = { total, done, status, startedAt, finishedAt }   # QR por lotes
 entities/{entityId}.storage = { usedBytes, byModule, includedGb, packsGb }   # almacenamiento/README
 
-entities/{entityId}/kiosks/{kioskId}/attempts/{id}          # sólo los fallidos y los bloqueos
+entities/{entityId}/kiosks/{branchId}/attempts/{id}         # sólo los fallidos y los bloqueos
   at, codeHmacPrefix (4 hex), result: not_found | locked
 
-kiosk_enrollments/{code}                                    # raíz, de un solo uso, 10 min
-  entityId, branchId, name, createdBy, expiresAt, usedAt?, kioskId?
-
 kiosk_sessions/{sessionId}                                  # raíz, 60 s, de un solo uso
-  kioskId, entityId, employeeId, suggested, expiresAt, usedAt?
+  branchId, deviceId, entityId, employeeId, suggested, expiresAt, usedAt?
 
 employees/{employeeId}.kioskQr   = { hmac, issuedAt, issuedBy }        # la tarjeta y «Mi QR»
 employees/{employeeId}.kioskCode = { hmac, updatedAt, updatedBy }      # el respaldo
@@ -434,13 +490,14 @@ employees/{employeeId}.nfcTags = [ { uid, label, addedAt } ]                    
 
 entities/{e}/checklogs/{id}.metadata
   source: "kiosk", geoSource: "kiosk", distance: 0,
-  kiosk: { kioskId, identification, sessionId, photoPath, burst?: { windowSeconds: 90, count } }
+  kiosk: { branchId, deviceId, identification, sessionId, photoPath, distance, outOfRadius?,
+           burst?: { windowSeconds: 90, count } }
 
 Storage (bucket encodebiz-media-eu, europe-west1): kiosk/r{días}/{entityId}/{checklogId}.jpg
   · una regla de ciclo de vida por carpeta de retención · kiosk/hold/{entityId}/ para disputas
 ```
 
-Reglas de Firestore: `kiosks/**`, `kiosk_enrollments/**` y `kiosk_sessions/**` sin acceso
+Reglas de Firestore: `kiosks/**` y `kiosk_sessions/**` sin acceso
 desde cliente; `employees.kioskCode` y `nfcTags` sólo los escribe el servidor (misma convención
 que `signingKey`, [firma/README §Reglas](../firma/README.md)). Índice: `employees` por
 `(entityId, kioskCode.hmac)` y `(entityId, kioskQr.hmac)`.
@@ -449,13 +506,18 @@ que `signingKey`, [firma/README §Reglas](../firma/README.md)). Índice: `employ
 
 | Ruta (`checkinbiz`) | Auth | Para qué |
 |---|---|---|
-| `POST /kiosks/enrollments` | ID token, `canWrite` | código de vinculación de 8 caracteres |
-| `GET /kiosks?entityId&branchId` · `DELETE /kiosks/:id` | ID token, `canWrite` | listar y desvincular |
+| `POST /entities/:id/modules/kiosk` · `DELETE …` | ID token, `canWrite` | activar el módulo (crea los usuarios de quiosco y encola los QR por lotes) o desactivarlo (los deshabilita) |
+| `GET /kiosks/setup?entityId` | ID token, `canWrite` | avance de la generación de QR `{ total, done, status }` |
+| `GET /kiosks?entityId` | ID token, `canWrite` | por sucursal: correo, estado, dispositivo, última posición |
+| `POST /kiosks/:branchId/password` | ID token, `canWrite` | regenerar la contraseña; responde **una vez**; expulsa al dispositivo |
+| `DELETE /kiosks/:branchId/device` | ID token, `canWrite` | cerrar la sesión del dispositivo activo |
+| `PATCH /kiosks/:branchId` | ID token, `canWrite` | `activationRadiusMeters` (50-500), `settings` |
 | `POST /employees/:id/kiosk-code` | ID token, `canWrite` | generar o regenerar el código; responde el código **una vez** |
 | `POST /employees/:id/kiosk-qr` | ID token, `canWrite` | generar o regenerar el QR; responde la cadena |
 | `GET /kiosks/cards?entityId&branchId` | ID token, `canWrite` | PDF con las tarjetas QR de la sucursal (nombre + QR), para imprimir |
 | `GET /employees/me/kiosk-qr` | JWT de empleado | la cadena para «Mi QR» en la app |
-| `POST /auth/kiosk/enroll` | ninguna (el código es la credencial) | `{ code, deviceId, device }` → `{ kioskToken, kioskId, branch, entity }` |
+| `POST /auth/login` (el de siempre) | correo y contraseña del usuario de quiosco | con `geo`, `deviceId`, `device` → `{ kind: "kiosk", kioskToken, branch, entity, activationRadiusMeters }`; 403 `kiosk/out_of_radius` |
+| `POST /auth/kiosk/heartbeat` | kiosk token | `{ geo }` → `{ status }`; fuera del radio, `suspended` |
 | `POST /auth/kiosk/unlock` | kiosk token | `{ adminCode }` → 200 y token revocado |
 | `POST /kiosk/identify` | kiosk token | `{ qr }` o `{ code }` → `{ sessionId, employee, suggested, expiresAt }` |
 | `POST /checklogs/kiosk` | kiosk token, multipart | `{ sessionId, type, photo }` → `201 { checkLog }` |
@@ -464,7 +526,9 @@ que `signingKey`, [firma/README §Reglas](../firma/README.md)). Índice: `employ
 | `GET /checklogs/:id/kiosk-photo` | ID token, quien ve el fichaje | URL firmada de 5 min |
 | `POST /checklogs/kiosk-signed` | kiosk token | Fase 3: `{ challengeId, signature, type }` |
 
-Códigos nuevos: `kiosk/enrollment_invalid` (400), `kiosk/revoked` (401),
+Códigos nuevos: `kiosk/out_of_radius` (403, con `distanceMeters` y `allowedRadiusMeters`),
+`kiosk/location_required` (400), `kiosk/no_branch_geo` (409, la sucursal no tiene dirección),
+`kiosk/replaced` (401), `kiosk/suspended` (423), `kiosk/disabled` (401),
 `kiosk/code_not_found` (404), `kiosk/too_many_attempts` (429, `retryAfter`),
 `kiosk/session_expired` (410), `kiosk/unlock_invalid` (403), `kiosk/photo_required` (400),
 `kiosk/photo_upload_failed` (502). Los de fichaje son los de siempre.
@@ -475,11 +539,11 @@ Añadirlos a `DOCS/Clients/14-referencia/90-codigos-de-error-completos.md` al im
 | Fase | Qué | Dónde | Tamaño (una persona) |
 |---|---|---|---|
 | 0 | Bucket europeo con reglas de ciclo de vida y contadores de almacenamiento ([almacenamiento/README](../almacenamiento/README.md) Fases 0 y 1) | infra + `shared` | 4 días |
-| 1a | `RegisterChecklog` con actor; rutas de quiosco; códigos de empleado; **foto al bucket europeo contada, ráfaga y aviso**; reglas e índice | `checkinbiz` + `shared` | 4 días |
-| 1b | Sucursal → Quiosco (vincular, listar, desvincular, **Revisar** con fotos y «No es la persona», **Imprimir tarjetas QR**); «Generar QR» y «Generar código» en la ficha y en lote; texto modelo de información a la plantilla | panel | 3 días |
+| 1a | `RegisterChecklog` con actor; login de quiosco con radio y dispositivo único; activación del módulo con usuarios por sucursal y **QR por lotes con Cloud Tasks**; códigos; **foto al bucket europeo contada, ráfaga y aviso**; reglas e índice | `checkinbiz` + `shared` | 5 días |
+| 1b | Activar el módulo; Sucursal → Quiosco (credenciales, regenerar contraseña, dispositivo activo y cerrar su sesión, radio, **Revisar** con fotos y «No es la persona», **Imprimir tarjetas QR**); «Generar QR» y «Generar código» en la ficha y en lote; texto modelo de información a la plantilla | panel | 3 días |
 | 1b' | Columna «Quiosco» con miniatura en la asistencia del panel. Complemento: no bloquea el piloto | panel | 0,5 día |
-| 1c | `lib/features/kiosk`: vincular, inicio **con lector de QR y teclado**, confirmar **con cámara**, hecho, error; «Mi QR» en el menú de la app; `camera` + ML Kit QR + `kiosk_mode` + `wakelock_plus`; salida con código de administrador; l10n es/en/pt | checkbiz360 | 5 días |
-| 1d | QA contra staging (catálogo `Qa/catalogo/quiosco.md`: vinculación, códigos, límite de intentos, secuencia, **foto obligatoria, ráfaga, rechazo y regeneración del código**, revocación, bloqueo de pantalla); prueba en una tablet real | QA | 2 días |
+| 1c | `lib/features/kiosk`: login que reconoce el usuario de quiosco (con ubicación), inicio **con lector de QR y teclado**, confirmar **con cámara**, hecho, error; «Mi QR» en el menú de la app; `camera` + ML Kit QR + `kiosk_mode` + `wakelock_plus`; salida con código de administrador; l10n es/en/pt | checkbiz360 | 5 días |
+| 1d | QA contra staging (catálogo `Qa/catalogo/quiosco.md`: activación del módulo, login dentro y fuera del radio, sustitución de dispositivo, códigos, límite de intentos, secuencia, **foto obligatoria, ráfaga, rechazo y regeneración del código**, revocación, bloqueo de pantalla); prueba en una tablet real | QA | 2 días |
 | 2 | NFC · cola local con foto | todos | 4-5 días |
 | 3 | QR + firma con el móvil · Android Management API | app + servidor | 4-5 días |
 
@@ -496,9 +560,9 @@ cabe en una semana, y que después **se queda** porque es el principio de la Fas
 
 | Día | Qué | Qué se deja fuera |
 |---|---|---|
-| 1-1,5 | Servidor: `enroll`, `identify` por QR y por código, `checklogs/kiosk` con foto al bucket europeo (creado a mano, con la regla de 30 días), apoyándose en el camino de administrador que ya existe | ráfagas, aviso, revisión, reglas nuevas, contadores de almacenamiento |
-| 2-4 | App: vincular, inicio con lector de QR y teclado, confirmar con cámara, hecho, error; «Mi QR» | `kiosk_mode` (se fija la pantalla a mano), salida con código de administrador |
-| 5 | Tarjetas QR y códigos de los empleados de demo **por script** (PDF incluido), prueba en una tablet real | pantallas de panel: vincular, imprimir, revisar; la columna «Quiosco» |
+| 1-1,5 | Servidor: login de quiosco con radio y dispositivo único, `identify` por QR y por código, `checklogs/kiosk` con foto al bucket europeo (creado a mano, con la regla de 30 días), apoyándose en el camino de administrador que ya existe | ráfagas, aviso, revisión, reglas nuevas, contadores de almacenamiento |
+| 2-4 | App: login de quiosco con ubicación, inicio con lector de QR y teclado, confirmar con cámara, hecho, error; «Mi QR» | `kiosk_mode` (se fija la pantalla a mano), salida con código de administrador |
+| 5 | Usuario de quiosco de la sucursal de demo, QR de sus empleados, tarjetas y códigos **por script** (PDF incluido), prueba en una tablet real dentro y fuera del radio | pantallas de panel: activar, credenciales, imprimir, revisar; la columna «Quiosco»; el lote con Cloud Tasks (el script lo hace en serie) |
 
 La foto se ve en la demo abriéndola desde Storage, no desde el panel: la columna con miniatura
 (1b') es un complemento y no entra en el corte.
@@ -531,6 +595,9 @@ La foto se ve en la demo abriéndola desde Storage, no desde el panel: la column
   pared; una foto negra es un fichaje sin prueba. El quiosco no ficha si la cámara falla, y lo dice.
 - **Tablet sin red.** Fase 1 no ficha sin red y lo dice. Centros sin cobertura: SIM de datos en
   la tablet, o esperar a la Fase 2.
+- **Tablets sin ubicación.** Una tablet con la ubicación apagada no arranca el quiosco; es
+  deliberado («sumamente importante»). En la guía de instalación: ubicación activada y permiso
+  concedido a la app antes de entrar. Una tablet wifi sin GPS funciona con la ubicación de red.
 - **Fijación de pantalla no es Lock Task.** En el piloto, quien sepa el PIN de la tablet sale de
   la app. Es el encargado; aceptable para 2-3 centros, no para 500 (Fase 3).
 - **Refactor del controlador de fichaje.** Sacar el núcleo a `RegisterChecklog` toca el camino
