@@ -95,6 +95,8 @@ TDR-001 y TDR-002) y [alta-por-plantilla](../ingenieria/alta-por-plantilla/READM
 (TDR-001). Van juntos porque el alta masiva del asistente es el lote de la plantilla, y las
 dos crean sucursales por el mismo contenedor.
 
+> **2026-10-18, tercera:** la ruta de verificación de dominio del directorio de apps de ChatGPT (`/.well-known/openai-apps-challenge`, sirve `OPENAI_APPS_CHALLENGE` en texto plano; sin variable, 404) y el paquete del plugin en `encodebiz-api/plugins/checkbiz360`. **PENDIENTE cuando el portal de OpenAI dé el token:** poner `OPENAI_APPS_CHALLENGE=<token>` en el entorno de producción, reiniciar `assistant`, comprobar con `curl` que devuelve el token y pulsar «Verificar» en el portal. **Decisión pendiente de Jose:** la cuenta del revisor de OpenAI tiene que entrar sin segundo factor; el conector lo exige. Propuesta en el README del paquete (lista de uids exentos por variable, solo para la cuenta de demostración).
+
 > **2026-10-18, segunda:** las estadísticas para el asistente (TDR-003 §9: `ver_estadistica` con las 19 métricas de `/panel/stats`, `estadisticas_sucursal` y `estadisticas_persona` desde el patrón de Firestore) en producción con el PR #167 (`13ffb76`), directo. Nada fuera del código.
 
 > **2026-10-18:** el análisis entero para el asistente (TDR-003 §8: `ver_mes`, `analisis_sucursal`, `analisis_persona`, `trayectoria`, `ver_plantilla`; puertas delegadas de heurística y patrones en `analytics`) en producción con el PR #165 (`6c646d1`), directo y sin parada en staging a petición de Jose; sondas: las dos puertas nuevas responden 403 a un actor inexistente. Lección: un PR a producción sale de la rama principal o de una base contenida en ella, nunca de `develop` (el #164 llegó con conflictos por arrastrar otras sesiones).

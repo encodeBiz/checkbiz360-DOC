@@ -119,3 +119,11 @@ se pudo abrir el 2026-10-15: la URL de retorno de claude.ai
 (`https://claude.ai/api/mcp/auth_callback`, con aviso de que puede pasar a `claude.com`) y
 que claude.ai usa documentos de metadatos de cliente (CIMD) además del registro dinámico. El
 TDR deja las dos cosas como lista configurable y la prueba en staging las confirma.
+
+## Publicación en el directorio de apps de ChatGPT (2026-10-18)
+
+El paquete que pide OpenAI vive en `encodebiz-api/plugins/checkbiz360` (manifiesto Agent
+Plugins, `mcp.json` con OAuth por CIMD, iconos, skill de arranque, cinco casos positivos y
+tres negativos). Su README recoge el procedimiento del portal, la verificación de dominio
+(`/.well-known/openai-apps-challenge`, ya en el conector) y lo que falta decidir: la cuenta
+del revisor sin segundo factor y la política de privacidad del panel.
