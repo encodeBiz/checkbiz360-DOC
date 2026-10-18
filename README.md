@@ -28,6 +28,8 @@
 - [DEPLOY.md](./DEPLOY.md) — Entornos, comandos de deploy, funciones activas
 - [ingenieria/programadas-a-escala/](./ingenieria/programadas-a-escala/README.md) — 🔴 **Alerta 17/18-oct-2026**: los jobs programados recorren a todos los clientes en serie con topes fijos; reparto por lotes con Cloud Tasks y una task por entidad
 - [ingenieria/analisis-a-escala/](./ingenieria/analisis-a-escala/README.md) — 🔴 **Urgente, oct-2026**: el resumen del panel, el cierre diario, el trigger de patrones y Merlin con mil empleados; índices, sin correladas, precálculo por entidad
+- [ingenieria/quiosco/](./ingenieria/quiosco/README.md) — Modo quiosco: tablet compartida en el centro, QR o código más foto como prueba, sin biometría (diseño cerrado 18-oct-2026)
+- [ingenieria/almacenamiento/](./ingenieria/almacenamiento/README.md) — Almacenamiento por empresa: contador único, cuota por plan, packs, exceso facturado, retención y bucket europeo
 
 ### Módulos de producto
 - [modulos/task.md](./modulos/task.md) — Tareas operativas: permisos, API, dominio, app, backoffice
