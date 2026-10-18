@@ -46,6 +46,12 @@ el código queda para quien no lleve la tarjeta encima. El servidor crea el fich
 lógica que el de la app (calendario, turno, secuencia, horario por tareas), con la
 geolocalización de la sucursal, la marca de que entró por el quiosco y la foto como prueba.
 
+**Tablet o móvil, da igual** (Jose, 2026-10-18). Lo que se exige es del dispositivo, no del
+tamaño: GPS con posición de 100 m o mejor, cámara frontal y Android 10 o iOS 15 en adelante. Un
+Android económico en un soporte de pared vale; para una fila de gente se agradece una pantalla
+de 8" o más. En iPhone queda en vertical (la app sólo admite vertical en iPhone). Donde este
+documento dice «tablet», léase «el dispositivo del quiosco».
+
 Lo que **no** es: no es un lector de huella ni de cara, no es un login de empleado en un
 dispositivo ajeno, y no es una cuenta del panel con contraseña en una tablet compartida.
 
