@@ -19,12 +19,15 @@
   - [AUDIT-BACKOFFICE.md](./Security-Audit/2026-05-25/AUDIT-BACKOFFICE.md) — 6 hallazgos en Next.js backoffice
   - [AUDIT-MOBILE.md](./Security-Audit/2026-05-25/AUDIT-MOBILE.md) — 6 hallazgos en app Flutter
   - [REMEDIATION-PLAN.md](./Security-Audit/2026-05-25/REMEDIATION-PLAN.md) — Plan priorizado por fases con owners y estimados
+- [ingenieria/reglas-firestore/](./ingenieria/reglas-firestore/README.md) — 🔴 **Alerta máxima 17/18-oct-2026**: la lectura de Firestore está abierta sin sesión; paso 1 (sesión obligatoria) y paso 2 (aislar por entidad)
 
 ### Arquitectura y dominio
 - [ARQUITECTURA.md](./ARQUITECTURA.md) — Visión de sistema, capas, stack, comunicación
 - [DOMINIO.md](./DOMINIO.md) — Entidades, roles, enums, máquinas de estado
 - [INGENIERIA.md](./INGENIERIA.md) — Reglas de ingeniería unificadas (todos los stacks)
 - [DEPLOY.md](./DEPLOY.md) — Entornos, comandos de deploy, funciones activas
+- [ingenieria/programadas-a-escala/](./ingenieria/programadas-a-escala/README.md) — 🔴 **Alerta 17/18-oct-2026**: los jobs programados recorren a todos los clientes en serie con topes fijos; reparto por lotes con Cloud Tasks y una task por entidad
+- [ingenieria/analisis-a-escala/](./ingenieria/analisis-a-escala/README.md) — 🔴 **Urgente, oct-2026**: el resumen del panel, el cierre diario, el trigger de patrones y Merlin con mil empleados; índices, sin correladas, precálculo por entidad
 
 ### Módulos de producto
 - [modulos/task.md](./modulos/task.md) — Tareas operativas: permisos, API, dominio, app, backoffice
