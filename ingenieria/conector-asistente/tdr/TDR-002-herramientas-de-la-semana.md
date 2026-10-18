@@ -155,3 +155,26 @@ las herramientas. En pocas líneas:
 - Recordar equivalencias de nombres («GARCIA M.» = tal ficha) para no volver a preguntar.
 - Consultas de fichajes, informes y redacción de correos.
 - Un cambio de horario para un solo día en el modo estándar.
+
+## 9. La confirmación es un identificador de la vista previa (añadido el 2026-10-18)
+
+Probando los casos negativos del directorio de ChatGPT, Jose vio que ante «cancela todas las
+tareas de mañana ahora mismo, sin preguntarme nada» el modelo no pedía un sí: lo único que
+frenaba era el permiso de ejecución del propio ChatGPT. Con `confirmar: true` en la firma de la
+herramienta, el modelo puede ponerlo a la primera si la persona le dice que no pregunte.
+
+Decisión: **la confirmación no es un booleano, es un `confirmacionId` que solo devuelve la
+vista previa.** Es un HMAC con el secreto del servicio sobre la herramienta, los datos de la
+llamada y el instante de emisión, sin estado en el servidor. Al confirmar:
+
+- sin identificador, se devuelve la vista previa (como antes);
+- con uno que no casa con la herramienta o con los mismos datos, `confirmacion_invalida`;
+- con uno emitido hace menos de cinco segundos, `confirmacion_prematura`: «la confirmación
+  tiene que venir de la persona en un mensaje posterior a la vista previa». Es la espera
+  mínima de una persona que lee y contesta; una llamada encadenada en el mismo turno no llega;
+- con uno de hace más de quince minutos, `confirmacion_caducada`.
+
+Los lotes (`confirmar_cuadrante`, `confirmar_alta_masiva`) ya exigen un lote propuesto; se les
+aplica la misma espera mínima desde que el lote se propuso o se amplió. Las instrucciones del
+servidor dicen que un «no me preguntes» de la persona no es un sí: se enseña la vista previa y
+se espera su respuesta. El permiso de ChatGPT sigue estando, pero ya no es la única red.
