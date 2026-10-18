@@ -10,7 +10,7 @@ Montar a semana, dar entrada às pessoas novas, saber quem não picou o ponto es
 - **«A Lúcia não picou o ponto, quem pode cobrir o serviço das dez?»** O assistente diz-lhe quem está livre a essa hora, quem poderia com reservas e quem não está, e faz a mudança quando escolher.
 - **«Monta a semana da equipa do Norte igual à anterior, mas a Marta folga na quinta.»** Prepara a semana inteira, mostra-lha e aplica-a quando confirmar.
 - **«Dá entrada a estas doze pessoas e a estes três centros.»** Cole a lista que a contabilidade lhe enviou, um Excel ou uma fotografia: o assistente lê-a, diz-lhe o que vai criar e cria.
-- **«Estamos melhor ou pior do que no mês passado?»** Compara semanas, custos e alertas, e tira-lhe o relatório de jornada de que precisar.
+- **«O que se passa este mês?»** Conta-lhe a análise do mês: que centro pede atenção e porquê, quem sustenta a operação, onde falha a picagem e o que convém corrigir primeiro. Compara semanas, custos e alertas, e tira-lhe o relatório de jornada de que precisar.
 
 Faz tudo isto com as permissões de quem liga: nem mais nem menos do que essa pessoa pode fazer no painel.
 
@@ -111,6 +111,10 @@ Uma pessoa ou um centro soltos, ou muitos de uma vez a partir da lista da contab
 - **A evolução por semanas:** cobertura de picagens, atrasos, tarefas a tempo, horas e custo, de toda a empresa ou por centro.
 - **Os custos do mês** face ao mês anterior. Se faltar a tarifa a alguém, o valor sai como parcial e o assistente diz-lho.
 - **Os alertas** que o painel considera importantes, ordenados por gravidade.
+- **A análise do mês**, a mesma do separador Análise do painel: fiabilidade, efeito do centro e dependência; que sucursais pedem atenção e porquê; horas planeadas, trabalhadas e sem registo; quem acumula mais experiência e quem pode cobrir outro posto; localização e falhas da picagem; e o cruzamento de tudo isso por pessoa. O assistente não o recita: diz-lhe o que uma coisa implica sobre outra e o que faria primeiro. Um achado partilhado por quase toda a equipa é da operação, não das pessoas, e os problemas de configuração (uma cerca demasiado estreita, alguém a quem o sistema não deixa picar o ponto) contam-se sem nomear ninguém.
+- **O perfil de uma pessoa ou de um centro:** o seu padrão de comportamento (regular e pontual, especialista, à sua maneira, precisa de atenção…) e os indicadores avaliados, com a sua leitura, a sua consequência e a ação que a plataforma propõe. É preciso um padrão com pelo menos vinte jornadas.
+- **A trajetória:** como uma pessoa ou um centro derivou nos últimos dias, com as mudanças destacadas e as mudanças de perfil com a sua data. Uma mudança de perfil datada é a melhor pista para perguntar o que aconteceu nesse dia.
+- **A equipa ao longo do tempo:** ativos, inativos e saídas no fecho de cada mês, com as entradas e as saídas.
 - **O relatório de jornada** em PDF ou Excel, da empresa, de um centro ou de uma pessoa, entre as datas que indicar. Dá-lhe uma ligação que expira numa hora, e o relatório fica também no histórico de relatórios do painel.
 
 ---

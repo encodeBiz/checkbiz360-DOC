@@ -95,6 +95,8 @@ TDR-001 y TDR-002) y [alta-por-plantilla](../ingenieria/alta-por-plantilla/READM
 (TDR-001). Van juntos porque el alta masiva del asistente es el lote de la plantilla, y las
 dos crean sucursales por el mismo contenedor.
 
+> **2026-10-18:** el análisis entero para el asistente (TDR-003 §8: `ver_mes`, `analisis_sucursal`, `analisis_persona`, `trayectoria`, `ver_plantilla`; puertas delegadas de heurística y patrones en `analytics`) en producción con el PR #165 (`6c646d1`), directo y sin parada en staging a petición de Jose; sondas: las dos puertas nuevas responden 403 a un actor inexistente. Lección: un PR a producción sale de la rama principal o de una base contenida en ella, nunca de `develop` (el #164 llegó con conflictos por arrastrar otras sesiones).
+
 > **En producción el 2026-10-17, ~16:45 UTC** (PR #163, `461f3fb`, *Production CI/CD* en verde): fase 3 (gestor operativo), multiempresa (ADR-009, URL personal `/api/v1/assistant/mcp`) y corte de sesiones (baja o desactivación de colaborador en `checkinbiz`; corte desde el panel por empresa). Sondas: metadatos de la URL personal 200, MCP personal y por empresa 401 sin token, `/connections?entityId=` 401 sin token, puerta delegada de `analytics` 403 a una cuenta inexistente. Antes, a petición de Jose, se revocó la única conexión viva de prod (Claude de hola@encodebiz.com). **El panel no ha subido** (Jose: «olvida el panel»): el apartado «Conexiones» y las sesiones en la ficha del colaborador están solo en `develop` del panel (`730185ef`).
 
 ### Lo que sube

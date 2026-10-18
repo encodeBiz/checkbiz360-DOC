@@ -10,7 +10,7 @@ Building the week, adding the new hires, finding out who has not clocked in this
 - **"Lucía hasn't clocked in. Who can cover her ten o'clock job?"** The assistant tells you who is free at that time, who could with caveats and who is not available, and makes the change once you choose.
 - **"Build next week for the North crew like last week, but Marta is off on Thursday."** It prepares the whole week, shows it to you and applies it when you confirm.
 - **"Add these twelve people and these three sites."** Paste the list your accountant sent, an Excel file or a photo: the assistant reads it, tells you what it will create, and creates it.
-- **"Are we doing better or worse than last month?"** It compares weeks, costs and alerts, and produces the working-time report you need.
+- **"What is going on this month?"** It gives you the month's analysis: which site needs attention and why, who sustains the operation, where clocking in fails and what to fix first. It compares weeks, costs and alerts, and produces the working-time report you need.
 
 It does all this with the permissions of whoever connects: no more and no less than that person can do in the panel.
 
@@ -111,6 +111,10 @@ A single person or site, or many at once from your accountant's list, an Excel f
 - **Week-by-week trends:** clock-in coverage, lateness, tasks on time, hours and cost, for the whole company or by site.
 - **This month's costs** against last month. If someone has no rate, the amount comes out as partial and the assistant tells you.
 - **The alerts** the panel considers important, ordered by severity.
+- **The month's analysis**, the same as the panel's Analysis tab: reliability, site effect and dependency; which branches need attention and why; planned, worked and unrecorded hours; who has the most experience and who can cover another role; location and clock-in failures; and the cross-check of all of it per person. The assistant does not recite it: it tells you what one finding implies about another and what to do first. A finding shared by almost the whole workforce is about the operation, not the people, and configuration problems (a fence that is too narrow, someone the system will not let clock in) are reported without naming anyone.
+- **A person's or a site's profile:** their behaviour pattern (regular and punctual, specialist, free-spirited, needs attention…) and the evaluated indicators, each with its reading, its consequence and the action the platform suggests. It needs a pattern with at least twenty working days.
+- **The trajectory:** how a person or a site has drifted over recent days, with the key changes and profile changes dated. A dated profile change is the best clue for asking what happened that day.
+- **Headcount over time:** active, inactive and dismissed at the close of each month, with hires and exits.
 - **The working-time report** as PDF or Excel, for the company, a site or a person, between the dates you say. It gives you a link that expires in one hour, and the report also stays in the panel's report history.
 
 ---

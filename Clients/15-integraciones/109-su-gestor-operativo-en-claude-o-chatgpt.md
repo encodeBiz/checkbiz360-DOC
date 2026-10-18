@@ -10,7 +10,7 @@ Montar la semana, dar de alta a la gente nueva, saber quién no ha fichado esta 
 - **«Lucía no ha fichado, ¿quién puede cubrir su servicio de las diez?»** El asistente le dice quién está libre a esa hora, quién podría con reparos y quién no está, y hace el cambio cuando usted elige.
 - **«Monta la semana de la cuadrilla de Norte igual que la pasada, pero Marta libra el jueves.»** Prepara la semana entera, se la enseña y la aplica cuando usted confirma.
 - **«Da de alta a estas doce personas y estos tres centros.»** Pegue la lista que le mandó la gestoría, un Excel o una foto: el asistente la lee, le dice qué va a crear y lo crea.
-- **«¿Vamos mejor o peor que el mes pasado?»** Compara semanas, costes y alertas, y le saca el informe de jornada que necesite.
+- **«¿Qué está pasando este mes?»** Le cuenta el análisis del mes: qué centro pide atención y por qué, quién sostiene la operación, dónde falla el fichaje y qué conviene arreglar primero. Compara semanas, costes y alertas, y le saca el informe de jornada que necesite.
 
 Todo esto lo hace con los permisos de quien conecta: ni más ni menos de lo que esa persona puede hacer en el panel.
 
@@ -111,6 +111,10 @@ Una persona o un centro sueltos, o muchos de una vez a partir de la lista de la 
 - **La evolución por semanas:** cobertura de fichaje, retrasos, tareas a tiempo, horas y coste, de toda la empresa o por centro.
 - **Los costes del mes** frente al mes anterior. Si a alguien le falta la tarifa, el importe sale como parcial y el asistente se lo dice.
 - **Las alertas** que el panel considera importantes, ordenadas por gravedad.
+- **El análisis del mes**, el mismo de la pestaña Análisis del panel: fiabilidad, efecto del centro y dependencia; qué sucursales piden atención y por qué; horas planificadas, trabajadas y sin registrar; quién acumula oficio y quién puede cubrir otro puesto; ubicación y fallos del fichaje; y el cruce de todo ello por persona. El asistente no lo recita: le dice qué implica una cosa sobre otra y qué haría primero. Un hallazgo que comparte casi toda la plantilla es de la operación, no de las personas, y los problemas de configuración (una valla demasiado estrecha, alguien a quien el sistema no deja fichar) se cuentan sin nombrar a nadie.
+- **El perfil de una persona o de un centro:** su patrón de comportamiento (regular y puntual, especialista, a su aire, necesita atención…) y los indicadores evaluados, con su lectura, su consecuencia y la acción que propone la plataforma. Hace falta un patrón con al menos veinte jornadas.
+- **La trayectoria:** cómo ha derivado una persona o un centro en los últimos días, con los cambios destacados y los cambios de perfil con su fecha. Un cambio de perfil fechado es la mejor pista para preguntarse qué pasó ese día.
+- **La plantilla en el tiempo:** activos, inactivos y bajas al cierre de cada mes, con las altas y las salidas.
 - **El informe de jornada** en PDF o Excel, de la empresa, de un centro o de una persona, entre las fechas que diga. Le da un enlace que caduca en una hora, y el informe queda también en el histórico de informes del panel.
 
 ---
