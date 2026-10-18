@@ -28,11 +28,7 @@ Todo esto lo hace con los permisos de quien conecta: ni más ni menos de lo que 
 
 ## 1. Conectar
 
-Use esta dirección de conexión. Es la misma para todas las empresas que administra, y también la tiene en el panel, en **Herramientas** (en el menú, para propietarios y administradores), con un botón para copiarla:
-
-```
-https://api.checkbiz360.com/api/v1/assistant/mcp
-```
+La dirección de conexión está en el panel, en **Herramientas** (en el menú, para propietarios y administradores), con un botón para copiarla. Es la misma para todas las empresas que administra y no se publica fuera del panel: cópiela desde ahí.
 
 **En Claude**
 
@@ -48,7 +44,7 @@ https://api.checkbiz360.com/api/v1/assistant/mcp
 
 Al autorizar verá la lista de empresas a las que tendrá acceso: las que usted administra. Si mañana le dan acceso a otra, el asistente la verá sin volver a conectar; si se lo quitan, deja de verla.
 
-> **Si conectó antes una empresa con su dirección propia**, sigue funcionando para esa empresa. Para trabajar con todas desde un mismo conector, añada la dirección de arriba.
+> **Si conectó antes una empresa con su dirección propia**, sigue funcionando para esa empresa. Para trabajar con todas desde un mismo conector, añada la dirección que encontrará en **Herramientas**.
 
 > **Antes de empezar:** necesita el segundo factor activado y ser propietario o administrador de al menos una empresa. Si al conectar no le deja entrar, es casi siempre una de esas dos cosas.
 

@@ -28,11 +28,7 @@ It does all this with the permissions of whoever connects: no more and no less t
 
 ## 1. Connect
 
-Use this connection address. It is the same for every company you administer, and you also have it in the panel under **Tools** (in the menu, for owners and administrators), with a button to copy it:
-
-```
-https://api.checkbiz360.com/api/v1/assistant/mcp
-```
+The connection address is in the panel under **Tools** (in the menu, for owners and administrators), with a button to copy it. It is the same for every company you administer and it is not published outside the panel: copy it from there.
 
 **In Claude**
 
@@ -48,7 +44,7 @@ https://api.checkbiz360.com/api/v1/assistant/mcp
 
 When you authorise, you will see the list of companies it will have access to: the ones you administer. If you are given access to another company later, the assistant sees it without reconnecting; if your access is removed, it stops seeing it.
 
-> **If you connected a company earlier with its own address**, it keeps working for that company. To work with all of them from a single connector, add the address above.
+> **If you connected a company earlier with its own address**, it keeps working for that company. To work with all of them from a single connector, add the address you will find under **Tools**.
 
 > **Before you start:** you need two-factor authentication enabled and to be an owner or administrator of at least one company. If the connection will not let you in, it is almost always one of those two.
 

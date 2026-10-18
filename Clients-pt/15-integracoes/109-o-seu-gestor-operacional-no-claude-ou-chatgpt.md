@@ -28,11 +28,7 @@ Faz tudo isto com as permissões de quem liga: nem mais nem menos do que essa pe
 
 ## 1. Ligar
 
-Use este endereço de ligação. É o mesmo para todas as empresas que administra, e também o tem no painel, em **Ferramentas** (no menu, para proprietários e administradores), com um botão para o copiar:
-
-```
-https://api.checkbiz360.com/api/v1/assistant/mcp
-```
+O endereço de ligação está no painel, em **Ferramentas** (no menu, para proprietários e administradores), com um botão para o copiar. É o mesmo para todas as empresas que administra e não se publica fora do painel: copie-o a partir daí.
 
 **No Claude**
 
@@ -48,7 +44,7 @@ https://api.checkbiz360.com/api/v1/assistant/mcp
 
 Ao autorizar verá a lista de empresas a que terá acesso: as que administra. Se mais tarde lhe derem acesso a outra, o assistente vê-a sem voltar a ligar; se lho retirarem, deixa de a ver.
 
-> **Se ligou antes uma empresa com o seu endereço próprio**, continua a funcionar para essa empresa. Para trabalhar com todas a partir de um mesmo conector, adicione o endereço acima.
+> **Se ligou antes uma empresa com o seu endereço próprio**, continua a funcionar para essa empresa. Para trabalhar com todas a partir de um mesmo conector, adicione o endereço que encontra em **Ferramentas**.
 
 > **Antes de começar:** precisa da verificação em dois passos ativada e de ser proprietário ou administrador de pelo menos uma empresa. Se ao ligar não o deixar entrar, é quase sempre uma dessas duas coisas.
 
