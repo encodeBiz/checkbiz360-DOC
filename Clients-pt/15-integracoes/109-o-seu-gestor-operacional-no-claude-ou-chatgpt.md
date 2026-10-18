@@ -100,7 +100,7 @@ Criar uma tarefa, mudá-la de dia ou de hora, passá-la a outra pessoa, cancelá
 
 ### Dar entrada a pessoas e centros
 
-Uma pessoa ou um centro soltos, ou muitos de uma vez a partir da lista da contabilidade, de um Excel ou de um documento. O assistente verifica quem já existe, diz-lhe o que vai criar e que morada entendeu de cada centro, e cria tudo quando confirmar. As boas-vindas à app não são enviadas sozinhas: peça-as quando tiver verificado que está tudo bem.
+Uma pessoa ou um centro soltos, ou muitos de uma vez a partir da lista da contabilidade, de um Excel ou de um documento. O assistente verifica quem já existe, diz-lhe o que vai criar e que morada entendeu de cada centro, e cria tudo quando confirmar. As boas-vindas à app não são enviadas sozinhas: peça-as quando tiver verificado que está tudo bem. O documento de identificação (NIF/DNI) não passa pelo assistente: completa-se na ficha de cada pessoa, no painel.
 
 ### Analisar
 

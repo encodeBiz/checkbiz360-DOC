@@ -100,7 +100,7 @@ Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarl
 
 ### Dar de alta gente y centros
 
-Una persona o un centro sueltos, o muchos de una vez a partir de la lista de la gestoría, de un Excel o de un documento. El asistente comprueba quién existe ya, le dice qué va a crear y qué dirección ha entendido de cada centro, y crea todo cuando usted confirma. La bienvenida a la app no se manda sola: pídasela cuando haya comprobado que todo está bien.
+Una persona o un centro sueltos, o muchos de una vez a partir de la lista de la gestoría, de un Excel o de un documento. El asistente comprueba quién existe ya, le dice qué va a crear y qué dirección ha entendido de cada centro, y crea todo cuando usted confirma. La bienvenida a la app no se manda sola: pídasela cuando haya comprobado que todo está bien. El DNI o NIE no pasa por el asistente: se completa en la ficha de cada persona, en el panel.
 
 ### Analizar
 

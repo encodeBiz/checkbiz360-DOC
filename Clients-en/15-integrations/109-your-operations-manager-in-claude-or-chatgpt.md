@@ -100,7 +100,7 @@ Create a task, move it to another day or time, hand it to someone else, cancel i
 
 ### Add people and sites
 
-A single person or site, or many at once from your accountant's list, an Excel file or a document. The assistant checks who already exists, tells you what it will create and which address it understood for each site, and creates everything when you confirm. The app welcome is not sent automatically: ask for it once you have checked everything is right.
+A single person or site, or many at once from your accountant's list, an Excel file or a document. The assistant checks who already exists, tells you what it will create and which address it understood for each site, and creates everything when you confirm. The app welcome is not sent automatically: ask for it once you have checked everything is right. The ID document (DNI/NIE) does not go through the assistant: complete it in each person's record, in the panel.
 
 ### Analyse
 
