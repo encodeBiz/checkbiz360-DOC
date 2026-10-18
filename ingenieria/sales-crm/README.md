@@ -73,6 +73,7 @@ Limpieza es el que más resultado está dando (Jose, 2026-10-13).
 | [ADR-007](./adr/ADR-007-sales-lead-qualified-lo-emite-el-crm.md) | `sales_lead_qualified` lo emite el CRM al entrar en conversación | Propuesto |
 | [ADR-008](./adr/ADR-008-acciones-planificadas-por-contacto.md) | Acciones planificadas por contacto; la etapa sigue siendo de la empresa | Aceptado |
 | [ADR-009](./adr/ADR-009-merlin-investiga-en-el-servidor.md) | Merlin investiga en el servidor con la API de OpenAI; solo cuenta la prueba citada | Aceptado |
+| [ADR-010](./adr/ADR-010-prompts-desde-ajustes-y-senales-con-merlin.md) | Los prompts se afinan desde Ajustes; Merlin busca señales a petición, con el mismo presupuesto | Aceptado |
 
 ## Technical Design Records (TDRs)
 
@@ -86,6 +87,7 @@ Limpieza es el que más resultado está dando (Jose, 2026-10-13).
 | [TDR-006](./tdr/TDR-006-acciones-planificadas.md) | Acciones planificadas: modelo, reglas, API, MCP y panel | 5 |
 | [TDR-007](./tdr/TDR-007-investigacion-con-merlin.md) | Investigación con Merlin: dos llamadas, comprobaciones, cola y prueba de 10 | 6 |
 | [TDR-008](./tdr/TDR-008-ajustes-del-crm.md) | Ajustes del CRM: topes diarios y configuración en un sitio, sin redesplegar | 6 |
+| [TDR-009](./tdr/TDR-009-prompts-editables-y-senales-con-merlin.md) | Prompts editables y búsqueda de señales con Merlin: contrato, tabla de búsquedas, panel | 7 |
 
 ## Referencias
 

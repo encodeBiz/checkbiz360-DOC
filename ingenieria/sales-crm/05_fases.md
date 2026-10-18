@@ -147,3 +147,40 @@ editarse en el panel, sin redesplegar.
 
 **Criterio de éxito:** las 10 cuentas de limpieza investigadas por Claude, reinvestigadas en
 seco por Merlin, y Jose decide con las dos delante si la calidad basta y con qué modelo.
+
+**Decisión (2026-10-16, tarde):** prompt reescrito (sus propias palabras, evolución de
+cifras, prueba de especificidad) y comparadas en seco con búsqueda `high`: `gpt-5-mini`
+~20 cts/empresa y flojo en el gancho; `gpt-5.4-mini` fuerte (~25-30 cts); `gpt-5.5` el
+mejor gancho (~60-80 cts, 3,5-5 min). Jose eligió **`gpt-5.4-mini` por defecto en la cola
+y `gpt-5.5` a mano** en las que lo merezcan. La cola quedó **encendida en producción** ese
+día desde Ajustes (5 empresas y 400.000 tokens al día, laborables a las 7). La cuenta de
+OpenAI se quedó sin saldo a media tarde (429) y enseñó dos fallos de la cola, corregidos y
+en prod con la PR #159: gastaba los cinco intentos del día en el mismo error y dejaba a cada
+empresa siete días bloqueada como si estuviera investigada. Ahora al primer fallo se para
+hasta mañana y un intento `failed` no cuenta para el reintento.
+Primera semana: mirar «uso de hoy» en Ajustes y las notas de Merlin en las cuentas.
+
+## Fase 7 — Prompts desde Ajustes y señales con Merlin (2026-10-18)
+
+**Rama:** `feat/crm-prompts-y-senales` · **Diseño:** [ADR-010](./adr/ADR-010-prompts-desde-ajustes-y-senales-con-merlin.md),
+[TDR-009](./tdr/TDR-009-prompts-editables-y-senales-con-merlin.md)
+
+- Los tres prompts (dossier, perfil, señales) se afinan en Ajustes; vacío = el de
+  fábrica, que sigue en Merlin. Lo que comprueba el servidor no se afina.
+- «Buscar señales con Merlin» en el pipeline: nicho, días, foco; dos llamadas; empresa
+  conocida → señal, desconocida → alta con tope. Migración `041` (`sales_signal_searches`),
+  con cada hallazgo y su decisión para afinar el prompt.
+- Mismo presupuesto y modelo que la investigación; sin presupuesto, 409 antes de llamar.
+
+**Criterio de éxito:** Jose cambia una frase del prompt y la siguiente investigación la
+usa sin pase; una búsqueda de limpieza a 30 días deja señales en cuentas que ya estaban y
+altas nuevas con su fuente, y la lista de la búsqueda explica cada descarte.
+
+**Estado (2026-10-18):** en develop y staging; migración 041 en `encodebiz_staging`; PR #166 a
+main abierta (la fusiona Jose). Primera búsqueda simulada en staging (limpieza, 30 días, foco
+«Andalucía», `gpt-5-mini`): 6 adjudicaciones con fuente (agregadores de licitaciones y prensa
+local), 24 búsquedas web, 112.000 tokens, 3 minutos; los avisos de Merlin explicaban qué dejó
+fuera (CLECE y Óptima por tamaño, licitaciones en plazo, ofertas sin fecha). Un fallo
+encontrado y corregido antes de prod: la lista de cuentas sin orden por encaje mandaba un
+parámetro de más a Postgres.
+
