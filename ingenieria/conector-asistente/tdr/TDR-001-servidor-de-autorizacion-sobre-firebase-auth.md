@@ -141,6 +141,19 @@ guarda en `assistant_clients/{clientId}`. Límite por IP: 10 registros por hora.
 el conector pegando credenciales en la casilla «Avanzado» de claude.ai. Mismo documento en
 `assistant_clients`, con `manual: true`.
 
+**El cliente del portal de plugins de OpenAI** (añadido el 2026-10-18). El diálogo «Connect
+MCP server» del portal no guarda un cliente predefinido por nombre ni registra uno
+dinámicamente —fallo suyo, confirmado por su soporte el 15-oct-2026—, pero sí acepta un
+cliente identificado por la URL de su documento de metadatos. El conector sirve ese documento
+en `GET /oauth/clients/openai.json` (`client_id` = esa misma URL, `token_endpoint_auth_method:
+none`, retornos fijos `https://platform.openai.com/apps-manage/oauth` y
+`https://chatgpt.com/connector_platform_oauth_redirect`) y lo resuelve en código, sin salir a
+la red: el propio dominio no entra en la lista de hosts. Es un cliente público con PKCE como
+los demás; la validación estricta del retorno, el segundo factor y el consentimiento no
+cambian (`portalClientDocument` en `clients.ts`, prueba en `oauth.test.ts`). Va en el
+`mcp.json` del paquete del directorio de ChatGPT como `client.mode: provided` con ese
+`clientId` y método `none`.
+
 Lista de dominios por defecto: `claude.ai`, `claude.com`, `chatgpt.com`, `openai.com`.
 URLs de retorno conocidas hoy, que la prueba en staging tiene que confirmar:
 
