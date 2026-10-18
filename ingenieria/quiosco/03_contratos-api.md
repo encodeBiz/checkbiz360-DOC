@@ -188,3 +188,52 @@ cuando se pide (tarjetas, «Mi QR») y se comprueba al leerlo. Regenerar = subir
   quiosco y en la revisión), crear el quiosco al dar de alta una sucursal nueva (hoy: «Activar»
   otra vez, que es idempotente), bucket europeo (`KIOSK_MEDIA_BUCKET`; sin él, el bucket por
   defecto), Cloud Tasks.
+
+---
+
+## Estado de la implementación (2026-10-18)
+
+Rama `feat/quiosco`, desde `develop`, en un worktree por repositorio. **Nada empujado ni
+desplegado.** Ninguna pieza se ha probado todavía contra un servidor vivo ni en un dispositivo.
+
+| Repo (worktree) | Commits | Comprobado |
+|---|---|---|
+| `encodebiz-api-quiosco` | `shared`: módulo `checkbiz/kiosk` y `checkbiz/storage`; refactor del fichaje a `registerChecklog(body, actor)`; rutas del quiosco; reglas | typecheck de `shared` y `checkinbiz` limpio; 13 tests nuevos de `shared` en verde; el servicio arranca en local contra dev y las rutas nuevas responden 401 con el `code` del contrato sin credencial; prueba de reglas con el emulador, 0 fallos (10 casos nuevos) |
+| `checkbiz360-quiosco` | dependencias y permisos; feature `lib/features/kiosk`; rama del login, arranque, router, «Mi QR»; tests | `flutter analyze` sin issues nuevos (67 antes y después); 349 tests en verde (57 nuevos); compilan el APK de Android y la app de iOS en simulador |
+| `encodebiz-front-saas-quiosco` | tipos, servicio y proxy; página Quiosco con tarjetas, códigos y revisión | `tsc` y `lint` igual que la base (29 errores previos de imágenes; 0 errores de lint) |
+
+### Decisiones de implementación que no estaban en el diseño
+
+- **QR y foto con dos cámaras, no una.** ML Kit en iOS sólo llega por CocoaPods y la app es
+  sólo Swift Package Manager; se usa `mobile_scanner` en la pantalla de inicio y `camera` en la de
+  confirmar, con un relevo de cámara de unos cientos de milisegundos.
+- **Tras abrir la sesión del quiosco, la app cierra la sesión de Firebase**: el `kioskToken` es
+  la única credencial que necesita. Y las reglas de Firestore dejan fuera a cualquier sesión con
+  el claim `kind: "kiosk"`, por si las credenciales salen del centro.
+- **«Fuera de turno»** en el quiosco dice «Fuera de tu turno. Avisa al encargado»; el resto de
+  códigos de fichaje reutilizan los textos de la app.
+
+### Lo que hace falta para probarlo en dev
+
+1. Variables del servicio `checkinbiz`: `KIOSK_SECRET` (sin ella usa `JWT_2FA_SECRET`, sólo para
+   dev) y `KIOSK_MEDIA_BUCKET` (sin ella, el bucket por defecto).
+2. Variable del panel: `NEXT_BACKEND_URI_CHECKINBIZ_KIOSKS_HANDLER=<API>/api/v1/checkinbiz/kiosks`;
+   sin ella el proxy responde 403.
+3. Desplegar las reglas de Firestore a dev (`--project dev-encodebiz`).
+4. Índice compuesto de `checklogs` por `(branchId, timestamp)` para la revisión: está declarado
+   en `encodeBiz-SAAS/firestore.indexes.json`, pero hay que comprobar con `gcloud` que está
+   desplegado.
+5. Una empresa de prueba con una sucursal geolocalizada y dos o tres empleados.
+
+### Pendiente (no bloquea la demo)
+
+- **Fotos en el bucket por defecto = legibles por cualquier sesión** según `storage.rules`
+  (comodín `request.auth != null`). En producción `KIOSK_MEDIA_BUCKET` tiene que ser el bucket
+  europeo, que no expone reglas de cliente; o añadir `match /kiosk/{p=**} { allow read, write: if false; }`.
+- Aviso push de ráfaga y de dispositivo sustituido (hoy quedan en el quiosco y en la revisión).
+- Crear el quiosco al dar de alta una sucursal nueva (hoy: «Crear los que faltan» en el panel).
+- Prueba de extremo a extremo en `qa/tests/con-datos` (activar, sesión dentro y fuera del radio,
+  sustitución, identificar, fichar con foto, ráfaga, rechazo) y catálogo de QA.
+- La foto en la fila de asistencia del panel, y la edición de foto y retención por empresa.
+- La reconciliación nocturna del almacenamiento y la migración de los demás módulos al contador.
+- iOS: el bloqueo es Acceso Guiado configurado a mano; el iPhone queda en vertical.

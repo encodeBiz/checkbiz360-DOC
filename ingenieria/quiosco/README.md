@@ -3,7 +3,7 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** checkinbiz — Fichajes (checklogs) y auth · checkbiz360 — modo quiosco · panel — activación del módulo y revisión
 **Fecha de inicio:** 2026-10-18
-**Estado:** **Diseño cerrado el 2026-10-18 · sin implementar.** Jose, 2026-10-18: «hay que
+**Estado:** **Diseño cerrado el 2026-10-18 · en implementación** en la rama `feat/quiosco` de la API, la app y el panel; nada desplegado ([03 §Estado](./03_contratos-api.md#estado-de-la-implementación-2026-10-18)). Jose, 2026-10-18: «hay que
 investigarlo bien pero dejarlo cerrado hoy». Revisado el mismo día: **la foto pasa a la Fase 1
 y es la prueba del fichaje** (Jose: «tenemos que hacer una prueba de fichaje, por ejemplo una
 foto, porque ¿cómo garantizo que es el empleado correcto? En el ayuntamiento hay un caso en que
