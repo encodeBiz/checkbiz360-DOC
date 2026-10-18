@@ -36,9 +36,9 @@ Todas leen; ninguna escribe. Anotación `LEE`.
 | `ver_alertas` | — | Hasta ocho alertas, ya ordenadas por gravedad, cada una en frase y con su sucursal | `analytics /panel/alerts` |
 | `informe_jornada` | `desde`, `hasta`, `sucursalId?`, `personaId?`, `formato` (pdf/xlsx) | Un enlace de descarga que caduca en una hora | `reports /delegated/generate` |
 
-Fuera de esta fase: el mes frente al anterior (`/panel/overview`, una respuesta enorme pensada
-para pintar), la plantilla en el tiempo (`/panel/headcount`), los patrones por persona
-(`/patterns/history`, hoy solo con la clave y sin actor) y el informe de tareas.
+Fuera de esta fase quedaron el mes, la plantilla en el tiempo y los patrones; entraron el
+2026-10-18 como §8 (Jose: «pensé que habías puesto en la capa de analítica todo lo que tenemos
+en análisis disponible para la IA; esto es muy potente»). Sigue fuera el informe de tareas.
 
 ## 3. `quien_puede_cubrir`, el cruce
 
@@ -106,3 +106,34 @@ Se añaden:
 - **reports:** la ruta delegada exige `canWrite`.
 - **Staging:** con ChatGPT o Claude sobre la empresa de demo: «cómo va hoy», «quién cubre» y
   un informe.
+
+## 8. El análisis entero (añadido el 2026-10-18)
+
+Lo que el panel llama «Análisis»: el mes con sus cuatro ejes, la heurística de un centro o
+de una persona, la trayectoria de patrones y la plantilla en el tiempo. Mismo principio que
+el resto (ADR-008): el asistente lee lo que el panel ya calcula y lo traduce a frase; no hay
+umbral ni cálculo nuevo. Y lo que Merlin aprendió narrando el panel vale aquí igual: las
+claves se traducen antes de salir, los avisos de configuración van **sin nombres**, y
+`sin_evidencia` significa «no se puede afirmar», nunca un suspenso.
+
+| Herramienta | Entrada | Sale | Fuente |
+|---|---|---|---|
+| `ver_mes` | `periodo` (AAAA-MM; por defecto, el mes en curso), `sucursalId?`, `personaId?` | El mes frente al anterior: fiabilidad, efecto del centro y dependencia con su lectura; sucursales por orden de atención con sus motivos en frase; personas (en una sucursal) con su arquetipo; tendencia por semanas; carga (planificado, trabajado, sin registrar) y perfiles de comportamiento con hasta tres nombres por lista; quién acumula oficio y quién puede cubrir otro puesto; ubicación (cajones, observaciones en frase, vallas estrechas y quien no consigue fichar, **sin nombres**); fallo del fichaje y cierres fabricados; el cruce de ejes (recuentos, hasta tres excepciones con nombre, avisos de configuración por causa sin nombres); y qué bloques aún acumulan datos | `analytics /panel/overview` |
+| `analisis_sucursal` / `analisis_persona` | `sucursalId` o `personaId` | El perfil (en frase), la fiabilidad del patrón con su madurez y calidad, y los indicadores evaluados: nombre, valor, estado y, en el idioma pedido, lectura, consecuencia y acción. Con menos de veinte jornadas, lo dice | `analytics /heuristic` |
+| `trayectoria` | `sucursalId` o `personaId`, `dias?` (7–90, 30 por defecto) | La deriva de los últimos días: por métrica, dirección y confianza en frase (y si es informativa, sin juicio); volatilidad, consistencia y señal de recuperación; cambios fechados, cambios de perfil fechados y rachas. La serie diaria no viaja: es para pintar | `analytics /patterns/history` |
+| `ver_plantilla` | `sucursalId?`, `desde?` (AAAA-MM) | Activos, inactivos y bajas al cierre de cada mes, con altas y salidas; los meses estimados, marcados | `analytics /panel/headcount` |
+
+Puertas: `/panel/overview` y `/panel/headcount` ya están tras la delegada del panel (§4).
+Se añaden `/api/analytics/delegated/heuristic` (el mismo router, que ya comprueba el permiso
+con `canWrite`, responsable de sucursal incluido) y
+`/api/analytics/delegated/patterns/history` (el mismo manejador que la ruta S2S, tras
+`requireDelegatedUser` y `requireEntityAccess`: hoy solo tenía la clave y ningún actor).
+
+Las frases de los perfiles de la heurística (`elite`, `anchor`, `maverick`…) no están en el
+panel, que enseña la clave: las pone el conector, a partir de lo que el clasificador mide. Son
+propuesta, no texto verificado con Jose.
+
+Instrucciones que se añaden: para «¿qué está pasando?» o «¿cómo va el mes?», `ver_mes`;
+para una persona o un centro concretos, `analisis_*` y `trayectoria`. Un hallazgo que comparte
+casi toda la plantilla es de la operación, no de las personas; los avisos de configuración
+son nuestros y no se nombra a nadie; `sin evidencia` no es un suspenso.
