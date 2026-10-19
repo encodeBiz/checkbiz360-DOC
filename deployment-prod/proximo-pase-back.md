@@ -32,6 +32,7 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 | `feat/material-por-destino` | Material hacia tarea, persona o sucursal | migración 034 | §4 |
 | `feat/calendario-tareas-resumen` | Calendario semanal de tareas resumido en Postgres (ADR-008) | migración 040, un índice | §8 |
 | `fix/reglas-collection-group` | Consultas de grupo | **ya en prod desde el 14-oct**; falta que `main` tenga el fichero | §5 |
+| `feat/reglas-paso-2a` | Reglas: cada sesión ve sólo las entidades de las que es miembro | función `onEmpMember` (antes que las reglas), reconciliación en `checkinbiz`, reglas | §10 |
 | CRM (`feat/sales-crm*`, `feat/crm-*`, `feat/backoffice-crm`) | CRM comercial | **sin inventariar**: cruzar con #147 | — |
 | `feat/mi-material-aviso-e-historial`, `fix/avisos-*`, `fix/backfill-account-kind`, `fix/backoffice-sucursales-direccion` | Avisos, idioma, material, backoffice | **sin inventariar** | — |
 
@@ -394,6 +395,40 @@ según se vaya haciendo:
    simultáneas en una sucursal suben `dataPoints` en dos.
 
 Estado: PENDIENTE, por detallar.
+
+---
+
+## 10. Reglas de Firestore, paso 2a: aislar por entidad — EN DEV desde el 2026-10-19; prod PENDIENTE
+
+Diseño en [ingenieria/reglas-firestore/paso-2a.md](../ingenieria/reglas-firestore/paso-2a.md).
+Con el registro abierto, cualquier cuenta recién creada lee y escribe todas las entidades. Con
+esto, `entities/{e}/…` sólo para sus miembros: dueños y administradores por su asiento,
+empleados por el espejo `entity_members` que mantiene la función `onEmpMember`. Las raíces
+(`users`, `issues`, `searchIndex`…) siguen pidiendo sólo sesión hasta el 2b.
+
+**El orden es lo que importa: si las reglas salen antes que el espejo, nadie ficha.**
+
+| # | Qué | Cómo | Estado |
+|---|---|---|---|
+| 10.1 | Contenedor `checkinbiz` con el script | Con el despliegue normal de `main` | PENDIENTE |
+| 10.2 | Función | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onEmpMember --con-reintentos` (la primera vez pide aceptar los reintentos; hace falta el `.env.encodebiz-services` en `services/firebase_sdk`) | PENDIENTE |
+| 10.3 | Reconciliación simulada | En el contenedor `checkinbiz` de prod: `node services/checkinbiz/dist/scripts/reconcile-entity-members.js`. Mirar las dos últimas líneas: fichas sin `entityId` y asientos con otro id tienen que ser **0**, o se revisan uno a uno antes de seguir | PENDIENTE |
+| 10.4 | Reconciliación | La misma con `--apply`, y otra vez sin él: **cero diferencias** o no se sigue | PENDIENTE |
+| 10.5 | Copia del ruleset vivo | API de firebaserules con `x-goog-user-project: encodebiz-services`, a `deployment-prod/<fecha>-firestore-rules-prod-antes.rules` | PENDIENTE |
+| 10.6 | Reglas | `firebase deploy --only firestore:rules --project encodebiz-services` | PENDIENTE |
+| 10.7 | Verificación | Por REST con sesiones reales de dos entidades (dueño de X lee X y no Y; empleado lee su ficha, sus fichas por grupo, sus fichajes y no otra entidad; nadie lee `entity_members`), como en dev | PENDIENTE |
+| 10.8 | Vigilancia | Media hora con un cliente real: fichaje en la app, cambio de empresa, lista de empleados, presets de calendario, invitación de un colaborador | PENDIENTE |
+
+**Vuelta atrás:** redesplegar la copia del 10.5 (menos de un minuto). La función y el espejo
+pueden quedarse: sin la regla nadie los lee.
+
+**En dev, 2026-10-19:** `checkinbiz` reconstruido con `d010f4d`; `onEmpMember` desplegada;
+reconciliación: 8043 fichas, 7613 espejos creados, 0 fichas sin `entityId`, 0 asientos con
+otro id, segunda pasada sin diferencias; el trigger, probado en vivo con una ficha de prueba
+(alta, baja, vuelta y borrado, 4 s cada uno, sin restos). Reglas hacia las 10:50 UTC (copia previa
+en `2026-10-19-firestore-rules-dev-antes.rules`); por REST con dos dueños y un empleado reales,
+todo lo esperado. Falta la prueba con el panel (`start:dev`) y con la app de desarrollo: la QA
+de Playwright no la cubre, porque lee con Admin SDK y se salta las reglas.
 
 ---
 
