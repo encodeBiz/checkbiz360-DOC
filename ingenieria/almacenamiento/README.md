@@ -36,6 +36,25 @@ documento es esa versión. La de packs queda en el historial de git y en
 Lo que pone el techo al volumen del quiosco no es la cuota sino la **retención** de sus fotos
 (§Retención), que elige la empresa viendo lo que le costará.
 
+## El interruptor, el bloqueo y el aviso
+
+Jose, 2026-10-19, al ver la primera versión del panel: el almacenamiento va en Suscripciones
+«debajo de los módulos como algo fijo que además puedas desmarcar o marcar», y «tiene que
+crear una alerta cuando esté llegando a su tope free».
+
+- **La ampliación se marca o se desmarca.** `entities/{e}.storageExtra`, **marcada por
+  defecto** (ausente cuenta como marcada). Marcada, lo que pase de 2 GB se cobra como abajo.
+- **Desmarcada no se cobra, y el documental deja de aceptar subidas** que dejen a la empresa
+  por encima de 2 GB: `POST /api/v1/documents` responde 402 `documents/storage_full`. Es lo
+  único que se bloquea: tareas, firma, informes y quiosco siguen subiendo (un fichaje no falla
+  nunca por espacio). Jose: «si se desmarca y no se paga hay que bloquear la subida de
+  documentos en el módulo de documentación».
+- **Un aviso, uno solo, al 90 % de lo incluido** (1,8 GB), por correo a `billingEmail`
+  (plantilla `STORAGE_ALERT`) y, en el panel, en el propio bloque de Suscripciones. Lo lanza el
+  trigger de Storage después de contar; `entities/{e}.storageAlertAt` hace que salga una vez y
+  se rearma cuando la empresa baja del 80 %. La campana del panel no se usa: hoy no lee
+  `in_app_notifications`, que es de la app.
+
 ## Los números
 
 Lo que cobra Google por el almacenamiento (Cloud Storage, clase estándar; comprobado el
@@ -226,16 +245,19 @@ algún día un cliente necesita subir directo, se abre su ruta con nombre bajo
 
 ## Dónde se ve
 
-Panel → Empresa → **Almacenamiento**: lo usado por módulo, los 2 GB incluidos, los GB que se
-cobrarían hoy y su importe, y la retención del quiosco con su estimación. En la factura, la
+Panel → Entidad → **Suscripciones**, debajo de las tarjetas de los módulos y siempre visible:
+lo usado frente a los 2 GB incluidos, el aviso a partir del 90 %, los GB que se cobrarían hoy
+y su importe, el interruptor de la ampliación y el reparto por módulo. La retención del quiosco
+con su estimación se añade con el quiosco. En la factura, la
 línea «Almacenamiento: N GB por encima de 2 GB».
 
 ## Contratos
 
 | Ruta | Auth | Para qué |
 |---|---|---|
-| `GET /storage?entityId` | ID token, `canWrite` | `{ usedBytes, byModule, includedGb: 2, billableGb, eurMonth }` |
-| `GET /storage/estimate?entityId&module=kiosk&retentionDays` | ID token, `canWrite` | estimación al cambiar la retención |
+| `GET /billing/storage/:entityId` | ID token, `canWrite` | `{ usedBytes, byModule, includedGb: 2, billableGb, eurMonth, extra, nearLimit, documentsBlocked }` |
+| `PATCH /billing/storage/:entityId` | ID token, `canWrite` | `{ extra: boolean }`: marca o desmarca la ampliación |
+| `GET /billing/storage/:entityId/estimate?retentionDays` | ID token, `canWrite` | estimación al cambiar la retención |
 | `PATCH /entities/:id/settings/kiosk` | ID token, `canWrite` | `photoRetention` (y `photo`) |
 | webhook `invoice.created` | firma de Stripe | añade la línea de exceso al borrador |
 

@@ -481,7 +481,10 @@ medias no lo cuenta nadie):
 | 11.6 | Price en Stripe de prod | 0,25 €, pago único, EUR, producto «Almacenamiento» |
 | 11.7 | Encender el cobro | `STRIPE_STORAGE_GB_PRICE=<price_…>` en el `.env` de prod de `billing` y reiniciarlo. Sin la variable no se cobra nada |
 | 11.8 | `invoice.created` en el webhook de Stripe de prod | si no está activado, la línea no se añade nunca |
-| 11.9 | Panel: pestaña Entidad → Almacenamiento | `NEXT_BACKEND_URI_BILLING_STORAGE=https://api.checkbiz360.com/api/v1/billing/storage` en Vercel (producción) y la rama `feat/almacenamiento-panel` del front (ac5182af en develop). Sin la variable la pestaña da error al abrirse |
+| 11.9 | Panel: bloque de almacenamiento en Entidad → Suscripciones | `NEXT_BACKEND_URI_BILLING_STORAGE=https://api.checkbiz360.com/api/v1/billing/storage` en Vercel (producción) y la rama `feat/almacenamiento-panel` del front (7fae4d62 en develop). Sin la variable el bloque da error al abrirse |
+| 11.10 | Plantilla del aviso del 90 % | `docker compose … exec -T billing node services/billing/dist/scripts/email-templates.js --apply` (sube `STORAGE_ALERT`; sin ella sale el respaldo del código) |
+| 11.11 | `documents` en prod | con el pase de la API: es quien bloquea la subida con la ampliación desmarcada |
+| 11.12 | SMTP en las functions | los triggers mandan el correo del aviso: comprobar que `SMTP_USER`/`SMTP_PASS` están en el entorno de las functions de prod (ya los usa `onCreateEmployee`) |
 
 Pendiente de decidir: las empresas sin suscripción de pago se cuentan y no se cobran.
 
