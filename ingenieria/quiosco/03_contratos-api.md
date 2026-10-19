@@ -131,12 +131,16 @@ El PIN es del quiosco (6 dígitos), se ve en el panel junto a las credenciales.
 
 ## Panel (ID token, `canWrite`)
 
+**Add-on de pago, como el inventario** (2026-10-19): sin la suscripción `kiosk` activa o en
+prueba, todas las rutas salvo `GET /kiosks` responden **403 `kiosk/not_subscribed`**, y las de
+la tablet **401 `kiosk/not_subscribed`** (la tablet cierra la sesión). No hay activar ni
+desactivar: contratar y dar de baja se hacen en `billing`, con el servicio `kiosk` y el plan
+`standard` (`alta-servicio-quiosco`; sin precio de Stripe no es contratable).
+
 | Ruta | Cuerpo / query | Responde |
 |---|---|---|
-| `GET /kiosks?entityId` | | `{ enabled, settings: { photo, photoRetention }, kiosks: [Kiosk] }` |
-| `POST /kiosks/activate` | `{ entityId }` | `{ enabled: true, created: [Credentials], skipped: [{ branchId, branchName, reason: "no_branch_geo" }] }` — idempotente: crea sólo los que faltan |
-| `POST /kiosks/deactivate` | `{ entityId }` | `{ enabled: false }` — deshabilita las cuentas y cierra las sesiones |
-| `POST /kiosks/:branchId/credentials` | `{ entityId }` | `Credentials` nuevas; cierra la sesión del dispositivo |
+| `GET /kiosks?entityId` | | `{ subscribed, subscriptionStatus, settings: { photo, photoRetention }, kiosks: [Kiosk & { credentialsIssued }], skipped: [{ branchId, branchName, reason: "no_branch_geo" }] }` — lo único que responde sin el add-on; con él, crea los quioscos que faltan |
+| `POST /kiosks/:branchId/credentials` | `{ entityId }` | `Credentials`: las primeras o unas nuevas; cierra la sesión del dispositivo |
 | `DELETE /kiosks/:branchId/device?entityId` | | `{ ok: true }` |
 | `PATCH /kiosks/:branchId` | `{ entityId, activationRadiusMeters }` (50-500) | `Kiosk` |
 | `GET /kiosks/:branchId/cards?entityId` | | `{ cards: [{ employeeId, fullName, qr }] }` — el panel pinta las tarjetas |

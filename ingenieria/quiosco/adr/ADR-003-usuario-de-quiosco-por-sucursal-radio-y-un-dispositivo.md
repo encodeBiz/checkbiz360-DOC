@@ -19,10 +19,14 @@ es sumamente importante; y sólo puede estar en un dispositivo a la vez».
 
 ## Decisión
 
+0. **El quiosco es un add-on de pago, como el inventario** (Jose, 2026-10-19). Contratarlo es
+   activarlo: no hay interruptor aparte de la suscripción `kiosk`. Va en el bloque
+   «Complementos» del menú del panel, junto a Inventario.
 1. **Un usuario con rol `kiosk` por sucursal**, cuenta de Firebase Auth con correo no
    enrutable y contraseña generada, con claims `{ kind: "kiosk", entityId, branchId }`.
-   **Lo crea el servidor al activar el módulo** para cada sucursal con dirección, y para cada
-   sucursal nueva con dirección mientras el módulo esté activo. Nadie lo crea a mano.
+   **Lo crea el servidor al contratar el add-on** para cada sucursal con dirección, y para cada
+   sucursal nueva con dirección mientras siga contratado. Nadie lo crea a mano. Las
+   credenciales no se enseñan al crearlo: se generan desde el panel cuando se van a usar.
 2. **Entrar con él en la app arranca el quiosco.** Es el login de siempre; el servidor
    reconoce el claim y devuelve una sesión de quiosco en vez de una de empleado. Sin 2FA ni
    dispositivo de confianza: lo sustituyen el radio y el dispositivo único.

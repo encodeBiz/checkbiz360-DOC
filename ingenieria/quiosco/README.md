@@ -46,6 +46,14 @@ el código queda para quien no lleve la tarjeta encima. El servidor crea el fich
 lógica que el de la app (calendario, turno, secuencia, horario por tareas), con la
 geolocalización de la sucursal, la marca de que entró por el quiosco y la foto como prueba.
 
+**Es un add-on de pago, como el inventario** (Jose, 2026-10-19: «es un complemento más de
+pago; de hecho va junto con inventario en el nav del panel»). **Contratar es activar**: la
+suscripción `kiosk` de la empresa (`entities/{e}/subscriptions/kiosk`, la crea `billing` con
+Stripe) es lo único que lo enciende. Sin ella, la entrada «Quiosco» del bloque «Complementos»
+del panel enseña la puerta de alta; con ella, cada sucursal con dirección tiene su quiosco,
+creado solo. Al darse de baja, las tablets se cierran en su siguiente petición. Unidad de
+cobro provisional: un quiosco por sucursal; el precio está por decidir.
+
 **Tablet o móvil, da igual** (Jose, 2026-10-18). Lo que se exige es del dispositivo, no del
 tamaño: GPS con posición de 100 m o mejor, cámara frontal y Android 10 o iOS 15 en adelante. Un
 Android económico en un soporte de pared vale; para una fila de gente se agradece una pantalla
@@ -198,8 +206,9 @@ nuestra lectura de ingeniería; el DPO del cliente la confirma, no la sustituye.
 
 ### 1. Entrar: el usuario de quiosco de la sucursal (ADR-003)
 
-**Nace con el módulo.** Al activar «Quiosco» en la empresa, el servidor crea **un usuario por
-sucursal con dirección**: cuenta de Firebase Auth con correo no enrutable
+**Nace con el add-on.** Al contratar el add-on de quiosco, el servidor crea **un usuario por
+sucursal con dirección** (la primera vez que el panel consulta los quioscos, y lo mismo para
+cada sucursal nueva): cuenta de Firebase Auth con correo no enrutable
 (`quiosco.<branchId>@kiosk.checkbiz360.com`), contraseña generada, claims `{ kind: "kiosk",
 entityId, branchId }`, y el documento `entities/{e}/kiosks/{branchId}`. Cada sucursal nueva
 con dirección recibe el suyo mientras el módulo esté activo; una sucursal **sin
