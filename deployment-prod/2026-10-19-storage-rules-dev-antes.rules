@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ─── DOCUMENTS MODULE ─────────────────────────────────────────────────────
+    // Direct client access is DENIED. All access via Admin SDK or Signed URLs.
+    match /documents/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // ─── OTHER PATHS ──────────────────────────────────────────────────────────
+    // Subidas server-side (Admin SDK) y lecturas vía Signed URLs OMITEN estas
+    // reglas. Para cualquier flujo que sí use el SDK de cliente, se exige usuario
+    // autenticado: se BLOQUEA todo acceso anónimo (request.auth == null).
+    // (media/, branding/, passinbiz/passtemplate/, reports, etc.).
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+  }
+}

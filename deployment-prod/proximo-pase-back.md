@@ -417,6 +417,7 @@ empleados por el espejo `entity_members` que mantiene la función `onEmpMember`.
 | 10.5 | Copia del ruleset vivo | API de firebaserules con `x-goog-user-project: encodebiz-services`, a `deployment-prod/<fecha>-firestore-rules-prod-antes.rules` | PENDIENTE |
 | 10.6 | Reglas | `firebase deploy --only firestore:rules --project encodebiz-services` | PENDIENTE |
 | 10.7 | Verificación | Por REST con sesiones reales de dos entidades (dueño de X lee X y no Y; empleado lee su ficha, sus fichas por grupo, sus fichajes y no otra entidad; nadie lee `entity_members`), como en dev | PENDIENTE |
+| 10.6b | Storage | Guardar el ruleset vivo de **cada** bucket con release (`firebaserules … /releases`, los `firebase.storage/<bucket>`) y `firebase deploy --only storage --project encodebiz-services`. Comprobar con sesión: metadatos, descarga, listado y subida → 403; una URL firmada y una con token → 200. Si prod tiene más de un bucket con reglas, el `firebase.json` sólo cubre el de por defecto: preguntar antes | PENDIENTE |
 | 10.8 | Vigilancia | Media hora con un cliente real: fichaje en la app, cambio de empresa, lista de empleados, presets de calendario, invitación de un colaborador | PENDIENTE |
 
 **Vuelta atrás:** redesplegar la copia del 10.5 (menos de un minuto). La función y el espejo
@@ -427,7 +428,9 @@ reconciliación: 8043 fichas, 7613 espejos creados, 0 fichas sin `entityId`, 0 a
 otro id, segunda pasada sin diferencias; el trigger, probado en vivo con una ficha de prueba
 (alta, baja, vuelta y borrado, 4 s cada uno, sin restos). Reglas hacia las 10:50 UTC (copia previa
 en `2026-10-19-firestore-rules-dev-antes.rules`); por REST con dos dueños y un empleado reales,
-todo lo esperado. Falta la prueba con el panel (`start:dev`) y con la app de desarrollo: la QA
+todo lo esperado. Storage cerrado al cliente a las 16:30 UTC (copia previa en
+`2026-10-19-storage-rules-dev-antes.rules`): con sesión todo 403, URLs firmadas y con token 200.
+Falta la prueba con el panel (`start:dev`) y con la app de desarrollo: la QA
 de Playwright no la cubre, porque lee con Admin SDK y se salta las reglas.
 
 ---

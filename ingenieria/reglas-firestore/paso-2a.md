@@ -143,6 +143,32 @@ entidad (la app ya filtra en cliente por sucursal y tarea). Afinar eso es otro t
 5. **Prod**, otro día y con autorización expresa: el mismo orden (trigger, reconciliación con
    cero diferencias, copia del ruleset, reglas), y media hora mirando con un cliente real.
 
+## Storage
+
+Las reglas de Storage vivían en `encodeBiz-SAAS/storage.rules` (retirado) y dejaban a cualquier
+sesión leer, listar y subir en todo el bucket salvo `documents/`. Comprobado en dev el
+2026-10-19 con la sesión de un dueño cualquiera: metadatos, descarga, listado de `checkbiz/` y
+subida, todo **200**, sobre informes de otra empresa.
+
+Inventario del mismo día: **ningún cliente usa el SDK de Storage.** El panel tiene un
+`fileManager.ts` sin importadores (el último uso, el avatar `user-avatar/`, se quitó el 2-sep);
+la app y el quiosco declaran `firebase_storage` pero no lo importan. Todo se sube por la API
+(multipart en tareas y documentos, base64 en la foto del quiosco) y se muestra con la URL que
+devuelve la API: firmada por el backend o, en lo antiguo, con token de descarga. Ninguna de las
+dos pasa por las reglas.
+
+Así que `encodebiz-api/storage.rules` cierra el cliente entero (`allow read, write: if false`),
+declarado en el `firebase.json` de la raíz junto a Firestore. En dev el 2026-10-19, con copia
+previa en `deployment-prod/2026-10-19-storage-rules-dev-antes.rules`: con sesión, todo 403; la
+URL con token (In-App Messaging) y la URL firmada, 200.
+
+- **No volver a desplegar Storage desde `encodeBiz-SAAS`**: su `firebase.json` lo declara y
+  reabriría el bucket.
+- Las URLs firmadas del backend caducan en **2050** (`media`, `tasks`, campañas): quien tenga una
+  la tiene para siempre. No es de las reglas, pero es la siguiente fuga del mismo tipo.
+- El bucket europeo de los ficheros de trabajadores (CLAUDE.md, almacenamiento) no tiene reglas
+  publicadas en dev porque no existe allí; en prod hay que mirar qué buckets tienen release.
+
 ## Lo que salió al implementarlo
 
 - `string(document).split('/')[0]` no da la entidad: la regla fallaba para todo el mundo. Y
