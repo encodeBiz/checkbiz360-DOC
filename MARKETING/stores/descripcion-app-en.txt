@@ -46,7 +46,7 @@ MATERIALS (with the Inventory add-on)
 SCHEDULES AND ALERTS
 • Your shift for the day, split shifts, public holidays and days off.
 • If your company organises your day by tasks, clocking in starts and completes each job.
-• Notifications for new tasks, validations, rejections, issues of material and your workday.
+• Alerts for new tasks, validations, rejections, material issues and your workday.
 • Incidents to support from the app.
 
 WHAT HAPPENS WITH WHAT YOU RECORD
