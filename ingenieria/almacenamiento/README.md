@@ -142,7 +142,7 @@ fichero contaría dos veces.
 ### La carga inicial
 
 Al encender el trigger, el registro está vacío y lo que ya hay en los buckets no cuenta. Un
-script `services/firebase_sdk/src/scripts/storage-backfill.ts` lista los prefijos de la tabla,
+script `services/billing/src/scripts/storage-backfill.ts` (en `billing`, que tiene contenedor con credenciales) lista los prefijos de la tabla,
 rellena `storage_objects` y reescribe los trozos del contador (todo en el trozo 0, el resto a cero). Simula por defecto y escribe
 con `--apply`. Se ejecuta una vez **después** de desplegar el trigger, para que lo que se suba
 mientras corre no se pierda. El mismo script sirve de reparación si alguna vez el contador se

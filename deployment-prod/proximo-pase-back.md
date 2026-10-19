@@ -457,6 +457,33 @@ de Playwright no la cubre, porque lee con Admin SDK y se salta las reglas.
 
 ---
 
+## 11. Almacenamiento por empresa: contador y exceso de 2 GB — PENDIENTE (en `staging` el 2026-10-19)
+
+Diseño: [ingenieria/almacenamiento](../ingenieria/almacenamiento/README.md), ADR-002. Rama
+`feat/almacenamiento-cobro` (e88eda6). Cuenta lo que ocupa cada empresa con triggers de
+Storage y añade `⌊GB⌋ − 2` a 0,25 € a la factura de renovación de checkinbiz.
+
+En desarrollo: `billing` reconstruido en el VPS el 19-oct; la carga inicial en simulación ve
+1.111 ficheros de 123 empresas, ninguno contado. **Los triggers no están desplegados en dev**:
+un despliegue cortado dejó `storageUsageFinalized` a medias (sale como `https`, sin trigger) y
+`storageUsageDeleted` no existe. Hay que terminarlo antes de dar dev por probado.
+
+Por orden, y el orden importa (los triggers antes que la carga inicial, o lo subido entre
+medias no lo cuenta nadie):
+
+| # | Qué | Cómo |
+|---|---|---|
+| 11.1 | Triggers en el bucket del proyecto | `node scripts/desplegar.mjs --project encodebiz-services --solo storageUsageFinalized,storageUsageDeleted --con-reintentos` (región `us-central1`, la del bucket de prod) |
+| 11.2 | `billing` en prod | con el pase de la API |
+| 11.3 | Carga inicial, simulando | `docker compose … exec -T billing node services/billing/dist/scripts/storage-backfill.js` — mirar qué empresas pasan de 2 GB |
+| 11.4 | Carga inicial, de verdad | lo mismo con `--apply` |
+| 11.5 | Avisar a las empresas que pasan de 2 GB | antes de su próxima renovación (decisión de Jose: cómo y cuándo) |
+| 11.6 | Price en Stripe de prod | 0,25 €, pago único, EUR, producto «Almacenamiento» |
+| 11.7 | Encender el cobro | `STRIPE_STORAGE_GB_PRICE=<price_…>` en el `.env` de prod de `billing` y reiniciarlo. Sin la variable no se cobra nada |
+| 11.8 | `invoice.created` en el webhook de Stripe de prod | si no está activado, la línea no se añade nunca |
+
+Pendiente de decidir: las empresas sin suscripción de pago se cuentan y no se cobran.
+
 ## Registro del día del pase — 2026-10-17
 
 Ejecutado por Claude con la orden de Jose de las 10:44 UTC («hoy es el pase, ahora mismo,
