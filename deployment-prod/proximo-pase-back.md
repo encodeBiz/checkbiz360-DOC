@@ -464,9 +464,9 @@ Diseño: [ingenieria/almacenamiento](../ingenieria/almacenamiento/README.md), AD
 Storage y añade `⌊GB⌋ − 2` a 0,25 € a la factura de renovación de checkinbiz.
 
 En desarrollo: `billing` reconstruido en el VPS el 19-oct; probado con sesión real de dueño (200 con su empresa, 403 con otra) y carga inicial aplicada a una empresa (`3xcfwyMj6ixsFyDbPera`, 40 ficheros; repetirla no cambia nada); la carga inicial en simulación ve
-1.111 ficheros de 123 empresas, ninguno contado. **Los triggers no están desplegados en dev**:
-un despliegue cortado dejó `storageUsageFinalized` a medias (sale como `https`, sin trigger) y
-`storageUsageDeleted` no existe. Hay que terminarlo antes de dar dev por probado.
+1.111 ficheros de 123 empresas, ninguno contado. **Triggers desplegados en dev el 19-oct**
+(`europe-west1`, con reintentos) y probados: subir 1 MB a la carpeta de una empresa sumó
+exactamente 1.048.576 bytes y borrarlo los restó.
 
 Por orden, y el orden importa (los triggers antes que la carga inicial, o lo subido entre
 medias no lo cuenta nadie):
