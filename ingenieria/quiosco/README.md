@@ -51,8 +51,31 @@ pago; de hecho va junto con inventario en el nav del panel»). **Contratar es ac
 suscripción `kiosk` de la empresa (`entities/{e}/subscriptions/kiosk`, la crea `billing` con
 Stripe) es lo único que lo enciende. Sin ella, la entrada «Quiosco» del bloque «Complementos»
 del panel enseña la puerta de alta; con ella, cada sucursal con dirección tiene su quiosco,
-creado solo. Al darse de baja, las tablets se cierran en su siguiente petición. Unidad de
-cobro provisional: un quiosco por sucursal; el precio está por decidir.
+creado solo. Al darse de baja, las tablets se cierran en su siguiente petición.
+
+**Precio (aprobado por Jose el 2026-10-19): 19 € al mes que cubren hasta 50 sucursales con
+quiosco, y 0,90 € al mes por cada sucursal desde la 51; 15 días de prueba.** El mismo esquema
+que el inventario (29 € hasta 50 empleados y 0,75 € desde el 51) con la sucursal como unidad.
+Por qué así:
+
+| | Por sucursal y mes |
+|---|---|
+| Lo que nos cuesta (Firestore, fotos, subidas; 10 personas, 3 fichajes al día) | ~0,02 € (0,05 € guardando fotos 4 años) |
+| Soporte (una incidencia de 15 min por trimestre) | ~2,5 € |
+| Lo que ahorra al cliente: terminal de fichar (150 € básico, >1.500 € conectado, más cuota) | se compra una tablet de 120-180 € o se reutiliza un móvil |
+| Lo que corta: «uno ficha por todos» (1 h falsa a la semana a 15 €/h) | ~60 € |
+
+| Cliente | Sucursales | Empleados | Quiosco/mes | Sobre CheckBiz (2 €/empleado) |
+|---|---|---|---|---|
+| Pequeño | 3 | 25 | 19 € | +38 % |
+| Mediano | 20 | 150 | 19 € | +6 % |
+| Grande | 50 | 400 | 19 € | +2 % |
+| Serlimar | 500 | 950 | 424 € | +22 % |
+
+En Stripe: precio mensual EUR por cantidad, tramos graduados (hasta 50: 19 € fijos; desde la
+51: 0,90 € por unidad). La cantidad la cuenta `billing`: los quioscos de la empresa. Se
+descartó la alternativa de 29 € hasta 10 sucursales y 0,90 € desde la 11, que cobraba más al
+mediano.
 
 **Tablet o móvil, da igual** (Jose, 2026-10-18). Lo que se exige es del dispositivo, no del
 tamaño: GPS con posición de 100 m o mejor, cámara frontal y Android 10 o iOS 15 en adelante. Un
