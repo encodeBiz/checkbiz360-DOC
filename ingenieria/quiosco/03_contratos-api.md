@@ -190,8 +190,8 @@ cuando se pide (tarjetas, «Mi QR») y se comprueba al leerlo. Regenerar = subir
 - **Foto en JSON base64**, no multipart: ~80 KB por fichaje, dentro del límite del servicio.
 - **Pendiente en esta rama:** aviso push de ráfaga y de dispositivo sustituido (quedan en el
   quiosco y en la revisión), crear el quiosco al dar de alta una sucursal nueva (hoy: «Activar»
-  otra vez, que es idempotente), bucket europeo (`KIOSK_MEDIA_BUCKET`; sin él, el bucket por
-  defecto), Cloud Tasks.
+  otra vez, que es idempotente), Cloud Tasks. Las fotos van al bucket del sistema (decisión del 2026-10-19);
+  `KIOSK_MEDIA_BUCKET` queda para el día que haga falta otro.
 
 ---
 

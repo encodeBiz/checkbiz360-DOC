@@ -97,7 +97,7 @@ no, no. Rutas comprobadas en el código el 2026-10-19:
 | `tasks` — recursos y fotos de valoración | `media/entities/{entityId}/checkinbiz/tasks/…` | sí |
 | `signatures` — evidencia JSON de firma | `signatures/evidence/{entityId}/…` | sí |
 | `reports` — informes, exportaciones y actas de firma | `checkbiz/reports/entities/{entityId}/…` | sí |
-| `kiosk` — fotos del quiosco (bucket `encodebiz-media-eu`) | `kiosk/r{días}/{entityId}/…`, `kiosk/hold/{entityId}/…` | sí |
+| `kiosk` — fotos del quiosco (bucket del sistema) | `kiosk/r{días}/{entityId}/…`, `kiosk/hold/{entityId}/…` | sí |
 | Marca de la empresa (logos, imágenes del panel) | `media/entities/{entityId}/{tipo}/…` (todo lo que no es `checkinbiz/`) | **no** (Jose, 2026-10-19) |
 | Campañas in-app | `campaigns/images/…` | **no**: las hace el backoffice para todos, no son de ninguna empresa |
 | Cualquier otra ruta | — | no; el trigger la ignora |
@@ -116,7 +116,7 @@ esa regla, el acta que se valida es siempre la misma.
 Dos funciones por bucket en `services/firebase_sdk` (codebase `default`), una al terminar una
 subida (`onObjectFinalized`) y otra al borrarse un objeto (`onObjectDeleted`). Buckets: el del
 proyecto (`encodebiz-services.firebasestorage.app` en producción, `dev-encodebiz.firebasestorage.app`
-en desarrollo) y `encodebiz-media-eu`.
+en desarrollo), que es también donde van las fotos del quiosco.
 
 Cada evento:
 
@@ -218,16 +218,25 @@ fotos ocuparán unos 2,9 GB. Con lo que ya ocupas, pagarías unos 0,75 € al me
 
 El documental y las tareas no caducan: lo que sube un administrador lo borra un administrador.
 
-## El bucket del quiosco, en Europa
+## El bucket del quiosco: el del sistema
 
-Comprobado con `gcloud` el 2026-10-18: el bucket de producción está en **US-CENTRAL1** y el de
-desarrollo en **EU**. Ninguno tiene reglas de ciclo de vida.
+**Decisión de Jose, 2026-10-19:** las fotos del quiosco van al bucket del sistema de cada
+entorno, sin bucket aparte:
 
-Las fotos de los trabajadores **no se guardan en Estados Unidos**. La transferencia sería
-lícita (Marco de Privacidad de Datos UE-EE. UU.), pero es la pregunta que hará el DPO de cada
-cliente. Bucket nuevo `encodebiz-media-eu` en `europe-west1`, con las seis reglas de
-retención, acceso uniforme, sin acceso público y escritura sólo desde el servidor. Mover el
-documental y las tareas a Europa queda como deuda; el trigger cuenta igual en los dos buckets.
+- producción: `gs://encodebiz-services.firebasestorage.app/kiosk/r{días}/{entityId}/…`
+  (**US-CENTRAL1**);
+- desarrollo: `gs://dev-encodebiz.firebasestorage.app/kiosk/r{días}/{entityId}/…` (**EU**).
+
+La primera versión (18-oct) proponía un bucket nuevo, `encodebiz-media-eu`, para no guardar
+fotos de trabajadores en EE. UU. Se descartó por sencillez: la transferencia es lícita (Google
+está en el Marco de Privacidad de Datos UE-EE. UU.) y así no hay bucket, variable ni triggers
+de más. **Consecuencia que hay que saber contestar:** si el DPO de un cliente pregunta, las
+fotos de producción están en Estados Unidos, bajo ese marco. Si algún día hace falta Europa,
+se crea el bucket y se apunta con `KIOSK_MEDIA_BUCKET` (el código ya lo admite) y se añade a
+los triggers.
+
+Las seis reglas de retención (`kiosk/r15/` … `kiosk/r1460/`) van en el bucket del sistema;
+sólo tocan esas carpetas. En desarrollo están puestas desde el 19-oct.
 
 ## Sólo el servidor escribe: reglas de Storage
 
@@ -267,7 +276,7 @@ Las dos primeras van en `billing`, que es quien cobra.
 
 | Fase | Qué | Dónde | Tamaño |
 |---|---|---|---|
-| 0 | Bucket `encodebiz-media-eu` con las seis reglas de retención; Price de 0,25 €/GB en Stripe | reglas + infra + datos | 1 día |
+| 0 | Las seis reglas de retención del quiosco en el bucket del sistema; Price de 0,25 €/GB en Stripe | reglas + infra + datos | 1 día |
 | 1 | Triggers en los dos buckets, registro `storage_objects`, contador en `entities/{e}/storage_shards`, script `storage-backfill`; quitar la cuenta del helper de `feat/quiosco` | `firebase_sdk` + `shared` | 2 días |
 | 2 | `invoice.created` añade la línea de exceso; `GET /storage` y `estimate`; panel Almacenamiento y retención | `billing` + panel | 2 días |
 

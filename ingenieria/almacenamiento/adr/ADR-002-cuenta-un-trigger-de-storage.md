@@ -50,7 +50,7 @@ factura sea fácil de explicar.
 
 ## Consecuencias
 
-- Triggers en el bucket del proyecto y en `encodebiz-media-eu`, en `services/firebase_sdk`.
+- Triggers en el bucket del sistema de cada entorno (también recibe las fotos del quiosco), en `services/firebase_sdk`.
 - Un script de carga inicial cuenta lo que ya existe y sirve también para reparar.
 - El helper de `feat/quiosco` deja de contar; si contaran los dos, todo sumaría el doble.
 - `billing` añade la línea de exceso al borrador de la factura con `invoice.created`.

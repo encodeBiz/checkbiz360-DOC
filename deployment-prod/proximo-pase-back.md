@@ -492,17 +492,15 @@ Pendiente de decidir: las empresas sin suscripción de pago se cuentan y no se c
 
 `feat/quiosco` integrada en `develop` y desplegada a mano en el VPS (`checkinbiz` y `billing`,
 `[skip ci]`) el 19-oct; reglas de Firestore con los cierres del quiosco publicadas en
-`dev-encodebiz` (emulador: 0 fallos). En desarrollo las fotos van al bucket del proyecto
-(`dev-encodebiz.firebasestorage.app`, ya en la UE), con las seis reglas de retención
+`dev-encodebiz` (emulador: 0 fallos). Las fotos van al bucket del sistema también en prod (decisión de Jose del 19-oct, sin bucket
+europeo); en desarrollo, `dev-encodebiz.firebasestorage.app`, con las seis reglas de retención
 `kiosk/r{días}/` puestas el 19-oct. Diseño: [ingenieria/quiosco](../ingenieria/quiosco/README.md).
 
 | # | Qué | Cómo |
 |---|---|---|
-| 12.1 | **Código pendiente**: triggers de almacenamiento también sobre `encodebiz-media-eu` en prod | hoy `onStorageObject.ts` vigila un bucket por entorno; en prod las fotos van al europeo y no contarían |
-| 12.2 | Bucket `encodebiz-media-eu` en `europe-west1` | acceso uniforme, sin acceso público, las seis reglas de retención `kiosk/r{días}/` |
-| 12.3 | `KIOSK_MEDIA_BUCKET=encodebiz-media-eu` en el `.env` de prod de `checkinbiz` | sin ella las fotos irían al bucket de EE. UU. |
-| 12.4 | Reglas de Firestore | el fichero de `develop` lleva los cierres del quiosco además del paso 2a |
-| 12.5 | `KIOSK_SECRET` propio en prod (opcional) | sin él usa `JWT_2FA_SECRET` |
+| 12.1 | Las seis reglas de retención del quiosco en el bucket del sistema de prod | `gs://encodebiz-services.firebasestorage.app`, `kiosk/r15/` … `kiosk/r1460/` con su edad. **Antes, leer su ciclo de vida actual**: `--lifecycle-file` reemplaza el entero (el 18-oct estaba vacío) |
+| 12.2 | Reglas de Firestore | el fichero de `develop` lleva los cierres del quiosco además del paso 2a |
+| 12.3 | `KIOSK_SECRET` propio en prod (opcional) | sin él usa `JWT_2FA_SECRET` |
 
 ## Registro del día del pase — 2026-10-17
 

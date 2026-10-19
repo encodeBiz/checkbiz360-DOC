@@ -382,8 +382,8 @@ Lo que hace el servidor, en `checkinbiz`, **con el mismo núcleo que `POST /chec
    quiosco, ya activado en el centro) y **no** se evalúa geocerca del empleado: `geo = branch.address.geo`,
    `metadata.geoSource = "kiosk"`, `metadata.distance = 0`. La hora es la del servidor.
 3. **La foto.** Obligatoria mientras la empresa tenga la prueba activada (y lo está por
-   defecto): sin `photo`, 400 `kiosk/photo_required`. Se guarda en el **bucket europeo**
-   `encodebiz-media-eu`, en `kiosk/r{retención}/{entityId}/{checklogId}.jpg` (JPEG, 640 px de
+   defecto): sin `photo`, 400 `kiosk/photo_required`. Se guarda en el **bucket del sistema**
+   (decisión del 2026-10-19, [almacenamiento](../almacenamiento/README.md)), en `kiosk/r{retención}/{entityId}/{checklogId}.jpg` (JPEG, 640 px de
    lado mayor, unos 60 KB) **antes** de escribir el fichaje; la cuenta el trigger de Storage del
    almacenamiento de la empresa ([almacenamiento/README](../almacenamiento/README.md)); si la
    subida falla, no hay fichaje y la tablet lo dice.
@@ -552,7 +552,7 @@ entities/{e}/checklogs/{id}.metadata
   kiosk: { branchId, deviceId, identification, sessionId, photoPath, distance, outOfRadius?,
            burst?: { windowSeconds: 90, count } }
 
-Storage (bucket encodebiz-media-eu, europe-west1): kiosk/r{días}/{entityId}/{checklogId}.jpg
+Storage (bucket del sistema del entorno): kiosk/r{días}/{entityId}/{checklogId}.jpg
   · una regla de ciclo de vida por carpeta de retención · kiosk/hold/{entityId}/ para disputas
 ```
 
