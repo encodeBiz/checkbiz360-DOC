@@ -463,7 +463,7 @@ Diseño: [ingenieria/almacenamiento](../ingenieria/almacenamiento/README.md), AD
 `feat/almacenamiento-cobro` (e88eda6). Cuenta lo que ocupa cada empresa con triggers de
 Storage y añade `⌊GB⌋ − 2` a 0,25 € a la factura de renovación de checkinbiz.
 
-En desarrollo: `billing` reconstruido en el VPS el 19-oct; la carga inicial en simulación ve
+En desarrollo: `billing` reconstruido en el VPS el 19-oct; probado con sesión real de dueño (200 con su empresa, 403 con otra) y carga inicial aplicada a una empresa (`3xcfwyMj6ixsFyDbPera`, 40 ficheros; repetirla no cambia nada); la carga inicial en simulación ve
 1.111 ficheros de 123 empresas, ninguno contado. **Los triggers no están desplegados en dev**:
 un despliegue cortado dejó `storageUsageFinalized` a medias (sale como `https`, sin trigger) y
 `storageUsageDeleted` no existe. Hay que terminarlo antes de dar dev por probado.
@@ -481,6 +481,7 @@ medias no lo cuenta nadie):
 | 11.6 | Price en Stripe de prod | 0,25 €, pago único, EUR, producto «Almacenamiento» |
 | 11.7 | Encender el cobro | `STRIPE_STORAGE_GB_PRICE=<price_…>` en el `.env` de prod de `billing` y reiniciarlo. Sin la variable no se cobra nada |
 | 11.8 | `invoice.created` en el webhook de Stripe de prod | si no está activado, la línea no se añade nunca |
+| 11.9 | Panel: pestaña Entidad → Almacenamiento | `NEXT_BACKEND_URI_BILLING_STORAGE=https://api.checkbiz360.com/api/v1/billing/storage` en Vercel (producción) y la rama `feat/almacenamiento-panel` del front (ac5182af en develop). Sin la variable la pestaña da error al abrirse |
 
 Pendiente de decidir: las empresas sin suscripción de pago se cuentan y no se cobran.
 
