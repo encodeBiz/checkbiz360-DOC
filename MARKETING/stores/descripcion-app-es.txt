@@ -1,0 +1,58 @@
+QUÉ ES CHECKBIZ360
+
+CheckBiz360 es la plataforma de gestión operativa de equipos en campo de EncodeBiz: para empresas cuya gente empieza cada mañana en un sitio distinto, trabaja repartida por centros, obras o servicios, o en las instalaciones de un cliente. Donde otros sistemas solo anotan entradas y salidas, CheckBiz360 reúne jornadas, tareas, documentación y material en un mismo lugar y lo convierte en información para decidir: quién está, qué se hizo, qué se revisó y cuánto cuesta.
+
+No es un reloj de fichar digital: es la herramienta con la que una empresa controla su operación.
+
+EL PROBLEMA QUE RESUELVE
+
+Cuando el trabajo está repartido, la información no debería estarlo. Partes que llegan tarde, llamadas para saber qué se hizo y qué falta, trabajo que se da por hecho sin que nadie lo revise, horas que se pagan sin saber en qué tareas se emplearon.
+
+CÓMO ESTÁ MONTADO
+
+• EL PANEL WEB, desde cualquier navegador. Quien gestiona organiza centros y personas, configura horarios, reparte tareas, revisa y valida el trabajo, entrega documentación, controla el material y consulta costes y alertas. Y puede pedírselo todo a Claude o ChatGPT con sus propias palabras.
+
+• ESTA APP, en el bolsillo de quien trabaja. Es la parte de campo.
+
+QUÉ HACE ESTA APP
+
+FICHAJE
+• Entrada, salida y descansos desde el móvil.
+• Ubicación validada contra la geocerca de tu centro o del propio trabajo y, según la configuración, verificación biométrica.
+• Fichaje en remoto donde tu empresa lo permita y solicitud de jornada manual cuando algo falló.
+• Tu historial de registros, como exige la normativa.
+• Antes de cerrar la jornada, la app avisa si tu turno no ha terminado o tienes una tarea en curso.
+
+TAREAS
+• Las tuyas, con estado, prioridad, inicio previsto y fecha límite. Las de hoy, arriba, listas para empezar.
+• Iniciar, pausar, reanudar y completar desde la propia lista o desde la pantalla de inicio.
+• Notas de progreso y evidencias de foto o vídeo, que tu responsable valida o rechaza con un motivo que puedes consultar.
+• Cada trabajo con su lugar: la distancia a la vista y el mapa para llegar.
+• Si llevas un equipo, tus tareas aparecen separadas de las del equipo, y puedes filtrar por persona.
+
+DOCUMENTOS Y FIRMA
+• Los documentos de tu empresa, para leer y descargar, con acuse de recibo cuando se exige.
+• Confirmación firmada desde el móvil, con tu huella, tu PIN o tu contraseña: queda constancia de quién firmó, cuándo y qué versión recibió.
+
+MATERIAL (con el complemento de Inventario)
+• Lo que te han entregado, con su documentación, y lo que hay en tu centro.
+• Confirmas o rechazas cada entrega desde el móvil, firmada.
+• Declaras lo que consumes en cada tarea o en tu jornada, para que el material rinda cuentas igual que el trabajo.
+
+HORARIOS Y AVISOS
+• Tu turno de cada día, jornadas partidas, festivos y días libres.
+• Si tu empresa organiza tu jornada por tareas, fichar inicia y completa cada trabajo.
+• Avisos de tareas nuevas, validaciones, rechazos, entregas y de tu jornada.
+• Comunica una incidencia a soporte desde la propia app.
+
+QUÉ PASA CON LO QUE REGISTRAS
+
+Cada fichaje, tarea, firma y consumo alimenta el panel de tu empresa: quién está en cada centro y quién falta, qué tareas se tuercen, retrasos repetidos, fichajes fuera de lugar, coste por hora y por jornada, qué material se usó y quién lo tiene, y un informe de jornada por persona listo para presentar, conforme al RDL 8/2019. Todo con trazabilidad: quién cambió qué, cuándo y por qué.
+
+PARA QUIÉN ES
+
+Para el trabajo que pasa lejos de una oficina: ayuda a domicilio, limpieza por centros, mantenimiento, instalaciones, obra, eventos, equipos repartidos por proyectos.
+
+No está atado a ningún sector: sirve a cualquier empresa que necesite saber quién trabajó, cuándo, dónde y en qué, y poder demostrarlo.
+
+CheckBiz360 forma parte de un servicio contratado por la empresa: necesitas una cuenta facilitada por tu empleador para usar la app.

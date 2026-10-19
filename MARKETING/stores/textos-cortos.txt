@@ -1,0 +1,21 @@
+# Subtítulo (App Store, 30 caracteres máx.)
+es: Gestión operativa de campo
+en: Field operations management
+
+# Descripción breve (Google Play, 80 caracteres máx.)
+es: Fichaje, tareas, documentos firmados y material para equipos en campo.
+en: Clocking, tasks, signed documents and materials for field teams.
+
+# Texto promocional (App Store, 170 caracteres máx.)
+es: Nuevo: firma desde el móvil, el material de cada tarea y tus entregas, las tareas de hoy a mano, y un panel al que tu empresa puede pedírselo todo a Claude o ChatGPT.
+en: New: sign from your phone, materials for each task and your issues, today's tasks at hand, and a back office your company can ask for anything in Claude or ChatGPT.
+
+# Novedades de esta versión (1.8.0)
+es: • Material: lo que te han entregado y lo que hay en tu centro; confirma o rechaza cada entrega, firmada, y declara lo que consumes en cada tarea.
+• Firma desde el móvil con tu huella, tu PIN o tu contraseña, en documentos y entregas.
+• Las tareas de hoy, arriba y listas para empezar, pausar o completar.
+• Si tu empresa organiza tu jornada por tareas, fichar inicia y completa cada trabajo.
+en: • Materials: what you have been issued and what is at your site; confirm or reject each issue, signed, and declare what you use on each task.
+• Sign from your phone with your fingerprint, PIN or password, on documents and issues.
+• Today's tasks at the top, ready to start, pause or complete.
+• If your company organises your day by tasks, clocking in starts and completes each job.

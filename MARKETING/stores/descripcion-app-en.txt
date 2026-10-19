@@ -1,0 +1,58 @@
+WHAT IS CHECKBIZ360
+
+CheckBiz360 is EncodeBiz's field operations management platform: for companies whose people start each morning somewhere different, work spread across sites, projects or services, or at a client's premises. Where other systems only record entries and exits, CheckBiz360 brings workdays, tasks, documents and materials together in one place and turns them into information to act on: who is in, what was done, what was reviewed and what it costs.
+
+It is not a digital time clock: it is the tool a company uses to keep its operation under control.
+
+THE PROBLEM IT SOLVES
+
+When the work is spread out, the information should not be. Job reports that arrive late, calls to find out what was done and what is missing, work taken as finished that nobody reviews, hours paid without knowing which tasks they went to.
+
+HOW IT IS BUILT
+
+• THE WEB BACK OFFICE, from any browser. Managers set up sites and people, configure schedules, assign tasks, review and validate the work, hand out documents, keep track of materials and check costs and alerts. And they can ask Claude or ChatGPT to do all of it in their own words.
+
+• THIS APP, in the pocket of the person working. It is the field side.
+
+WHAT THIS APP DOES
+
+CLOCKING IN
+• Entry, exit and breaks from your phone.
+• Location validated against your site's geofence or the job's own, and, depending on the setup, biometric verification.
+• Remote clocking in where your company allows it, and manual workday requests when something went wrong.
+• Your own record history, as regulations require.
+• Before closing your workday, the app tells you if your shift hasn't ended or you still have a task in progress.
+
+TASKS
+• Yours, with status, priority, planned start and deadline. Today's at the top, ready to start.
+• Start, pause, resume and complete them from the list itself or from the home screen.
+• Progress notes and photo or video evidence, which your manager validates or rejects with a reason you can read.
+• Every job with its location: the distance in view and the map to get there.
+• If you run a team, your tasks appear separately from the team's, and you can filter by person.
+
+DOCUMENTS AND SIGNATURE
+• Your company's documents, to read and download, with read receipts where required.
+• Signed confirmation from your phone, with your fingerprint, PIN or password: a record of who signed, when, and which version they received.
+
+MATERIALS (with the Inventory add-on)
+• What you have been issued, with its documentation, and what is at your site.
+• You confirm or reject each issue from your phone, signed.
+• You declare what you use on each task or during your workday, so materials are accounted for just like the work.
+
+SCHEDULES AND ALERTS
+• Your shift for the day, split shifts, public holidays and days off.
+• If your company organises your day by tasks, clocking in starts and completes each job.
+• Notifications for new tasks, validations, rejections, issues of material and your workday.
+• Report an incident to support from the app itself.
+
+WHAT HAPPENS WITH WHAT YOU RECORD
+
+Every clock record, task, signature and consumption feeds your company's dashboard: who is at each site and who is missing, which tasks are going wrong, repeated late arrivals, records outside the geofence, cost per hour and per workday, which materials were used and who has them, and a per-person workday report ready to present, in line with Spanish RDL 8/2019. All with traceability: who changed what, when and why.
+
+WHO IT IS FOR
+
+For work that happens away from an office: home care, cleaning across sites, maintenance, installations, construction, events, teams spread across projects.
+
+It is not tied to any sector: it works for any company that needs to know who worked, when, where and on what, and be able to prove it.
+
+CheckBiz360 is part of a service contracted by the company: you need an account provided by your employer to use the app.
