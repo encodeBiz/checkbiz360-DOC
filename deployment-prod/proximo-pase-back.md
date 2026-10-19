@@ -501,6 +501,7 @@ europeo); en desarrollo, `dev-encodebiz.firebasestorage.app`, con las seis regla
 | 12.1 | Las seis reglas de retención del quiosco en el bucket del sistema de prod | `gs://encodebiz-services.firebasestorage.app`, `kiosk/r15/` … `kiosk/r1460/` con su edad. **Antes, leer su ciclo de vida actual**: `--lifecycle-file` reemplaza el entero (el 18-oct estaba vacío) |
 | 12.2 | Reglas de Firestore | el fichero de `develop` lleva los cierres del quiosco además del paso 2a |
 | 12.3 | `KIOSK_SECRET` propio en prod (opcional) | sin él usa `JWT_2FA_SECRET` |
+| 12.4 | Precio del quiosco en Stripe de prod y alta del servicio | producto «Quiosco», mensual EUR, `licensed`, tramos graduados (hasta 50: `flat_amount` 1900, `unit_amount` 0; desde 51: `unit_amount` 90). Después `node services/checkinbiz/dist/scripts/alta-servicio-quiosco.js --stripe-price price_… --apply`. Sin esto el panel dice «El módulo todavía no tiene un plan contratable». En dev, hecho el 19-oct: `prod_VTJYJGvvD6VDsI` / `price_1USMv2R97dgHV4NJU5rRJEB3` |
 
 ## Registro del día del pase — 2026-10-17
 
