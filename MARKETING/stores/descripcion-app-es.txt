@@ -1,6 +1,6 @@
 QUÉ ES CHECKBIZ360
 
-CheckBiz360 es la plataforma de gestión operativa de equipos en campo de EncodeBiz: para empresas cuya gente empieza cada mañana en un sitio distinto, trabaja repartida por centros, obras o servicios, o en las instalaciones de un cliente. Donde otros sistemas solo anotan entradas y salidas, CheckBiz360 reúne jornadas, tareas, documentación y material en un mismo lugar y lo convierte en información para decidir: quién está, qué se hizo, qué se revisó y cuánto cuesta.
+CheckBiz360 es la plataforma de gestión operativa de equipos en campo de EncodeBiz: para empresas con gente repartida por centros, obras, servicios o instalaciones de clientes. Donde otros sistemas solo anotan entradas y salidas, CheckBiz360 reúne jornadas, tareas, documentación y material en un mismo lugar y lo convierte en información para decidir: quién está, qué se hizo, qué se revisó y cuánto cuesta.
 
 No es un reloj de fichar digital: es la herramienta con la que una empresa controla su operación.
 
@@ -30,7 +30,7 @@ FICHAJE
 TAREAS
 • Las tuyas, con estado, prioridad, inicio previsto y fecha límite. Las de hoy, arriba, listas para empezar.
 • Iniciar, pausar, reanudar y completar desde la propia lista o desde la pantalla de inicio.
-• Notas de progreso y evidencias de foto o vídeo, que tu responsable valida o rechaza con un motivo que puedes consultar.
+• Notas y evidencias de foto o vídeo, que tu responsable valida o rechaza con un motivo.
 • Cada trabajo con su lugar: la distancia a la vista y el mapa para llegar.
 • Si llevas un equipo, tus tareas aparecen separadas de las del equipo, y puedes filtrar por persona.
 
@@ -47,7 +47,7 @@ HORARIOS Y AVISOS
 • Tu turno de cada día, jornadas partidas, festivos y días libres.
 • Si tu empresa organiza tu jornada por tareas, fichar inicia y completa cada trabajo.
 • Avisos de tareas nuevas, validaciones, rechazos, entregas y de tu jornada.
-• Comunica una incidencia a soporte desde la propia app.
+• Incidencias a soporte desde la app.
 
 QUÉ PASA CON LO QUE REGISTRAS
 
@@ -55,6 +55,6 @@ Cada fichaje, tarea, firma y consumo alimenta el panel de tu empresa: quién est
 
 PARA QUIÉN ES
 
-Para el trabajo que pasa lejos de una oficina: ayuda a domicilio, limpieza por centros, mantenimiento, instalaciones, obra, eventos, equipos repartidos por proyectos. Sirve a cualquier empresa que necesite saber quién trabajó, cuándo, dónde y en qué, y poder demostrarlo.
+Para el trabajo que pasa lejos de una oficina: ayuda a domicilio, limpieza por centros, mantenimiento, instalaciones, obra, eventos. Sirve a cualquier empresa que necesite saber quién trabajó, cuándo, dónde y en qué, y poder demostrarlo.
 
 CheckBiz360 forma parte de un servicio contratado por la empresa: necesitas una cuenta facilitada por tu empleador para usar la app.
