@@ -1,0 +1,94 @@
+rules_version = '2';
+
+// Reglas de Firestore de la plataforma. Viven aquí porque quien escribe en Firestore con
+// autoridad es este repo (los servicios, por Admin SDK, que no pasa por estas reglas).
+//
+// El comodín heredado NO era el mismo en los dos entornos, y este fichero sirve a los dos:
+//   · dev (leído el 2026-10-09): leer y escribir abiertos a cualquiera hasta 2030;
+//   · producción (leído el 2026-10-11, copia en DOCS/deployment-prod/2026-10-11-firestore-
+//     rules-prod-antes.rules): leer abierto sin fecha, escribir SOLO con sesión.
+// Desde el 2026-10-17 leer también pide sesión (paso 1 de DOCS/ingenieria/reglas-firestore):
+// hasta entonces cualquiera leía la plantilla, los fichajes y los documentos de todos los
+// clientes con la configuración pública del proyecto. Sigue siendo un torniquete, no el
+// arreglo: cualquier cuenta lee y escribe cualquier entidad hasta el paso 2 (aislar por
+// entidad). La única lectura sin sesión es `app_config`, que la app consulta en el splash.
+// Las reglas se combinan con OR, así que la única forma de denegar es que el comodín no
+// alcance: por eso cada condición va dentro del comodín y no en un match aparte.
+//
+// Despliegue: SIEMPRE con proyecto explícito y solo las reglas, nunca un deploy completo
+// (podaría los índices, que este firebase.json no declara a propósito), y dev antes que prod:
+//   firebase deploy --only firestore:rules --project dev-encodebiz
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Leer y escribir piden sesión. Cuando se aísle por entidad (paso 2), se aísla aquí.
+    function conSesion() {
+      return request.auth != null;
+    }
+
+    // Catálogo público: lo lee la app en el splash, antes de tener sesión (versión mínima y
+    // enlaces a las tiendas). Solo lectura: lo escribe el servidor. Un valor mal puesto aquí
+    // deja a toda la plantilla sin fichar, así que el navegador no lo toca.
+    function publica(collection) {
+      return collection == 'app_config';
+    }
+
+    // Lo que solo escribe y lee el servidor: el registro de claves de firma (nunca se borra),
+    // los retos de un solo uso; las propuestas y lotes de cuadrantes, que llevan nombres y
+    // direcciones de las personas atendidas por el cliente (DOCS/ingenieria/cuadrantes); el
+    // servidor de autorización del conector de asistentes (clientes, autorizaciones
+    // pendientes, conexiones y huellas de tokens; DOCS/ingenieria/conector-asistente); y los
+    // días generados de «Horario por tareas» (`calendar_days`), que escribe el trigger y lee
+    // la API: la app y el panel los reciben por `GET /calendar`; y los lotes de la importación de
+    // plantilla (`staff_imports`, con correos, teléfonos y DNI; DOCS/ingenieria/alta-por-plantilla).
+    // Desde el cliente, nada.
+    function cerradas() {
+      return ['signing_keys', 'signing_challenges', 'cuadrante_proposals', 'cuadrante_lotes', 'calendar_days', 'staff_imports'];
+    }
+
+    function soloServidor(collection) {
+      return collection in cerradas() || collection.matches('assistant_.*');
+    }
+
+    // Cerrada por la raíz o por cualquier tramo de la ruta: `cuadrante_lotes` cuelga de
+    // `entities/{e}` y `calendar_days` de `entities/{e}/employees/{p}`, y su raíz es
+    // `entities`. Hasta el 2026-10-16 solo se miraba la raíz y esas subcolecciones quedaban
+    // abiertas al navegador, para leer y para escribir (probado con el emulador). Se mira
+    // cada tramo y no solo el penúltimo porque en una consulta de lista la ruta acaba en la
+    // colección, no en un documento. El precio: un documento cuyo id sea el nombre de una
+    // colección cerrada también queda cerrado, y no hay ninguno.
+    function cerrada(collection, document) {
+      return soloServidor(collection) || string(document).split('/').hasAny(cerradas());
+    }
+
+    // El documento del dispositivo (`notification_tokens/{e}/devices/{d}`) lo mantiene la app
+    // —su token de notificaciones— pero `signingKey` es del servidor: se puede dejar como
+    // está (o dejar que una escritura sin merge lo omita: el registro es la fuente), pero no
+    // crearlo ni cambiarlo desde el cliente. Borrar el documento entero (cerrar sesión) sigue
+    // permitido: el registro no se entera.
+    function noTocaSigningKey() {
+      return request.method == 'delete'
+        || !('signingKey' in request.resource.data)
+        || (resource != null
+            && 'signingKey' in resource.data
+            && request.resource.data.signingKey == resource.data.signingKey);
+    }
+
+    match /{collection}/{document=**} {
+      allow read: if (conSesion() || publica(collection)) && !cerrada(collection, document);
+      allow write: if conSesion() && !cerrada(collection, document) && !publica(collection)
+        && (collection != 'notification_tokens' || noTocaSigningKey());
+    }
+
+    // Las consultas de grupo de colecciones (`collectionGroup`) solo las evalúan reglas que
+    // empiezan por un comodín recursivo, y `/{collection}/{document=**}` no lo es. El
+    // comodín viejo (`/{document=**}`) sí las cubría; sin esta regla, desde el 2026-10-11
+    // el panel no listaba los presets de calendario (`calendar`) y la app no veía a qué
+    // entidades pertenece un empleado (`employees`). Solo lectura: una consulta de grupo
+    // no escribe. Se nombra la colección final, no la raíz, así que la firma sigue cerrada.
+    // Con sesión, como todo: una consulta de grupo recorre todas las entidades de una vez.
+    match /{path=**}/{sub}/{document} {
+      allow read: if conSesion() && !soloServidor(sub);
+    }
+  }
+}

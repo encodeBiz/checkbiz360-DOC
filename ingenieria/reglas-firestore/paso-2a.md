@@ -2,7 +2,7 @@
 
 **Proyecto:** encodebiz-api (`firestore.rules`, `firebase_sdk`, `shared`)
 **Fecha:** 2026-10-19
-**Estado:** en dev desde el 2026-10-19 (rama `feat/reglas-paso-2a`, en `develop` y `staging`); prod pendiente, guion en [proximo-pase-back §10](../../deployment-prod/proximo-pase-back.md)
+**Estado:** **en producción desde el 2026-10-19** (Firestore 17:05, Storage 17:07 UTC); registro en [proximo-pase-back §10](../../deployment-prod/proximo-pase-back.md). `main` aún sin los ficheros
 **Antecede:** [README.md](README.md), paso 1 (en producción desde el 2026-10-17) y diseño del paso 2
 **Autor:** Jose Acevedo
 

@@ -4,7 +4,7 @@
 **Dominio:** reglas de seguridad de Firestore en `dev-encodebiz` y `encodebiz-services`
 **Fecha de inicio:** 2026-10-16
 **Prioridad:** 🔴 **ALERTA MÁXIMA.** El paso 1 se ejecuta el **17 o el 18 de octubre de 2026**, antes que cualquier otra cosa pendiente.
-**Estado:** paso 1 en producción desde el 2026-10-17; **paso 2a** (aislar `entities/{e}`) en dev desde el 2026-10-19, ver [paso-2a.md](paso-2a.md); paso 2b (raíces) pendiente
+**Estado:** paso 1 en producción desde el 2026-10-17; **paso 2a** (aislar `entities/{e}`) y Storage cerrado al cliente en producción desde el 2026-10-19, ver [paso-2a.md](paso-2a.md); paso 2b (raíces) pendiente
 **Autor:** Jose Acevedo
 
 ---

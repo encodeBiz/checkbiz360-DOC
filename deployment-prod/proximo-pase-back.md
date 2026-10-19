@@ -398,7 +398,7 @@ Estado: PENDIENTE, por detallar.
 
 ---
 
-## 10. Reglas de Firestore, paso 2a: aislar por entidad — EN DEV desde el 2026-10-19; prod PENDIENTE
+## 10. Reglas de Firestore y Storage, paso 2a: aislar por entidad — EJECUTADO en prod el 2026-10-19 (17:05 y 17:07 UTC)
 
 Diseño en [ingenieria/reglas-firestore/paso-2a.md](../ingenieria/reglas-firestore/paso-2a.md).
 Con el registro abierto, cualquier cuenta recién creada lee y escribe todas las entidades. Con
@@ -410,15 +410,37 @@ empleados por el espejo `entity_members` que mantiene la función `onEmpMember`.
 
 | # | Qué | Cómo | Estado |
 |---|---|---|---|
-| 10.1 | Contenedor `checkinbiz` con el script | Con el despliegue normal de `main` | PENDIENTE |
-| 10.2 | Función | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onEmpMember --con-reintentos` (la primera vez pide aceptar los reintentos; hace falta el `.env.encodebiz-services` en `services/firebase_sdk`) | PENDIENTE |
-| 10.3 | Reconciliación simulada | En el contenedor `checkinbiz` de prod: `node services/checkinbiz/dist/scripts/reconcile-entity-members.js`. Mirar las dos últimas líneas: fichas sin `entityId` y asientos con otro id tienen que ser **0**, o se revisan uno a uno antes de seguir | PENDIENTE |
-| 10.4 | Reconciliación | La misma con `--apply`, y otra vez sin él: **cero diferencias** o no se sigue | PENDIENTE |
-| 10.5 | Copia del ruleset vivo | API de firebaserules con `x-goog-user-project: encodebiz-services`, a `deployment-prod/<fecha>-firestore-rules-prod-antes.rules` | PENDIENTE |
-| 10.6 | Reglas | `firebase deploy --only firestore:rules --project encodebiz-services` | PENDIENTE |
-| 10.7 | Verificación | Por REST con sesiones reales de dos entidades (dueño de X lee X y no Y; empleado lee su ficha, sus fichas por grupo, sus fichajes y no otra entidad; nadie lee `entity_members`), como en dev | PENDIENTE |
-| 10.6b | Storage | Guardar el ruleset vivo de **cada** bucket con release (`firebaserules … /releases`, los `firebase.storage/<bucket>`) y `firebase deploy --only storage --project encodebiz-services`. Comprobar con sesión: metadatos, descarga, listado y subida → 403; una URL firmada y una con token → 200. Si prod tiene más de un bucket con reglas, el `firebase.json` sólo cubre el de por defecto: preguntar antes | PENDIENTE |
+| 10.1 | Contenedor `checkinbiz` con el script | Con el despliegue normal de `main` | NO HIZO FALTA: el 19-oct la reconciliación se lanzó copiando el módulo compilado al contenedor de prod (y se borró). El script llegará con el próximo pase |
+| 10.2 | Función | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onEmpMember --con-reintentos` (la primera vez pide aceptar los reintentos; hace falta el `.env.encodebiz-services` en `services/firebase_sdk`) | HECHO 19-oct, ver registro |
+| 10.3 | Reconciliación simulada | En el contenedor `checkinbiz` de prod: `node services/checkinbiz/dist/scripts/reconcile-entity-members.js`. Mirar las dos últimas líneas: fichas sin `entityId` y asientos con otro id tienen que ser **0**, o se revisan uno a uno antes de seguir | HECHO 19-oct, ver registro |
+| 10.4 | Reconciliación | La misma con `--apply`, y otra vez sin él: **cero diferencias** o no se sigue | HECHO 19-oct, ver registro |
+| 10.5 | Copia del ruleset vivo | API de firebaserules con `x-goog-user-project: encodebiz-services`, a `deployment-prod/<fecha>-firestore-rules-prod-antes.rules` | HECHO 19-oct, ver registro |
+| 10.6 | Reglas | `firebase deploy --only firestore:rules --project encodebiz-services` | HECHO 19-oct, ver registro |
+| 10.7 | Verificación | Por REST con sesiones reales de dos entidades (dueño de X lee X y no Y; empleado lee su ficha, sus fichas por grupo, sus fichajes y no otra entidad; nadie lee `entity_members`), como en dev | HECHO 19-oct, ver registro |
+| 10.6b | Storage | Guardar el ruleset vivo de **cada** bucket con release (`firebaserules … /releases`, los `firebase.storage/<bucket>`) y `firebase deploy --only storage --project encodebiz-services`. Comprobar con sesión: metadatos, descarga, listado y subida → 403; una URL firmada y una con token → 200. Si prod tiene más de un bucket con reglas, el `firebase.json` sólo cubre el de por defecto: preguntar antes | HECHO 19-oct, ver registro |
 | 10.8 | Vigilancia | Media hora con un cliente real: fichaje en la app, cambio de empresa, lista de empleados, presets de calendario, invitación de un colaborador | PENDIENTE |
+
+**Registro de prod, 2026-10-19** (Claude, con autorización de Jose tras probar él en staging):
+
+- 17:0x `onEmpMember` desplegada por nombre (`--solo onEmpMember --con-reintentos`).
+- Reconciliación dentro del contenedor `checkinbiz` de prod (módulo compilado de la rama, borrado
+  después): 127 fichas, 113 espejos creados, 0 fichas sin `entityId`; segunda pasada sin
+  diferencias. **Un asiento con otro id**: `924Gvb…_tkVs6…` (Sonoibiza), con `userId`
+  `LoZQ5A…` y una cuenta `924Gvb…` que ya no existe en Auth. Jose: «fue un posible cliente que
+  no cuajó» → se deja; ese usuario deja de ver Sonoibiza (su otro dueño, `6TyHj4…`, no cambia).
+- Trigger probado en vivo con `entities/zz-prueba-espejo` (alta y baja, 4 s; sin restos).
+- Copias previas: `2026-10-19-firestore-prod-antes.rules` (igual que `main`),
+  `2026-10-19-storage-encodebiz-services.firebasestorage.app-prod-antes.rules` (el del SaaS,
+  abierto con sesión) y `2026-10-19-storage-encodebiz-services-frontend-prod-antes.rules`.
+- 17:05:14 reglas de Firestore. Verificación por REST con un dueño de encodeBiz, otro dueño y un
+  empleado reales: todo lo esperado; la lectura del espejo dio 200 en el primer minuto y 403 a
+  partir de las 17:06 (propagación).
+- 17:07 reglas de Storage en el bucket por defecto: con sesión todo 403; URL firmada y la de
+  token de `assets/android.png` (pantalla de mantenimiento) 200. El bucket
+  `encodebiz-services-frontend` no se toca: sus reglas de prueba caducaron el 2026-07-24 y ya lo
+  niegan todo al cliente.
+- **Queda:** `main` no tiene estas reglas ni `storage.rules` (lo versionado en `main` no refleja
+  prod hasta el próximo PR a `main`); la vigilancia con un cliente real (10.8).
 
 **Vuelta atrás:** redesplegar la copia del 10.5 (menos de un minuto). La función y el espejo
 pueden quedarse: sin la regla nadie los lee.
