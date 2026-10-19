@@ -6,13 +6,17 @@ No es un reloj de fichar digital: es la herramienta con la que una empresa contr
 
 EL PROBLEMA QUE RESUELVE
 
-Cuando el trabajo está repartido, la información no debería estarlo. Partes que llegan tarde, llamadas para saber qué se hizo y qué falta, trabajo que se da por hecho sin que nadie lo revise, horas que se pagan sin saber en qué tareas se emplearon.
+Cuando el trabajo está repartido, la información no debería estarlo. Partes que llegan tarde, llamadas para saber qué se hizo, trabajo que nadie revisa, horas pagadas sin saber en qué tareas se emplearon.
 
 CÓMO ESTÁ MONTADO
 
-• EL PANEL WEB, desde cualquier navegador. Quien gestiona organiza centros y personas, configura horarios, reparte tareas, revisa y valida el trabajo, entrega documentación, controla el material y consulta costes y alertas. Y puede pedírselo todo a Claude o ChatGPT con sus propias palabras.
+• EL PANEL WEB, desde cualquier navegador. Quien gestiona organiza centros y personas, configura horarios, reparte tareas, revisa y valida el trabajo, entrega documentación, controla el material y consulta costes y alertas.
 
 • ESTA APP, en el bolsillo de quien trabaja. Es la parte de campo.
+
+TU GESTOR OPERATIVO EN CLAUDE O CHATGPT
+
+Quien gestiona puede conectar la empresa a su Claude o ChatGPT y pedirle las cosas con sus palabras: cómo va hoy y quién falta, quién puede cubrir un servicio, montar la semana de toda la plantilla, mover una tarea o dar de alta a la gente nueva. El asistente lo hace en CheckBiz360 con sus permisos, enseña lo que va a hacer y no guarda nada sin confirmación.
 
 QUÉ HACE ESTA APP
 
@@ -47,12 +51,10 @@ HORARIOS Y AVISOS
 
 QUÉ PASA CON LO QUE REGISTRAS
 
-Cada fichaje, tarea, firma y consumo alimenta el panel de tu empresa: quién está en cada centro y quién falta, qué tareas se tuercen, retrasos repetidos, fichajes fuera de lugar, coste por hora y por jornada, qué material se usó y quién lo tiene, y un informe de jornada por persona listo para presentar, conforme al RDL 8/2019. Todo con trazabilidad: quién cambió qué, cuándo y por qué.
+Cada fichaje, tarea, firma y consumo alimenta el panel de tu empresa: quién está y quién falta en cada centro, qué tareas se tuercen, retrasos y fichajes fuera de lugar, coste por hora y por jornada, qué material se usó y quién lo tiene, y el informe de jornada por persona conforme al RDL 8/2019, con trazabilidad de cada cambio.
 
 PARA QUIÉN ES
 
-Para el trabajo que pasa lejos de una oficina: ayuda a domicilio, limpieza por centros, mantenimiento, instalaciones, obra, eventos, equipos repartidos por proyectos.
-
-No está atado a ningún sector: sirve a cualquier empresa que necesite saber quién trabajó, cuándo, dónde y en qué, y poder demostrarlo.
+Para el trabajo que pasa lejos de una oficina: ayuda a domicilio, limpieza por centros, mantenimiento, instalaciones, obra, eventos, equipos repartidos por proyectos. Sirve a cualquier empresa que necesite saber quién trabajó, cuándo, dónde y en qué, y poder demostrarlo.
 
 CheckBiz360 forma parte de un servicio contratado por la empresa: necesitas una cuenta facilitada por tu empleador para usar la app.

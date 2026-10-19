@@ -6,13 +6,17 @@ It is not a digital time clock: it is the tool a company uses to keep its operat
 
 THE PROBLEM IT SOLVES
 
-When the work is spread out, the information should not be. Job reports that arrive late, calls to find out what was done and what is missing, work taken as finished that nobody reviews, hours paid without knowing which tasks they went to.
+When the work is spread out, the information should not be. Job reports that arrive late, calls to find out what was done, work nobody reviews, hours paid without knowing which tasks they went to.
 
 HOW IT IS BUILT
 
-• THE WEB BACK OFFICE, from any browser. Managers set up sites and people, configure schedules, assign tasks, review and validate the work, hand out documents, keep track of materials and check costs and alerts. And they can ask Claude or ChatGPT to do all of it in their own words.
+• THE WEB BACK OFFICE, from any browser. Managers set up sites and people, configure schedules, assign tasks, review and validate the work, hand out documents, keep track of materials and check costs and alerts.
 
 • THIS APP, in the pocket of the person working. It is the field side.
+
+YOUR OPERATIONS MANAGER IN CLAUDE OR CHATGPT
+
+Managers can connect the company to their Claude or ChatGPT and ask for things in their own words: how today is going and who is missing, who can cover a job, building the whole team's week, moving a task or adding new people. The assistant does it in CheckBiz360 with their permissions, shows what it is about to do, and saves nothing without confirmation.
 
 WHAT THIS APP DOES
 
@@ -47,12 +51,10 @@ SCHEDULES AND ALERTS
 
 WHAT HAPPENS WITH WHAT YOU RECORD
 
-Every clock record, task, signature and consumption feeds your company's dashboard: who is at each site and who is missing, which tasks are going wrong, repeated late arrivals, records outside the geofence, cost per hour and per workday, which materials were used and who has them, and a per-person workday report ready to present, in line with Spanish RDL 8/2019. All with traceability: who changed what, when and why.
+Every clock record, task, signature and consumption feeds your company's dashboard: who is in and who is missing at each site, which tasks are going wrong, late arrivals and records outside the geofence, cost per hour and per workday, which materials were used and who has them, and the per-person workday report in line with Spanish RDL 8/2019, with every change traceable.
 
 WHO IT IS FOR
 
-For work that happens away from an office: home care, cleaning across sites, maintenance, installations, construction, events, teams spread across projects.
-
-It is not tied to any sector: it works for any company that needs to know who worked, when, where and on what, and be able to prove it.
+For work that happens away from an office: home care, cleaning across sites, maintenance, installations, construction, events, teams spread across projects. It works for any company that needs to know who worked, when, where and on what, and be able to prove it.
 
 CheckBiz360 is part of a service contracted by the company: you need an account provided by your employer to use the app.
