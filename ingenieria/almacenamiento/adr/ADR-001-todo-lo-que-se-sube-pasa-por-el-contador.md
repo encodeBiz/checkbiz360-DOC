@@ -1,7 +1,7 @@
 # ADR-001 — Todo lo que se sube a Storage pasa por el contador de la empresa
 
 **Fecha:** 2026-10-18
-**Estado:** Aceptada
+**Estado:** Sustituida el 2026-10-19 por [ADR-002](./ADR-002-cuenta-un-trigger-de-storage.md): cuenta un trigger de Storage, sin helper obligatorio ni regla de CI, y sin packs
 **Decisionario:** Jose Acevedo
 
 ## Contexto

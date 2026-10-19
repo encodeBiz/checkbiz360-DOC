@@ -1,10 +1,10 @@
-# Almacenamiento por empresa — cuota, packs y retención · Documento de Ingeniería
+# Almacenamiento por empresa — contar y cobrar el exceso · Documento de Ingeniería
 
 **Proyecto:** encodeBiz SaaS
-**Dominio:** transversal — Storage de la plataforma (quiosco, documental, tareas, firma) × `billing`
-**Fecha de inicio:** 2026-10-18
-**Estado:** Diseño cerrado el 2026-10-18 · sin implementar. Nace del quiosco
-([quiosco/README](../quiosco/README.md)) y lo necesita antes de su Fase 1.
+**Dominio:** transversal — Storage de la plataforma (quiosco, documental, tareas, firma, informes) × `billing`
+**Fecha de inicio:** 2026-10-18 · **Rehecho:** 2026-10-19 (modelo simplificado por Jose)
+**Estado:** Diseño cerrado el 2026-10-19 · sin implementar. Lo necesita el quiosco
+([quiosco/README](../quiosco/README.md)) antes de su Fase 1.
 **Autor:** Jose Acevedo
 
 ---
@@ -12,273 +12,263 @@
 ## De dónde sale
 
 Jose, 2026-10-18, al cerrar que cada fichaje del quiosco lleva una foto: «un tema técnico muy
-importante: espacio en Storage, ya que sería infinito. Por tanto tenemos que hacer una
-configuración de entidad donde compres espacio, que al menos cubra los precios de Firebase».
+importante: espacio en Storage, ya que sería infinito».
 
-Hoy nadie cuenta lo que cada empresa ocupa. El documental, las tareas con foto, la evidencia y
-las actas de firma y los informes escriben en el bucket por defecto del proyecto, cada uno con
-su prefijo, sin cuota ni ciclo de vida. Con el quiosco, el volumen deja de depender de lo que
-suba un administrador y pasa a crecer solo, cada día, con cada fichaje.
+La primera versión de este documento (18-oct) montaba cuota por plan, packs de pago, exceso
+`metered`, avisos al 80 y al 100 %, un helper obligatorio y una regla de CI. Jose la rehízo el
+19-oct: «la idea no es limitar, la idea es contabilizar todo lo posible, simplemente con un
+trigger de Storage […] y si pasa de 2 GB se comienza a contabilizar redondeando al suelo». Este
+documento es esa versión. La de packs queda en el historial de git y en
+[ADR-001](./adr/ADR-001-todo-lo-que-se-sube-pasa-por-el-contador.md), sustituido por
+[ADR-002](./adr/ADR-002-cuenta-un-trigger-de-storage.md).
 
-## Principio de diseño
+## El modelo, en cuatro líneas
 
-> **El espacio es un dato de la suscripción, como los empleados: cada plan incluye una parte,
-> el resto se compra en packs, y el exceso se factura, nunca se impide.** Un fichaje jamás
-> falla porque la empresa no tenga espacio. Lo que acota el volumen no es la cuota sino la
-> **retención**, que elige la empresa viendo lo que le va a costar.
+1. **Se cuenta todo lo que se pueda atribuir a una empresa.** Un trigger de Storage suma el
+   tamaño de cada fichero que se sube y resta el de cada uno que se borra. Nadie tiene que
+   acordarse de contar.
+2. **Nada se limita.** Ninguna subida falla por espacio. No hay cuotas, packs ni bloqueos
+   (la regla de la casa para los cupos: Jose, 2026-10-16, «no hay cupo», el exceso se cobra).
+3. **2 GB incluidos para todas las empresas.** Por encima se cobra
+   **`⌊GB usados⌋ − 2`**, redondeando hacia abajo: con 2,3 GB no se paga nada; con 3,1 GB se paga 1.
+4. **0,25 € por GB y mes** de exceso, en una línea aparte de la factura de la suscripción.
 
-Es la regla de la casa para los cupos (Jose, 2026-10-16: «no hay cupo», el exceso se factura;
-`subscriptionLimits.ts`) aplicada al espacio, y encaja en el modelo de cobro de
-[billing-v2/02](../billing-v2/02_to-be.md) sin una línea de código nueva en `billing`: packs
-como add-on `flat`, exceso como `metered`.
+Lo que pone el techo al volumen del quiosco no es la cuota sino la **retención** de sus fotos
+(§Retención), que elige la empresa viendo lo que le costará.
 
-Y una segunda regla, sin excepciones: **todo lo que se sube a Storage pasa por el contador**
-(Jose, 2026-10-18: «todo lo que se suba debe tributar a este módulo contador de Storage para
-poder vender espacio»). Ningún servicio escribe en el bucket por su cuenta; lo hace por el
-helper de `shared`, que pone la ruta canónica y cuenta. Razones y cómo se hace cumplir en
-[ADR-001](./adr/ADR-001-todo-lo-que-se-sube-pasa-por-el-contador.md).
+## Los números
 
-## Los números, para saber de qué hablamos
+Lo que cobra Google por el almacenamiento (Cloud Storage, clase estándar; comprobado el
+2026-10-18 en las páginas de precios de Firebase y de Google Cloud):
 
-Lo que cobra Google (bucket `*.firebasestorage.app`, tarifas de Cloud Storage; las cifras de
-Firebase de referencia que pedía Jose son las del bucket clásico):
+| Concepto | Precio |
+|---|---|
+| Almacenado, región única (`us-central1`, `europe-west1`) | ~0,020 $/GB-mes |
+| Almacenado, bucket clásico de Firebase | 0,026 $/GB-mes |
+| Descargado a internet | ~0,12 $/GB |
+| Subidas (clase A) / descargas (clase B) | 0,05 $ / 0,004 $ por 10.000 |
 
-| Concepto | Firebase clásico (`appspot.com`) | Cloud Storage, región única (EU o US) |
-|---|---|---|
-| Almacenado | 0,026 $/GB-mes | 0,020-0,023 $/GB-mes (`europe-west1` 0,020) |
-| Descargado a internet | 0,12 $/GB | ~0,12 $/GB primer tramo |
-| Subidas (clase A) | 0,05 $/10.000 | 0,05 $/10.000 |
-| Descargas (clase B) | 0,004 $/10.000 | 0,004 $/10.000 |
+**Por qué 0,25 €/GB y no el coste de Google más un margen pequeño.** Guardar un GB cuesta
+unos 2 céntimos al mes, pero descargarlo una vez cuesta 12. Una empresa que descarga cada mes
+una parte de lo que guarda (nóminas, fotos de tareas, informes) cuesta más en descargas que en
+almacenamiento, y Stripe se queda en torno al 2 % de lo cobrado. Un precio de «Google + 5 %»
+perdería dinero con cualquier cliente que descargue. A 0,25 € el GB queda unas doce veces por
+encima del coste de guardarlo, cubre las descargas sin medirlas aparte y sigue siendo barato:
+una empresa con 10 GB paga 8 GB, **2 € al mes**.
 
-Cifras comprobadas el 2026-10-18 en la página de precios de Firebase; las de Cloud Storage
-por región, de la página de precios de Google Cloud (confirmar en la calculadora antes de
-fijar el precio de venta).
+Unidad: **GiB** (2³⁰ bytes), la misma con la que factura Google.
 
-Lo que ocupa el quiosco, con los parámetros del diseño (JPEG de 640 px, unos **60 KB**; una
-media de **3 fichajes al día** con foto —entrada, salida y una pausa—; 22 días al mes):
+Lo que ocupa el quiosco (JPEG de 640 px, unos **60 KB**; **3 fichajes al día** con foto; 22
+días al mes):
 
-| | Por empleado | 100 empleados | 1.000 empleados (Serlimar) |
+| | Por empleado | 100 empleados | 1.000 empleados |
 |---|---|---|---|
-| Al mes | 4 MB | 0,4 GB | 4 GB |
-| Stock con retención 30 días | 4 MB | 0,4 GB | 4 GB |
-| Stock con retención 1 año | 48 MB | 4,8 GB | 48 GB |
-| Stock con retención 4 años (la del registro de jornada) | 190 MB | 19 GB | 190 GB |
-| Coste Google del stock a 4 años | — | 0,5 $/mes | 5 $/mes |
+| Stock con retención 30 días | 4 MB | 0,4 GB | 4 GB → paga 2 GB, 0,50 €/mes |
+| Stock con retención 1 año | 48 MB | 4,8 GB → paga 2 GB, 0,50 €/mes | 48 GB → 11,50 €/mes |
+| Stock con retención 4 años | 190 MB | 19 GB → 4,25 €/mes | 190 GB → 47 €/mes |
 
-Es decir: **el coste real es pequeño; el problema es que no tiene techo**. Con retención de
-30 días, mil personas ocupan 4 GB y cuestan 10 céntimos al mes. Con cuatro años, 190 GB. El
-techo lo pone la retención, y la cuota es lo que hace que la empresa la elija con
-conocimiento.
+## Qué cuenta y qué no
 
-## Cómo se sabe cuánto consume cada empresa
+La empresa se lee **de la ruta del fichero**. Lo que lleva la empresa en la ruta cuenta; lo que
+no, no. Rutas comprobadas en el código el 2026-10-19:
 
-> Jose, 2026-10-18: «sí, pero ¿cómo podemos saber cuánto consume cada empresa?» y «documéntalo
-> porque esto es importante».
-
-La respuesta corta: **porque la empresa va en la ruta de cada fichero y porque sólo el servidor
-escribe.** Lo primero permite medir hoy, sin construir nada; lo segundo permite contar en vivo
-mañana.
-
-### Lo que se puede medir hoy, sin tocar código
-
-Rutas comprobadas en el código el 2026-10-18 (todas escriben en el bucket por defecto del
-proyecto, `encodebiz-services.firebasestorage.app` en producción):
-
-| Módulo | Prefijo en el bucket | Se puede medir por empresa |
+| Módulo (`byModule`) | Prefijo | Cuenta |
 |---|---|---|
-| Documental (ficheros y PDF firmados) | `documents/entities/{entityId}/…` | sí |
-| Tareas (recursos y fotos de valoración) | `media/entities/{entityId}/checkinbiz/tasks/{taskId}/…` | sí |
-| Firma (evidencia JSON) | `signatures/evidence/{entityId}/{purpose}/{challengeId}.json` | sí |
-| Informes y actas | `checkbiz/reports/entities/{entityId}/…` | sí |
-| Campañas in-app (imágenes) | `campaigns/images/{timestamp}-{uuid}.{ext}` | **no**: sin empresa en la ruta |
-| Quiosco (cuando exista) | bucket `encodebiz-media-eu`, `kiosk/r{días}/{entityId}/{checklogId}.jpg` | sí, por diseño |
+| `documents` — documental, PDF firmados incluidos | `documents/entities/{entityId}/…` | sí |
+| `tasks` — recursos y fotos de valoración | `media/entities/{entityId}/checkinbiz/tasks/…` | sí |
+| `signatures` — evidencia JSON de firma | `signatures/evidence/{entityId}/…` | sí |
+| `reports` — informes, exportaciones y actas de firma | `checkbiz/reports/entities/{entityId}/…` | sí |
+| `kiosk` — fotos del quiosco (bucket `encodebiz-media-eu`) | `kiosk/r{días}/{entityId}/…`, `kiosk/hold/{entityId}/…` | sí |
+| Marca de la empresa (logos, imágenes del panel) | `media/entities/{entityId}/{tipo}/…` (todo lo que no es `checkinbiz/`) | **no** (Jose, 2026-10-19) |
+| Campañas in-app | `campaigns/images/…` | **no**: las hace el backoffice para todos, no son de ninguna empresa |
+| Cualquier otra ruta | — | no; el trigger la ignora |
 
-Con eso, hoy mismo, para una empresa:
+La tabla es el contrato. Un módulo nuevo que guarde ficheros de una empresa pone el
+`entityId` en la ruta y añade aquí su prefijo; si no lo hace, sus ficheros no se cobran.
+
+Los informes **no llevan caducidad**: la versión del 18-oct les ponía 30 días en el bucket, y
+con ello se habrían borrado las actas de firma, que viven en `checkbiz/reports/…/actas/`. Sin
+esa regla, el acta que se valida es siempre la misma.
+
+## Cómo se cuenta
+
+### El trigger
+
+Dos funciones por bucket en `services/firebase_sdk` (codebase `default`), una al terminar una
+subida (`onObjectFinalized`) y otra al borrarse un objeto (`onObjectDeleted`). Buckets: el del
+proyecto (`encodebiz-services.firebasestorage.app` en producción, `dev-encodebiz.firebasestorage.app`
+en desarrollo) y `encodebiz-media-eu`.
+
+Cada evento:
+
+1. Saca `entityId` y `module` de la ruta con la tabla de arriba. Si no casa, termina.
+2. En una transacción de Firestore, contra el **registro de objetos**
+   `storage_objects/{sha1(bucket + "/" + ruta)} = { entityId, module, bucket, path, size, generation }`:
+   - **Subida**: si el registro ya tiene esta `generation`, es un evento repetido y no hace
+     nada. Si no existe, lo crea y suma `size`. Si existe con otra `generation` (se ha
+     sobrescrito), lo actualiza y suma la diferencia.
+   - **Borrado**: sólo si el registro tiene la misma `generation` que el evento, lo borra y
+     resta su `size`. Si no coincide, es el borrado de una versión ya sustituida y no hace nada.
+3. En la misma transacción, suma o resta en uno de los **diez trozos del contador**, elegido
+   al azar: `entities/{entityId}/storage_shards/{0..9}`. El total de la empresa es la suma de
+   los diez:
+
+```text
+storage_shards/{n} = { usedBytes, byModule: { documents, tasks, signatures, reports, kiosk }, updatedAt }
+```
+
+   Diez trozos y no un campo en `entities/{entityId}` porque Firestore aguanta más o menos
+   una escritura por segundo en un mismo documento. A las 8:00, con mil personas fichando en
+   el quiosco, un contador único se atascaría y reintentaría las transacciones. Leer el total
+   cuesta diez lecturas, y sólo se lee al abrir la pantalla y al facturar.
+
+Por qué así:
+
+- **Google entrega los eventos al menos una vez**, a veces dos. La `generation` del registro
+  hace que un evento repetido no sume dos veces.
+- **Sobrescribir** en un bucket sin versiones genera la subida de la nueva versión y el
+  borrado de la anterior, en cualquier orden. Con la `generation`, el resultado es el mismo
+  llegue antes uno u otro.
+- **Las reglas de ciclo de vida** (la retención del quiosco) también generan el evento de
+  borrado, así que lo que caduca deja de contar solo.
+- **Da igual quién suba.** Un servicio, un script de soporte o un cliente con el SDK pasan
+  por el mismo trigger. Por eso ya no hace falta el helper obligatorio ni la regla de CI del
+  ADR-001.
+
+El helper de `shared` (`checkbiz/storage`, hoy en `feat/quiosco`) puede seguir existiendo
+para elegir bucket y firmar URLs, pero **no cuenta**: si sumara él y sumara el trigger, el
+fichero contaría dos veces.
+
+### La carga inicial
+
+Al encender el trigger, el registro está vacío y lo que ya hay en los buckets no cuenta. Un
+script `services/firebase_sdk/src/scripts/storage-backfill.ts` lista los prefijos de la tabla,
+rellena `storage_objects` y reescribe los trozos del contador (todo en el trozo 0, el resto a cero). Simula por defecto y escribe
+con `--apply`. Se ejecuta una vez **después** de desplegar el trigger, para que lo que se suba
+mientras corre no se pierda. El mismo script sirve de reparación si alguna vez el contador se
+desvía (`--entity <id>` para una sola empresa).
+
+### Medir sin código
+
+Mientras no exista nada de esto, una empresa se mide a mano:
 
 ```bash
 B=gs://encodebiz-services.firebasestorage.app
 E=<entityId>
-gcloud storage du --summarize $B/documents/entities/$E/
-gcloud storage du --summarize $B/media/entities/$E/
-gcloud storage du --summarize $B/signatures/evidence/$E/
-gcloud storage du --summarize $B/checkbiz/reports/entities/$E/
+gcloud storage du --summarize $B/documents/entities/$E/ $B/media/entities/$E/checkinbiz/ \
+  $B/signatures/evidence/$E/ $B/checkbiz/reports/entities/$E/
 ```
 
-Y para todas de una vez, el total por empresa de cada prefijo:
+## Cómo se cobra
 
-```bash
-gcloud storage du $B/documents/entities/ --summarize   # un total por subcarpeta = por empresa
-```
+- **Qué se cobra**: `max(0, ⌊usedBytes / 2³⁰⌋ − 2)` GB, a 0,25 €, con `usedBytes` la suma de
+  los diez trozos.
+- **Cuándo**: con el valor del contador **el día en que Stripe crea la factura** del ciclo.
+  Es lo más sencillo y la diferencia con el máximo del mes son céntimos. No hace falta guardar
+  instantáneas diarias.
+- **Cómo**: `billing` escucha `invoice.created` (motivo `subscription_cycle`). Mientras la
+  factura está en borrador, si hay exceso, añade un `invoiceItem` con un Price de 0,25 € y
+  `quantity` = GB a cobrar, y deja `{ usedBytes, billedGb }` en los metadatos de la línea.
+  Stripe da una hora antes de cerrar el borrador. El evento `invoice.created` aún no está
+  activado en el webhook de producción (pendiente del pase de octubre): sin él no se cobra nada.
+- **Una sola vez por factura**: la línea lleva `metadata.kind = "storage"`. Si ya existe en la
+  factura, no se añade otra.
+- **Pendiente de decidir — empresas sin suscripción de pago.** Una empresa gratuita no tiene
+  factura en Stripe a la que añadir la línea. Mientras Jose no decida otra cosa, se cuenta y se
+  enseña, pero no se cobra.
 
-Lo que hay que arreglar para que la medida sea completa: las imágenes de campañas tienen que
-llevar la empresa en la ruta (`campaigns/entities/{entityId}/images/…`), con una migración de
-lo existente (son pocas y las referencia el documento de la campaña).
+## Retención del quiosco
 
-### Lo que se construye para no tener que preguntar a Google
+Es el único módulo cuyos ficheros crecen solos, así que es el único con retención.
+`entities/{e}.settings.kiosk.photoRetention ∈ { 15, 30, 60, 90, 365, 1460 }` días (1460 = 4
+años, la retención del registro de jornada, art. 34.9 ET). Por defecto 30.
 
-Tres capas, de la más barata a la más fiable. Las tres están en §Diseño; aquí, el porqué de
-cada una:
+La ruta lleva la retención dentro (`kiosk/r{días}/{entityId}/{checklogId}.jpg`) y el bucket
+tiene **una regla de ciclo de vida por valor** (`matchesPrefix: ["kiosk/r30/"], age: 30`, y así
+las seis). Las reglas son del bucket, no de la empresa (máximo 100). Cambiar la retención no
+mueve nada: las fotos nuevas van a la carpeta nueva y las viejas caducan con la suya.
 
-1. **El contador en vivo (al escribir y al borrar).** Ningún fichero lo sube la app a Storage:
-   lo sube el servidor (`getStorage().bucket().file().save` en documental y tareas, la evidencia
-   de firma, el quiosco). Por eso cada subida puede sumar su tamaño a
-   `entities/{entityId}.storage.usedBytes` y a `byModule.{módulo}` en la misma transacción, y
-   cada borrado restar. Es lo que el panel enseña al instante y lo que dispara los avisos del
-   80 % y el 100 %. Helper único en `shared` (`accountedUpload` / `accountedDelete`): un módulo
-   que suba sin pasar por él es un error de revisión de código.
-2. **La reconciliación nocturna.** El contador se desvía: las reglas de ciclo de vida borran sin
-   avisarnos, una subida puede quedar a medias, un script de soporte puede borrar a mano. Cada
-   noche un trabajo lista los prefijos de cada empresa (la tabla de arriba), suma los tamaños
-   reales y reescribe `usedBytes` y `byModule`. Coste: una operación de listado por cada mil
-   ficheros; mil empleados en el quiosco con 30 días son 90.000 fotos, 90 operaciones, nada.
-   **Lo que se factura sale de este número**, nunca del contador en vivo.
-3. **La instantánea diaria.** Tras reconciliar, `entities/{e}/storage_daily/{fecha}`. De ahí
-   salen la gráfica de 90 días del panel y el **pico del ciclo**, que es la base del exceso: se
-   cobra lo que más se ocupó, no lo que queda el último día.
+Una foto **en disputa** (solicitud de corrección abierta o rechazada) se copia a
+`kiosk/hold/{entityId}/…`, sin caducidad; al cerrar la disputa vuelve a su carpeta de
+retención. El fichaje conserva `photoPath` aunque la foto haya caducado.
 
-Lo que no se hace, y por qué: no se consulta la facturación de Google por empresa (Google factura
-por bucket y proyecto, no sabe qué es una empresa nuestra), y no se pone un bucket por empresa
-(los buckets tienen límites de creación y las reglas de ciclo de vida se multiplicarían por
-cliente). La empresa en la ruta es la unidad de medida, y la tabla de prefijos es el contrato.
+Al cambiar la retención, el panel enseña la cuenta hecha: «Con 240 empleados y 90 días, las
+fotos ocuparán unos 2,9 GB. Con lo que ya ocupas, pagarías unos 0,75 € al mes».
+`GET /storage/estimate?entityId&module=kiosk&retentionDays=` devuelve
+`{ employees, estimatedGb, usedGb, billableGb, eurMonth }`.
 
-## Diseño
+El documental y las tareas no caducan: lo que sube un administrador lo borra un administrador.
 
-### 1. Lo que se cuenta
+## El bucket del quiosco, en Europa
 
-`entities/{entityId}.storage`:
-
-```text
-{ usedBytes, byModule: { kiosk, documents, tasks, signatures, campaigns, reports }, includedGb,
-  packsGb, updatedAt, lastReconciledAt }
-```
-
-- **Se cuenta todo** ([ADR-001](./adr/ADR-001-todo-lo-que-se-sube-pasa-por-el-contador.md)):
-  fotos del quiosco, documentos del documental, evidencias de tareas, evidencia y actas de
-  firma, imágenes de campañas, informes y exportaciones. Lo regenerable no queda exento: se le
-  pone caducidad de 30 días en el bucket para que no pese, y mientras existe, cuenta.
-- **Quién cuenta: el servidor, al escribir y al borrar.** Todos los módulos suben por el
-  servidor (`getStorage().bucket().file().save` en el documental y en tareas; la evidencia de
-  firma; el quiosco). Cada escritura suma `size` al contador de la empresa y del módulo en una
-  transacción; cada borrado resta. Un helper en `shared` (`checkbiz/storage/`: `accountedUpload`,
-  `accountedDelete`, `accountedDeletePrefix`) es **la única vía**: el CI falla si
-  `getStorage().bucket()` aparece fuera de él (ADR-001). Los prefijos por módulo, en §Cómo se sabe.
-- **Reconciliación nocturna.** Las reglas de ciclo de vida borran sin avisarnos y un contador
-  en Firestore se desvía. Un trabajo diario lista los prefijos de cada empresa (`du` por prefijo:
-  un listado por cada mil objetos, coste despreciable), reescribe `usedBytes` y `byModule` y
-  apunta `lastReconciledAt`. El contador en vivo sirve para avisar; la verdad del mes es la
-  reconciliada.
-- **Instantánea diaria** `entities/{e}/storage_daily/{YYYY-MM-DD} = { usedBytes, byModule }`:
-  de ahí sale el pico del ciclo para facturar el exceso y la gráfica del panel.
-
-### 2. Lo que se incluye, lo que se compra y lo que se factura
-
-- **Incluido por plan**: `service/checkinbiz/plan/{plan}.includedStorageGb`. Propuesta: 0,5 GB
-  en freemium, 2 GB en los planes de pago (con retención de 30 días, 2 GB son ~500 empleados
-  en el quiosco; lo normal es que no haga falta comprar nada).
-- **Packs**, add-on `flat` sobre la suscripción de checkinbiz, exactamente como Rentman
-  ([billing-v2/02 §Add-ons](../billing-v2/02_to-be.md)): `service/storage/plan/pack-10`,
-  `pack-50`, `pack-200` con `billing: { kind: "flat", stripePrice }`. Alta de datos, sin código.
-  Propuesta de precio, a cerrar con los Prices de Stripe:
-
-  | Pack | €/mes | €/GB-mes | Margen sobre Google (0,026 $ almacenado + descarga) |
-  |---|---|---|---|
-  | 10 GB | 3 | 0,30 | ~10× |
-  | 50 GB | 12 | 0,24 | ~8× |
-  | 200 GB | 40 | 0,20 | ~7× |
-
-  El margen no es avaricia: cubre descargas (0,12 $/GB cada vez que alguien mira todo lo que
-  guardó), operaciones, la reconciliación diaria y el bucket europeo sin nivel gratuito.
-- **Exceso**: lo que pase de `includedGb + packsGb` en el **pico** del ciclo se factura como
-  uso medido (`metered`, el modelo de passinbiz), a **0,50 €/GB-mes**, redondeado hacia arriba,
-  en la misma factura y en línea aparte. Nunca bloquea nada. El precio del exceso es más alto
-  que el del pack a propósito: comprar el pack tiene que salir a cuenta.
-- **Avisos** al administrador al 80 % y al 100 % de lo incluido más los packs (in-app y correo
-  de `billing`), con la estimación de lo que costará el exceso y el botón de comprar pack.
-  Tras el 100 %, uno al mes mientras siga en exceso.
-
-### 3. La retención es el mando
-
-Cada módulo que guarda ficheros «que crecen solos» tiene su retención por empresa; hoy sólo el
-quiosco. `entities/{e}.settings.kiosk.photoRetention ∈ { 15, 30, 60, 90, 365, 1460 }` días
-(1460 = 4 años, la retención del registro de jornada, art. 34.9 ET; más no tiene sentido).
-Por defecto 30.
-
-Al cambiarla, el panel enseña la cuenta hecha: «Con 240 empleados y 90 días, las fotos
-ocuparán unos 2,9 GB. Tu plan incluye 2 GB; el exceso estimado es 0,9 GB (0,45 €/mes), o un
-pack de 10 GB por 3 €/mes». La fórmula es la de la tabla de arriba; el panel la pinta, el
-servidor la devuelve (`GET /storage/estimate?entityId&module=kiosk&retentionDays=`).
-
-### 4. Cómo se borra solo: ciclo de vida por carpeta de retención
-
-Las reglas de ciclo de vida son del bucket (máximo 100), no de la empresa. La ruta lleva la
-retención dentro: `kiosk/r{días}/{entityId}/{checklogId}.jpg`, y el bucket tiene **una regla
-por valor** (`matchesPrefix: ["kiosk/r30/"], age: 30`, y así las seis). Cambiar la retención
-no mueve nada: las fotos nuevas van a la carpeta nueva y las viejas caducan con la suya.
-
-Una foto **en disputa** (solicitud de corrección abierta o rechazada sobre ese fichaje) se copia
-a `kiosk/hold/{entityId}/…` sin regla de caducidad, y el fichaje apunta a la copia; al cerrar
-la disputa vuelve a contar el reloj (se mueve a su carpeta de retención con la fecha de ese
-día). Lo que caduca sigue dejando `photoPath` en el fichaje: se sabe que hubo foto y cuándo
-dejó de haberla.
-
-El documental y las tareas no cambian: lo que sube un administrador lo borra un administrador.
-
-### 5. El bucket: en Europa
-
-Comprobado con `gcloud` el 2026-10-18: el bucket de producción
-(`encodebiz-services.firebasestorage.app`) está en **US-CENTRAL1**; el de desarrollo
-(`dev-encodebiz.firebasestorage.app`), en **EU**. Ninguno tiene reglas de ciclo de vida.
+Comprobado con `gcloud` el 2026-10-18: el bucket de producción está en **US-CENTRAL1** y el de
+desarrollo en **EU**. Ninguno tiene reglas de ciclo de vida.
 
 Las fotos de los trabajadores **no se guardan en Estados Unidos**. La transferencia sería
-lícita (Google está en el Marco de Privacidad de Datos UE-EE. UU.), pero es la pregunta que
-hará el DPO de cada cliente y no hay por qué darle la ocasión. Bucket nuevo
-`encodebiz-media-eu` en `europe-west1` (0,020 $/GB-mes, sin nivel gratuito, que para esto es
-irrelevante), con las seis reglas de ciclo de vida, acceso uniforme, sin acceso público, y
-**sólo el servidor escribe**. El quiosco nace ahí. Mover documental y tareas al bucket
-europeo es deseable y es otro trabajo (migración con los clientes vivos); se apunta en deuda.
+lícita (Marco de Privacidad de Datos UE-EE. UU.), pero es la pregunta que hará el DPO de cada
+cliente. Bucket nuevo `encodebiz-media-eu` en `europe-west1`, con las seis reglas de
+retención, acceso uniforme, sin acceso público y escritura sólo desde el servidor. Mover el
+documental y las tareas a Europa queda como deuda; el trigger cuenta igual en los dos buckets.
 
-### 6. Dónde se ve
+## Sólo el servidor escribe: reglas de Storage
 
-Panel → Empresa → **Almacenamiento**: lo usado por módulo, lo incluido, los packs, la gráfica
-de 90 días (de `storage_daily`), el botón de comprar pack (Stripe, mismo flujo que un add-on)
-y, por módulo, su retención con la estimación. En la factura: la línea del pack y, si la hay,
-la del exceso.
+**Hecho el 2026-10-19**, en desarrollo y en producción, con el paso 2a de las reglas
+([reglas-firestore/paso-2a.md §Storage](../reglas-firestore/paso-2a.md)). Hasta entonces
+`storage.rules` vivía en `encodeBiz-SAAS` y dejaba a cualquier sesión leer y escribir en todo
+el bucket salvo `documents/`: un usuario podía subir a la carpeta de otra empresa y, con el
+trigger, inflarle la factura. Ahora las reglas viven en `encodebiz-api/storage.rules` y
+cierran el bucket entero al cliente (`allow read, write: if false`). Ningún cliente usa el SDK
+de Storage: el panel, la app y el quiosco suben por la API.
+
+Para este diseño eso significa que todo lo que cuenta el trigger lo ha subido el servidor. Si
+algún día un cliente necesita subir directo, se abre su ruta con nombre bajo
+`…/entities/{e}/`, comprobando la pertenencia, y el trigger la cuenta igual.
+
+## Dónde se ve
+
+Panel → Empresa → **Almacenamiento**: lo usado por módulo, los 2 GB incluidos, los GB que se
+cobrarían hoy y su importe, y la retención del quiosco con su estimación. En la factura, la
+línea «Almacenamiento: N GB por encima de 2 GB».
 
 ## Contratos
 
 | Ruta | Auth | Para qué |
 |---|---|---|
-| `GET /storage?entityId` | ID token, `canWrite` | `{ usedBytes, byModule, includedGb, packsGb, daily[90] }` |
-| `GET /storage/estimate?entityId&module&retentionDays` | ID token, `canWrite` | `{ employees, estimatedGb, includedGb, packsGb, excessGb, excessEurMonth, suggestedPack }` |
+| `GET /storage?entityId` | ID token, `canWrite` | `{ usedBytes, byModule, includedGb: 2, billableGb, eurMonth }` |
+| `GET /storage/estimate?entityId&module=kiosk&retentionDays` | ID token, `canWrite` | estimación al cambiar la retención |
 | `PATCH /entities/:id/settings/kiosk` | ID token, `canWrite` | `photoRetention` (y `photo`) |
-| `POST /billing/addons` (ya existe el flujo de add-on) | ID token, `canWrite` | contratar `pack-10 / 50 / 200` |
-| `POST /billing/usage/storage` (interno, cron de cierre) | servicio | reporta el exceso del ciclo a Stripe |
+| webhook `invoice.created` | firma de Stripe | añade la línea de exceso al borrador |
+
+Las dos primeras van en `billing`, que es quien cobra.
 
 ## Fases
 
 | Fase | Qué | Dónde | Tamaño |
 |---|---|---|---|
-| 0 | Bucket `encodebiz-media-eu` con reglas de ciclo de vida (quiosco por retención, informes 30 días); `includedStorageGb` en los planes; packs en `service/storage` y Prices en Stripe | infra + datos | 1 día |
-| 1 | Helper `checkbiz/storage` en `shared` y **migración de los cinco módulos que ya suben** (documental, tareas, firma, informes, campañas con la empresa en la ruta); regla de CI; contadores; reconciliación e instantánea diaria; avisos 80/100 %; `GET /storage` y `estimate` | `shared` + servicios + `billing` | 4 días |
-| 2 | Panel: Almacenamiento, comprar pack, retención con estimación; exceso `metered` en el cierre del ciclo | panel + `billing` | 3 días |
+| 0 | Bucket `encodebiz-media-eu` con las seis reglas de retención; Price de 0,25 €/GB en Stripe | reglas + infra + datos | 1 día |
+| 1 | Triggers en los dos buckets, registro `storage_objects`, contador en `entities/{e}/storage_shards`, script `storage-backfill`; quitar la cuenta del helper de `feat/quiosco` | `firebase_sdk` + `shared` | 2 días |
+| 2 | `invoice.created` añade la línea de exceso; `GET /storage` y `estimate`; panel Almacenamiento y retención | `billing` + panel | 2 días |
 
-El quiosco necesita la Fase 0 antes de su Fase 1 (el bucket y la carpeta de retención) y la
-Fase 1 para contar; la Fase 2 puede ir detrás del piloto. El corte de demo del quiosco escribe
-ya en el bucket europeo y en `kiosk/r30/`, aunque nadie cuente todavía.
+El quiosco necesita la Fase 0 (bucket y carpetas de retención) antes de su Fase 1. Cobrar
+(Fase 2) puede ir detrás del piloto; lo que se suba antes queda contado por el trigger o por
+la carga inicial.
 
 ## Riesgos
 
-- **Contador desviado.** Por eso la reconciliación nocturna manda sobre el contador en vivo y
-  el exceso se factura con el pico reconciliado, no con el contador.
-- **Precio de venta demasiado alto frente a lo que la gente paga por un Drive.** 0,20-0,30 €/GB
-  parece caro al lado de 100 GB por 2 €; no es el mismo producto (está atado al fichaje,
-  servido con URL firmada, contado y auditado), pero hay que decirlo así en el panel y no
-  esconderlo.
-- **Migración del documental y las tareas al bucket europeo.** No se hace aquí; queda como
-  deuda explícita y los contadores funcionan igual en los dos buckets.
+- **Contador desviado.** Si un evento se perdiera, el contador quedaría corto. El registro de
+  objetos permite comprobarlo contra el bucket con el script de carga inicial en modo simular,
+  que enseña la diferencia por empresa sin escribir.
+- **Coste del registro.** Dos escrituras de Firestore por fichero subido (registro y trozo
+  del contador) y otras dos al borrarse. Mil empleados en el quiosco son unas 66.000 fotos al
+  mes: unas 260.000 escrituras, menos de 0,50 $. Nada.
+- **Empresas que ya pasan de 2 GB el primer día.** El primer ciclo tras encender el cobro les
+  llega con la línea. A 0,25 € el GB son importes pequeños, pero conviene avisarlas antes.
+- **Rutas sin empresa.** Lo que se suba fuera de la tabla no se cobra. Es un riesgo de
+  ingresos, no de servicio, y la tabla está aquí para revisarla en cada módulo nuevo.
 
 ## Fuentes
 
 - Precios de Firebase (Storage) — https://firebase.google.com/pricing
 - Precios de Cloud Storage — https://cloud.google.com/storage/pricing
-- Preguntas frecuentes sobre el cambio de buckets de Firebase (sept. 2024) — https://firebase.google.com/docs/storage/faqs-storage-changes-announced-sept-2024
+- Triggers de Cloud Storage en Cloud Functions — https://firebase.google.com/docs/functions/gcp-storage-events
+- Facturas de suscripción en Stripe (`invoice.created` y borradores) — https://docs.stripe.com/billing/invoices/subscription

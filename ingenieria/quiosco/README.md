@@ -352,7 +352,7 @@ Lo que hace el servidor, en `checkinbiz`, **con el mismo núcleo que `POST /chec
 3. **La foto.** Obligatoria mientras la empresa tenga la prueba activada (y lo está por
    defecto): sin `photo`, 400 `kiosk/photo_required`. Se guarda en el **bucket europeo**
    `encodebiz-media-eu`, en `kiosk/r{retención}/{entityId}/{checklogId}.jpg` (JPEG, 640 px de
-   lado mayor, unos 60 KB) **antes** de escribir el fichaje, sumando al contador de
+   lado mayor, unos 60 KB) **antes** de escribir el fichaje; la cuenta el trigger de Storage del
    almacenamiento de la empresa ([almacenamiento/README](../almacenamiento/README.md)); si la
    subida falla, no hay fichaje y la tablet lo dice.
 4. Marca: `metadata.source = "kiosk"` y `metadata.kiosk = { branchId, deviceId, identification: "qr+photo" |
@@ -503,7 +503,7 @@ entities/{entityId}/kiosks/{branchId}                       # uno por sucursal, 
 
 entities/{entityId}.settings.kiosk = { photo: true, photoRetention: 30 }   # 15|30|60|90|365|1460
 entities/{entityId}/kiosks_setup = { total, done, status, startedAt, finishedAt }   # QR por lotes
-entities/{entityId}.storage = { usedBytes, byModule, includedGb, packsGb }   # almacenamiento/README
+entities/{entityId}/storage_shards/{0..9} = { usedBytes, byModule }   # almacenamiento/README (lo escribe el trigger)
 
 entities/{entityId}/kiosks/{branchId}/attempts/{id}         # sólo los fallidos y los bloqueos
   at, codeHmacPrefix (4 hex), result: not_found | locked
@@ -567,7 +567,7 @@ Añadirlos a `DOCS/Clients/14-referencia/90-codigos-de-error-completos.md` al im
 
 | Fase | Qué | Dónde | Tamaño (una persona) |
 |---|---|---|---|
-| 0 | Bucket europeo con reglas de ciclo de vida y contadores de almacenamiento ([almacenamiento/README](../almacenamiento/README.md) Fases 0 y 1) | infra + `shared` | 4 días |
+| 0 | Bucket europeo con reglas de ciclo de vida y trigger de almacenamiento ([almacenamiento/README](../almacenamiento/README.md) Fases 0 y 1) | infra + `firebase_sdk` | 3 días |
 | 1a | `RegisterChecklog` con actor; login de quiosco con radio y dispositivo único; activación del módulo con usuarios por sucursal y **QR por lotes con Cloud Tasks**; códigos; **foto al bucket europeo contada, ráfaga y aviso**; reglas e índice | `checkinbiz` + `shared` | 5 días |
 | 1b | Activar el módulo; Sucursal → Quiosco (credenciales, regenerar contraseña, dispositivo activo y cerrar su sesión, radio, **Revisar** con fotos y «No es la persona», **Imprimir tarjetas QR**); «Generar QR» y «Generar código» en la ficha y en lote; texto modelo de información a la plantilla | panel | 3 días |
 | 1b' | Columna «Quiosco» con miniatura en la asistencia del panel. Complemento: no bloquea el piloto | panel | 0,5 día |
@@ -617,7 +617,7 @@ La foto se ve en la demo abriéndola desde Storage, no desde el panel: la column
   Decirlo así al cliente, con el caso del ayuntamiento delante.
 - **Nadie mira las fotos.** En 500 centros es seguro. Por eso la revisión no es «mirarlo todo»:
   es mirar las ráfagas y las disputas; lo demás es prueba guardada 30 días.
-- **Espacio sin techo.** Resuelto fuera de aquí: cuota por empresa, packs, exceso facturado y
+- **Espacio sin techo.** Resuelto fuera de aquí: 2 GB incluidos, el exceso a 0,25 €/GB-mes,
   nunca bloqueante, y la retención como mando ([almacenamiento/README](../almacenamiento/README.md)).
   El fichaje del quiosco nunca falla por espacio.
 - **Una tablet sin cámara frontal útil.** Comprarla con cámara frontal decente y con luz en la
