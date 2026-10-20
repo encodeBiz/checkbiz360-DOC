@@ -60,6 +60,17 @@ específicos» para identificar. Por eso la Fase 2 puede ofrecer foto como disua
 retención corta e información a la plantilla, y por eso **queda prohibido** añadirle
 reconocimiento después: convertiría todo el diseño en lo que esta decisión evita.
 
+## Adenda 2026-10-20 — detectar que hay una cara no es biometría
+
+Jose pidió que la tablet compruebe, si se puede, que en la foto hay una persona. Se hace con la
+**detección de caras** de ML Kit en el propio dispositivo: responde «hay una cara en el
+encuadre» o «no la hay», y nada más. No calcula ninguna plantilla, no compara con nadie, no
+identifica, y nada de eso sale de la tablet; lo único que viaja es `faceDetected: true/false`
+junto a la foto, que ya se enviaba. Eso no es un tratamiento biométrico (no sirve para
+identificar a una persona física, RGPD art. 4.14 y art. 9) y esta decisión sigue en pie: **se
+comprueba que hay una cara, nunca de quién es.** Sin cara no se impide fichar: se marca para
+la revisión, y el aviso de la pantalla dice que sin cara el fichaje se puede invalidar.
+
 ## Consecuencias
 
 - Sin biometría, la prueba de que fichó quien dice es **una foto en cada fichaje, mirada por

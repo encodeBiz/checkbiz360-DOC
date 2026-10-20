@@ -390,11 +390,12 @@ Lo que hace el servidor, en `checkinbiz`, **con el mismo núcleo que `POST /chec
 4. Marca: `metadata.source = "kiosk"` y `metadata.kiosk = { branchId, deviceId, identification: "qr+photo" |
    "code+photo" | "nfc+photo" | "device_signature", sessionId, photoPath, burst?: { windowSeconds, count } }`.
    El `requestUpdates[0]` lleva `action: "created"` y `updateBy: "kiosk:<branchId>"`.
-5. **Ráfaga.** Al escribir, el servidor cuenta los fichajes de esa tablet en los últimos 90 s.
-   Si con éste son **tres o más**, marca `metadata.kiosk.burst` en todos ellos y avisa al
-   supervisor de la sucursal (push + in-app `kiosk_burst_review`, con enlace a la revisión). No
-   rechaza nada: diez personas que entran a las 8:00 en fila también son una ráfaga, y la
-   diferencia la ve el encargado en las fotos en un segundo.
+5. **Ráfaga.** Al escribir, el servidor mira el fichaje anterior de esa tablet: si llegó hace
+   **menos de 30 s**, éste alarga la cadena; si no, empieza una nueva. Con **tres o más** en
+   cadena, marca `metadata.kiosk.burst` en todos ellos y avisa al supervisor de la sucursal
+   (push + in-app `kiosk_burst_review`, con enlace a la revisión). **No rechaza ni hace esperar
+   a nadie** (Jose, 2026-10-20: esperar «es por gusto»; con la foto, quien ficha por otro deja
+   su cara en cada fichaje). Antes era «tres en 90 s», que marcaba cualquier fila de entrada.
 6. Se emiten los mismos eventos (`emitChecklogCreated`, `emitWorkdayClosed`) y los triggers de
    Firestore siguen igual: heurística, sync, webhooks y notificaciones no se enteran de que fue
    un quiosco salvo por la marca.
@@ -416,7 +417,8 @@ Pantallas, en orden, y sin más:
 |---|---|---|
 | **Entrar** | la pantalla de login de la app, con el usuario de quiosco de la sucursal | comprueba los requisitos del dispositivo (§1); si no cumple, «Dispositivo no válido» con el motivo y no entra; si cumple, `login` con la posición; fuera del radio, lo dice y no entra |
 | **Inicio** | hora grande, nombre del centro, **la cámara frontal en vivo** con el marco «Acerca tu QR», y el teclado numérico 0-9 debajo o al lado («o teclea tu código») | al leer un QR, o al sexto dígito, llama a `identify` sola (sin botón «OK»); vibración y pitido corto al leer |
-| **Confirmar** | «Hola, Marta», la hora, **la cámara frontal en vivo** («tu foto queda con el fichaje»), y el botón grande que toca (`suggested`) con los otros dos pequeños debajo | al pulsar, **captura el fotograma** y llama a `checklogs/kiosk`; **se cancela sola a los 10 segundos** |
+| **Confirmar** | «Hola, Marta», la hora y el botón grande que toca (`suggested`) con los otros dos pequeños debajo | al pulsar, pasa a Foto; **se cancela sola a los 10 segundos** |
+| **Foto** | **la cámara frontal en vivo** dentro de un marco, con el aviso: «La foto sirve para evitar fraudes y la puede revisar un responsable. **Sin tu cara, el fichaje se puede invalidar.**» La tablet **detecta si hay una cara** en el encuadre (en el propio dispositivo, sin identificar a nadie, ADR-001): con cara, el marco en verde; sin ella, el aviso en rojo | botón «Fichar»: **captura** y llama a `checklogs/kiosk` con `faceDetected: true/false`. Sin cara también ficha —un fichaje no falla por la luz o la cámara— y queda marcado `metadata.kiosk.faceDetected: false`, que la revisión enseña primero; **se cancela sola a los 15 segundos** |
 | **Hecho** | check verde con la foto en miniatura, «Entrada registrada 08:02», 3 segundos | vuelve a Inicio |
 | **Error** | el texto del código (`checklog/out_of_schedule` → «Fuera de tu turno. Avisa al encargado») | vuelve a Inicio a los 5 segundos |
 
@@ -472,9 +474,9 @@ alguien la mire cuando toca. Tres piezas, las tres en la Fase 1:
    ([almacenamiento/README §3](../almacenamiento/README.md)); el fichaje sobrevive a la foto y
    conserva `photoPath` como rastro de que la hubo. Si hay una disputa abierta sobre ese
    fichaje (solicitud de corrección pendiente o rechazada), la foto se conserva hasta cerrarla.
-2. **La ráfaga.** Tres o más fichajes en 90 s en la misma tablet se marcan y avisan al
-   supervisor (§3). No se rechaza ninguno: la fila de las 8:00 es legítima y la diferencia está
-   en las fotos. El aviso dice «7 fichajes seguidos en el quiosco de Edificio Colonial, 08:02.
+2. **La ráfaga.** Tres o más fichajes seguidos en la misma tablet, cada uno a menos de 30 s
+   del anterior, se marcan y avisan al supervisor (§3). No se rechaza ninguno ni se hace esperar
+   a nadie: la diferencia está en las fotos. El aviso dice «7 fichajes seguidos en el quiosco de Edificio Colonial, 08:02.
    Revisa las fotos» y abre la revisión con esos siete en pantalla.
 3. **La revisión en el panel.** Sucursal → Quiosco → **Revisar**: las fotos del día en
    cuadrícula, con nombre, hora y tipo, las ráfagas agrupadas arriba. **Dos toques:** tocar una
