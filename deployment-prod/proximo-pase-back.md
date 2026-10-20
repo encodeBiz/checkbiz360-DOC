@@ -460,6 +460,50 @@ de Playwright no la cubre, porque lee con Admin SDK y se salta las reglas.
 
 ---
 
+## 11-13. Guion del pase: almacenamiento, punto de fichaje y avisos por correo
+
+Las tres secciones se pisan: este es el orden. Cada paso remite a su fila, que tiene el comando.
+Todo con `--project encodebiz-services` explícito y autorización de Jose paso a paso.
+
+**Antes del día:**
+- A. QA completa contra `staging` fuera de 22:00-00:00 UTC (la del 19-oct: 466 bien, sin
+  regresiones; repetirla con lo del 20-oct).
+- B. Front: empujar `feat/quiosco` (commits locales del 20-oct, encima de una fusión de
+  `develop` de Jose), fusionarla en `develop` y probar el panel en local contra `staging`.
+- C. App: `feat/quiosco` de `checkbiz360` a `develop` y versión lista para publicar (§12.8).
+- D. Stripe de prod: crear los dos precios —«Almacenamiento» 0,25 € pago único (§11.6) y
+  «Quiosco» por tramos (§12.5)— y apuntar sus `price_…`.
+
+**El día, en este orden:**
+1. **`KIOSK_SECRET`** propio en el `.env` de `checkinbiz` (§12.1). Antes que nada del quiosco.
+2. **API a prod**: PR desde la rama principal (nunca desde `develop`) con `checkinbiz`, `billing`,
+   `tasks` y `documents` (§11.2, §11.11, §12.2, §13.1).
+3. **Reglas de Firestore** (§12.3 y §13.2, un solo despliegue): cierran el quiosco, los avisos y
+   **el contador de almacenamiento**. Tienen que ir antes que el paso 5.
+4. **Índice de grupo** `calendar.emailNotifications` (§13.3).
+5. **Triggers de almacenamiento** (§11.1) y, después, **carga inicial** en simulación y real
+   (§11.3, §11.4). Mirar qué empresas pasan de 2 GB (§11.5: avisarlas antes de cobrar).
+6. **Ciclo de vida** del quiosco en el bucket del sistema (§12.4), leyendo antes el actual.
+7. **Funciones de avisos** `workEmailDigests` y `weeklyScheduleEmails` (§13.4); SMTP en las
+   functions (§11.12).
+8. **Plantillas de correo** (§11.10 / §13.5b): un solo `email-templates --apply`.
+9. **Alta del servicio del quiosco** con su precio (§12.5).
+10. **Encender el cobro de almacenamiento**: `STRIPE_STORAGE_GB_PRICE` (§11.7) y
+    `invoice.created` en el webhook (§11.8).
+11. **Vercel** (producción): `NEXT_BACKEND_URI_BILLING_STORAGE` (§11.9) y
+    `NEXT_BACKEND_URI_CHECKINBIZ_KIOSKS_HANDLER` (§12.6); después, el panel a `main` (§12.7).
+12. **App** publicada (§12.8).
+13. **Pruebas en prod** (§12.9): activar un punto de fichaje, fichar con QR y código, revisar,
+    desactivar; marcar la casilla de avisos a una persona nuestra y comprobar el correo.
+
+**Índices:** comprobados el 20-oct. La revisión del quiosco usa `checklogs (branchId, timestamp)`,
+que ya existe en prod; las demás consultas nuevas tiran de índices de un solo campo. Solo
+falta el de grupo del paso 4.
+
+**Sin hacer (código), no bloquea el pase:** correo de alta propio del quiosco; aviso push de
+ráfaga al encargado; tareas de varios días en el semanal; comprobar que la app no se rompe con
+el tipo de aviso `task_removed` (§13.7).
+
 ## 11. Almacenamiento por empresa: contador y exceso de 2 GB — PENDIENTE (en `staging` el 2026-10-19)
 
 Diseño: [ingenieria/almacenamiento](../ingenieria/almacenamiento/README.md), ADR-002. Rama
