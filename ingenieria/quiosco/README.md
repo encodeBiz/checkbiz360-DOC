@@ -73,7 +73,7 @@ Por qué así:
 | Serlimar | 500 | 950 | 424 € | +22 % |
 
 En Stripe: precio mensual EUR por cantidad, tramos graduados (hasta 50: 19 € fijos; desde la
-51: 0,90 € por unidad). La cantidad la cuenta `billing`: los quioscos de la empresa. Se
+51: 0,90 € por unidad). La cantidad la cuenta `billing`: los quioscos **activos** de la empresa (activados desde el panel, con credenciales; 2026-10-20). Se
 descartó la alternativa de 29 € hasta 10 sucursales y 0,90 € desde la 11, que cobraba más al
 mediano.
 

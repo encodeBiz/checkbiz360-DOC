@@ -188,6 +188,13 @@ cuando se pide (tarjetas, «Mi QR») y se comprueba al leerlo. Regenerar = subir
   código de un administrador.
 - **Rutas de tablet** bajo `/kiosk/*` (un router con el `kioskToken`); las de panel bajo `/kiosks/*`.
 - **Foto en JSON base64**, no multipart: ~80 KB por fichaje, dentro del límite del servicio.
+- **Activar y desactivar (Jose, 2026-10-20).** El servidor crea un quiosco por sucursal con
+  dirección, pero **solo cuenta y se cobra el activo**, y activo = con credenciales: una empresa
+  con 138 sucursales que lo usa en 10 paga 10. «Activar» (`POST /:branchId/credentials`) crea
+  contraseña y PIN y pide confirmación con lo que cuesta; «Desactivar»
+  (`DELETE /:branchId/credentials`) borra **solo** la contraseña y el PIN —el usuario de la
+  tablet y su correo se quedan, para reactivar igual—, saca al dispositivo y deja de contar.
+  Fichajes y fotos no se tocan. `billing` cuenta `kiosks where credentialsIssued == true`.
 - **Credenciales (Jose, 2026-10-20).** Son **de la persona, no de la sucursal**: el QR y el
   código de 6 dígitos son los mismos en todas sus sucursales y van juntos en una tarjeta. Y
   **todo se puede ver siempre** —es operativa; lo que retrasa el fichaje es un problema—, oculto
