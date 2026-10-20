@@ -485,7 +485,7 @@ medias no lo cuenta nadie):
 | 11.7 | Encender el cobro | `STRIPE_STORAGE_GB_PRICE=<price_…>` en el `.env` de prod de `billing` y reiniciarlo. Sin la variable no se cobra nada |
 | 11.8 | `invoice.created` en el webhook de Stripe de prod | si no está activado, la línea no se añade nunca |
 | 11.9 | Panel: bloque de almacenamiento en Entidad → Suscripciones | `NEXT_BACKEND_URI_BILLING_STORAGE=https://api.checkbiz360.com/api/v1/billing/storage` en Vercel (producción) y la rama `feat/almacenamiento-panel` del front (7fae4d62 en develop). Sin la variable el bloque da error al abrirse |
-| 11.10 | Plantilla del aviso del 90 % | `docker compose … exec -T billing node services/billing/dist/scripts/email-templates.js --apply` (sube `STORAGE_ALERT`; sin ella sale el respaldo del código) |
+| 11.10 | Plantilla del aviso del 90 % (ver también 13.5b, mismo script) | `docker compose … exec -T billing node services/billing/dist/scripts/email-templates.js --apply` (sube `STORAGE_ALERT`; sin ella sale el respaldo del código) |
 | 11.11 | `documents` en prod | con el pase de la API: es quien bloquea la subida con la ampliación desmarcada |
 | 11.12 | SMTP en las functions | los triggers mandan el correo del aviso: comprobar que `SMTP_USER`/`SMTP_PASS` están en el entorno de las functions de prod (ya los usa `onCreateEmployee`) |
 | 11.13 | La cuota del inicio enseña el exceso | va con `billing` (11.2) y el panel de 12.7; nada aparte |
@@ -560,6 +560,7 @@ su lugar; el semanal forzado salió (1 enviado) y al repetirlo no se reenvió (h
 | 13.3 | Índice de grupo de colecciones `calendar.emailNotifications` | `gcloud` no deja elegir el alcance: PATCH a la API de Firestore `collectionGroups/calendar/fields/emailNotifications?updateMask=indexConfig` con los tres índices por defecto (`COLLECTION` asc, desc, contains) **y** `COLLECTION_GROUP` asc (así se hizo en dev el 20-oct). Sin él el semanal falla |
 | 13.4 | Funciones `workEmailDigests` y `weeklyScheduleEmails` | `node scripts/desplegar.mjs --project encodebiz-services --solo workEmailDigests,weeklyScheduleEmails` |
 | 13.5 | SMTP en las functions de prod | ya lo exige §11.12 |
+| 13.5b | Plantillas en Firestore | `docker compose … exec -T billing node services/billing/dist/scripts/email-templates.js` (simula) y luego `--apply`: sube `TASKS_DIGEST`, `WEEKLY_SCHEDULE` y `STORAGE_ALERT` en es/en a `emails_template`, con la maqueta de la marca; las del inventario deben salir «al día». En dev, hecho el 20-oct (6 nuevas, 4 al día) |
 | 13.6 | Panel: la casilla | va en la rama `feat/quiosco` del front (§12.7) |
 | 13.7 | App: tipo `task_removed` | la app enseña los avisos por su `type`; comprobar que uno desconocido no rompe la lista, o añadir su texto |
 
