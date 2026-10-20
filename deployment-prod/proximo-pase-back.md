@@ -35,6 +35,7 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 | `feat/reglas-paso-2a` | Reglas: cada sesión ve sólo las entidades de las que es miembro | función `onEmpMember` (antes que las reglas), reconciliación en `checkinbiz`, reglas | §10 |
 | `feat/almacenamiento-cobro` (API) y `feat/almacenamiento-panel` (front) | Almacenamiento por empresa: trigger que cuenta, exceso de 2 GB a 0,25 €, interruptor, bloqueo del documental, aviso al 90 % | triggers, carga inicial, Price, variable, webhook, Vercel | §11 |
 | `feat/quiosco` y sus `fix/quiosco-*`, `feat/quiosco-*`, `feat/cuota-quiosco-y-almacenamiento` | Punto de fichaje (quiosco) | `KIOSK_SECRET`, reglas, ciclo de vida, Price y alta, Vercel, panel y app | §12 |
+| `feat/avisos-por-correo` | Avisos de trabajo por correo con casilla por persona; `task_removed`; reglas que cierran almacenamiento | reglas, índice de grupo, 2 functions | §13 |
 | CRM (`feat/sales-crm*`, `feat/crm-*`, `feat/backoffice-crm`) | CRM comercial | **sin inventariar**: cruzar con #147 | — |
 | `feat/mi-material-aviso-e-historial`, `fix/avisos-*`, `fix/backfill-account-kind`, `fix/backoffice-sucursales-direccion` | Avisos, idioma, material, backoffice | **sin inventariar** | — |
 
@@ -538,6 +539,29 @@ Por orden:
 
 **Sin hacer (código):** correo de alta propio del quiosco (hoy llega el genérico de
 CheckBiz); aviso push de ráfaga al encargado (hoy solo se marca y se ve en la revisión).
+
+## 13. Avisos de trabajo por correo — en `staging` desde el 2026-10-20; PENDIENTE para prod
+
+Diseño: [ingenieria/avisos-por-correo](../ingenieria/avisos-por-correo/README.md). Rama
+`feat/avisos-por-correo` (API). Para quien no usa el móvil: casilla «Enviar notificaciones por
+email» en Horarios y festivos; tareas asignadas, cambiadas o retiradas agrupadas (15 min, o al
+momento si tocan las próximas 24 h) y el horario del domingo a las 18:00. Nada del fichaje.
+Añade además `task_removed` (push a todos al borrar, cancelar o desasignar) y **cierra en las
+reglas `storage_objects` y `entities/{e}/storage_shards`, que estaban abiertas** (un miembro
+podía rebajarse el contador de almacenamiento; ver §11).
+
+Probado en dev el 20-oct: la casilla se guarda; una tarea para mañana se apuntó como urgente con
+su lugar; el semanal forzado salió (1 enviado) y al repetirlo no se reenvió (huella igual).
+
+| # | Qué | Cómo |
+|---|---|---|
+| 13.1 | `tasks` y `checkinbiz` en prod | con el pase de la API |
+| 13.2 | **Reglas de Firestore** | el fichero de `develop` cierra `email_digest`, `schedule_emails`, `storage_objects` y `storage_shards`. **Con o antes que §11**: sin esto, el contador de almacenamiento queda escribible por los miembros. Emulador antes (`qa/reglas`, 0 fallos el 20-oct) |
+| 13.3 | Índice de grupo de colecciones `calendar.emailNotifications` | `gcloud` no deja elegir el alcance: PATCH a la API de Firestore `collectionGroups/calendar/fields/emailNotifications?updateMask=indexConfig` con los tres índices por defecto (`COLLECTION` asc, desc, contains) **y** `COLLECTION_GROUP` asc (así se hizo en dev el 20-oct). Sin él el semanal falla |
+| 13.4 | Funciones `workEmailDigests` y `weeklyScheduleEmails` | `node scripts/desplegar.mjs --project encodebiz-services --solo workEmailDigests,weeklyScheduleEmails` |
+| 13.5 | SMTP en las functions de prod | ya lo exige §11.12 |
+| 13.6 | Panel: la casilla | va en la rama `feat/quiosco` del front (§12.7) |
+| 13.7 | App: tipo `task_removed` | la app enseña los avisos por su `type`; comprobar que uno desconocido no rompe la lista, o añadir su texto |
 
 ## Registro del día del pase — 2026-10-17
 
