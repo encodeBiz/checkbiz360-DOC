@@ -71,6 +71,11 @@ identificar a una persona física, RGPD art. 4.14 y art. 9) y esta decisión sig
 comprueba que hay una cara, nunca de quién es.** Sin cara no se impide fichar: se marca para
 la revisión, y el aviso de la pantalla dice que sin cara el fichaje se puede invalidar.
 
+Va **sólo en Android** (donde va el quiosco), en el código nativo de la app (`MainActivity`,
+ML Kit vía Google Play Services, que baja el modelo al instalar). El plugin de Flutter de ML
+Kit exige CocoaPods y el iOS de la app está en Swift Package Manager; en iOS la app responde
+«no se pudo comprobar» (`faceDetected: null`) y el fichaje sale sin marca.
+
 ## Consecuencias
 
 - Sin biometría, la prueba de que fichó quien dice es **una foto en cada fichaje, mirada por
