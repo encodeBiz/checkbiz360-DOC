@@ -474,6 +474,11 @@ Todo con `--project encodebiz-services` explícito y autorización de Jose paso 
 - D. Stripe de prod: crear los dos precios —«Almacenamiento» 0,25 € pago único (§11.6) y
   «Quiosco» por tramos (§12.5)— y apuntar sus `price_…`.
 
+**Rama y PR (20-oct):** `release/pase-2026-10-20` (`2b8e355`), creada con
+`merge-tree --merge-base=555ad20 origin/main bfc1417`: código idéntico a `staging`. **PR #199**
+abierto contra `main`, sin fusionar. QA de `staging` a las 19:43 UTC: 466 bien, 2 rojos de
+informes que pasan sueltos (INF-01-07, INF-05-01), y los conocidos HAL-38.
+
 **El día, en este orden:**
 1. **`KIOSK_SECRET`** propio en el `.env` de `checkinbiz` (§12.1). Antes que nada del quiosco.
 2. **API a prod**: PR desde la rama principal (nunca desde `develop`) con `checkinbiz`, `billing`,
