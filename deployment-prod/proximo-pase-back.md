@@ -501,6 +501,28 @@ informes que pasan sueltos (INF-01-07, INF-05-01), y los conocidos HAL-38.
 13. **Pruebas en prod** (§12.9): activar un punto de fichaje, fichar con QR y código, revisar,
     desactivar; marcar la casilla de avisos a una persona nuestra y comprobar el correo.
 
+**Registro del 20-oct (Claude, con orden de Jose), noche UTC:**
+- D. Stripe real: «Quiosco» `prod_VThfKSWkc0lK0j` / `price_1USkGMJdldmbRy89HqsEdePP` (mensual,
+  tramos, IVA incluido como el inventario); «Almacenamiento» `prod_VThfXJ0tXG8ZWh` /
+  `price_1USkGNJdldmbRy898X36fLx5` (0,25 €, pago único).
+- 2. PR #199 fusionado (`5c0dcea`), Production CI/CD 39494769587 en verde; rutas nuevas
+  respondiendo; `checkinbiz` sano.
+- 3. Reglas publicadas desde `origin/main` (hash `4c1001e…`, desde una carpeta aparte: el
+  checkout estaba en otra rama de otra sesión).
+- 4. Índice de grupo `calendar.emailNotifications` creado y READY (con los tres por defecto).
+- 5. Triggers `storageUsageFinalized`/`Deleted` en `us-central1` sobre el bucket del sistema,
+  con reintentos. Carga inicial: 178 ficheros de 14 empresas, la mayor 0,055 GB (nadie cerca de
+  2 GB: §11.5 no aplica); aplicada y verificada («el contador ya cuadra»).
+- 6. Seis reglas de retención `kiosk/r…/` en el bucket de prod (antes estaba vacío).
+- 7. `workEmailDigests` y `weeklyScheduleEmails` desplegadas; SMTP presente en las functions.
+- 8. Plantillas: 6 nuevas, 4 del inventario al día.
+- 9. `service/kiosk` y su plan `standard` con el precio real.
+- 10. `STRIPE_STORAGE_GB_PRICE` añadido al `.env.production` (copia previa
+  `.env.production.bak-20261020-storage`); `billing` lo carga al recrearse. **Falta
+  `invoice.created` en el webhook `we_1UC0XbJdldmbRy898C0g0ah7`**: encenderlo activa también la
+  corrección de cantidades del borrador (HAL-19) para todas las facturas; decisión de Jose.
+- Pendiente de Jose: Vercel (11), panel `feat/quiosco` a `main` (B y 11), app (C y 12), pruebas (13).
+
 **Índices:** comprobados el 20-oct. La revisión del quiosco usa `checklogs (branchId, timestamp)`,
 que ya existe en prod; las demás consultas nuevas tiran de índices de un solo campo. Solo
 falta el de grupo del paso 4.
