@@ -521,7 +521,12 @@ informes que pasan sueltos (INF-01-07, INF-05-01), y los conocidos HAL-38.
   `.env.production.bak-20261020-storage`); `billing` lo carga al recrearse. **Falta
   `invoice.created` en el webhook `we_1UC0XbJdldmbRy898C0g0ah7`**: encenderlo activa también la
   corrección de cantidades del borrador (HAL-19) para todas las facturas; decisión de Jose.
-- Pendiente de Jose: Vercel (11), panel `feat/quiosco` a `main` (B y 11), app (C y 12), pruebas (13).
+- 11 (parte): **variables de Vercel en producción creadas** (`vercel env add`, proyecto
+  `encodebiz-front-saas`): `NEXT_BACKEND_URI_BILLING_STORAGE` y
+  `NEXT_BACKEND_URI_CHECKINBIZ_KIOSKS_HANDLER`, con la base `https://api.checkbiz360.com/api/v1/…`
+  (misma forma que en `.env.development`). Toman efecto en el próximo despliegue del panel.
+- Pendiente de Jose: panel `feat/quiosco` a `main` (B y 11), app (C y 12), pruebas (13),
+  `invoice.created` (10).
 
 **Índices:** comprobados el 20-oct. La revisión del quiosco usa `checklogs (branchId, timestamp)`,
 que ya existe en prod; las demás consultas nuevas tiran de índices de un solo campo. Solo
