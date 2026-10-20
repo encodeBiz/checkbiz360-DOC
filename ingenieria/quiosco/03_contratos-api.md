@@ -189,8 +189,10 @@ cuando se pide (tarjetas, «Mi QR») y se comprueba al leerlo. Regenerar = subir
 - **Rutas de tablet** bajo `/kiosk/*` (un router con el `kioskToken`); las de panel bajo `/kiosks/*`.
 - **Foto en JSON base64**, no multipart: ~80 KB por fichaje, dentro del límite del servicio.
 - **Pendiente en esta rama:** aviso push de ráfaga y de dispositivo sustituido (quedan en el
-  quiosco y en la revisión), crear el quiosco al dar de alta una sucursal nueva (hoy: «Activar»
-  otra vez, que es idempotente), Cloud Tasks. Las fotos van al bucket del sistema (decisión del 2026-10-19);
+  quiosco y en la revisión), Cloud Tasks. Crear el quiosco de una sucursal nueva **no** está
+  pendiente (revisado el 2026-10-20): `listKiosks` → `ensureKiosks` lo crea al abrir la página
+  del quiosco, y la tablet no puede entrar hasta que en esa misma página se generan sus
+  credenciales; el cobro cuenta quioscos, que nacen justo cuando empiezan a poder usarse. Las fotos van al bucket del sistema (decisión del 2026-10-19);
   `KIOSK_MEDIA_BUCKET` queda para el día que haga falta otro.
 
 ---
