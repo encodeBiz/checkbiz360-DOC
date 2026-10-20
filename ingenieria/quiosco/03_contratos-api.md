@@ -188,6 +188,20 @@ cuando se pide (tarjetas, «Mi QR») y se comprueba al leerlo. Regenerar = subir
   código de un administrador.
 - **Rutas de tablet** bajo `/kiosk/*` (un router con el `kioskToken`); las de panel bajo `/kiosks/*`.
 - **Foto en JSON base64**, no multipart: ~80 KB por fichaje, dentro del límite del servicio.
+- **Credenciales (Jose, 2026-10-20).** Son **de la persona, no de la sucursal**: el QR y el
+  código de 6 dígitos son los mismos en todas sus sucursales y van juntos en una tarjeta. Y
+  **todo se puede ver siempre** —es operativa; lo que retrasa el fichaje es un problema—, oculto
+  hasta que se pide, con «ver» y «copiar», **registrando quién**:
+  - el código se guarda como `lookup` (HMAC, para buscarlo) y `sealed` (AES-256-GCM atado a
+    empresa y persona); la contraseña y el PIN de la tablet, en `kiosks/{b}.credentialsSealed`;
+  - `POST /kiosks/employees/:id/code/reveal` y `POST /kiosks/:branchId/credentials/reveal`, con
+    `{entityId, purpose: "view" | "copy"}`; `GET /:branchId/cards?codes=0` lista sin revelar;
+  - cada ver, copiar, imprimir, listar o regenerar va a `entities/{e}/kiosk_audit`
+    (`{action, actorUid, branchId?, employeeId?, count?, at}`), cerrada al cliente;
+  - regenerar un código es persona a persona y vale para todas sus sucursales; ya no hay
+    «regenerar todos» por sucursal.
+  - Fichar en una sucursal exige estar asignado a ella; si no, la tablet dice «No tienes
+    asignado este centro. Avisa al encargado.» (`kiosk/employee_not_in_branch`).
 - **Pendiente en esta rama:** aviso push de ráfaga y de dispositivo sustituido (quedan en el
   quiosco y en la revisión), Cloud Tasks. Crear el quiosco de una sucursal nueva **no** está
   pendiente (revisado el 2026-10-20): `listKiosks` → `ensureKiosks` lo crea al abrir la página
