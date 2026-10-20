@@ -33,6 +33,8 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 | `feat/calendario-tareas-resumen` | Calendario semanal de tareas resumido en Postgres (ADR-008) | migración 040, un índice | §8 |
 | `fix/reglas-collection-group` | Consultas de grupo | **ya en prod desde el 14-oct**; falta que `main` tenga el fichero | §5 |
 | `feat/reglas-paso-2a` | Reglas: cada sesión ve sólo las entidades de las que es miembro | función `onEmpMember` (antes que las reglas), reconciliación en `checkinbiz`, reglas | §10 |
+| `feat/almacenamiento-cobro` (API) y `feat/almacenamiento-panel` (front) | Almacenamiento por empresa: trigger que cuenta, exceso de 2 GB a 0,25 €, interruptor, bloqueo del documental, aviso al 90 % | triggers, carga inicial, Price, variable, webhook, Vercel | §11 |
+| `feat/quiosco` y sus `fix/quiosco-*`, `feat/quiosco-*`, `feat/cuota-quiosco-y-almacenamiento` | Punto de fichaje (quiosco) | `KIOSK_SECRET`, reglas, ciclo de vida, Price y alta, Vercel, panel y app | §12 |
 | CRM (`feat/sales-crm*`, `feat/crm-*`, `feat/backoffice-crm`) | CRM comercial | **sin inventariar**: cruzar con #147 | — |
 | `feat/mi-material-aviso-e-historial`, `fix/avisos-*`, `fix/backfill-account-kind`, `fix/backoffice-sucursales-direccion` | Avisos, idioma, material, backoffice | **sin inventariar** | — |
 
@@ -485,23 +487,57 @@ medias no lo cuenta nadie):
 | 11.10 | Plantilla del aviso del 90 % | `docker compose … exec -T billing node services/billing/dist/scripts/email-templates.js --apply` (sube `STORAGE_ALERT`; sin ella sale el respaldo del código) |
 | 11.11 | `documents` en prod | con el pase de la API: es quien bloquea la subida con la ampliación desmarcada |
 | 11.12 | SMTP en las functions | los triggers mandan el correo del aviso: comprobar que `SMTP_USER`/`SMTP_PASS` están en el entorno de las functions de prod (ya los usa `onCreateEmployee`) |
+| 11.13 | La cuota del inicio enseña el exceso | va con `billing` (11.2) y el panel de 12.7; nada aparte |
 
 Pendiente de decidir: las empresas sin suscripción de pago se cuentan y no se cobran.
 
-## 12. Quiosco — servidor y reglas en `staging` desde el 2026-10-19; PENDIENTE para prod
+## 12. Quiosco (punto de fichaje) — en `staging` desde el 2026-10-19; PENDIENTE para prod
 
-`feat/quiosco` integrada en `develop` y desplegada a mano en el VPS (`checkinbiz` y `billing`,
-`[skip ci]`) el 19-oct; reglas de Firestore con los cierres del quiosco publicadas en
-`dev-encodebiz` (emulador: 0 fallos). Las fotos van al bucket del sistema también en prod (decisión de Jose del 19-oct, sin bucket
-europeo); en desarrollo, `dev-encodebiz.firebasestorage.app`, con las seis reglas de retención
-`kiosk/r{días}/` puestas el 19-oct. Diseño: [ingenieria/quiosco](../ingenieria/quiosco/README.md).
+Diseño: [ingenieria/quiosco](../ingenieria/quiosco/README.md) y
+[03_contratos-api](../ingenieria/quiosco/03_contratos-api.md). Las fotos van al bucket del
+sistema también en prod (decisión de Jose del 19-oct, sin bucket europeo).
+
+**Qué hay en `staging`** (API en `develop`, desplegada a mano con `[skip ci]`):
+- 19-oct: el módulo entero (`feat/quiosco`): sesión de tablet con radio y dispositivo único,
+  identificar por QR o código, fichaje con foto, revisión, reglas, add-on de pago.
+- 19-oct: `fix/quiosco-alta-configurada` — contratarlo ya no pide logo ni slug.
+- 20-oct: `fix/quiosco-credencial-por-persona` — QR y código **por persona** (los mismos en
+  todas sus sucursales); códigos, contraseña y PIN guardados cifrados y **siempre visibles**,
+  ocultos con ver y copiar; todo acceso queda en `entities/{e}/kiosk_audit`.
+- 20-oct: `feat/quiosco-rafaga-30s` — ráfaga por cadena (menos de 30 s entre fichajes) sin
+  esperas; `faceDetected` en el fichaje y «Sin cara» primero en la revisión.
+- 20-oct: `feat/quiosco-activar-por-sucursal` — activar y desactivar por sucursal; **solo se
+  cobran los activos** (con credenciales).
+- 20-oct: `feat/cuota-quiosco-y-almacenamiento` — la cuota estimada del inicio incluye el
+  punto de fichaje y el exceso de almacenamiento.
+
+Probado en dev el 20-oct con una tablet real (Samsung SM-X210): sesión, identificación por QR,
+fichaje válido con foto, **cara detectada en la tablet**, foto de 48 KB en `kiosk/r30/` y
+contada por el trigger de almacenamiento. QA completa el 19-oct sin regresiones (466 bien).
+
+**Panel y app, sin integrar todavía:**
+- Panel: rama `feat/quiosco` del front (página del quiosco, tarjetas, códigos, revisión,
+  activar/desactivar, ver/copiar credenciales, cuota del inicio). A 20-oct tiene commits
+  locales **sin empujar** encima de una fusión de `develop` hecha por Jose.
+- App: rama `feat/quiosco` de `checkbiz360`, empujada (pantalla Foto con condiciones y
+  detección de cara nativa en Android; iOS sin cambios, sigue en Swift Package Manager y 15.0).
+
+Por orden:
 
 | # | Qué | Cómo |
 |---|---|---|
-| 12.1 | Las seis reglas de retención del quiosco en el bucket del sistema de prod | `gs://encodebiz-services.firebasestorage.app`, `kiosk/r15/` … `kiosk/r1460/` con su edad. **Antes, leer su ciclo de vida actual**: `--lifecycle-file` reemplaza el entero (el 18-oct estaba vacío) |
-| 12.2 | Reglas de Firestore | el fichero de `develop` lleva los cierres del quiosco además del paso 2a |
-| 12.3 | `KIOSK_SECRET` propio en prod (opcional) | sin él usa `JWT_2FA_SECRET` |
-| 12.4 | Precio del quiosco en Stripe de prod y alta del servicio | producto «Quiosco», mensual EUR, `licensed`, tramos graduados (hasta 50: `flat_amount` 1900, `unit_amount` 0; desde 51: `unit_amount` 90). Después `node services/checkinbiz/dist/scripts/alta-servicio-quiosco.js --stripe-price price_… --apply`. Sin esto el panel dice «El módulo todavía no tiene un plan contratable». En dev, hecho el 19-oct: `prod_VTJYJGvvD6VDsI` / `price_1USMv2R97dgHV4NJU5rRJEB3` |
+| 12.1 | **`KIOSK_SECRET` propio en prod, ANTES de activar ningún quiosco** | en el `.env` de prod de `checkinbiz`. Firma los QR **y cifra** códigos, contraseñas y PIN guardados: cambiarlo después deja ilegibles todas las tarjetas y credenciales. Sin él usa `JWT_2FA_SECRET`, que se rota por otros motivos |
+| 12.2 | `checkinbiz` y `billing` en prod | con el pase de la API |
+| 12.3 | Reglas de Firestore | el fichero de `develop` cierra al cliente `kiosks`, `kiosk_sessions` y `kiosk_audit` además del paso 2a. `firebase deploy --only firestore:rules --project encodebiz-services`; antes, el emulador (`qa/reglas`) |
+| 12.4 | Las seis reglas de retención del quiosco en el bucket del sistema de prod | `gs://encodebiz-services.firebasestorage.app`, `kiosk/r15/` … `kiosk/r1460/` con su edad. **Antes, leer su ciclo de vida actual**: `--lifecycle-file` reemplaza el entero (el 18-oct estaba vacío). En dev, puestas el 19-oct |
+| 12.5 | Precio del quiosco en Stripe de prod y alta del servicio | producto «Quiosco», mensual EUR, `licensed`, tramos graduados (hasta 50: `flat_amount` 1900, `unit_amount` 0; desde 51: `unit_amount` 90). Después `node services/checkinbiz/dist/scripts/alta-servicio-quiosco.js --stripe-price price_… --apply`. Sin esto el panel dice «El módulo todavía no tiene un plan contratable». En dev, hecho el 19-oct: `prod_VTJYJGvvD6VDsI` / `price_1USMv2R97dgHV4NJU5rRJEB3` |
+| 12.6 | Variable del proxy del quiosco en Vercel (producción) | `NEXT_BACKEND_URI_CHECKINBIZ_KIOSKS_HANDLER=https://api.checkbiz360.com/api/v1/checkinbiz/kiosks`. Sin ella el panel del quiosco no carga |
+| 12.7 | Panel: `feat/quiosco` del front a `main` | antes, empujar la rama (commits locales) y fusionar `develop`. Lleva la allowlist del proxy con `…/credentials/reveal` y `…/code/reveal` (sin ellas, «no tienes permisos» al ver o copiar) |
+| 12.8 | App: versión con la pantalla Foto | `checkbiz360` `feat/quiosco` → `develop` → publicación Android. El modelo de caras lo baja Play Services al instalar (`com.google.mlkit.vision.DEPENDENCIES=face`); sin él, el fichaje sale sin marca, nunca se bloquea |
+| 12.9 | Prueba en prod con una sucursal | activar, entrar en la tablet, fichar con QR y con código, revisar la foto, desactivar |
+
+**Sin hacer (código):** correo de alta propio del quiosco (hoy llega el genérico de
+CheckBiz); aviso push de ráfaga al encargado (hoy solo se marca y se ve en la revisión).
 
 ## Registro del día del pase — 2026-10-17
 
