@@ -529,6 +529,13 @@ informes que pasan sueltos (INF-01-07, INF-05-01), y los conocidos HAL-38.
   staging `8918ea1` `[skip ci]`, solo `checkinbiz` reconstruido). Al contratar, el primer listado
   enseñaba todos los puntos de fichaje como activos. **El fallo está en prod** (va en el #199):
   tiene que subir antes de que nadie contrate el punto de fichaje (hotfix desde `main`).
+- 21-oct, **hotfixes a prod sin CI** (PR con `[skip ci]`, `git pull` en el servidor y solo el
+  contenedor tocado): #202 lista de activos (este sí lanzó el CI por error), #203 «20 activos
+  incluidos» (`billing`), #204 correo de alta y baja propio del punto de fichaje (`billing`,
+  plantillas `SUBSCRIBE_KIOSK`/`CANCELLED_KIOSK` subidas). Los tres también en `staging`.
+- 21-oct, **«Mi semana» en el quiosco** (`b6b0895`, otra sesión) **en `staging`, PENDIENTE en
+  prod**: `checkinbiz` (`POST /kiosk/schedule`) y reglas (cierran `kiosk_views`; emulador 0
+  fallos, publicadas en dev). Para prod: hotfix de `checkinbiz` sin CI y las reglas.
 - Pendiente de Jose: panel `feat/quiosco` a `main` (B y 11), app (C y 12), pruebas (13),
   `invoice.created` (10).
 
