@@ -525,6 +525,10 @@ informes que pasan sueltos (INF-01-07, INF-05-01), y los conocidos HAL-38.
   `encodebiz-front-saas`): `NEXT_BACKEND_URI_BILLING_STORAGE` y
   `NEXT_BACKEND_URI_CHECKINBIZ_KIOSKS_HANDLER`, con la base `https://api.checkbiz360.com/api/v1/…`
   (misma forma que en `.env.development`). Toman efecto en el próximo despliegue del panel.
+- 21-oct: **`fix/quiosco-lista-activos` (`d3b3cf5`, de Jose) en `staging`** (develop `9a1e551`,
+  staging `8918ea1` `[skip ci]`, solo `checkinbiz` reconstruido). Al contratar, el primer listado
+  enseñaba todos los puntos de fichaje como activos. **El fallo está en prod** (va en el #199):
+  tiene que subir antes de que nadie contrate el punto de fichaje (hotfix desde `main`).
 - Pendiente de Jose: panel `feat/quiosco` a `main` (B y 11), app (C y 12), pruebas (13),
   `invoice.created` (10).
 
