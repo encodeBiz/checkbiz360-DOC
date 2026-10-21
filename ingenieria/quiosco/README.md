@@ -53,9 +53,12 @@ Stripe) es lo único que lo enciende. Sin ella, la entrada «Quiosco» del bloqu
 del panel enseña la puerta de alta; con ella, cada sucursal con dirección tiene su quiosco,
 creado solo. Al darse de baja, las tablets se cierran en su siguiente petición.
 
-**Precio (aprobado por Jose el 2026-10-19): 19 € al mes que cubren hasta 50 sucursales con
-quiosco, y 0,90 € al mes por cada sucursal desde la 51; 15 días de prueba.** El mismo esquema
-que el inventario (29 € hasta 50 empleados y 0,75 € desde el 51) con la sucursal como unidad.
+**Precio (Jose, 2026-10-21): 19 € al mes que cubren hasta 20 puntos de fichaje activos, y
+0,90 € al mes por cada uno desde el 21; 15 días de prueba.** El mismo esquema que el inventario
+(29 € hasta 50 empleados y 0,75 € desde el 51), con el punto de fichaje **activo** como unidad.
+El 2026-10-19 se aprobó con 50 incluidos; bajó a 20 porque se cobra lo que el cliente activa,
+no las sucursales que tiene, y con 50 casi nadie pasaba del tramo fijo: era una tarifa plana.
+Una pyme que activa pocos sigue pagando 19 €.
 Por qué así:
 
 | | Por sucursal y mes |
@@ -65,15 +68,16 @@ Por qué así:
 | Lo que ahorra al cliente: terminal de fichar (150 € básico, >1.500 € conectado, más cuota) | se compra una tablet de 120-180 € o se reutiliza un móvil |
 | Lo que corta: «uno ficha por todos» (1 h falsa a la semana a 15 €/h) | ~60 € |
 
-| Cliente | Sucursales | Empleados | Quiosco/mes | Sobre CheckBiz (2 €/empleado) |
+| Cliente | Puntos activos | Empleados | Quiosco/mes | Sobre CheckBiz (2 €/empleado) |
 |---|---|---|---|---|
 | Pequeño | 3 | 25 | 19 € | +38 % |
 | Mediano | 20 | 150 | 19 € | +6 % |
-| Grande | 50 | 400 | 19 € | +2 % |
-| Serlimar | 500 | 950 | 424 € | +22 % |
+| Grande | 50 | 400 | 46 € | +6 % |
+| Serlimar | 500 | 950 | 451 € | +24 % |
 
-En Stripe: precio mensual EUR por cantidad, tramos graduados (hasta 50: 19 € fijos; desde la
-51: 0,90 € por unidad). La cantidad la cuenta `billing`: los quioscos **activos** de la empresa (activados desde el panel, con credenciales; 2026-10-20). Se
+En Stripe: precio mensual EUR por cantidad, tramos graduados (hasta 20: 19 € fijos; desde el
+21: 0,90 € por unidad). Prod `price_1UT200JdldmbRy89jhWXHXRG`, dev `price_1UT210R97dgHV4NJ9oicEAGi`;
+los de 50 (`price_1USkGM…`, `price_1USMv2…`) están archivados. La cantidad la cuenta `billing`: los quioscos **activos** de la empresa (activados desde el panel, con credenciales; 2026-10-20). Se
 descartó la alternativa de 29 € hasta 10 sucursales y 0,90 € desde la 11, que cobraba más al
 mediano.
 
