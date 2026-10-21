@@ -533,9 +533,9 @@ informes que pasan sueltos (INF-01-07, INF-05-01), y los conocidos HAL-38.
   contenedor tocado): #202 lista de activos (este sí lanzó el CI por error), #203 «20 activos
   incluidos» (`billing`), #204 correo de alta y baja propio del punto de fichaje (`billing`,
   plantillas `SUBSCRIBE_KIOSK`/`CANCELLED_KIOSK` subidas). Los tres también en `staging`.
-- 21-oct, **«Mi semana» en el quiosco** (`b6b0895`, otra sesión) **en `staging`, PENDIENTE en
-  prod**: `checkinbiz` (`POST /kiosk/schedule`) y reglas (cierran `kiosk_views`; emulador 0
-  fallos, publicadas en dev). Para prod: hotfix de `checkinbiz` sin CI y las reglas.
+- 21-oct, **«Mi semana» en el quiosco** (`b6b0895`, otra sesión): en `staging` y **en prod**
+  con el #205 (`c684e9b`, `[skip ci]`): solo `checkinbiz` reconstruido; reglas con `kiosk_views`
+  publicadas desde `origin/main` (iguales a `staging`; emulador 0 fallos).
 - Pendiente de Jose: panel `feat/quiosco` a `main` (B y 11), app (C y 12), pruebas (13),
   `invoice.created` (10).
 
