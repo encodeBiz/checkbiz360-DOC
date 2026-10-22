@@ -359,6 +359,21 @@ Decidido por Jose al probar D12 en producción. Tres reglas:
 Con esto, «Calendario» sobra y se retira del selector. Diseño en
 [TDR-008](./tdr/TDR-008-el-cuadrante-son-los-turnos.md).
 
+### D14. Tres modos, y cada uno enseña y aplica solo lo suyo (2026-10-22, noche)
+
+Decidido por Jose al ver D13 en el panel: con la semana tipo y los turnos cargados dentro del
+mismo modo, la fuente del horario cambia semana a semana sin que nadie lo elija, y la pantalla
+mezcla las dos. Vuelven tres modos, y **el modo es la única fuente del horario**:
+
+- **Semana tipo** (`weekly`): solo la semana tipo. Los días cargados no cuentan.
+- **Por turnos** (`calendar`): solo los turnos cargados, semana a semana; **una semana sin cargar
+  libra**, avisada en rojo. Se hereda de la empresa y de la sucursal.
+- **Por tareas** (`tasks`): sus tareas; solo de cada persona.
+
+La ficha es solo de consulta y todo lo que cambia algo va en Editar; cada modo enseña solo lo
+suyo. Sustituye la regla de la semana de D13. Diseño en
+[TDR-009](./tdr/TDR-009-tres-modos-cada-uno-lo-suyo.md).
+
 ## Lo que cambia en la app
 
 Es Flutter, se publica a mano y es el peldaño más lento de la cadena. En el modo: los botones
@@ -412,6 +427,7 @@ Nada abierto del diseño. Cerradas al implementar:
 | — Tareas de varias personas | **Hueco encontrado el 22-oct** (TDR-006): arreglado y en producción desde el 22-oct (hotfix, PR #211) |
 | 6. «Calendario»: turnos por fecha (D12) | API en producción el 22-oct ([TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md)), migración 043 incluida; panel en `develop` y `staging`, PR 115 sin fusionar; conector con `cargar_turnos` en producción |
 | 7. El cuadrante son los turnos (D13) | Diseñado el 22-oct ([TDR-008](./tdr/TDR-008-el-cuadrante-son-los-turnos.md)), sin implementar. Sustituye partes de la fase 6 |
+| 8. Tres modos, cada uno lo suyo (D14) | Diseñado el 22-oct ([TDR-009](./tdr/TDR-009-tres-modos-cada-uno-lo-suyo.md)), sin implementar. Sustituye la regla de la semana de D13 |
 
 ## Documentos
 
@@ -427,6 +443,8 @@ Nada abierto del diseño. Cerradas al implementar:
   mueve la parte de cada una (pendiente).
 - [TDR-008](./tdr/TDR-008-el-cuadrante-son-los-turnos.md): el cuadrante son los turnos; la
   semana cargada manda sobre la semana tipo; cargar turnos no toca tareas.
+- [TDR-009](./tdr/TDR-009-tres-modos-cada-uno-lo-suyo.md): tres modos (Semana tipo, Por turnos,
+  Por tareas); el modo es la única fuente del horario; la ficha es de consulta.
 - [TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md): «Calendario», el tercer modo: turnos
   cargados por fecha con fichaje normal, heredable por sucursal; rutas `/calendar/days`, el
   importador y el panel.
