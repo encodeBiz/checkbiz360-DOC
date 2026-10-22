@@ -364,6 +364,7 @@ Nada abierto del diseño. Cerradas al implementar:
 | 3. Alarmas por tarea | En `develop` y `staging` (API, TDR-005), funciones en `dev-encodebiz`; QA 15/15 y alarmas generadas por el trigger real |
 | 4. Informe: jornada y huecos | En `develop` y `staging` (API, TDR-004) |
 | 5. Cuadrantes en el modo | Hecho por otra sesión con D10 y D11: `aplicar` no escribe horario a quien está en el modo, solo tareas; la plantilla de sucursal pasa por el mismo `aprobar → aplicar`; prueba en `services/merlin/test/plantilla.test.ts` |
+| — Tareas de varias personas | **Hueco encontrado el 22-oct** (TDR-006): el fichaje mueve la tarea entera y la primera persona arrastra a las demás. Diseñado, sin implementar |
 
 ## Documentos
 
@@ -375,6 +376,8 @@ Nada abierto del diseño. Cerradas al implementar:
 - [TDR-004](./tdr/TDR-004-jornada-y-huecos-en-el-informe.md): fase 4, la jornada y los huecos en
   el informe.
 - [TDR-005](./tdr/TDR-005-alarmas-por-tarea.md): fase 3, las alarmas pertenecen a la tarea.
+- [TDR-006](./tdr/TDR-006-tareas-de-varias-personas.md): tareas de varias personas; el fichaje
+  mueve la parte de cada una (pendiente).
 - Importación de cuadrantes: [cuadrantes/README.md](../cuadrantes/README.md), que escribe
   hoy la franja de la primera tarea a la última.
 - Pausas de tarea: [tasks-service/08_pausas.md](../tasks-service/08_pausas.md).
