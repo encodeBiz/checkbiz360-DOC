@@ -176,6 +176,20 @@ pendientes en la pestaña:
 | 1c | Contacto con las pestañas Incidencias y Solicitudes (aprobar/rechazar y contador) | panel | 1,5 días |
 | 2 | Saldo de días por persona (configurable por empresa), solicitud de deshacer una aprobada, medio día, el aviso por correo también a la persona con la casilla, y la aprobación desde la app para quien tenga asiento | — | después |
 
+## Siguiente paso: los días libres en el informe de asistencia (para el 2026-10-23)
+
+Jose, 2026-10-22: «la guinda del pastel: en el reporte de asistencia tiene que salir otra parte
+con estos días libres, o sea básicamente el resumen de disponibilidad que vemos en
+Disponibilidad, y si las ausencias son retribuidas o no». Pendiente de diseñar mañana:
+
+- En el informe de asistencia (`reports`, el que genera el PDF/XLSX por periodo), una sección
+  nueva con los días libres de cada persona en el periodo: la misma lectura que el tablero de
+  Disponibilidad (`ResolveAvailability`: festivos de empresa y sucursal, ausencias propias,
+  motivo) y, por ausencia, **retribuida / no retribuida / no consta** (`paid` del día libre,
+  ADR-004 de disponibilidad).
+- Las vacaciones aprobadas desde la app entran solas: son días libres de la persona con `paid`
+  decidido al aprobar.
+
 ## Fuera de alcance
 
 - Saldo de días de vacaciones (decisión 3).
