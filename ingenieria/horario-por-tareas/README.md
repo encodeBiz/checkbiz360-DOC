@@ -337,6 +337,28 @@ descartaron las subtareas: duplicarían el modelo de tareas para un problema de 
 Diseño completo en [TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md). La app no se toca:
 ficha normal y pinta la semana desde la plantilla, que D11 ya reescribe.
 
+> **Sustituido en parte por D13 el mismo 2026-10-22.** El modo «Calendario» se retira del
+> selector y la regla pasa a ser la de la semana completa, dentro de «Horario semanal».
+
+### D13. El cuadrante son los turnos, y la semana cargada manda (2026-10-22)
+
+Decidido por Jose al probar D12 en producción. Tres reglas:
+
+- **El cuadrante son los turnos y es la fuente de verdad del horario.** Las tareas van dentro
+  de los turnos y dependen de ellos, nunca al revés. Cargar un cuadrante, por el panel, el
+  Excel o el asistente, nunca crea, mueve, cancela ni borra una tarea. Crear tareas en bloque
+  es otra acción.
+- **La semana completa.** Si la semana de una persona tiene al menos un día cargado, manda la
+  semana cargada entera y los días que no vengan libran. Si no tiene ninguno, manda la semana
+  tipo. En un día cargado no se aplica el descanso fijo: el descanso es el hueco entre turnos.
+- **Cargar turnos a quien está en horario por tareas** cambia su fuente de verdad a los
+  turnos: pasa a horario semanal, sus tareas se quedan dentro y ya no se inician al fichar.
+  Lo decide quien carga, y la vista previa lo dice antes del sí, con las tareas que caen fuera
+  de los turnos.
+
+Con esto, «Calendario» sobra y se retira del selector. Diseño en
+[TDR-008](./tdr/TDR-008-el-cuadrante-son-los-turnos.md).
+
 ## Lo que cambia en la app
 
 Es Flutter, se publica a mano y es el peldaño más lento de la cadena. En el modo: los botones
@@ -388,7 +410,8 @@ Nada abierto del diseño. Cerradas al implementar:
 | 4. Informe: jornada y huecos | En `develop` y `staging` (API, TDR-004) |
 | 5. Cuadrantes en el modo | Hecho por otra sesión con D10 y D11: `aplicar` no escribe horario a quien está en el modo, solo tareas; la plantilla de sucursal pasa por el mismo `aprobar → aplicar`; prueba en `services/merlin/test/plantilla.test.ts` |
 | — Tareas de varias personas | **Hueco encontrado el 22-oct** (TDR-006): arreglado y en producción desde el 22-oct (hotfix, PR #211) |
-| 6. «Calendario»: turnos por fecha (D12) | Diseñado e implementado el 22-oct ([TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md)): API y panel en `feat/horario-calendario` de cada repo, sin fusionar; QA 55 sin ejecutar |
+| 6. «Calendario»: turnos por fecha (D12) | API en producción el 22-oct ([TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md)), migración 043 incluida; panel en `develop` y `staging`, PR 115 sin fusionar; conector con `cargar_turnos` en producción |
+| 7. El cuadrante son los turnos (D13) | Diseñado el 22-oct ([TDR-008](./tdr/TDR-008-el-cuadrante-son-los-turnos.md)), sin implementar. Sustituye partes de la fase 6 |
 
 ## Documentos
 
@@ -402,6 +425,8 @@ Nada abierto del diseño. Cerradas al implementar:
 - [TDR-005](./tdr/TDR-005-alarmas-por-tarea.md): fase 3, las alarmas pertenecen a la tarea.
 - [TDR-006](./tdr/TDR-006-tareas-de-varias-personas.md): tareas de varias personas; el fichaje
   mueve la parte de cada una (pendiente).
+- [TDR-008](./tdr/TDR-008-el-cuadrante-son-los-turnos.md): el cuadrante son los turnos; la
+  semana cargada manda sobre la semana tipo; cargar turnos no toca tareas.
 - [TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md): «Calendario», el tercer modo: turnos
   cargados por fecha con fichaje normal, heredable por sucursal; rutas `/calendar/days`, el
   importador y el panel.
