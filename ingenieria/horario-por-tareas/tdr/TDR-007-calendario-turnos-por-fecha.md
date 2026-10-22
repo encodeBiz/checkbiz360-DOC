@@ -313,3 +313,33 @@ aplicada en `encodebiz_staging`; `weeklyFromTaskDays` redesplegada en `dev-encod
 55 cazó un fallo real en HCA-02: el resolutor copiaba `taskId: undefined` a los turnos sin
 tarea y el fichaje respondía 500 (Firestore rechaza `undefined`). Arreglado en d7dc70d
 (`shiftForSchedule`). Después, **QA 54 + 55: 28 de 28 en verde contra staging**.
+
+## 15. Pendiente: el conector del asistente (MCP) y «Calendario»
+
+Pedido por Jose el 2026-10-22. Lo que ya hace el conector desde este TDR (§9):
+`cambiar_modo_horario` admite `calendario` y sucursales enteras, y `cambiar_horario` responde
+`horario_por_calendario` a quien está en el modo. **Lo que le falta**, en
+`services/assistant/src/interfaces/mcp/tools/`:
+
+1. **Cargar turnos por fecha.** Una herramienta nueva, o ampliar `proponer_cuadrante`, que
+   escriba turnos (sin tareas) con `PUT /api/v1/checkinbiz/delegated/calendar/days`, con el
+   patrón de siempre: vista previa sin `confirmacionId`, y escritura solo tras el sí. Mismas
+   reglas que el servidor: solo a quien está en `calendar`, nunca fechas pasadas, turnos que no
+   se cruzan; un día con `shifts: []` libra.
+2. **Leer los turnos.** `ver_semana` solo enseña `semanaTipo` en `weekly`: en `calendar` tiene
+   que enseñar los días cargados (`GET /calendar/days`, por persona o por sucursal), con «sin
+   cargar» distinto de «libre». Revisar también `ver_hoy`, `ver_semanas`, `ver_disponibilidad`
+   y `quien_puede_cubrir`, que deberían salir bien porque leen la disponibilidad, que ya
+   entiende el modo.
+3. **`proponer_cuadrante` en «Calendario».** Hoy crea una tarea por trabajo y, por `aplicar`
+   de merlin, escribe además la franja de cada día como día cargado. Hay que decidir con Jose
+   si para alguien en `calendar` el cuadrante del asistente crea turnos solo, o turnos y
+   tareas. Y el texto de la herramienta («cada persona va con su semana entera») debe decir
+   qué pasa con los días cargados.
+4. **Instrucciones del servidor MCP** (`assistant.mcp.ts`): nombrar el tercer modo, que se
+   pone a sucursales, y qué herramienta usar para cargar turnos.
+5. **Pruebas** en `services/assistant/test/herramientas.test.ts`, con el core falso, como las
+   de `cambiar_modo_horario`.
+
+Contrato de las rutas: §5. En la app no cambia nada: «Calendario» se comporta como semanal
+(fichaje normal y botones de tarea visibles); solo `tasks` mueve tareas al fichar.
