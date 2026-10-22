@@ -723,6 +723,7 @@ explícito y con autorización de Jose.
 | 15.2 | Contenedores: `checkinbiz`, `analytics`, `merlin`, `assistant`; y `tasks`, `reports`, `firebase_sdk` solo porque cambian tipos de shared | PR desde la rama principal; `build --no-deps` de los tocados |
 | 15.3 | Función `weeklyFromTaskDays` (copia la semana también a quien está en `calendar`) | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo weeklyFromTaskDays` |
 | 15.4 | Panel: selector con «Calendario» y el calendario semanal de turnos | detrás del back; sin variable nueva |
+| 15.0 | Estado | En `staging` de API y panel el 22-oct, QA 54+55 28/28. Sin Actions (minutos agotados): la API de prod se despliega a mano en el servidor, `git pull` + `build --no-deps` de los mismos seis servicios que en staging + `restart nginx`. El panel de `staging` lleva además vacaciones (§14) |
 | 15.5 | Prueba en prod | una sucursal de prueba en `calendar`, cargar la semana desde el panel, fichar con la app publicada (1.7.0) y ver el turno en Disponibilidad |
 
 ## 16. Alertas operativas por correo — PENDIENTE (rama `feat/alertas-por-correo`, 2026-10-22; aún no en `staging`)

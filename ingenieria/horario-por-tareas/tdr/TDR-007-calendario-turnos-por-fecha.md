@@ -305,3 +305,11 @@ fallaban), lint sin errores.
 3. Probar el panel con sesión: activar «Calendario» en una sucursal de dev, cargar una semana,
    copiarla, crear una tarea desde un turno y ver a la persona esperada en Disponibilidad.
 4. El pase a producción (§12 y `proximo-pase-back.md` §15).
+
+**Actualización 2026-10-22, tarde.** En `develop` y `staging` de los dos repos. Staging de la
+API desplegado a mano (sin Actions: los minutos están agotados), `git pull` en el servidor y
+`build --no-deps` de checkinbiz, analytics, merlin, assistant, tasks y reports; migración 043
+aplicada en `encodebiz_staging`; `weeklyFromTaskDays` redesplegada en `dev-encodebiz`. La QA
+55 cazó un fallo real en HCA-02: el resolutor copiaba `taskId: undefined` a los turnos sin
+tarea y el fichaje respondía 500 (Firestore rechaza `undefined`). Arreglado en d7dc70d
+(`shiftForSchedule`). Después, **QA 54 + 55: 28 de 28 en verde contra staging**.
