@@ -1,7 +1,7 @@
 # TDR-008: el cuadrante son los turnos, y la semana cargada manda
 
 **Fecha:** 2026-10-22
-**Estado:** Diseño cerrado con Jose el 2026-10-22. Sin implementar.
+**Estado:** Implementado el 2026-10-22 en `develop` y `staging` de API y panel; staging desplegado a mano y QA 54+55 26/26. **Sin subir a producción.** Cambios al implementar, en el §10.
 **Componente:** `encodebiz-api`: `packages/shared` (resolutores), `services/checkinbiz` (`/calendar/days`, `GET /calendar`, fichaje), `services/firebase_sdk` (`weeklyFromTaskDays`), `services/merlin` (cuadrantes, `aplicar`), `services/assistant` (`cargar_turnos`, `proponer_cuadrante`); `encodebiz-front-saas` (selector, calendario de turnos, importador)
 **Sustituye:** partes de [TDR-007](./TDR-007-calendario-turnos-por-fecha.md), las que se enumeran en el §7
 **Decisión de referencia:** [README](../README.md), D13
@@ -229,3 +229,58 @@ Sin migración: `dim_calendar_days` ya guarda `generated_by`, y el CHECK de la 0
 Contenedores `checkinbiz`, `analytics`, `merlin`, `assistant`, y los que se reconstruyen por
 shared. `weeklyFromTaskDays` con `--solo`, en dev y en prod. A mano, sin Actions, como el resto
 del 22-oct.
+
+## 10. Lo que cambió al implementar (2026-10-22, noche)
+
+**El importador: dos cuadrantes, y no se eligen (Jose).** Al ver el §5.1 escrito («solo turnos»)
+Jose lo corrigió: quien está en «Horario por tareas» y sube tareas tiene que crear tareas. Y no se
+ofrecen los dos tipos: **se ofrece el que toca a su modo, y se dice qué modo cambiar para subir el
+otro**. Queda así:
+
+- **Por turnos**, a quien está en semanal. Cada fila es una franja (fecha, entrada, salida) y las
+  de un día son sus turnos; dos que se pisan se unen. No crea, mueve, cancela ni borra ninguna
+  tarea. Escribe días con `generatedBy: "cuadrante"`.
+- **Por tareas**, a quien está en «Horario por tareas». Una tarea por fila, como siempre, con su
+  dirección como geocerca; el día lo genera el trigger. No escribe turnos ni semana tipo.
+- **Ninguna tarea se borra** en ningún caso: la retirada del ADR-006 desaparece (`retirar.ts`
+  borrado). Volver a subir la misma fila con la misma fecha y hora no duplica (`externalRef`);
+  una tarea que cambió de hora entra como nueva y la vieja se queda. Queda abierto con Jose si
+  esas se cancelan.
+- **La plantilla** saca cada pestaña del tipo de su persona: por turnos solo con fecha, entrada y
+  salida; por tareas con todas las columnas. El tipo va marcado en la fila de identidad
+  (`cuadrante:turnos` / `cuadrante:tareas`, en gris) y con su nombre al lado; la portada lo
+  dice por persona. En un fichero de antes, sin marca, se deduce de las columnas.
+- **Si una pestaña no casa con el modo** de su persona al subirla (alguien lo cambió entretanto),
+  esa persona se bloquea con «para subirle turnos, pásala a horario semanal» o al revés; las
+  demás siguen. Y si el modo cambia entre proponer y aplicar, no se escribe nada.
+- En el asistente (`proponer_cuadrante`), el tipo lo pone el modo de cada persona. Si a alguien en
+  semanal le llegan para quién, dirección o trabajo, se avisa de que no se cargan.
+
+**`PUT /calendar/days` con `fromTasks`**: se mantiene para el asistente (§5.2, ya hecho por su
+sesión). El panel no lo usa: a quien está por tareas le dice que cambie de modo, que es la regla
+de Jose para el importador. **Pendiente de decidir** si el asistente debe hacer lo mismo y se
+retira la bandera.
+
+**El panel**:
+
+- Selector de vuelta a «Horario semanal» y «Horario por tareas», solo en el empleado.
+- El cuadrante de turnos sale siempre en la ficha de la sucursal y en la de la persona. Una
+  semana sin cuadrante enseña la semana tipo en gris (`GET /calendar/days` trae la de cada
+  persona). Tocar un día de una semana sin cuadrante **carga la semana entera desde hoy**,
+  partiendo de la semana tipo con el cambio, y se pregunta antes: cargar un día suelto haría
+  librar al resto, por la regla del §2. Los días ya pasados de esa semana no se pueden escribir,
+  y en las lecturas (disponibilidad) quedan libres; los fichajes ya hechos no cambian.
+- Copiar la semana solo copia semanas cargadas, con los días libres como libres.
+- La tabla «Horario semanal» de la ficha lee `templateSchedule`, no la semana efectiva.
+- Importar cuadrante: textos y resultado según el modo (días de turnos o tareas creadas).
+
+**Comprobado**: shared 103/103 (con `semanaCargada.test.ts`, el cuadrante del §1: lunes libre,
+37 h), merlin 46/46, assistant 148/148, typecheck de todo el monorepo; QA 55 reescrita (HCA-01..06,
+08) y 54, 26/26 contra staging. El panel, typecheck y lint sin errores; **sin probar con sesión**.
+
+**Lo que queda, en orden:**
+
+1. Jose prueba el panel con `start:dev` contra staging.
+2. Decidir: tareas que cambiaron de hora al resubir un cuadrante por tareas (cancelar o dejar), y
+   si el asistente deja de usar `fromTasks`.
+3. Pase a producción: `proximo-pase-back.md` §16. Sin migración.

@@ -754,6 +754,19 @@ cola de envío. Ajustes por empresa (fase 4, pendiente); mientras, los defectos:
 | 1c.2 | `employeePlanifierWorker` | **HECHO 14:44 UTC** con `desplegar.mjs --project encodebiz-services --solo`, desde main; `ACTIVE` |
 | 1c.3 | Comprobar con una tarea de dos personas en prod | PENDIENTE: prueba de Jose con la app |
 
+## 16. El cuadrante son los turnos (TDR-008) — PENDIENTE (en `staging` el 2026-10-22)
+
+Diseño: [TDR-008](../ingenieria/horario-por-tareas/tdr/TDR-008-el-cuadrante-son-los-turnos.md).
+Sin migración, reglas ni índices. Va **a la vez** que la parte del asistente (`assistant`, TDR-008
+§5.2), que ya está en `staging` y depende de este servidor. A mano, sin Actions.
+
+| # | Qué | Cómo |
+|---|---|---|
+| 16.1 | API: `checkinbiz`, `analytics`, `merlin`, `assistant`, `tasks`, `reports` | release desde `main` con `staging`, PR con `[skip ci]` en el asunto, `git pull` en el servidor y `build --no-deps` de esos seis, `restart nginx` |
+| 16.2 | `weeklyFromTaskDays` (vuelve a ser solo de «Horario por tareas») | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo weeklyFromTaskDays` |
+| 16.3 | Panel: selector a dos opciones, cuadrante de turnos, importar por modo | release desde `main` con solo los commits del TDR-008 (el `staging` del panel puede traer más), PR a `main`; Vercel publica |
+| 16.4 | Comprobar | una persona de prueba en semanal: cargar una semana desde el panel, ver el lunes libre y fichar contra el turno; una en «Horario por tareas»: bajar la plantilla y ver su pestaña por tareas |
+
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
 Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está
