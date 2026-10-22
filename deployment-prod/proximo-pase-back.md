@@ -754,7 +754,7 @@ cola de envío. Ajustes por empresa (fase 4, pendiente); mientras, los defectos:
 | 1c.2 | `employeePlanifierWorker` | **HECHO 14:44 UTC** con `desplegar.mjs --project encodebiz-services --solo`, desde main; `ACTIVE` |
 | 1c.3 | Comprobar con una tarea de dos personas en prod | PENDIENTE: prueba de Jose con la app |
 
-## 16. El cuadrante son los turnos (TDR-008) — PENDIENTE (en `staging` el 2026-10-22)
+## 16. El cuadrante son los turnos (TDR-008) — EJECUTADO el 2026-10-22 (orden de Jose: «despliega a prod, estamos probando ahí directamente»)
 
 Diseño: [TDR-008](../ingenieria/horario-por-tareas/tdr/TDR-008-el-cuadrante-son-los-turnos.md).
 Sin migración, reglas ni índices. Va **a la vez** que la parte del asistente (`assistant`, TDR-008
@@ -766,6 +766,21 @@ Sin migración, reglas ni índices. Va **a la vez** que la parte del asistente (
 | 16.2 | `weeklyFromTaskDays` (vuelve a ser solo de «Horario por tareas») | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo weeklyFromTaskDays` |
 | 16.3 | Panel: selector a dos opciones, cuadrante de turnos, importar por modo | release desde `main` con solo los commits del TDR-008 (el `staging` del panel puede traer más), PR a `main`; Vercel publica |
 | 16.4 | Comprobar | una persona de prueba en semanal: cargar una semana desde el panel, ver el lunes libre y fichar contra el turno; una en «Horario por tareas»: bajar la plantilla y ver su pestaña por tareas |
+
+**Registro, 2026-10-22 (UTC), a mano y sin Actions:**
+
+| Paso | Resultado |
+|---|---|
+| 16.1 API | Release `release/cuadrante-turnos` desde `main` con `staging`. Tres conflictos en `services/assistant` contra b868dc3 (la versión parcial que la sesión del asistente había subido sin el cambio de `proponer_cuadrante`): resueltos con la de `staging`; el árbol resultante es **idéntico** al de `staging` (QA 54+55 26/26). PR #217 fusionado con `[skip ci]` (4ddaf5c), sin workflow. En el servidor: `git pull`, `build --no-deps` de checkinbiz, analytics, merlin, assistant, tasks y reports, `restart nginx`; los siete sanos, `/health` 200 |
+| 16.2 Función | `weeklyFromTaskDays` en `encodebiz-services` con `--solo`: «Successful update operation» |
+| 16.3 Panel | Release desde `main` con solo b7529d33 (cherry-pick; los idiomas, resueltos desde `main` más las claves de este cambio, sin nada de vacaciones). PR #116 fusionado (36f5ba3e); Vercel Production `success` a las 17:22 |
+| Sincronización | `main → develop` en API (a654a90) y panel (db27ae28) |
+| Sondas | `/health` 200; `GET /calendar/days` y `GET /calendar` sin sesión, 401; logs de checkinbiz, merlin y assistant sin errores al arrancar |
+| 16.4 Prueba con sesión | **la hace Jose en producción** |
+
+Entre las 15:31 (PR #115) y las 17:22 el panel de producción ofreció «Calendario» en empresa y
+sucursal. El espejo de Postgres (15:20) no cubre esa ventana; con el código nuevo, quien lo tenga
+guardado funciona como semanal, así que no hace falta limpiarlo.
 
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 

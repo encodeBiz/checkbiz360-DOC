@@ -1,7 +1,7 @@
 # TDR-008: el cuadrante son los turnos, y la semana cargada manda
 
 **Fecha:** 2026-10-22
-**Estado:** Implementado el 2026-10-22 en `develop` y `staging` de API y panel; staging desplegado a mano y QA 54+55 26/26. **Sin subir a producción.** Cambios al implementar, en el §10.
+**Estado:** **En producción desde el 2026-10-22** (API #217, panel #116, `weeklyFromTaskDays`), a mano y sin Actions; registro en `deployment-prod/proximo-pase-back.md` §16. QA 54+55 26/26 en staging. Cambios al implementar, en el §10.
 **Componente:** `encodebiz-api`: `packages/shared` (resolutores), `services/checkinbiz` (`/calendar/days`, `GET /calendar`, fichaje), `services/firebase_sdk` (`weeklyFromTaskDays`), `services/merlin` (cuadrantes, `aplicar`), `services/assistant` (`cargar_turnos`, `proponer_cuadrante`); `encodebiz-front-saas` (selector, calendario de turnos, importador)
 **Sustituye:** partes de [TDR-007](./TDR-007-calendario-turnos-por-fecha.md), las que se enumeran en el §7
 **Decisión de referencia:** [README](../README.md), D13
