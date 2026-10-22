@@ -2,6 +2,8 @@
 
 La app móvil de CheckBiz360 es el punto de entrada principal para el registro de asistencia. Este artículo explica paso a paso cómo realizar un check-in (entrada) y un check-out (salida) desde la aplicación, qué información muestra la pantalla principal de asistencia y cómo interpretar los mensajes de error más habituales.
 
+Si parte de su plantilla no quiere fichar con su móvil, el [punto de fichaje](113-punto-de-fichaje.md) es un dispositivo fijo en el centro donde cada persona ficha con su QR o su código.
+
 ---
 
 ## La pantalla principal de asistencia
@@ -101,3 +103,4 @@ El registro de check-in y check-out desde la app es una acción disponible para 
 - [Descansos y pausas](17-descansos-y-pausas.md)
 - [Solicitar jornada manual](19-solicitar-jornada-manual.md)
 - [Estados y códigos de error](22-estados-y-codigos-de-error.md)
+- [Punto de fichaje](113-punto-de-fichaje.md) — para quien no ficha con su móvil

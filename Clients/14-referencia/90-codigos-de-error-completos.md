@@ -99,6 +99,7 @@ Los errores más frecuentes en el uso diario. Salvo indicación contraria, los v
 | Código | Qué significa | Qué hacer |
 |---|---|---|
 | `documents/unauthorized` | Sin permisos para acceder al documento | Revisar la visibilidad por rol del documento |
+| `documents/storage_full` | La empresa ha llegado a los 2 GB incluidos y tiene desactivada la ampliación de almacenamiento | Activar **Ampliar almacenamiento** en **Entidad → Suscripciones**, o liberar espacio |
 | `documents/not_found` | El documento no existe o no es visible para ese usuario | Comprobar que no está archivado y que el rol tiene visibilidad |
 | `documents/file_required` | No se ha adjuntado ningún archivo | Adjuntar el fichero antes de guardar |
 | `documents/file_too_large` | El archivo supera el máximo permitido de 10 MB | Comprimir el documento o dividirlo |
@@ -164,7 +165,7 @@ Los errores más frecuentes en el uso diario. Salvo indicación contraria, los v
 
 ## Vacaciones y permisos (`absence_request`)
 
-Solicitudes desde la app, «Mi calendario» (aprueban los administradores en el panel, Calendario → Solicitudes).
+Solicitudes desde la app, «Mi calendario» (aprueban los administradores en el panel, **Contacto → Solicitudes**).
 
 | Código | Causa |
 |---|---|
@@ -177,6 +178,39 @@ Solicitudes desde la app, «Mi calendario» (aprueban los administradores en el 
 | `absence_request/not_found` | La solicitud no existe o no es de esta persona. |
 | `absence_request/not_pending` | Ya se resolvió o se canceló: no se puede cancelar, aprobar ni rechazar. |
 | `calendar/forbidden` | La cuenta no tiene ficha de empleado activa (rutas de la persona) o no tiene asiento de administrador (rutas del panel). |
+
+## Calendario de turnos (`calendar`)
+
+Al cargar turnos por fecha en el modo **Calendario**.
+
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `calendar/days_require_calendar_mode` | La persona no está en el modo **Calendario** | Elegir **Calendario** en su horario o en el de su sucursal |
+| `calendar/day_in_the_past` | Se ha intentado cambiar un día anterior a hoy | Los días pasados no se cambian; hoy sí |
+| `calendar/bad_request` | Un turno no es válido: la salida no es posterior a la entrada, dos turnos se cruzan o la fecha está demasiado lejos | Revisar las horas del día indicado |
+| `calendar/invalid_range` / `calendar/range_too_long` | El periodo pedido no es válido o es demasiado largo | Consultar un periodo más corto |
+| `calendar/schedule_mode_employee_only` | **Horario por tareas** solo se elige en la ficha de una persona | Ponerlo en la persona, no en la sucursal ni en la empresa |
+
+## Punto de fichaje (`kiosk`)
+
+| Código | Qué significa | Qué hacer |
+|---|---|---|
+| `kiosk/not_subscribed` | La empresa no tiene contratado el punto de fichaje | Contratarlo desde **Punto de fichaje** |
+| `kiosk/disabled` | El punto de fichaje de esa sucursal está desactivado | Activarlo desde el panel |
+| `kiosk/no_branch_geo` | La sucursal no tiene la dirección geolocalizada | Completar la dirección de la sucursal |
+| `kiosk/no_branch_kiosk` | La persona no tiene ninguna sucursal con punto de fichaje, así que no hay tarjeta que enviarle | Activar el punto de fichaje en alguna de sus sucursales |
+| `kiosk/device_not_eligible` | El dispositivo no cumple los requisitos: ubicación, precisión, cámara frontal o sistema | Leer el motivo en pantalla y corregirlo, o usar otro dispositivo |
+| `kiosk/out_of_radius` | El dispositivo está más lejos del centro de lo permitido | Llevarlo al centro, revisar la dirección o ampliar el radio |
+| `kiosk/suspended` | El punto de fichaje está en pausa porque el dispositivo salió del radio o perdió precisión | Vuelve solo cuando se cumple otra vez |
+| `kiosk/replaced` | Se ha entrado con las mismas credenciales en otro dispositivo | Normal al cambiar de tablet; si no, regenerar las credenciales |
+| `kiosk/revoked` | La sesión del dispositivo se cerró desde el panel | Volver a entrar con las credenciales |
+| `kiosk/code_not_found` | El QR o el código no son de nadie en esta empresa, o se regeneraron | Entregar la tarjeta o el código actuales |
+| `kiosk/too_many_attempts` | Varios códigos erróneos seguidos | Esperar los segundos que indica la pantalla |
+| `kiosk/employee_not_in_branch` | La persona no está asignada a esa sucursal | Asignarla desde su ficha |
+| `kiosk/session_expired` | Pasó demasiado tiempo entre identificarse y fichar | Volver a acercar el QR o teclear el código |
+| `kiosk/photo_required` / `kiosk/photo_upload_failed` | Falta la foto, o no se pudo guardar y el fichaje no se ha registrado | Repetir el fichaje mirando a la cámara |
+| `kiosk/unlock_invalid` | El PIN para salir del modo quiosco no es correcto | Consultar el PIN en **Ver credenciales** |
+| `kiosk/invalid_radius` | El radio está fuera del rango permitido | Elegir un valor dentro del rango que indica el panel |
 
 ## Otros módulos
 

@@ -2,6 +2,8 @@
 
 The CheckBiz360 mobile app is the main entry point for recording attendance. This article explains step by step how to make a check-in (entry) and a check-out (exit) from the application, what information the main attendance screen shows and how to interpret the most common error messages.
 
+If some of your staff do not want to clock in with their phone, the [clock-in point](113-clock-in-point.md) is a fixed device at the site where each person clocks in with their QR or their code.
+
 ---
 
 ## The main attendance screen
@@ -101,3 +103,4 @@ Recording check-in and check-out from the app is an action available to all user
 - [Breaks and pauses](17-breaks-and-pauses.md)
 - [Request a manual workday](19-request-a-manual-workday.md)
 - [Statuses and error codes](22-statuses-and-error-codes.md)
+- [Clock-in point](113-clock-in-point.md) — for people who do not clock in with their phone

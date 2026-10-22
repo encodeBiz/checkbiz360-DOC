@@ -4,6 +4,8 @@ The base schedule defines when an employee is expected to be present at their wo
 
 ---
 
+> **Three ways to set the schedule.** In **Schedules & holidays**, the **How the schedule is set** section chooses between **Weekly schedule**, the template week this article describes; **Schedule from tasks**, where each task of the day is a shift; and **Calendar**, where shifts are loaded date by date. If every week is different, see [Calendar: shifts loaded by date](114-shift-calendar-by-date.md).
+
 ## What a base schedule is
 
 The base schedule is the set of shifts that make up the standard working day for a group of employees. It is defined at the organisation or at each branch and specifies, for each day of the week, which shifts are active and in which time window they fall.
@@ -121,3 +123,4 @@ It is the practical way to set up a new branch with the same schedule as the oth
 - [Strict and flexible workday](28-flexible-schedule.md)
 - [Public holidays and non-working days](29-public-holidays-and-non-working-days.md)
 - [Availability board](98-availability-board.md)
+- [Calendar: shifts loaded by date](114-shift-calendar-by-date.md)

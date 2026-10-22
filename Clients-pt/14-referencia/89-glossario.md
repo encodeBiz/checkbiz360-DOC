@@ -6,18 +6,27 @@ Este glossário reúne os termos operacionais mais relevantes do CheckBiz360, po
 
 ## A
 
+### Acesso à app
+Bloco da ficha do funcionário que diz se o correio de boas-vindas chegou e se a pessoa já usa a aplicação, e a partir do qual se reenvia o acesso ou se altera o e-mail. Veja [Acesso à aplicação e alteração de e-mail](../02-funcionarios/116-acesso-a-aplicacao-e-alteracao-de-email.md).
+
 ### Ajuste de horário
 Conceito que **não se aplica** na versão atual: o registo guarda sempre a hora real e não é arredondado. O que decide se o tempo trabalhado fora da faixa oficial é contabilizado é a modalidade de *jornada estrita ou flexível* do calendário.
+
+### Armazenamento
+Espaço ocupado pelo que a sua empresa carrega: documentos, fotos de tarefas, assinaturas, relatórios e fotos do ponto de registo. Há 2 GB incluídos; acima disso, cada GB completo é faturado a 0,25 € por mês se a ampliação estiver ativada. Veja [Planos, preços e funcionalidades](./91-planos-e-funcionalidades.md#armazenamento).
 
 ### Assistente de IA (Merlin)
 Componente de inteligência artificial que interpreta os dados operacionais e os expõe como um relato acionável no painel operacional, no detalhe de sucursal e no detalhe de funcionário. Narra e prioriza sobre os números que o ecrã já mostra: não recalcula nem gera dados próprios, de forma que a sua leitura não pode contradizer os painéis. Também narra o guia inicial do backoffice.
 
 ### Ausência
-Dia ou intervalo de dias não úteis próprios de um funcionário: férias, licenças, dias livres. Soma-se aos feriados da sua entidade e da sua sucursal, bloqueia o seu registo nesses dias e pode ser marcada como *remunerada*, *não remunerada* ou *por definir*.
+Dia ou intervalo de dias não úteis próprios de um funcionário: férias, licenças, dias livres. Soma-se aos feriados da sua entidade e da sua sucursal, bloqueia o seu registo nesses dias e pode ser marcada como *remunerada*, *não remunerada* ou *por definir*. Regista-a a empresa, ou nasce ao aprovar um *pedido de férias ou licença*.
 
 ---
 
 ## C
+
+### Calendário (modo de horário)
+Forma de organizar o horário em que cada dia leva os turnos que lhe são carregados por data no *calendário de turnos*. Um dia sem carregar é livre e regista-se com o gesto de sempre. Define-se na empresa, numa sucursal ou numa pessoa. Veja [Calendário: turnos carregados por data](../04-calendario-e-horarios/114-calendario-de-turnos-por-data.md).
 
 ### Calendário efetivo
 Configuração que define os dias úteis e feriados para uma sucursal ou para um funcionário concreto. O calendário efetivo determina em que dias o sistema espera registos e que dias se consideram livres ou feriados. Configura-se a partir do backoffice na secção de calendários.
@@ -160,6 +169,9 @@ Registo do início (`restin`) e fim (`restout`) de uma pausa dentro da jornada d
 ### Pausa de uma tarefa
 Interrupção de uma tarefa em curso, que se pausa e se retoma tantas vezes quantas forem necessárias. Não é um estado: a tarefa continua *em curso* e mostra a etiqueta *Em pausa*. O tempo em pausa é somado à parte no relatório de tarefas. Veja [Acompanhamento e atualizações](../06-tarefas/43-acompanhamento-e-atualizacoes.md#pausar-e-retomar-uma-tarefa).
 
+### Pedido de férias ou licença
+Pedido que uma pessoa faz a partir de **O meu calendário** na aplicação para uns dias de férias, assuntos pessoais, médico ou outra licença. É aprovado ou recusado pelo proprietário e pelos administradores em **Contacto → Pedidos**; ao aprová-lo, os dias ficam como *ausência*. Veja [Férias e licenças a partir da aplicação](../04-calendario-e-horarios/115-ferias-e-licencas-a-partir-da-aplicacao.md).
+
 ### Pendente (estado do funcionário)
 Estado de uma ficha de funcionário à qual falta algum dado para poder trabalhar, normalmente o correio eletrónico. Não recebe acesso, não é faturada e sai desse estado ao completar o dado.
 
@@ -168,6 +180,9 @@ Nível de acesso e permissões de um utilizador dentro do CheckBiz360. Os perfis
 
 ### Plano de subscrição
 Modalidade de contratação do CheckBiz360. Há duas: **Bronze**, 5 €/funcionário por mês (tarifa 2026 de 2 € subscrevendo até 31 de dezembro de 2026 inclusive), e **Empresarial**, com preço à medida, que acrescenta apoio preferencial e integrações. Ambas dão acesso a todos os módulos da plataforma. Veja [Planos, preços e funcionalidades](./91-planos-e-funcionalidades.md).
+
+### Ponto de registo
+Dispositivo fixo num local, tablet ou telemóvel, onde cada pessoa regista o ponto com o seu cartão QR ou o seu código de 6 dígitos e o dispositivo tira uma foto. É um complemento pago. Na aplicação chama-se *modo quiosque*. Veja [Ponto de registo](../03-controlo-de-horarios/113-ponto-de-registo.md).
 
 ### Pontuação de promoção
 Índice único que combinaria fiabilidade, eficiência e avaliações num só valor comparável entre funcionários. **Não existe na versão atual**: o que existe é a *avaliação operacional do funcionário*, um diagnóstico do seu padrão que inclui o sinal de candidato a promoção. Veja [Avaliação operacional do funcionário](../07-inteligencia-operacional/53-pontuacao-de-promocao.md).
@@ -212,7 +227,7 @@ Código temporário gerado pelo sistema para verificar a identidade de um utiliz
 Configuração que permite a um funcionário efetuar registos a partir de uma localização diferente da geocerca da sua sucursal. Quando está ativa, o sistema aceita registos fora do raio habitual sem gerar o erro `checklog/out_of_radius`. Deve ser ativada explicitamente pelo Owner ou pelo Manager. Antes chamava-se *Trabalho remoto*.
 
 ### Turno
-Faixa horária atribuída a um funcionário para uma jornada concreta, que define a sua hora de início e de fim de trabalho esperadas. Os turnos configuram-se no backoffice e associam-se ao calendário efetivo do funcionário ou da sucursal.
+Faixa horária atribuída a um funcionário para uma jornada concreta, que define a sua hora de início e de fim de trabalho esperadas. Os turnos configuram-se no backoffice e associam-se ao calendário efetivo do funcionário ou da sucursal. No modo *Calendário*, os turnos carregam-se data a data em vez de se repetirem todas as semanas.
 
 ---
 

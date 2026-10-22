@@ -38,10 +38,11 @@ Este artículo recoge las catorce situaciones técnicas y operativas más habitu
 
 **Pasos de resolución:**
 
-1. Pida al empleado que revise la carpeta de correo no deseado o spam.
-2. Verifique en el backoffice, dentro del perfil del empleado, que la dirección de correo electrónico está escrita correctamente (sin espacios, sin errores tipográficos).
-3. Si la dirección es correcta y el correo no aparece en ninguna carpeta, acceda al perfil del empleado y pulse **Reenviar invitación**.
-4. Si después de reenviar el correo sigue sin llegar, compruebe con el empleado si su empresa tiene filtros de correo corporativo que puedan estar bloqueando los mensajes de @encodebiz.com. En ese caso, será necesario añadir ese dominio a la lista de remitentes permitidos.
+1. Abra la ficha del empleado y mire el bloque **Acceso a la app**. Dice si el correo se **entregó**, si **rebotó**, si se **marcó como spam** o si **no se pudo enviar**.
+2. Si se entregó, pida al empleado que revise la carpeta de correo no deseado o spam.
+3. Si rebotó o se rechazó, la dirección está mal. Corríjala con **Cambiar correo** y marque **Enviar el acceso al correo nuevo**.
+4. Si la dirección es correcta y el correo no aparece en ninguna carpeta, pulse **Reenviar acceso**.
+5. Si después de reenviar el correo sigue sin llegar, compruebe con el empleado si su empresa tiene filtros de correo corporativo que puedan estar bloqueando los mensajes de @encodebiz.com. En ese caso, será necesario añadir ese dominio a la lista de remitentes permitidos.
 
 ---
 

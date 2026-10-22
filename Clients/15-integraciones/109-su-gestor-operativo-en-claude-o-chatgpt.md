@@ -94,9 +94,15 @@ En los tres casos le enseña la propuesta persona por persona, con los avisos qu
 
 No hay límite de tareas: si el cuadrante es muy grande, el asistente lo carga por partes y usted confirma una sola vez al final. Si la semana cambia, pídale que la proponga otra vez con la versión buena: lo que ya estaba se actualiza y no se duplica nada. Los servicios que la persona ya había empezado se quedan.
 
+### Cargar turnos por fecha
+
+Si una sucursal está en el modo [Calendario](../04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md), el asistente le carga los turnos de cada persona fecha a fecha, sin crear tareas: «a Marta y a Luis, de 7 a 15 de lunes a jueves de la semana que viene; el viernes libran». Le enseña cada día con lo que había y lo que quedará, y los festivos o ausencias que caen en medio, y escribe cuando usted confirma. Si a alguien no se le puede cargar, le dice por qué.
+
+También le enseña la semana de quien está en Calendario, distinguiendo un día **libre** de uno **sin cargar**. Si lo que quiere son turnos con tareas dentro, pídale el cuadrante como en el apartado anterior: crea las tareas y, en Calendario, también el turno de cada día. Si no le queda claro cuál de las dos cosas quiere, se lo pregunta.
+
 ### Cambios sueltos
 
-Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarla. También cambiar la semana tipo de alguien. Antes de tocar nada le enseña el antes y el después y espera su sí.
+Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarla. También cambiar la semana tipo de alguien, o pasar a una persona o a una sucursal entera al modo Calendario y devolverla al horario semanal. Antes de tocar nada le enseña el antes y el después y espera su sí.
 
 ### Dar de alta gente y centros
 

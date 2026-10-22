@@ -99,6 +99,7 @@ The most frequent errors in daily use. Unless stated otherwise, they are seen by
 | Code | What it means | What to do |
 |---|---|---|
 | `documents/unauthorized` | No permissions to access the document | Review the document's visibility by role |
+| `documents/storage_full` | The company has reached the 2 GB included and has extra storage turned off | Turn on **Extra storage** in **Organisation → Subscriptions**, or free up space |
 | `documents/not_found` | The document does not exist or is not visible to that user | Check that it is not archived and that the role has visibility |
 | `documents/file_required` | No file has been attached | Attach the file before saving |
 | `documents/file_too_large` | The file exceeds the maximum allowed of 10 MB | Compress the document or split it |
@@ -159,6 +160,57 @@ The most frequent errors in daily use. Unless stated otherwise, they are seen by
 | `sub/bad_request` | The data sent is not valid | Review the form and retry |
 | `sub/entity_not_found` | The organisation does not exist | Verify the organisation selected |
 | `payment/pending` | There are outstanding payments on the account | Settle the payment from the billing section |
+
+---
+
+## Vacation and leave (`absence_request`)
+
+Requests from the app, "My calendar" (approved by administrators in the panel, **Contact → Requests**).
+
+| Code | Cause |
+|---|---|
+| `absence_request/invalid_type` | The type is not `vacation`, `personal`, `medical` or `other`. |
+| `absence_request/invalid_dates` | Invalid dates, or the end is before the start. |
+| `absence_request/past` | The request starts before today. Past days are recorded by the company from the panel. |
+| `absence_request/too_long` | More than 60 days in a single request. |
+| `absence_request/note_too_long` | The note is longer than 500 characters. |
+| `absence_request/overlap` | It overlaps with another pending or approved request, or with an absence already recorded. |
+| `absence_request/not_found` | The request does not exist or does not belong to this person. |
+| `absence_request/not_pending` | It has already been decided or cancelled: it cannot be cancelled, approved or rejected. |
+| `calendar/forbidden` | The account has no active employee record (the person's routes) or no administrator seat (the panel's routes). |
+
+## Shift calendar (`calendar`)
+
+When loading shifts by date in the **Calendar** mode.
+
+| Code | What it means | What to do |
+|---|---|---|
+| `calendar/days_require_calendar_mode` | The person is not on the **Calendar** mode | Choose **Calendar** on their schedule or on their branch's |
+| `calendar/day_in_the_past` | Someone tried to change a day before today | Past days are not changed; today can be |
+| `calendar/bad_request` | A shift is not valid: the end is not after the start, two shifts overlap or the date is too far ahead | Review the times on the day shown |
+| `calendar/invalid_range` / `calendar/range_too_long` | The period requested is not valid or is too long | Request a shorter period |
+| `calendar/schedule_mode_employee_only` | **Schedule from tasks** is only chosen on a person's record | Set it on the person, not on the branch or the company |
+
+## Clock-in point (`kiosk`)
+
+| Code | What it means | What to do |
+|---|---|---|
+| `kiosk/not_subscribed` | The company has not subscribed to the clock-in point | Subscribe from **Clock-in point** |
+| `kiosk/disabled` | That branch's clock-in point is deactivated | Activate it from the panel |
+| `kiosk/no_branch_geo` | The branch has no geolocated address | Complete the branch's address |
+| `kiosk/no_branch_kiosk` | The person has no branch with a clock-in point, so there is no card to send them | Activate the clock-in point at one of their branches |
+| `kiosk/device_not_eligible` | The device does not meet the requirements: location, accuracy, front camera or operating system | Read the reason on screen and fix it, or use another device |
+| `kiosk/out_of_radius` | The device is further from the site than allowed | Take it to the site, check the address or widen the radius |
+| `kiosk/suspended` | The clock-in point is paused because the device left the radius or lost accuracy | It comes back on its own once the conditions are met again |
+| `kiosk/replaced` | Someone signed in with the same credentials on another device | Normal when changing tablet; if not, regenerate the credentials |
+| `kiosk/revoked` | The device's session was closed from the panel | Sign in again with the credentials |
+| `kiosk/code_not_found` | The QR or the code does not belong to anyone in this company, or was regenerated | Hand over the current card or code |
+| `kiosk/too_many_attempts` | Several wrong codes in a row | Wait the seconds shown on screen |
+| `kiosk/employee_not_in_branch` | The person is not assigned to that branch | Assign it from their record |
+| `kiosk/session_expired` | Too much time passed between identifying and clocking in | Show the QR again or type the code |
+| `kiosk/photo_required` / `kiosk/photo_upload_failed` | The photo is missing, or could not be saved and the clock-in was not recorded | Repeat the clock-in facing the camera |
+| `kiosk/unlock_invalid` | The PIN to leave kiosk mode is not correct | Check the PIN in **View credentials** |
+| `kiosk/invalid_radius` | The radius is outside the allowed range | Choose a value within the range the panel shows |
 
 ---
 

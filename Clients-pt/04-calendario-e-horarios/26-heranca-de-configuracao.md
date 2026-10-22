@@ -53,6 +53,7 @@ A herança não funciona da mesma forma para todos os parâmetros. Em termos ger
 - O **calendário de feriados** acumula-se: os feriados da entidade mais os feriados próprios da sucursal formam o calendário de dias não úteis dos funcionários dessa sucursal.
 - O **horário de turnos** substitui-se: se a sucursal tiver um horário próprio, substitui completamente o da entidade. Não se misturam.
 - As **exceções individuais** de um funcionário substituem completamente o horário do nível superior para as datas ou dias a que se aplicam.
+- A forma de **organizar o horário** também se herda: se uma sucursal estiver em **Calendário**, os seus funcionários também estão, exceto quem tiver outro modo na sua ficha. **Horário por tarefas** é a exceção: só se escolhe na ficha de cada pessoa. Ver [Calendário: turnos carregados por data](114-calendario-de-turnos-por-data.md).
 
 > **Nota:** o comportamento de acumulação de feriados significa que um funcionário de uma sucursal local pode herdar tanto os feriados nacionais da entidade como os feriados locais da sua sucursal. Isto é intencional e reflete a realidade legal da maioria das empresas.
 
@@ -99,3 +100,4 @@ O funcionário pode ter uma exceção individual que marque esse dia como útil.
 - [Turnos rotativos](27-turnos-rotativos.md) — não disponível na versão atual; alternativas
 - [Jornada estrita e jornada flexível](28-horario-flexivel.md)
 - [Feriados e dias não úteis](29-feriados-e-dias-nao-uteis.md)
+- [Calendário: turnos carregados por data](114-calendario-de-turnos-por-data.md)

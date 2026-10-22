@@ -10,7 +10,7 @@ O CheckBiz360 é oferecido em dois planos:
 
 | Plano | Preço | Para quem |
 |---|---|---|
-| **Bronze** | **5 €/funcionário por mês** | Empresas que precisam de cumprir o registo de horários e gerir a sua operação diária. Inclui os módulos base; o Inventário contrata-se à parte. |
+| **Bronze** | **5 €/funcionário por mês** | Empresas que precisam de cumprir o registo de horários e gerir a sua operação diária. Inclui os módulos base; o Inventário e o Ponto de registo contratam-se à parte. |
 | **Empresarial** | **Preço à medida** | Organizações grandes (indicativamente, a partir de 100 funcionários) ou que precisam de integrações com os seus próprios sistemas e de apoio preferencial. |
 
 O preço do plano Bronze é **por funcionário e mês**: é faturado consoante os funcionários registados, sem quota fixa de entrada nem custo de implementação. Contam todos os funcionários do quadro de pessoal, também os inativos ou de baixa, porque continuam a fazer parte dele; não contam as fichas **pendentes** de completar nem os funcionários eliminados. O plano Empresarial é acordado com a equipa comercial em função do volume e das integrações necessárias.
@@ -25,7 +25,7 @@ Para condições concretas (volume, faturação anual, integrações à medida, 
 
 ## O que a subscrição inclui
 
-Ambos os planos incluem os módulos base descritos em seguida. O Inventário é um complemento opcional com faturação adicional, também no plano Empresarial salvo acordo comercial expresso.
+Ambos os planos incluem os módulos base descritos em seguida. O Inventário e o Ponto de registo são complementos opcionais com faturação adicional, também no plano Empresarial salvo acordo comercial expresso.
 
 ### Controlo de horários e registos
 
@@ -56,7 +56,9 @@ Ambos os planos incluem os módulos base descritos em seguida. O Inventário é 
 ### Calendário e horários
 
 - Horários base com um ou vários turnos por dia e descansos dentro do turno.
+- Três formas de organizar o horário: semana tipo, por tarefas ou **Calendário**, com os turnos carregados data a data e copiáveis de uma semana para a seguinte.
 - Calendário laboral com feriados e ausências —por intervalos de datas e com marca de remunerada—, aplicáveis a entidade, sucursal ou funcionário.
+- Férias e licenças pedidas a partir da aplicação e aprovadas no painel (chega com a próxima versão da aplicação e do painel).
 - Jornada estrita ou flexível e descanso estrito ou flexível, que decidem como se contabilizam horas e pausas.
 - Modelos de horário para replicar um horário em várias sucursais.
 - Quadro de disponibilidade: cobertura por sucursal e dia, quem falta e porquê, e registo de dias livres a partir do próprio quadro.
@@ -106,6 +108,36 @@ Contrata-se à parte em **Subscrições**, com 15 dias de experiência.
 - Entregas de equipamentos e EPI ao trabalhador, com documentação associada, confirmação assinada ou discordância e estado de devolução.
 - Relatório Equipamentos e EPI em Excel com entregas e inspeções para preparar a documentação perante uma inspeção.
 
+### Ponto de registo (complemento pago)
+
+Contrata-se à parte em **Ponto de registo**, com 15 dias de experiência na primeira contratação.
+
+| | |
+|---|---|
+| Até 20 pontos de registo ativos | **19 € por mês** |
+| A partir do 21.º | **0,90 € por mês** por cada um |
+
+Só se cobram os pontos de registo ativos, não as sucursais que tiver.
+
+- Um dispositivo fixo em cada local, tablet ou telemóvel, para quem não quer registar o ponto com o telemóvel.
+- Identificação com cartão QR ou código de 6 dígitos, e uma foto em cada registo.
+- Só funciona perto do local e num dispositivo de cada vez.
+- Revisão das fotos com as rajadas de registos seguidos em cima.
+- Sem biometria.
+
+Explica-se em [Ponto de registo](../03-controlo-de-horarios/113-ponto-de-registo.md).
+
+### Armazenamento
+
+Todas as empresas têm **2 GB incluídos** para o que carregam: documentos, fotos de tarefas, assinaturas, relatórios e fotos do ponto de registo. Acima disso, cada **GB completo** é adicionado à fatura mensal a **0,25 €**. Com 2,8 GB não se paga nada; com 3,1 GB paga-se 1 GB.
+
+Em **Entidade → Subscrições** vê-se quanto ocupa cada coisa e quanto seria faturado este mês. Aí mesmo está a caixa **Ampliar armazenamento acima de 2 GB**, marcada por omissão:
+
+- **Marcada**: o que passar de 2 GB é cobrado como acima.
+- **Desmarcada**: não se cobra nada, mas ao chegar aos 2 GB não se podem carregar mais documentos. As fotos de tarefas, as assinaturas, os relatórios e o ponto de registo continuam a funcionar: um registo nunca falha por falta de espaço.
+
+Ao chegar aos 90 % do incluído, o painel avisa nesse mesmo bloco e o proprietário recebe um correio.
+
 ### Inteligência operacional
 
 - Painel de Operação por período mensal, com três vistas: sucursais, funcionários e análise.
@@ -132,6 +164,8 @@ O plano Empresarial inclui tudo o do plano Bronze e acrescenta:
 |---|---|---|
 | Módulos base | Incluídos | Incluídos |
 | Inventário | Complemento pago | Complemento pago, salvo acordo |
+| Ponto de registo | Complemento pago | Complemento pago, salvo acordo |
+| Armazenamento | 2 GB incluídos; 0,25 € por GB completo a mais | 2 GB incluídos, salvo acordo |
 | Apoio | Padrão, com tempos de resposta definidos | Preferencial, por canais prioritários |
 | Integrações por webhook | — | Incluídas |
 | Integrações com ERP/CRM e desenvolvimentos à medida | — | Sob acordo |

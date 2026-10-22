@@ -35,6 +35,7 @@ As notificações de tarefas mantêm funcionários e responsáveis informados so
 | Tipo | Descrição | Destinatários |
 |---|---|---|
 | Nova tarefa atribuída | Enviada ao funcionário quando lhe é atribuída uma nova tarefa | Worker |
+| Tarefa retirada | A tarefa foi apagada, cancelada ou já não está atribuída ao funcionário | Worker |
 | Lembrete de vencimento | Alerta de que uma tarefa atribuída vence nas próximas horas ou no dia seguinte | Worker |
 | Tarefa concluída | Notifica o responsável de que o funcionário marcou a tarefa como concluída | Manager, Supervisor |
 | Tarefa pendente de validação | O funcionário concluiu a tarefa e o sistema aguarda a validação do responsável | Manager, Supervisor |
@@ -61,9 +62,10 @@ As notificações administrativas informam sobre processos que exigem intervenç
 | Tipo | Descrição | Destinatários |
 |---|---|---|
 | Jornada manual pendente de aprovação | Um funcionário solicitou o registo manual de uma jornada que exige validação | Manager, Supervisor |
-| Pedido de licença pendente | O funcionário enviou um pedido de ausência ou licença que exige aprovação | Manager |
+| Pedido de férias ou licença | Não se envia aviso: o pedido aparece em **Contacto → Pedidos**, com o número de pendentes no separador | Owner, administradores |
+| Férias ou licença aprovadas / recusadas | Avisa a pessoa da decisão e leva-a a **O meu calendário** (com a próxima versão da aplicação) | Worker |
 | Novo funcionário ativado | Um novo funcionário completou o processo de ativação da sua conta | Manager, Owner |
-| Convite não aceite | Um funcionário convidado não ativou a sua conta após o prazo habitual | Manager |
+| Acesso que não chegou | Alerta da página inicial do painel quando o e-mail de acesso de alguém foi devolvido, marcado como spam ou não saiu | Owner, administradores |
 
 ## Canais de entrega
 

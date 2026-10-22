@@ -39,6 +39,8 @@ Las vacaciones, los permisos y los días libres de una persona concreta se regis
 
 Un día de ausencia bloquea el fichaje de esa persona igual que un festivo.
 
+Las personas también pueden pedir sus vacaciones o permisos desde la app, en **Mi calendario**. Al aprobarlas en **Contacto → Solicitudes**, los días quedan como ausencias, con la marca de retribuida que elija quien aprueba. Ver [Vacaciones y permisos desde la app](115-vacaciones-y-permisos-desde-la-app.md).
+
 ---
 
 ## Cómo CheckBiz360 bloquea fichajes en días no laborables
@@ -110,4 +112,5 @@ Se recomienda configurar el calendario de festivos al inicio de cada año natura
 - [Herencia de configuración](26-herencia-de-configuracion.md)
 - [Turnos rotativos](27-turnos-rotativos.md) — no disponible en la versión actual; alternativas
 - [Tablero de disponibilidad](98-tablero-de-disponibilidad.md)
+- [Vacaciones y permisos desde la app](115-vacaciones-y-permisos-desde-la-app.md)
 - [Estados y códigos de error](../03-control-horario/22-estados-y-codigos-de-error.md)

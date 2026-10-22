@@ -53,6 +53,7 @@ La herencia no funciona igual para todos los parámetros. En términos generales
 - El **calendario de festivos** se acumula: los festivos de la entidad más los festivos propios de la sucursal forman el calendario de días no laborables de los empleados de esa sucursal.
 - El **horario de turnos** se reemplaza: si la sucursal tiene un horario propio, reemplaza completamente al de la entidad. No se mezclan.
 - Las **excepciones individuales** de un empleado reemplazan completamente el horario del nivel superior para las fechas o días a los que aplican.
+- La forma de **organizar el horario** también se hereda: si una sucursal está en **Calendario**, sus empleados lo están, salvo quien tenga otro modo en su ficha. **Horario por tareas** es la excepción: solo se elige en la ficha de cada persona. Ver [Calendario: turnos cargados por fecha](114-calendario-de-turnos-por-fecha.md).
 
 > **Nota:** El comportamiento de acumulación de festivos significa que un empleado de una sucursal local puede heredar tanto los festivos nacionales de la entidad como los festivos locales de su sucursal. Esto es intencionado y refleja la realidad normativa de la mayoría de las empresas.
 
@@ -99,3 +100,4 @@ El empleado puede tener una excepción individual que marque ese día como labor
 - [Turnos rotativos](27-turnos-rotativos.md) — no disponible en la versión actual; alternativas
 - [Jornada estricta y jornada flexible](28-horario-flexible.md)
 - [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md)
+- [Calendario: turnos cargados por fecha](114-calendario-de-turnos-por-fecha.md)

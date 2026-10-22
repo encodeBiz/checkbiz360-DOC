@@ -7,10 +7,13 @@ This glossary gathers CheckBiz360's most relevant operational terms, in alphabet
 ## A
 
 ### Absence
-A day or range of days that are an employee's own non-working days: holidays, leave, days off. It is added to the public holidays of their organisation and their branch, blocks their clock-in on those days and can be marked as *paid*, *unpaid* or *not set*.
+A day or range of days that are an employee's own non-working days: holidays, leave, days off. It is added to the public holidays of their organisation and their branch, blocks their clock-in on those days and can be marked as *paid*, *unpaid* or *not set*. It is recorded by the company, or created when a *vacation or leave request* is approved.
 
 ### AI assistant (Merlin)
 Artificial intelligence component that interprets the operational data and presents it as an actionable narrative in the operations dashboard, in the branch detail and in the employee detail. It narrates and prioritises using the figures the screen already shows: it does not recalculate or generate data of its own, so its reading cannot contradict the dashboards. It also narrates the back office onboarding guide.
+
+### App access
+Block on the employee's record that says whether their welcome email arrived and whether they already use the app, and from which the access is resent or the email changed. See [App access and email change](../02-employees/116-app-access-and-email-change.md).
 
 ### Availability (board)
 Tab in **Schedules** that shows, by branch and day, how many people are available out of the total, with their coverage percentage, and lets you see who is missing and why. It shows in grey the days on which nobody should be working (public holiday or closure) and in red the coverage gaps. See [Availability board](../04-calendar-and-schedules/98-availability-board.md).
@@ -32,8 +35,14 @@ Record of the start (`restin`) and end (`restout`) of a break within the working
 
 ## C
 
+### Calendar (schedule mode)
+Way of setting the schedule in which each day carries the shifts loaded for its date in the *shift calendar*. A day with nothing loaded is a day off and people clock in with the usual gesture. It is set on the company, on a branch or on a person. See [Calendar: shifts loaded by date](../04-calendar-and-schedules/114-shift-calendar-by-date.md).
+
 ### Check-in / Check-out
 Record of an employee's entry (check-in) and exit (check-out) time in their working day. They are the fundamental events of time control. A check-in with no corresponding check-out generates an incomplete workday. See also: Clock record / Checklog.
+
+### Clock-in point
+Fixed device at a site, a tablet or a phone, where each person clocks in with their QR card or their 6-digit code and the device takes a photo. It is a paid add-on. In the app it is called *kiosk mode*. See [Clock-in point](../03-time-tracking/113-clock-in-point.md).
 
 ### Clock record / Checklog
 Individual record of a time control action carried out by an employee. A checklog includes: event type (checkin, checkout, restin, restout), GPS coordinates, timestamp, device used and validation status. It is the smallest unit of data in the time control module.
@@ -156,10 +165,13 @@ Concept that **does not apply** in the current version: the clock record always 
 Saved copy of a weekly schedule that is then applied to another branch, to an employee or to the organisation, so as not to configure it day by day. It used to be called a *calendar preset*.
 
 ### Shift
-Time window assigned to an employee for a particular workday, defining their expected start and finish times. Shifts are configured in the back office and associated with the employee's or the branch's effective calendar.
+Time window assigned to an employee for a particular workday, defining their expected start and finish times. Shifts are configured in the back office and associated with the employee's or the branch's effective calendar. In the *Calendar* mode, shifts are loaded date by date instead of repeating every week.
 
 ### Site effect
 Indicator comparing each person's performance **at a particular site** with their own overall performance. The average of those differences across everyone who passes through there measures the effect the site exerts on people, with individual talent already discounted. It answers whether the problem is the person or the place.
+
+### Storage
+Space taken up by what your company uploads: documents, task photos, signatures, reports and clock-in point photos. 2 GB are included; above that, each full GB is billed at €0.25 a month if extra storage is turned on. See [Plans, prices and features](./91-plans-and-features.md#storage).
 
 ### Strict / flexible workday
 Calendar counting mode. With a **strict workday** the official schedule governs: what is worked before or after is not counted, and delays and early exits are deducted. With a **flexible workday** the real time governs: what is worked outside the window is added as extra. The same distinction exists for breaks.
@@ -192,6 +204,9 @@ Mobile device explicitly authorised by the Owner or the Manager so that a partic
 ---
 
 ## V
+
+### Vacation or leave request
+Request a person makes from **My calendar** in the app for some days of vacation, personal days, a medical appointment or other leave. The owner and the administrators approve or reject it in **Contact → Requests**; once approved, the days become an *absence*. See [Vacation and leave from the app](../04-calendar-and-schedules/115-vacation-and-leave-from-the-app.md).
 
 ### Validation token
 Temporary code generated by the system to verify a user's identity in sensitive operations, such as the first sign-in, a password reset or the authorisation of a new device. Validation tokens expire after a given time; the employee's one, after 30 days.

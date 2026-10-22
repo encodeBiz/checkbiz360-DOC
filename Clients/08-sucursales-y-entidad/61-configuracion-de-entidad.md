@@ -82,6 +82,12 @@ Desde **Suscripciones** el Owner consulta el plan contratado y su estado, y desd
 
 La facturación del plan Bronce es **por empleado y mes**: no hay un cupo de empleados incluidos que se pueda agotar. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
 
+### Almacenamiento
+
+Debajo de los módulos contratados, **Suscripciones** enseña el bloque **Almacenamiento**: lo que ocupa su empresa frente a los 2 GB incluidos, repartido entre documentos, tareas, firmas, informes y fotos del punto de fichaje, y lo que se facturaría este mes por encima de lo incluido.
+
+La casilla **Ampliar almacenamiento por encima de 2 GB** viene marcada. Si la desmarca, no se cobra nada de más, pero al llegar a 2 GB no podrá subir más documentos. Al acercarse al límite, el bloque lo avisa. Ver [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md#almacenamiento).
+
 ---
 
 ## Cómo se propaga la configuración a las sucursales

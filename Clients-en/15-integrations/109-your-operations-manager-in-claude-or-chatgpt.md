@@ -94,9 +94,15 @@ In all three cases it shows you the proposal person by person, with the warnings
 
 There is no limit on the number of tasks: if the rota is very large, the assistant loads it in parts and you confirm once at the end. If the week changes, ask it to propose it again with the right version: what was already there is updated and nothing is duplicated. Jobs the person had already started are kept.
 
+### Load shifts by date
+
+If a branch is on the [Calendar](../04-calendar-and-schedules/114-shift-calendar-by-date.md) mode, the assistant loads each person's shifts date by date, without creating tasks: "Marta and Luis, 7 to 15 Monday to Thursday next week; Friday off". It shows you each day with what was there and what will be left, plus any public holidays or absences that fall in between, and writes when you confirm. If it cannot load someone, it tells you why.
+
+It also shows you the week of anyone on Calendar, telling a day **off** apart from one **not loaded**. If what you want is shifts with tasks inside, ask for the rota as in the previous section: it creates the tasks and, on Calendar, also each day's shift. If it is not clear which of the two you want, it asks you.
+
 ### Single changes
 
-Create a task, move it to another day or time, hand it to someone else, cancel it. Also change someone's standard week. Before touching anything it shows you the before and after and waits for your yes.
+Create a task, move it to another day or time, hand it to someone else, cancel it. Also change someone's standard week, or move a person or a whole branch to the Calendar mode and back to the weekly schedule. Before touching anything it shows you the before and after and waits for your yes.
 
 ### Add people and sites
 

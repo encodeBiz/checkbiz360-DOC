@@ -99,6 +99,7 @@ Os erros mais frequentes na utilização diária. Salvo indicação em contrári
 | Código | O que significa | O que fazer |
 |---|---|---|
 | `documents/unauthorized` | Sem permissões para aceder ao documento | Rever a visibilidade por perfil do documento |
+| `documents/storage_full` | A empresa chegou aos 2 GB incluídos e tem a ampliação de armazenamento desativada | Ativar **Ampliar armazenamento** em **Entidade → Subscrições**, ou libertar espaço |
 | `documents/not_found` | O documento não existe ou não é visível para esse utilizador | Verificar que não está arquivado e que o perfil tem visibilidade |
 | `documents/file_required` | Não foi anexado qualquer ficheiro | Anexar o ficheiro antes de guardar |
 | `documents/file_too_large` | O ficheiro ultrapassa o máximo permitido de 10 MB | Comprimir o documento ou dividi-lo |
@@ -159,6 +160,57 @@ Os erros mais frequentes na utilização diária. Salvo indicação em contrári
 | `sub/bad_request` | Os dados enviados não são válidos | Rever o formulário e tentar de novo |
 | `sub/entity_not_found` | A entidade não existe | Verificar a entidade selecionada |
 | `payment/pending` | Há pagamentos pendentes na conta | Regularizar o pagamento a partir da secção de faturação |
+
+---
+
+## Férias e licenças (`absence_request`)
+
+Pedidos a partir da aplicação, «O meu calendário» (aprovam os administradores no painel, **Contacto → Pedidos**).
+
+| Código | Causa |
+|---|---|
+| `absence_request/invalid_type` | O tipo não é `vacation`, `personal`, `medical` nem `other`. |
+| `absence_request/invalid_dates` | Datas não válidas ou fim anterior ao início. |
+| `absence_request/past` | O pedido começa antes de hoje. O passado é registado pela empresa a partir do painel. |
+| `absence_request/too_long` | Mais de 60 dias num só pedido. |
+| `absence_request/note_too_long` | A nota ultrapassa os 500 caracteres. |
+| `absence_request/overlap` | Sobrepõe-se a outro pedido pendente ou aprovado, ou a uma ausência já registada. |
+| `absence_request/not_found` | O pedido não existe ou não é desta pessoa. |
+| `absence_request/not_pending` | Já foi decidido ou cancelado: não se pode cancelar, aprovar nem recusar. |
+| `calendar/forbidden` | A conta não tem ficha de funcionário ativa (rotas da pessoa) ou não tem lugar de administrador (rotas do painel). |
+
+## Calendário de turnos (`calendar`)
+
+Ao carregar turnos por data no modo **Calendário**.
+
+| Código | O que significa | O que fazer |
+|---|---|---|
+| `calendar/days_require_calendar_mode` | A pessoa não está no modo **Calendário** | Escolher **Calendário** no seu horário ou no da sua sucursal |
+| `calendar/day_in_the_past` | Tentou-se alterar um dia anterior a hoje | Os dias passados não se alteram; o de hoje sim |
+| `calendar/bad_request` | Um turno não é válido: a saída não é posterior à entrada, dois turnos cruzam-se ou a data está demasiado longe | Rever as horas do dia indicado |
+| `calendar/invalid_range` / `calendar/range_too_long` | O período pedido não é válido ou é demasiado longo | Consultar um período mais curto |
+| `calendar/schedule_mode_employee_only` | **Horário por tarefas** só se escolhe na ficha de uma pessoa | Defini-lo na pessoa, não na sucursal nem na empresa |
+
+## Ponto de registo (`kiosk`)
+
+| Código | O que significa | O que fazer |
+|---|---|---|
+| `kiosk/not_subscribed` | A empresa não tem o ponto de registo contratado | Contratá-lo a partir de **Ponto de registo** |
+| `kiosk/disabled` | O ponto de registo dessa sucursal está desativado | Ativá-lo a partir do painel |
+| `kiosk/no_branch_geo` | A sucursal não tem a morada geolocalizada | Completar a morada da sucursal |
+| `kiosk/no_branch_kiosk` | A pessoa não tem nenhuma sucursal com ponto de registo, por isso não há cartão para lhe enviar | Ativar o ponto de registo numa das suas sucursais |
+| `kiosk/device_not_eligible` | O dispositivo não cumpre os requisitos: localização, precisão, câmara frontal ou sistema | Ler o motivo no ecrã e corrigi-lo, ou usar outro dispositivo |
+| `kiosk/out_of_radius` | O dispositivo está mais longe do local do que o permitido | Levá-lo para o local, rever a morada ou alargar o raio |
+| `kiosk/suspended` | O ponto de registo está em pausa porque o dispositivo saiu do raio ou perdeu precisão | Volta sozinho quando voltar a cumprir |
+| `kiosk/replaced` | Entrou-se com as mesmas credenciais noutro dispositivo | Normal ao trocar de tablet; caso contrário, regenerar as credenciais |
+| `kiosk/revoked` | A sessão do dispositivo foi terminada a partir do painel | Voltar a entrar com as credenciais |
+| `kiosk/code_not_found` | O QR ou o código não é de ninguém nesta empresa, ou foi regenerado | Entregar o cartão ou o código atuais |
+| `kiosk/too_many_attempts` | Vários códigos errados seguidos | Aguardar os segundos que o ecrã indica |
+| `kiosk/employee_not_in_branch` | A pessoa não está atribuída a essa sucursal | Atribuí-la a partir da sua ficha |
+| `kiosk/session_expired` | Passou demasiado tempo entre identificar-se e registar | Voltar a aproximar o QR ou a escrever o código |
+| `kiosk/photo_required` / `kiosk/photo_upload_failed` | Falta a foto, ou não foi possível guardá-la e o registo não foi feito | Repetir o registo olhando para a câmara |
+| `kiosk/unlock_invalid` | O PIN para sair do modo quiosque não está correto | Consultar o PIN em **Ver credenciais** |
+| `kiosk/invalid_radius` | O raio está fora do intervalo permitido | Escolher um valor dentro do intervalo que o painel indica |
 
 ---
 

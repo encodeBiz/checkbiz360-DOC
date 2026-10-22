@@ -38,10 +38,11 @@ This article gathers the fourteen most frequent technical and operational situat
 
 **Resolution steps:**
 
-1. Ask the employee to check their junk or spam folder.
-2. Verify in the back office, inside the employee's profile, that the email address is written correctly (no spaces, no typos).
-3. If the address is correct and the email does not appear in any folder, go to the employee's profile and press **Resend invitation**.
-4. If after resending the email it still does not arrive, check with the employee whether their company has corporate mail filters that may be blocking messages from @encodebiz.com. In that case, that domain will have to be added to the allowed senders list.
+1. Open the employee's record and look at the **App access** block. It says whether the email was **Delivered**, whether it **Bounced**, whether it was **Marked as spam** or whether it **Could not be sent**.
+2. If it was delivered, ask the employee to check their junk or spam folder.
+3. If it bounced or was rejected, the address is wrong. Correct it with **Change email** and tick **Send access to the new email**.
+4. If the address is correct and the email does not appear in any folder, press **Resend access**.
+5. If after resending the email it still does not arrive, check with the employee whether their company has corporate mail filters that may be blocking messages from @encodebiz.com. In that case, that domain will have to be added to the allowed senders list.
 
 ---
 

@@ -11,7 +11,7 @@ This article explains how to create an employee from scratch, which fields are r
 ### Required fields
 
 - **Full name** — First name and surnames as they should appear in the records.
-- **Email address** — Unique address on the platform. It is the employee's identifier and the address the initial access is sent to. **It cannot be changed once the profile has been created.**
+- **Email address** — Unique address on the platform. It is the employee's identifier and the address the initial access is sent to. It is changed separately, with **Change email**, because it is what the person uses to sign in to the app. See [App access and email change](116-app-access-and-email-change.md).
 - **Phone** — Contact number, with international dialling code.
 - **Relationship type** — *Staff* (company personnel) or *Collaborator* (external, freelance or service provider). It appears on the record next to the status, and it is not a minor detail: collaborators **are not included in the working-time record report**, which is mandatory for the employment relationship. See [Roles and responsibility levels](07-roles-and-responsibility-levels.md#relationship-type-internal-versus-contractor).
 
@@ -30,6 +30,8 @@ This article explains how to create an employee from scratch, which fields are r
 ### Automatic welcome email
 
 On saving the profile, CheckBiz360 automatically sends the employee an email with the instructions for activating their account and accessing the mobile app. No further action is required from the administrator.
+
+On the record, the **App access** block says whether that email was delivered, whether it bounced or whether the person is already using the app. You can resend the access from there. It is explained in [App access and email change](116-app-access-and-email-change.md).
 
 ---
 
@@ -87,7 +89,7 @@ To change the status, open the employee's profile, press **Edit** and select the
 4. Select **Edit** and make the changes.
 5. Save.
 
-Changes take effect immediately. The email address is the only piece of data that cannot be changed.
+Changes take effect immediately. The email address is changed with its own button, **Change email**, which explains everything it involves before you confirm.
 
 ---
 
@@ -122,3 +124,4 @@ If you are starting with a staff of thirty or forty people, there is no need to 
 - [Assign employees to branches](../08-branches-and-organisation/60-assign-employees-to-branches.md)
 - [Export the employee list](12-export-employee-list.md)
 - [Teams](99-teams.md)
+- [App access and email change](116-app-access-and-email-change.md)

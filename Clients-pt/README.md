@@ -58,6 +58,7 @@ Criação, configuração, perfis e segurança dos funcionários na plataforma.
 | Verificação biométrica e dispositivos de confiança | **Disponível** | Configurável por funcionário a partir da aplicação. |
 | Funcionários atribuídos a várias entidades | **Disponível** | Seletor de entidade no início de sessão. |
 | Entrada de sucursais e equipa a partir de Excel | **Disponível** | Um modelo com duas folhas; revê-se o que vai ser criado antes de confirmar; as boas-vindas à aplicação enviam-se no fim, quando decidir. |
+| Estado do acesso à aplicação, reenviar acesso e alterar e-mail | **Disponível** | A ficha diz se o correio de acesso foi entregue ou devolvido e se a pessoa já usa a aplicação; a página inicial avisa do que não chegou. |
 | Exportação do diretório de funcionários | **Planeada** | A lista consulta-se e filtra-se no ecrã, sem ficheiro descarregável. |
 
 | Artigo | Descrição |
@@ -71,6 +72,7 @@ Criação, configuração, perfis e segurança dos funcionários na plataforma.
 | [Exportar a lista de funcionários](02-funcionarios/12-exportar-lista-de-funcionarios.md) | Estado da funcionalidade, alternativas disponíveis e RGPD |
 | [Equipas](02-funcionarios/99-equipas.md) | Criar equipas, aplicá-las a uma sucursal e guardar uma sucursal como equipa |
 | [Dar entrada a sucursais e equipa a partir de Excel](02-funcionarios/110-dar-entrada-a-sucursais-e-equipa-a-partir-de-excel.md) | Centros e pessoas de uma vez, com revisão antes de criar o que quer que seja e as boas-vindas à parte |
+| [Acesso à aplicação e alteração de e-mail](02-funcionarios/116-acesso-a-aplicacao-e-alteracao-de-email.md) | Saber se o acesso chegou, reenviá-lo, alterar o e-mail e enviar o cartão do ponto de registo |
 
 ---
 
@@ -89,6 +91,7 @@ Como funciona o sistema de registo de ponto: validações, tipos de registo, geo
 | Revisão e validação de registos pelo responsável | **Disponível** | Fluxo de aprovação, recusa e resolução; uma correção recusada deixa o registo como estava. |
 | Rastreabilidade e histórico de alterações imutável | **Disponível** | Registo de pedidos e alterações com auditoria. |
 | Deteção de registo suspeito | **Disponível** | Indicador automático baseado em padrões anómalos. |
+| Ponto de registo: dispositivo do local com QR ou código e foto | **Parcialmente disponível** | Complemento pago. Contrata-se e gere-se no painel; o dispositivo precisa da próxima versão da aplicação, em publicação. |
 
 | Artigo | Descrição |
 |---|---|
@@ -102,6 +105,7 @@ Como funciona o sistema de registo de ponto: validações, tipos de registo, geo
 | [Revisão e validação de registos](03-controlo-de-horarios/20-revisao-e-validacao-de-registos.md) | Fluxo de aprovação, recusa e resolução pelo responsável |
 | [Rastreabilidade e histórico de alterações](03-controlo-de-horarios/21-rastreabilidade-e-historico-de-alteracoes.md) | requestUpdates, imutabilidade e utilização em auditorias |
 | [Estados e códigos de erro](03-controlo-de-horarios/22-estados-e-codigos-de-erro.md) | Tabelas de estados e códigos de erro com causas e soluções |
+| [Ponto de registo](03-controlo-de-horarios/113-ponto-de-registo.md) | Registar o ponto a partir de um tablet do local com QR ou código e uma foto, sem biometria |
 
 ---
 
@@ -123,6 +127,8 @@ Configuração de turnos, horários base, calendários laborais e exceções ind
 | Turnos rotativos (alternância A/B automática) | **Planeada** | Hoje resolve-se com uma sucursal por turno ou com horário próprio do funcionário. |
 | Escala semanal a partir de um modelo de Excel | **Disponível** | A semana de toda uma sucursal num só carregamento, uma folha por pessoa e revisão antes de aplicar; também a de uma pessoa a partir da sua ficha. |
 | Horário por tarefas (a jornada de cada dia são as suas tarefas) | **Parcialmente disponível** | Escolhe-se por pessoa na sua ficha. A sua aplicação precisa da próxima versão para o mostrar: não o ative ainda. |
+| Calendário: turnos carregados por data | **Disponível** | Na empresa, numa sucursal ou numa pessoa; calendário de turnos semanal, copiar para a semana seguinte e carregamento a partir da escala de Excel. |
+| Férias e licenças pedidas a partir da aplicação | **Parcialmente disponível** | Aprovam-se em Contacto → Pedidos. O ecrã da aplicação e o separador do painel chegam com a sua próxima versão. |
 
 | Artigo | Descrição |
 |---|---|
@@ -135,6 +141,8 @@ Configuração de turnos, horários base, calendários laborais e exceções ind
 | [Feriados e dias não úteis](04-calendario-e-horarios/29-feriados-e-dias-nao-uteis.md) | Tipos de feriado, ausências de funcionário, bloqueio de registos, setores que trabalham em feriado |
 | [Quadro de disponibilidade](04-calendario-e-horarios/98-quadro-de-disponibilidade.md) | Cobertura por sucursal e dia, detalhe de quem falta e dias livres a partir do quadro |
 | [Importar a escala semanal](04-calendario-e-horarios/108-importar-a-escala-semanal.md) | A semana de toda a equipa de uma filial num só carregamento, ou a de uma pessoa a partir da sua ficha |
+| [Calendário: turnos carregados por data](04-calendario-e-horarios/114-calendario-de-turnos-por-data.md) | O terceiro modo do horário: cada dia com os seus turnos, carregados à mão, copiados ou a partir de Excel |
+| [Férias e licenças a partir da aplicação](04-calendario-e-horarios/115-ferias-e-licencas-a-partir-da-aplicacao.md) | «O meu calendário» na aplicação, pedir férias ou licença e aprová-lo no painel |
 
 ---
 
@@ -255,6 +263,7 @@ Criação e configuração de sucursais, atribuição de funcionários e vista g
 | Configuração avançada de sucursal (geocerca, pausas, tolerância) | **Disponível** | Todos os parâmetros operacionais configuráveis. |
 | Atribuir funcionários a sucursais com responsabilidades | **Disponível** | Multi-sucursal com calendário efetivo por atribuição. |
 | Configuração da entidade (dados fiscais, fuso horário) | **Disponível** | Propagação de alterações às sucursais dependentes. |
+| Armazenamento por empresa | **Disponível** | 2 GB incluídos; acima disso, 0,25 € por GB completo se a ampliação estiver ativada. Consulta-se em Entidade → Subscrições. |
 | Colaboradores do backoffice (proprietário e administrador) | **Disponível** | Convite, mudança de perfil e remoção; a entidade nunca fica sem proprietário ativo. |
 | Vista global multi-sucursal | **Disponível** | A página inicial mostra o hoje por centro e os alertas; o painel de Operação compara os centros por período. |
 
@@ -278,10 +287,11 @@ Tipos de notificação gerados automaticamente pelo sistema para funcionários e
 | Notificações push por eventos (assiduidade, documentos, tarefas) | **Disponível** | Enviadas automaticamente em cada evento relevante. |
 | Alertas para responsáveis (funcionário sem registo, registo suspeito) | **Disponível** | Visíveis no backoffice e na aplicação do supervisor. |
 | Centro de notificações na aplicação e no backoffice | **Parcialmente disponível** | Notificações visíveis enquanto não são descartadas; sem histórico persistente. |
-| Correio de boas-vindas e reposição de palavra-passe | **Disponível** | Únicos correios automáticos do sistema na V1. |
+| Correio de boas-vindas e reposição de palavra-passe | **Disponível** | Com o estado de entrega na ficha do funcionário e o reenvio do acesso. |
+| Avisos de tarefas e horário semanal por correio, para quem não usa a aplicação | **Disponível** | Caixa por pessoa em Horários e feriados; nada do registo de ponto. |
 | Preferências de notificação configuráveis por utilizador | **Planeada** | Planeada para uma versão futura. |
 | Histórico persistente de notificações | **Planeado** | Planeado para uma versão futura. |
-| Notificações por email adicionais (alertas operacionais, resumos) | **Planeada** | Planeada para uma versão futura. |
+| Alertas operacionais por correio aos responsáveis | **Planeada** | Planeada para uma versão futura. |
 
 | Artigo | Descrição |
 |---|---|
@@ -290,7 +300,7 @@ Tipos de notificação gerados automaticamente pelo sistema para funcionários e
 | [Configurar preferências de notificação](09-notificacoes/65-configurar-preferencias-de-notificacao.md) | Eventos notificados na V1; preferências configuráveis no roadmap |
 | [Alertas para responsáveis](09-notificacoes/66-alertas-para-responsaveis.md) | Funcionário que não registou, registo suspeito, jornada manual pendente |
 | [Histórico de notificações](09-notificacoes/67-historico-de-notificacoes.md) | Centro de notificações na V1; histórico persistente no roadmap |
-| [Notificações por email](09-notificacoes/68-notificacoes-por-email.md) | Boas-vindas e reposição na V1; alertas adicionais no roadmap |
+| [Notificações por email](09-notificacoes/68-notificacoes-por-email.md) | Boas-vindas e estado do acesso, avisos de trabalho por correio, aviso de armazenamento; alertas operacionais no roadmap |
 
 ---
 
@@ -395,14 +405,14 @@ Glossário, códigos de erro, planos e perguntas frequentes.
 |---|---|---|
 | Glossário de termos da plataforma | **Disponível** | Termos principais definidos, incluindo os de tarefas e IA. |
 | Tabela completa de códigos de erro | **Disponível** | Todos os códigos do dicionário, por módulo, com causa e solução. |
-| Planos e preços (Bronze e Empresarial) | **Disponível** | Preço, período experimental, módulos incluídos e roadmap. |
+| Planos e preços (Bronze e Empresarial) | **Disponível** | Preço, período experimental, módulos incluídos, complementos, armazenamento e roadmap. |
 | Perguntas frequentes de avaliação | **Disponível** | 20 perguntas e respostas para clientes que avaliam a plataforma. |
 
 | Artigo | Descrição |
 |---|---|
 | [Glossário](14-referencia/89-glossario.md) | Definições dos termos principais da plataforma |
 | [Códigos de erro completos](14-referencia/90-codigos-de-erro-completos.md) | Tabela de todos os códigos de erro com causa e solução |
-| [Planos, preços e funcionalidades](14-referencia/91-planos-e-funcionalidades.md) | Preço de cada plano, período experimental, módulos incluídos e roadmap |
+| [Planos, preços e funcionalidades](14-referencia/91-planos-e-funcionalidades.md) | Preço de cada plano, período experimental, módulos incluídos, complementos, armazenamento e roadmap |
 | [Perguntas frequentes](14-referencia/92-perguntas-frequentes.md) | 20 perguntas e respostas para clientes que avaliam a plataforma |
 
 ### 15. Integrações
@@ -471,9 +481,9 @@ Complemento pago: o material ligado à tarefa, à pessoa, ao sítio e à hora.
 DOCS/Clients-pt/
 ├── README.md                           (este índice)
 ├── 01-primeiros-passos/                (5 artigos)
-├── 02-funcionarios/                    (9 artigos)
-├── 03-controlo-de-horarios/            (10 artigos)
-├── 04-calendario-e-horarios/           (9 artigos)
+├── 02-funcionarios/                    (10 artigos)
+├── 03-controlo-de-horarios/            (11 artigos)
+├── 04-calendario-e-horarios/           (11 artigos)
 ├── 05-gestao-documental/               (9 artigos)
 ├── 06-tarefas/                         (11 artigos)
 ├── 07-inteligencia-operacional/        (9 artigos)
@@ -488,4 +498,4 @@ DOCS/Clients-pt/
 └── 16-inventario/                      (8 artigos)
 ```
 
-**Total: 112 artigos**
+**Total: 116 artigos**

@@ -6,17 +6,23 @@ Este glosario recoge los términos operativos más relevantes de CheckBiz360, or
 
 ## A
 
+### Acceso a la app
+Bloque de la ficha del empleado que dice si le llegó el correo de bienvenida y si ya usa la app, y desde el que se reenvía el acceso o se cambia el correo. Véase [Acceso a la app y cambio de correo](../02-empleados/116-acceso-a-la-app-y-cambio-de-correo.md).
+
 ### Acuse de recibo
 Confirmación explícita de que un empleado ha accedido a un documento que lo requiere. Queda registrada con la fecha y la versión concreta del documento que se leyó, de modo que una versión posterior no hereda el acuse de la anterior. No es una firma electrónica: la firma con validez eIDAS está en el roadmap.
 
 ### Ajuste de horario
 Concepto que **no aplica** en la versión actual: el fichaje guarda siempre la hora real y no se redondea. Lo que decide si el tiempo trabajado fuera de la franja oficial se computa es la modalidad de *jornada estricta o flexible* del calendario.
 
+### Almacenamiento
+Espacio que ocupa lo que sube su empresa: documentos, fotos de tareas, firmas, informes y fotos del punto de fichaje. Hay 2 GB incluidos; por encima, cada GB completo se factura a 0,25 € al mes si la ampliación está activada. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md#almacenamiento).
+
 ### Asistente de IA (Merlin)
 Componente de inteligencia artificial que interpreta los datos operativos y los expone como un relato accionable en el panel operativo, en el detalle de sucursal y en el detalle de empleado. Narra y prioriza sobre las cifras que ya muestra la pantalla: no recalcula ni genera datos propios, de forma que su lectura no puede contradecir a los paneles. También narra la guía inicial del backoffice.
 
 ### Ausencia
-Día o rango de días no laborables propios de un empleado: vacaciones, permisos, días libres. Se suma a los festivos de su entidad y su sucursal, bloquea su fichaje esos días y puede marcarse como *retribuida*, *no retribuida* o *sin definir*.
+Día o rango de días no laborables propios de un empleado: vacaciones, permisos, días libres. Se suma a los festivos de su entidad y su sucursal, bloquea su fichaje esos días y puede marcarse como *retribuida*, *no retribuida* o *sin definir*. La registra la empresa, o nace al aprobar una *solicitud de vacaciones o permiso*.
 
 ---
 
@@ -28,6 +34,9 @@ Configuración que obliga a un empleado a autenticarse mediante huella dactilar 
 ---
 
 ## C
+
+### Calendario (modo de horario)
+Forma de organizar el horario en la que cada día lleva los turnos que se le cargan por fecha en el *calendario de turnos*. Un día sin cargar es libre y se ficha con el gesto de siempre. Se pone en la empresa, en una sucursal o en una persona. Véase [Calendario: turnos cargados por fecha](../04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md).
 
 ### Calendario efectivo
 Configuración que define los días laborables y festivos para una sucursal o para un empleado concreto. El calendario efectivo determina qué días el sistema espera fichajes y qué días se consideran libres o festivos. Se configura desde el backoffice en la sección de calendarios.
@@ -176,6 +185,9 @@ Pantalla del backoffice que consolida la actividad del periodo en tres vistas: l
 ### Plan de suscripción
 Modalidad de contratación de CheckBiz360. Hay dos: **Bronce**, 5 €/empleado al mes (tarifa 2026 de 2 € contratando hasta el 31 de diciembre de 2026 incluido), y **Empresarial**, con precio a medida, que añade soporte preferente e integraciones. Ambos dan acceso a todos los módulos de la plataforma. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md).
 
+### Punto de fichaje
+Dispositivo fijo en un centro, tablet o móvil, donde cada persona ficha con su tarjeta QR o su código de 6 cifras y el dispositivo hace una foto. Es un complemento de pago. En la app se llama *modo quiosco*. Véase [Punto de fichaje](../03-control-horario/113-punto-de-fichaje.md).
+
 ### Puntuación de promoción
 Índice único que combinaría fiabilidad, eficiencia y valoraciones en una sola cifra comparable entre empleados. **No existe en la versión actual**: lo que sí hay es la *evaluación operativa del empleado*, un diagnóstico de su patrón que incluye la señal de candidato a promoción. Véase [Evaluación operativa del empleado](../07-inteligencia-operativa/53-puntuacion-de-promocion.md).
 
@@ -199,6 +211,9 @@ Nivel de acceso y permisos de un usuario dentro de CheckBiz360. Los roles dispon
 
 ## S
 
+### Solicitud de vacaciones o permiso
+Petición que hace una persona desde **Mi calendario** en la app para unos días de vacaciones, asuntos propios, médico u otro permiso. La aprueban o rechazan el propietario y los administradores en **Contacto → Solicitudes**; al aprobarla, los días quedan como *ausencia*. Véase [Vacaciones y permisos desde la app](../04-calendario-y-horarios/115-vacaciones-y-permisos-desde-la-app.md).
+
 ### Sucursal / Branch
 Unidad organizativa dentro de una entidad que representa un centro de trabajo, una delegación o cualquier agrupación geográfica o funcional de empleados. Cada sucursal tiene sus propias coordenadas, radio de fichaje, horarios, calendario efectivo y configuración de control horario.
 
@@ -219,7 +234,7 @@ Código temporal generado por el sistema para verificar la identidad de un usuar
 Configuración que permite a un empleado realizar fichajes desde una ubicación diferente a la geocerca de su sucursal. Cuando está activa, el sistema acepta fichajes fuera del radio habitual sin generar el error `checklog/out_of_radius`. Debe activarse explícitamente por el Owner o Manager. Antes se llamaba *Trabajo remoto*.
 
 ### Turno
-Franja horaria asignada a un empleado para una jornada concreta, que define su hora de inicio y fin de trabajo esperados. Los turnos se configuran en el backoffice y se asocian al calendario efectivo del empleado o la sucursal.
+Franja horaria asignada a un empleado para una jornada concreta, que define su hora de inicio y fin de trabajo esperados. Los turnos se configuran en el backoffice y se asocian al calendario efectivo del empleado o la sucursal. En el modo *Calendario*, los turnos se cargan fecha a fecha en lugar de repetirse cada semana.
 
 ---
 

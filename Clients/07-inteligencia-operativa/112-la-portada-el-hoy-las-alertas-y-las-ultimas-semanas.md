@@ -32,6 +32,7 @@ Arriba del todo, si hay algo que mirar, una lista de alertas con un **Ver** que 
 | **Faltan tarifas** | Una parte de las horas del mes no tiene tarifa: el coste estimado se queda corto. |
 | **Muchas bajas** | Este mes hay muchas bajas en proporción a la plantilla activa. |
 | **Disponibilidad baja** | Un día de esta semana tiene menos de un tercio de la gente disponible. |
+| **Acceso que no ha llegado** | A alguien no le ha llegado el correo de acceso a la app: rebotó, se marcó como spam o no salió. Dice a quién. Ver [Acceso a la app y cambio de correo](../02-empleados/116-acceso-a-la-app-y-cambio-de-correo.md). |
 
 ---
 
@@ -98,9 +99,11 @@ Es una estimación: horas registradas por la tarifa de cada puesto, sin cargas s
 
 ---
 
-## Coste estimado de CheckBiz este mes
+## Coste estimado de CheckBiz360 este mes
 
 Lo que le costará la suscripción este mes, calculado con su plantilla de hoy y la tarifa de cada servicio contratado, IVA no incluido. Cuenta la plantilla activa más los despedidos que han fichado este mes, igual que la factura, y cambia sola si entra o sale alguien. Si está en periodo de prueba, dice hasta cuándo; si tiene un precio a medida, lo indica sin cifra.
+
+También suma los complementos. Con el **Punto de fichaje**, una línea con los puntos de fichaje activos y su tramo. Si su empresa pasa de los 2 GB de **Almacenamiento** incluidos, otra con los GB de más.
 
 ---
 

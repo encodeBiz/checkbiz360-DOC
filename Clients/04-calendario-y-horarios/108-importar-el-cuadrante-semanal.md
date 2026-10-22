@@ -92,6 +92,12 @@ Su jornada de cada día va de la primera hora del primer trabajo a la última de
 
 ---
 
+### Si la sucursal está en «Calendario»
+
+Para quien está en el modo [Calendario](114-calendario-de-turnos-por-fecha.md), cada fecha de la plantilla carga además el turno de ese día, de la primera a la última hora de sus trabajos. Un día sin trabajos queda libre. Una plantilla con varias semanas carga todas sus fechas, y las fechas pasadas se saltan. El importador no cambia el modo de nadie.
+
+---
+
 ## Volver a subir la misma semana
 
 Si la semana cambia, rellene la plantilla con la versión buena y súbala otra vez:

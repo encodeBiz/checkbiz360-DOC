@@ -82,6 +82,12 @@ A partir de **Subscrições** o Owner consulta o plano contratado e o seu estado
 
 A faturação do plano Bronze é **por funcionário e mês**: não há uma quota de funcionários incluídos que se possa esgotar. Consulte [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md).
 
+### Armazenamento
+
+Por baixo dos módulos contratados, **Subscrições** mostra o bloco **Armazenamento**: o que a sua empresa ocupa face aos 2 GB incluídos, repartido entre documentos, tarefas, assinaturas, relatórios e fotos do ponto de registo, e o que seria faturado este mês acima do incluído.
+
+A caixa **Ampliar armazenamento acima de 2 GB** vem marcada. Se a desmarcar, não se cobra nada a mais, mas ao chegar aos 2 GB não poderá carregar mais documentos. Ao aproximar-se do limite, o bloco avisa. Ver [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md#armazenamento).
+
 ---
 
 ## Como a configuração se propaga às sucursais

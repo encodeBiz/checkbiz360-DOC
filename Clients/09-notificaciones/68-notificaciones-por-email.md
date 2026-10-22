@@ -21,15 +21,23 @@ Cuando el Owner o un Manager añade un nuevo empleado a la plataforma y envía l
 
 Este correo es el primer punto de contacto del empleado con la plataforma y es fundamental para que pueda activar su cuenta. Por ello, es especialmente importante que la dirección de email del empleado sea correcta en el momento de crear su ficha.
 
-### Reenvío de invitación
+### Saber si llegó y reenviar el acceso
 
-Si el empleado no ha podido activar su cuenta (no encontró el correo, expiró el enlace o ingresó datos incorrectos), el responsable puede reenviar la invitación desde el backoffice:
+En la ficha de cada empleado, el bloque **Acceso a la app** dice qué ha pasado con su correo de bienvenida: entregado, rebotado, marcado como spam o sin enviar. También dice si la persona ya ha usado la app. Si el correo no ha llegado, la portada del panel lo avisa con la alerta **Acceso que no ha llegado**.
 
-1. Navegue a **Empleados** y abra la ficha del empleado cuya invitación desea reenviar.
-2. Localice el indicador de estado de la cuenta. Si la cuenta no está activada, aparecerá el botón **Reenviar invitación**.
-3. Pulse el botón. El sistema enviará un nuevo correo de bienvenida con una nueva contraseña temporal a la dirección de email del empleado.
+Para mandarlo otra vez:
 
-> **Aviso:** Reenviar la invitación invalida la contraseña temporal anterior. Si el empleado ya había recibido la primera invitación y la estaba usando, deberá emplear la nueva contraseña del segundo envío.
+1. Navegue a **Empleados** y abra la ficha del empleado.
+2. En **Acceso a la app**, pulse **Reenviar acceso**.
+3. Confirme. El sistema envía un nuevo correo de bienvenida con una contraseña nueva.
+
+> **Aviso:** Reenviar el acceso invalida la contraseña anterior, también para el panel si la persona lo usa. Si el correo rebotó, la dirección está mal: cámbiela con **Cambiar correo** y mande el acceso a la nueva.
+
+Se explica entero en [Acceso a la app y cambio de correo](../02-empleados/116-acceso-a-la-app-y-cambio-de-correo.md).
+
+### Tarjeta del punto de fichaje
+
+Con el [punto de fichaje](../03-control-horario/113-punto-de-fichaje.md) contratado, cada persona puede recibir por correo su tarjeta, con su QR y su código de 6 cifras. Se envía desde la ficha del empleado o para toda una sucursal desde **Punto de fichaje → Tarjetas QR**.
 
 ### Restablecimiento de contraseña
 
@@ -42,12 +50,25 @@ El correo incluye:
 
 ---
 
-## Notificaciones por email adicionales y fallback
+## Avisos de trabajo por correo, para quien no usa la app
+
+Hay personas que no llevan la app, o que no la miran. Para ellas, en **Horarios y festivos** de su ficha está la casilla **Enviar notificaciones por email**. Con ella marcada, además de los avisos de la app, recibe por correo:
+
+- **Sus tareas**: las que le asignan, le cambian o le retiran. Llegan agrupadas para no llenarle el buzón: el correo sale cuando pasan 15 minutos sin cambios nuevos. Si la tarea empieza en las próximas 24 horas, el aviso sale al momento.
+- **Su horario de la semana siguiente**, el domingo a las 18:00 en la hora de la empresa, con sus turnos, sus tareas y el lugar de cada una. Si no ha cambiado nada desde el último envío, no se repite.
+
+Nada del fichaje va por correo. La casilla viene desmarcada y se marca persona a persona.
+
+## Aviso de almacenamiento
+
+Cuando su empresa llega al 90 % del almacenamiento incluido en su plan, el propietario recibe un correo en la dirección de facturación. Se manda una sola vez. Vuelve a mandarse solo si el uso baja del 80 % y después sube otra vez. Ver [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md#almacenamiento).
+
+## Alertas operativas por correo
 
 > **Estado: Pendiente de desarrollo**
 > Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
 
-El envío de notificaciones operativas por email (alertas de eventos, recordatorios de acuse de recibo, avisos de tareas, etc.) y el mecanismo de fallback automático por email cuando una notificación push no puede entregarse al dispositivo del usuario están planificados para una versión futura de la plataforma.
+El envío por correo de las alertas de la portada a los responsables, y el respaldo automático por correo cuando una notificación push no llega al dispositivo, están planificados para una versión futura.
 
 ---
 
@@ -57,13 +78,13 @@ Si un empleado o responsable no recibe un correo esperado del sistema, siga esto
 
 1. **Revise la carpeta de spam o correo no deseado** en el cliente de correo. Los correos de `hola@encodebiz.com` pueden ser clasificados incorrectamente la primera vez.
 2. **Verifique la dirección de email** del destinatario en el backoffice. Acceda a la ficha del empleado o usuario y confirme que la dirección está escrita correctamente y sin espacios adicionales.
-3. **Reenvíe la invitación** si se trata del correo de bienvenida (véase el apartado anterior).
+3. **Mire el bloque Acceso a la app** de su ficha si se trata del correo de bienvenida: dice si se entregó, si rebotó o si se marcó como spam. Después, **reenvíe el acceso** (véase el apartado anterior).
 4. **Contacte con el administrador de TI** de su organización para verificar que el dominio `encodebiz.com` no está bloqueado o en cuarentena.
 5. Si el problema persiste, contacte con el soporte de CheckBiz360 indicando la dirección de email del destinatario y el tipo de correo que no está llegando.
 
 ---
 
-> **Nota de rol:** Los correos de bienvenida y restablecimiento de contraseña van dirigidos a todos los usuarios independientemente de su rol. El reenvío de invitaciones puede realizarlo el **Owner** y el **Manager**.
+> **Nota de rol:** Los correos de bienvenida y restablecimiento de contraseña van dirigidos a todos los usuarios independientemente de su rol. Reenviar el acceso y cambiar el correo puede hacerlo quien edita las fichas de los empleados: el **Owner**, los administradores y el **Manager**.
 
 ## Artículos relacionados
 

@@ -53,6 +53,7 @@ Inheritance does not work the same way for every parameter. In general terms:
 - The **public holiday calendar** accumulates: the organisation's holidays plus the branch's own holidays make up the non-working day calendar for that branch's employees.
 - The **shift schedule** is replaced: if the branch has its own schedule, it completely replaces the organisation's. They are not merged.
 - An employee's **individual exceptions** completely replace the higher level's schedule for the dates or days they apply to.
+- How the **schedule is set** is inherited too: if a branch is on **Calendar**, its employees are as well, except anyone with another mode on their record. **Schedule from tasks** is the exception: it is only chosen on each person's record. See [Calendar: shifts loaded by date](114-shift-calendar-by-date.md).
 
 > **Note:** The accumulation behaviour for holidays means an employee at a local branch can inherit both the organisation's national holidays and their branch's local holidays. This is intentional and reflects the regulatory reality of most companies.
 
@@ -99,3 +100,4 @@ The employee may have an individual exception marking that day as a working day.
 - [Rotating shifts](27-rotating-shifts.md) — not available in the current version; alternatives
 - [Strict and flexible workday](28-flexible-schedule.md)
 - [Public holidays and non-working days](29-public-holidays-and-non-working-days.md)
+- [Calendar: shifts loaded by date](114-shift-calendar-by-date.md)

@@ -96,7 +96,7 @@ Consulte diretamente o administrador ou manager da sua organização. Só o admi
 
 ## Nota de perfil
 
-Este artigo dirige-se a **funcionários** que iniciam sessão no CheckBiz360 pela primeira vez. Se for administrador e precisar de registar utilizadores ou reenviar correios de ativação, consulte a documentação de gestão de utilizadores no painel de administração.
+Este artigo dirige-se a **funcionários** que iniciam sessão no CheckBiz360 pela primeira vez. Se for administrador e precisar de saber se o acesso chegou a alguém, reenviá-lo ou alterar-lhe o e-mail, consulte [Acesso à aplicação e alteração de e-mail](../02-funcionarios/116-acesso-a-aplicacao-e-alteracao-de-email.md).
 
 ---
 

@@ -92,6 +92,12 @@ Their working day runs from the start of the first job to the end of the last on
 
 ---
 
+### If the branch is on "Calendar"
+
+For anyone on the [Calendar](114-shift-calendar-by-date.md) mode, each date in the template also loads that day's shift, from the first to the last time of their jobs. A day with no jobs is left as a day off. A template with several weeks loads all its dates, and past dates are skipped. The importer does not change anyone's mode.
+
+---
+
 ## Uploading the same week again
 
 If the week changes, fill in the template with the right version and upload it again:

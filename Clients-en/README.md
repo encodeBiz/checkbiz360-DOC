@@ -58,6 +58,7 @@ Creating, configuring and securing employees on the platform, and their roles.
 | Biometric verification and trusted devices | **Available** | Configurable per employee from the app. |
 | Employees assigned to several organisations | **Available** | Organisation picker at sign-in. |
 | Adding branches and staff from Excel | **Available** | One template with two sheets; you review what will be created before confirming; the app welcome goes out at the end, when you decide. |
+| App access status, resending access and changing the email | **Available** | The record says whether the access email was delivered or bounced and whether the person already uses the app; the home page warns you about the one that has not arrived. |
 | Exporting the employee directory | **Planned** | The list is viewed and filtered on screen, with no downloadable file. |
 
 | Article | Description |
@@ -71,6 +72,7 @@ Creating, configuring and securing employees on the platform, and their roles.
 | [Export the employee list](02-employees/12-export-employee-list.md) | Status of the feature, available alternatives and GDPR |
 | [Teams](02-employees/99-teams.md) | Create teams, apply them to a branch and save a branch as a team |
 | [Add branches and staff from Excel](02-employees/110-add-branches-and-staff-from-excel.md) | Sites and people in one go, reviewed before anything is created, with the welcome sent separately |
+| [App access and email change](02-employees/116-app-access-and-email-change.md) | Knowing whether the access arrived, resending it, changing the email and sending the clock-in point card |
 
 ---
 
@@ -89,6 +91,7 @@ How the clock-in system works: validations, record types, geofences and workday 
 | Review and approval of clock records by a manager | **Available** | Approval, rejection and resolution flow; a rejected correction leaves the clock record as it was. |
 | Traceability and immutable change history | **Available** | Requests and changes recorded with an audit trail. |
 | Suspicious clock-in detection | **Available** | Automatic indicator based on anomalous patterns. |
+| Clock-in point: a device at the site with QR or code and a photo | **Partially available** | Paid add-on. Subscribed and managed in the panel; the device needs the next version of the app, which is being published. |
 
 | Article | Description |
 |---|---|
@@ -102,6 +105,7 @@ How the clock-in system works: validations, record types, geofences and workday 
 | [Review and approval of clock records](03-time-tracking/20-reviewing-and-approving-clock-records.md) | Approval, rejection and resolution flow for managers |
 | [Traceability and change history](03-time-tracking/21-traceability-and-change-history.md) | requestUpdates, immutability and use in audits |
 | [Statuses and error codes](03-time-tracking/22-statuses-and-error-codes.md) | Status and error-code tables with causes and solutions |
+| [Clock-in point](03-time-tracking/113-clock-in-point.md) | Clocking in from a tablet at the site with a QR or code and a photo, no biometrics |
 
 ---
 
@@ -123,6 +127,8 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | Rotating shifts (automatic A/B alternation) | **Planned** | Covered today with one branch per shift or with an employee-specific schedule. |
 | Weekly schedule from an Excel template | **Available** | A whole branch's week in one upload, one sheet per person, reviewed before applying; also one person's week from their profile. |
 | Schedule from tasks (each day's working time is its tasks) | **Partially available** | Chosen per person on their profile. Their app needs the next version to show it: do not enable it yet. |
+| Calendar: shifts loaded by date | **Available** | On the company, a branch or a person; weekly shift calendar, copy to next week and loading from the Excel roster. |
+| Vacation and leave requested from the app | **Partially available** | Approved in Contact → Requests. The app screen and the panel tab arrive with their next version. |
 
 | Article | Description |
 |---|---|
@@ -135,6 +141,8 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | [Public holidays and non-working days](04-calendar-and-schedules/29-public-holidays-and-non-working-days.md) | Holiday types, employee absences, blocking clock-ins, sectors that work on holidays |
 | [Availability board](04-calendar-and-schedules/98-availability-board.md) | Coverage by branch and day, breakdown of who is missing and days off from the board |
 | [Import the weekly schedule](04-calendar-and-schedules/108-import-the-weekly-schedule.md) | The week of a branch's whole staff in one upload, or one person's week from their profile |
+| [Calendar: shifts loaded by date](04-calendar-and-schedules/114-shift-calendar-by-date.md) | The third schedule mode: each day with its shifts, loaded by hand, copied or from Excel |
+| [Vacation and leave from the app](04-calendar-and-schedules/115-vacation-and-leave-from-the-app.md) | "My calendar" in the app, requesting vacation or leave and approving it in the panel |
 
 ---
 
@@ -255,6 +263,7 @@ Creating and configuring branches, assigning employees and the multi-branch glob
 | Advanced branch configuration (geofence, breaks, tolerance) | **Available** | All operational parameters configurable. |
 | Assign employees to branches with responsibilities | **Available** | Multi-branch with an effective calendar per assignment. |
 | Organisation configuration (tax details, time zone) | **Available** | Changes propagated to dependent branches. |
+| Storage per company | **Available** | 2 GB included; above that, €0.25 per full GB if extra storage is turned on. Shown in Organisation → Subscriptions. |
 | Back office collaborators (owner and administrator) | **Available** | Invitation, role change and removal; the organisation is never left without an active owner. |
 | Multi-branch global view | **Available** | The home page shows today by site and the alerts; the Operations panel compares sites by period. |
 
@@ -278,10 +287,11 @@ Notification types generated automatically by the system for employees and manag
 | Push notifications for events (attendance, documents, tasks) | **Available** | Sent automatically on every relevant event. |
 | Alerts for managers (employee who did not clock in, suspicious clock-in) | **Available** | Visible in the back office and in the supervisor's app. |
 | Notification centre in the app and back office | **Partially available** | Notifications visible until dismissed; no persistent history. |
-| Welcome and password-reset emails | **Available** | The only automatic emails in the system in V1. |
+| Welcome and password-reset emails | **Available** | With the delivery status on the employee's record and access resending. |
+| Task and weekly schedule notices by email, for people who do not use the app | **Available** | A box per person in Schedules & holidays; nothing about clock-ins. |
 | User-configurable notification preferences | **Planned** | Planned for a future version. |
 | Persistent notification history | **Planned** | Planned for a future version. |
-| Additional email notifications (operational alerts, summaries) | **Planned** | Planned for a future version. |
+| Operational alerts by email to managers | **Planned** | Planned for a future version. |
 
 | Article | Description |
 |---|---|
@@ -290,7 +300,7 @@ Notification types generated automatically by the system for employees and manag
 | [Configure notification preferences](09-notifications/65-configure-notification-preferences.md) | Events notified in V1; configurable preferences on the roadmap |
 | [Alerts for managers](09-notifications/66-alerts-for-managers.md) | Employee who did not clock in, suspicious clock-in, pending manual workday |
 | [Notification history](09-notifications/67-notification-history.md) | Notification centre in V1; persistent history on the roadmap |
-| [Email notifications](09-notifications/68-email-notifications.md) | Welcome and reset in V1; additional alerts on the roadmap |
+| [Email notifications](09-notifications/68-email-notifications.md) | Welcome and access status, work notices by email, storage warning; operational alerts on the roadmap |
 
 ---
 
@@ -395,14 +405,14 @@ Glossary, error codes, plans and frequently asked questions.
 |---|---|---|
 | Glossary of platform terms | **Available** | Main terms defined, including those for tasks and AI. |
 | Complete error-code table | **Available** | Every code in the dictionary, by module, with cause and solution. |
-| Plans and prices (Bronze and Enterprise) | **Available** | Price, trial period, included modules and roadmap. |
+| Plans and prices (Bronze and Enterprise) | **Available** | Price, trial period, included modules, add-ons, storage and roadmap. |
 | Frequently asked evaluation questions | **Available** | 20 questions and answers for customers evaluating the platform. |
 
 | Article | Description |
 |---|---|
 | [Glossary](14-reference/89-glossary.md) | Definitions of the main platform terms |
 | [Complete error codes](14-reference/90-complete-error-codes.md) | Table of every error code with cause and solution |
-| [Plans, prices and features](14-reference/91-plans-and-features.md) | Price of each plan, trial period, included modules and roadmap |
+| [Plans, prices and features](14-reference/91-plans-and-features.md) | Price of each plan, trial period, included modules, add-ons, storage and roadmap |
 | [Frequently asked questions](14-reference/92-frequently-asked-questions.md) | 20 questions and answers for customers evaluating the platform |
 
 ### 15. Integrations
@@ -471,9 +481,9 @@ Paid add-on: material tied to the task, the person, the place and the time.
 DOCS/Clients-en/
 ├── README.md                           (this index)
 ├── 01-getting-started/                 (5 articles)
-├── 02-employees/                       (9 articles)
-├── 03-time-tracking/                   (10 articles)
-├── 04-calendar-and-schedules/          (9 articles)
+├── 02-employees/                       (10 articles)
+├── 03-time-tracking/                   (11 articles)
+├── 04-calendar-and-schedules/          (11 articles)
 ├── 05-document-management/             (9 articles)
 ├── 06-tasks/                           (11 articles)
 ├── 07-operational-intelligence/        (9 articles)
@@ -488,4 +498,4 @@ DOCS/Clients-en/
 └── 16-inventory/                       (8 articles)
 ```
 
-**Total: 112 articles**
+**Total: 116 articles**

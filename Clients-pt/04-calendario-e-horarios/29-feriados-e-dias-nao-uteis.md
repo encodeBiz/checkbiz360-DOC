@@ -39,6 +39,8 @@ As férias, as licenças e os dias livres de uma pessoa concreta registam-se com
 
 Um dia de ausência bloqueia o registo dessa pessoa tal como um feriado.
 
+As pessoas também podem pedir as suas férias ou licenças a partir da aplicação, em **O meu calendário**. Ao aprová-las em **Contacto → Pedidos**, os dias ficam como ausências, com a marca de remunerada que escolher quem aprova. Ver [Férias e licenças a partir da aplicação](115-ferias-e-licencas-a-partir-da-aplicacao.md).
+
 ---
 
 ## Como o CheckBiz360 bloqueia registos em dias não úteis
@@ -110,4 +112,5 @@ Recomenda-se configurar o calendário de feriados no início de cada ano civil o
 - [Herança de configuração](26-heranca-de-configuracao.md)
 - [Turnos rotativos](27-turnos-rotativos.md) — não disponível na versão atual; alternativas
 - [Quadro de disponibilidade](98-quadro-de-disponibilidade.md)
+- [Férias e licenças a partir da aplicação](115-ferias-e-licencas-a-partir-da-aplicacao.md)
 - [Estados e códigos de erro](../03-controlo-de-horarios/22-estados-e-codigos-de-erro.md)

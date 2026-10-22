@@ -11,7 +11,7 @@ Este artigo explica como criar um funcionário de raiz, que campos são obrigat�
 ### Campos obrigatórios
 
 - **Nome completo** — Nome e apelidos tal como devem aparecer nos registos.
-- **Correio eletrónico** — Endereço único na plataforma. É o identificador do funcionário e o endereço para onde é enviado o acesso inicial. **Não pode ser alterado depois de criado o perfil.**
+- **Correio eletrónico** — Endereço único na plataforma. É o identificador do funcionário e o endereço para onde é enviado o acesso inicial. Altera-se à parte, com **Alterar e-mail**, porque é com ele que a pessoa entra na aplicação. Ver [Acesso à aplicação e alteração de e-mail](116-acesso-a-aplicacao-e-alteracao-de-email.md).
 - **Telefone** — Número de contacto, com indicativo internacional.
 - **Tipo de relação** — *Pessoal* (quadro de pessoal da empresa) ou *Colaborador* (externo, freelancer ou prestador de serviços). Aparece na ficha junto ao estado, e não é um dado menor: os colaboradores **não são incluídos no relatório de registo de jornada**, que é obrigatório para a relação laboral. Ver [Perfis e níveis de responsabilidade](07-perfis-e-niveis-de-responsabilidade.md#tipo-de-relação-interno-face-a-colaborador).
 
@@ -30,6 +30,8 @@ Este artigo explica como criar um funcionário de raiz, que campos são obrigat�
 ### Email de boas-vindas automático
 
 Ao guardar o perfil, o CheckBiz360 envia automaticamente um correio ao funcionário com as instruções para ativar a sua conta e aceder à aplicação móvel. Não exige qualquer ação adicional do administrador.
+
+Na ficha, o bloco **Acesso à app** diz se esse correio foi entregue, se foi devolvido ou se a pessoa já usa a aplicação. É a partir daí que se reenvia o acesso. Explica-se em [Acesso à aplicação e alteração de e-mail](116-acesso-a-aplicacao-e-alteracao-de-email.md).
 
 ---
 
@@ -87,7 +89,7 @@ Para alterar o estado, abra o perfil do funcionário, prima **Editar** e selecio
 4. Selecione **Editar** e efetue as alterações.
 5. Guarde.
 
-As alterações produzem efeito de imediato. O correio eletrónico é o único dado que não pode ser alterado.
+As alterações produzem efeito de imediato. O correio eletrónico altera-se com o seu próprio botão, **Alterar e-mail**, que explica antes de confirmar tudo o que isso implica.
 
 ---
 
@@ -122,3 +124,4 @@ Se começa com uma equipa de trinta ou quarenta pessoas, não é preciso criá-l
 - [Atribuir funcionários a sucursais](../08-sucursais-e-entidade/60-atribuir-funcionarios-a-sucursais.md)
 - [Exportar a lista de funcionários](12-exportar-lista-de-funcionarios.md)
 - [Equipas](99-equipas.md)
+- [Acesso à aplicação e alteração de e-mail](116-acesso-a-aplicacao-e-alteracao-de-email.md)

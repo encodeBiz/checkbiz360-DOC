@@ -39,6 +39,8 @@ A specific person's holidays, leave and days off are recorded as **absences** in
 
 A day of absence blocks that person's clock-in just like a public holiday.
 
+People can also request their vacation or leave from the app, in **My calendar**. When you approve it in **Contact → Requests**, the days become absences, with the paid mark chosen by whoever approves. See [Vacation and leave from the app](115-vacation-and-leave-from-the-app.md).
+
 ---
 
 ## How CheckBiz360 blocks clock-ins on non-working days
@@ -110,4 +112,5 @@ Configuring the holiday calendar at the start of each calendar year, or sufficie
 - [Configuration inheritance](26-configuration-inheritance.md)
 - [Rotating shifts](27-rotating-shifts.md) — not available in the current version; alternatives
 - [Availability board](98-availability-board.md)
+- [Vacation and leave from the app](115-vacation-and-leave-from-the-app.md)
 - [Statuses and error codes](../03-time-tracking/22-statuses-and-error-codes.md)

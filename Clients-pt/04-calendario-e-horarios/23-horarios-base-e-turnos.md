@@ -4,6 +4,8 @@ O horário base define quando se espera que um funcionário esteja presente no s
 
 ---
 
+> **Três formas de organizar o horário.** Em **Horários e feriados**, a secção **Como se organiza o horário** escolhe entre **Horário semanal**, a semana tipo que este artigo descreve; **Horário por tarefas**, em que cada tarefa do dia é um turno; e **Calendário**, em que os turnos se carregam data a data. Se cada semana for diferente, consulte [Calendário: turnos carregados por data](114-calendario-de-turnos-por-data.md).
+
 ## O que é um horário base
 
 O horário base é o conjunto de turnos que formam a jornada de trabalho padrão de um grupo de funcionários. Define-se na entidade ou em cada sucursal e especifica, para cada dia da semana, que turnos estão ativos e em que faixa horária se enquadram.
@@ -121,3 +123,4 @@ O modelo é uma cópia do **horário já guardado**, e não do que estiver no ec
 - [Jornada estrita e jornada flexível](28-horario-flexivel.md)
 - [Feriados e dias não úteis](29-feriados-e-dias-nao-uteis.md)
 - [Quadro de disponibilidade](98-quadro-de-disponibilidade.md)
+- [Calendário: turnos carregados por data](114-calendario-de-turnos-por-data.md)

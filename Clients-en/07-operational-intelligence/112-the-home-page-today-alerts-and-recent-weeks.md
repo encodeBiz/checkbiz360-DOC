@@ -32,6 +32,7 @@ At the very top, if there is something to look at, a list of alerts with a **Vie
 | **Missing rates** | Part of this month's hours has no rate: the estimated cost falls short. |
 | **Many exits** | This month there are many leavers relative to the active headcount. |
 | **Low availability** | One day this week has fewer than a third of the people available. |
+| **Access email not delivered** | Someone's app access email has not arrived: it bounced, was marked as spam or never went out. It says who. See [App access and email change](../02-employees/116-app-access-and-email-change.md). |
 
 ---
 
@@ -98,9 +99,11 @@ It is an estimate: hours recorded at each job's rate, without social charges, an
 
 ---
 
-## Estimated CheckBiz cost this month
+## Estimated CheckBiz360 cost this month
 
 What your subscription will cost this month, worked out with today's headcount and the price of each contracted service, VAT excluded. It counts the active headcount plus dismissed people who clocked in this month, just like the invoice, and changes on its own when someone joins or leaves. On a trial, it says until when; on a custom price, it says so without a figure.
+
+It also adds the add-ons. With the **Clock-in point**, a line with the active clock-in points and their tier. If your company goes over the 2 GB of **Storage** included, another with the extra GB.
 
 ---
 

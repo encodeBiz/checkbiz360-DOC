@@ -15,7 +15,7 @@ CheckBiz360 **no dispone de un tipo de horario rotativo** con ciclo de alternanc
 
 ## Cómo cubrir la rotación con lo que existe hoy
 
-Hay dos formas de operar con equipos rotativos. La elección depende de si la rotación es estable o cambia con frecuencia.
+Hay tres formas de operar con equipos rotativos. La elección depende de si la rotación es estable o cambia con frecuencia.
 
 ### Opción 1: una sucursal por turno (rotación estable)
 
@@ -29,7 +29,11 @@ Si la rotación es irregular, configure el horario en la ficha del **empleado** 
 
 Es más flexible, pero exige mantener el cambio a mano en cada ciclo y para cada persona.
 
-> **Aviso:** en ambos casos, cambie el horario **antes** de que empiece el ciclo nuevo. Cada fichaje se valida contra el calendario efectivo vigente en ese momento; actualizar el horario después no reevalúa los fichajes ya registrados.
+### Opción 3: el modo Calendario (rotación planificada)
+
+Si planifica las semanas por adelantado, ponga la sucursal en el modo **Calendario** y cargue los turnos de cada persona fecha a fecha. **Copiar a la semana siguiente** repite una semana y después se retoca lo que cambie, y el importador del cuadrante carga un mes entero desde Excel. El ciclo no se genera solo, pero no hay que cambiar ningún horario al pasar de una semana a otra. Ver [Calendario: turnos cargados por fecha](114-calendario-de-turnos-por-fecha.md).
+
+> **Aviso:** en las dos primeras opciones, cambie el horario **antes** de que empiece el ciclo nuevo. Cada fichaje se valida contra el calendario efectivo vigente en ese momento; actualizar el horario después no reevalúa los fichajes ya registrados.
 
 ---
 

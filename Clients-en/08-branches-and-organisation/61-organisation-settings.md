@@ -82,6 +82,12 @@ From **Subscriptions** the Owner consults the plan contracted and its status, an
 
 Billing for the Bronze plan is **per employee and month**: there is no included employee quota that can be used up. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
 
+### Storage
+
+Below the subscribed modules, **Subscriptions** shows the **Storage** block: how much your company uses against the 2 GB included, split between documents, tasks, signatures, reports and clock-in point photos, and what would be billed this month above what is included.
+
+The **Extra storage above 2 GB** box comes ticked. If you untick it, nothing extra is charged, but once you reach 2 GB you will not be able to upload more documents. As you approach the limit, the block warns you. See [Plans, prices and features](../14-reference/91-plans-and-features.md#storage).
+
 ---
 
 ## How the configuration propagates to branches

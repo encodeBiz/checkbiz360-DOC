@@ -38,10 +38,11 @@ Este artigo reúne as catorze situações técnicas e operacionais mais habituai
 
 **Passos de resolução:**
 
-1. Peça ao funcionário que verifique a pasta de correio não solicitado ou spam.
-2. Confirme no backoffice, dentro do perfil do funcionário, que o endereço de correio eletrónico está escrito corretamente (sem espaços, sem erros de escrita).
-3. Se o endereço estiver correto e o correio não aparecer em nenhuma pasta, aceda ao perfil do funcionário e prima **Reenviar convite**.
-4. Se depois de reenviar o correio continuar a não chegar, verifique com o funcionário se a sua empresa tem filtros de correio empresarial que possam estar a bloquear as mensagens de @encodebiz.com. Nesse caso, será necessário adicionar esse domínio à lista de remetentes permitidos.
+1. Abra a ficha do funcionário e veja o bloco **Acesso à app**. Diz se o correio foi **entregue**, se foi **devolvido**, se foi **marcado como spam** ou se **não foi possível enviar**.
+2. Se foi entregue, peça ao funcionário que verifique a pasta de correio não solicitado ou spam.
+3. Se foi devolvido ou rejeitado, o endereço está errado. Corrija-o com **Alterar e-mail** e marque **Enviar o acesso para o e-mail novo**.
+4. Se o endereço estiver correto e o correio não aparecer em nenhuma pasta, prima **Reenviar acesso**.
+5. Se depois de reenviar o correio continuar a não chegar, verifique com o funcionário se a sua empresa tem filtros de correio empresarial que possam estar a bloquear as mensagens de @encodebiz.com. Nesse caso, será necessário adicionar esse domínio à lista de remetentes permitidos.
 
 ---
 

@@ -10,7 +10,7 @@ CheckBiz360 is offered in two plans:
 
 | Plan | Price | Who it is for |
 |---|---|---|
-| **Bronze** | **€5 per employee per month** | Companies that need to comply with working-time recording and manage their day-to-day operations. Includes the base modules; Inventory is subscribed separately. |
+| **Bronze** | **€5 per employee per month** | Companies that need to comply with working-time recording and manage their day-to-day operations. Includes the base modules; Inventory and Clock-in point are subscribed separately. |
 | **Enterprise** | **Bespoke pricing** | Large organisations (indicatively, from 100 employees) or those needing integrations with their own systems and priority support. |
 
 The Bronze plan's price is **per employee and month**: it is billed according to the employees registered, with no fixed entry fee and no implementation cost. All the employees on the workforce count, including inactive ones or those on leave, because they are still part of it; records **pending** completion and deleted employees do not count. The Enterprise plan is agreed with the sales team depending on volume and the integrations required.
@@ -25,7 +25,7 @@ For specific terms (volume, annual billing, bespoke integrations, minimum terms 
 
 ## What the subscription includes
 
-Both plans include the base modules described below. Inventory is an optional, separately billed add-on, including on the Enterprise plan unless expressly agreed with sales.
+Both plans include the base modules described below. Inventory and Clock-in point are optional, separately billed add-ons, including on the Enterprise plan unless expressly agreed with sales.
 
 ### Time tracking and clock records
 
@@ -56,7 +56,9 @@ Both plans include the base modules described below. Inventory is an optional, s
 ### Calendar and schedules
 
 - Base schedules with one or several shifts per day and breaks within the shift.
+- Three ways to set the schedule: template week, from tasks or **Calendar**, with shifts loaded date by date and copyable from one week to the next.
 - Work calendar with public holidays and absences —by date range and with a paid mark—, applicable to organisation, branch or employee.
+- Vacation and leave requested from the app and approved in the panel (arrives with the next version of the app and the panel).
 - Strict or flexible workday and strict or flexible break, which decide how hours and breaks are counted.
 - Schedule templates to replicate a schedule across several branches.
 - Availability board: coverage by branch and day, who is missing and why, and adding days off from the board itself.
@@ -106,6 +108,36 @@ Subscribed separately from **Subscriptions**, with a 15-day trial.
 - Equipment and PPE handovers to workers, with associated documents, signed confirmation or disagreement and return condition.
 - Equipment and PPE report in Excel with handovers and inspections to prepare documentary evidence for an inspection.
 
+### Clock-in point (paid add-on)
+
+Subscribed separately from **Clock-in point**, with a 15-day trial on your first subscription.
+
+| | |
+|---|---|
+| Up to 20 active clock-in points | **€19 a month** |
+| From the 21st | **€0.90 a month** for each one |
+
+Only active clock-in points are charged, not the branches you have.
+
+- A fixed device at each site, a tablet or a phone, for people who do not want to clock in with their phone.
+- Identification with a QR card or a 6-digit code, and a photo with each clock-in.
+- Only works near the site and on one device at a time.
+- Photo review with bursts of clock-ins in a row at the top.
+- No biometrics.
+
+It is explained in [Clock-in point](../03-time-tracking/113-clock-in-point.md).
+
+### Storage
+
+Every company has **2 GB included** for what it uploads: documents, task photos, signatures, reports and clock-in point photos. Above that, each **full GB** is added to the monthly invoice at **€0.25**. With 2.8 GB you pay nothing; with 3.1 GB you pay for 1 GB.
+
+In **Organisation → Subscriptions** you can see how much each thing takes up and what would be billed this month. Right there is the **Extra storage above 2 GB** box, ticked by default:
+
+- **Ticked**: whatever goes over 2 GB is charged as above.
+- **Unticked**: nothing is charged, but once you reach 2 GB no more documents can be uploaded. Task photos, signatures, reports and the clock-in point keep working: a clock-in never fails for lack of space.
+
+On reaching 90% of what is included, the panel warns you in that same block and the owner receives an email.
+
 ### Operational intelligence
 
 - Operations dashboard by monthly period, with three views: branches, employees and analysis.
@@ -132,6 +164,8 @@ The Enterprise plan includes everything in the Bronze plan and adds:
 |---|---|---|
 | Base modules | Included | Included |
 | Inventory | Paid add-on | Paid add-on, unless agreed otherwise |
+| Clock-in point | Paid add-on | Paid add-on, unless agreed otherwise |
+| Storage | 2 GB included; €0.25 per full GB above | 2 GB included, unless agreed otherwise |
 | Support | Standard, with defined response times | Priority, through priority channels |
 | Webhook integrations | — | Included |
 | ERP/CRM integrations and bespoke development | — | By agreement |

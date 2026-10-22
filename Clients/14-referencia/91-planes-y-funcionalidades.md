@@ -10,7 +10,7 @@ CheckBiz360 se ofrece en dos planes:
 
 | Plan | Precio | Para quién |
 |---|---|---|
-| **Bronce** | **5 €/empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Incluye los módulos base; Inventario se contrata aparte. |
+| **Bronce** | **5 €/empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Incluye los módulos base; Inventario y Punto de fichaje se contratan aparte. |
 | **Empresarial** | **Precio a medida** | Organizaciones grandes (orientativamente, a partir de 100 empleados) o que necesitan integraciones con sus propios sistemas y soporte preferente. |
 
 El precio del plan Bronce es **por empleado y mes**: se factura según los empleados dados de alta, sin cuota fija de entrada ni coste de implantación. Cuentan todos los empleados de la plantilla, también los inactivos o de baja, porque siguen formando parte de ella; no cuentan las fichas **pendientes** de completar ni los empleados eliminados. El plan Empresarial se acuerda con el equipo comercial en función del volumen y de las integraciones necesarias.
@@ -25,7 +25,7 @@ Para condiciones concretas (volumen, facturación anual, integraciones a medida,
 
 ## Qué incluye la suscripción
 
-Ambos planes incluyen los módulos base descritos a continuación. Inventario es un complemento opcional con facturación adicional, también en el plan Empresarial salvo acuerdo comercial expreso.
+Ambos planes incluyen los módulos base descritos a continuación. Inventario y Punto de fichaje son complementos opcionales con facturación adicional, también en el plan Empresarial salvo acuerdo comercial expreso.
 
 ### Control horario y fichajes
 
@@ -56,7 +56,9 @@ Ambos planes incluyen los módulos base descritos a continuación. Inventario es
 ### Calendario y horarios
 
 - Horarios base con uno o varios turnos por día y descansos dentro del turno.
+- Tres formas de organizar el horario: semana tipo, por tareas o **Calendario**, con los turnos cargados fecha a fecha y copiables de una semana a la siguiente.
 - Calendario laboral con festivos y ausencias —por rangos de fechas y con marca de retribuida—, aplicables a entidad, sucursal o empleado.
+- Vacaciones y permisos pedidos desde la app y aprobados en el panel (llega con la próxima versión de la app y del panel).
 - Jornada estricta o flexible y descanso estricto o flexible, que deciden cómo se computan horas y pausas.
 - Plantillas de horario para replicar un horario en varias sucursales.
 - Tablero de disponibilidad: cobertura por sucursal y día, quién falta y por qué, y alta de días libres desde el propio tablero.
@@ -106,6 +108,36 @@ Se contrata aparte desde **Suscripciones**, con 15 días de prueba.
 - Entregas de equipos y EPIs al trabajador, con documentación asociada, confirmación firmada o disconformidad y estado de devolución.
 - Informe «Equipos y EPIs» en Excel con entregas y revisiones para preparar la documentación ante una inspección.
 
+### Punto de fichaje (complemento de pago)
+
+Se contrata aparte desde **Punto de fichaje**, con 15 días de prueba en la primera contratación.
+
+| | |
+|---|---|
+| Hasta 20 puntos de fichaje activos | **19 € al mes** |
+| Desde el 21 | **0,90 € al mes** por cada uno |
+
+Solo se cobran los puntos de fichaje activos, no las sucursales que tenga.
+
+- Un dispositivo fijo en cada centro, tablet o móvil, para quien no quiere fichar con su móvil.
+- Identificación con tarjeta QR o código de 6 cifras, y una foto con cada fichaje.
+- Solo funciona cerca del centro y en un dispositivo a la vez.
+- Revisión de las fotos con las ráfagas de fichajes seguidos arriba.
+- Sin biometría.
+
+Se explica en [Punto de fichaje](../03-control-horario/113-punto-de-fichaje.md).
+
+### Almacenamiento
+
+Todas las empresas tienen **2 GB incluidos** para lo que suben: documentos, fotos de tareas, firmas, informes y fotos del punto de fichaje. Por encima, cada **GB completo** se añade a la factura mensual a **0,25 €**. Con 2,8 GB no se paga nada; con 3,1 GB se paga 1 GB.
+
+En **Entidad → Suscripciones** se ve cuánto ocupa cada cosa y cuánto se facturaría este mes. Ahí mismo está la casilla **Ampliar almacenamiento por encima de 2 GB**, marcada de serie:
+
+- **Marcada**: lo que pase de 2 GB se cobra como arriba.
+- **Desmarcada**: no se cobra nada, pero al llegar a 2 GB no se pueden subir más documentos. Las fotos de tareas, las firmas, los informes y el punto de fichaje siguen funcionando: un fichaje nunca falla por espacio.
+
+Al llegar al 90 % de lo incluido, el panel lo avisa en ese mismo bloque y el propietario recibe un correo.
+
 ### Inteligencia operativa
 
 - Panel de Operación por periodo mensual, con tres vistas: sucursales, empleados y análisis.
@@ -132,6 +164,8 @@ El plan Empresarial incluye todo lo del plan Bronce y añade:
 |---|---|---|
 | Módulos base | Incluidos | Incluidos |
 | Inventario | Complemento de pago | Complemento de pago, salvo acuerdo |
+| Punto de fichaje | Complemento de pago | Complemento de pago, salvo acuerdo |
+| Almacenamiento | 2 GB incluidos; 0,25 € por GB completo de más | 2 GB incluidos, salvo acuerdo |
 | Soporte | Estándar, con tiempos de respuesta definidos | Preferente, por canales prioritarios |
 | Integraciones por webhook | — | Incluidas |
 | Integraciones con ERP/CRM y desarrollos a medida | — | Bajo acuerdo |

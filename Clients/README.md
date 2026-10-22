@@ -58,6 +58,7 @@ Alta, configuración, roles y seguridad de los empleados en la plataforma.
 | Verificación biométrica y dispositivos de confianza | **Disponible** | Configurable por empleado desde la app. |
 | Empleados asignados a múltiples entidades | **Disponible** | Selector de entidad en el inicio de sesión. |
 | Alta de sucursales y plantilla desde Excel | **Disponible** | Una plantilla con dos pestañas; se revisa lo que se va a crear antes de confirmar; la bienvenida a la app se manda al final, cuando usted decida. |
+| Estado del acceso a la app, reenviar acceso y cambiar correo | **Disponible** | La ficha dice si el correo de acceso se entregó o rebotó y si la persona ya usa la app; la portada avisa del que no ha llegado. |
 | Exportación del directorio de empleados | **Pendiente de desarrollo** | El listado se consulta y filtra en pantalla, sin fichero descargable. |
 
 | Artículo | Descripción |
@@ -71,6 +72,7 @@ Alta, configuración, roles y seguridad de los empleados en la plataforma.
 | [Exportar el listado de empleados](02-empleados/12-exportar-empleados-csv.md) | Estado de la funcionalidad, alternativas disponibles y RGPD |
 | [Equipos](02-empleados/99-equipos.md) | Crear equipos, aplicarlos a una sucursal y guardar una sucursal como equipo |
 | [Dar de alta sucursales y plantilla desde Excel](02-empleados/110-dar-de-alta-sucursales-y-plantilla-desde-excel.md) | Centros y personas de una vez, con revisión antes de crear nada y la bienvenida aparte |
+| [Acceso a la app y cambio de correo](02-empleados/116-acceso-a-la-app-y-cambio-de-correo.md) | Saber si le llegó el acceso, reenviarlo, cambiar el correo y enviar la tarjeta del punto de fichaje |
 
 ---
 
@@ -89,6 +91,7 @@ Cómo funciona el sistema de fichaje: validaciones, tipos de registro, geocercas
 | Revisión y validación de fichajes por responsable | **Disponible** | Flujo de aprobación, rechazo y resolución; una corrección rechazada deja el fichaje como estaba. |
 | Trazabilidad e historial de cambios inmutable | **Disponible** | Registro de solicitudes y modificaciones con auditoría. |
 | Detección de fichaje sospechoso | **Disponible** | Indicador automático basado en patrones anómalos. |
+| Punto de fichaje: dispositivo del centro con QR o código y foto | **Disponible parcialmente** | Complemento de pago. Se contrata y gestiona en el panel; el dispositivo necesita la próxima versión de la app, en publicación. |
 
 | Artículo | Descripción |
 |---|---|
@@ -102,6 +105,7 @@ Cómo funciona el sistema de fichaje: validaciones, tipos de registro, geocercas
 | [Revisión y validación de fichajes](03-control-horario/20-revision-y-validacion-de-fichajes.md) | Flujo de aprobación, rechazo y resolución por responsable |
 | [Trazabilidad e historial de cambios](03-control-horario/21-trazabilidad-historial-de-cambios.md) | requestUpdates, inmutabilidad y uso en auditorías |
 | [Estados y códigos de error](03-control-horario/22-estados-y-codigos-de-error.md) | Tablas de estados y códigos de error con causas y soluciones |
+| [Punto de fichaje](03-control-horario/113-punto-de-fichaje.md) | Fichar desde una tablet del centro con QR o código y una foto, sin biometría |
 
 ---
 
@@ -123,6 +127,8 @@ Configuración de turnos, horarios base, calendarios laborales y excepciones ind
 | Turnos rotativos (alternancia A/B automática) | **Pendiente de desarrollo** | Hoy se cubre con una sucursal por turno o con horario propio del empleado. |
 | Cuadrante semanal por plantilla de Excel | **Disponible** | La semana de toda una sucursal en una subida, con una pestaña por persona y revisión antes de aplicar; también la de una sola persona desde su ficha. |
 | Horario por tareas (la jornada de cada día son sus tareas) | **Disponible parcialmente** | Se elige por persona en su ficha. Su app necesita la próxima versión para mostrarlo: no lo active todavía. |
+| Calendario: turnos cargados por fecha | **Disponible** | En la empresa, una sucursal o una persona; calendario de turnos semanal, copiar a la semana siguiente y carga desde el cuadrante de Excel. |
+| Vacaciones y permisos pedidos desde la app | **Disponible parcialmente** | Se aprueban en Contacto → Solicitudes. La pantalla de la app y la pestaña del panel llegan con su próxima versión. |
 
 | Artículo | Descripción |
 |---|---|
@@ -135,6 +141,8 @@ Configuración de turnos, horarios base, calendarios laborales y excepciones ind
 | [Festivos y días no laborables](04-calendario-y-horarios/29-festivos-y-dias-no-laborables.md) | Tipos de festivo, ausencias de empleado, bloqueo de fichajes, sectores que trabajan en festivo |
 | [Tablero de disponibilidad](04-calendario-y-horarios/98-tablero-de-disponibilidad.md) | Cobertura por sucursal y día, desglose de quién falta y días libres desde el tablero |
 | [Importar el cuadrante semanal](04-calendario-y-horarios/108-importar-el-cuadrante-semanal.md) | La semana de toda la plantilla de una sucursal en una subida, o la de una persona desde su ficha |
+| [Calendario: turnos cargados por fecha](04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md) | El tercer modo del horario: cada día con sus turnos, cargados a mano, copiados o desde Excel |
+| [Vacaciones y permisos desde la app](04-calendario-y-horarios/115-vacaciones-y-permisos-desde-la-app.md) | «Mi calendario» en la app, pedir vacaciones o permiso y aprobarlo en el panel |
 
 ---
 
@@ -255,6 +263,7 @@ Creación y configuración de sucursales, asignación de empleados y vista globa
 | Configuración avanzada de sucursal (geocerca, pausas, tolerancia) | **Disponible** | Todos los parámetros operativos configurables. |
 | Asignar empleados a sucursales con responsabilidades | **Disponible** | Multi-sucursal con calendario efectivo por asignación. |
 | Configuración de entidad (datos fiscales, zona horaria) | **Disponible** | Propagación de cambios a sucursales dependientes. |
+| Almacenamiento por empresa | **Disponible** | 2 GB incluidos; por encima, 0,25 € por GB completo si la ampliación está activada. Se consulta en Entidad → Suscripciones. |
 | Colaboradores del backoffice (propietario y administrador) | **Disponible** | Invitación, cambio de rol y retirada; nunca se queda la entidad sin propietario activo. |
 | Vista global multi-sucursal | **Disponible** | La portada enseña el hoy por centro y las alertas; el panel de Operación compara los centros por periodo. |
 
@@ -278,10 +287,11 @@ Tipos de notificación generados automáticamente por el sistema para empleados 
 | Notificaciones push por eventos (asistencia, documentos, tareas) | **Disponible** | Enviadas automáticamente en cada evento relevante. |
 | Alertas para responsables (empleado sin fichar, fichaje sospechoso) | **Disponible** | Visibles en el backoffice y en la app del supervisor. |
 | Centro de notificaciones en app y backoffice | **Disponible parcialmente** | Notificaciones visibles mientras no se descartan; sin historial persistente. |
-| Correo de bienvenida y restablecimiento de contraseña | **Disponible** | Únicos correos automáticos del sistema en V1. |
+| Correo de bienvenida y restablecimiento de contraseña | **Disponible** | Con el estado de entrega en la ficha del empleado y el reenvío del acceso. |
+| Avisos de tareas y horario semanal por correo, para quien no usa la app | **Disponible** | Casilla por persona en Horarios y festivos; nada del fichaje. |
 | Preferencias de notificación configurables por usuario | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Historial persistente de notificaciones | **Pendiente de desarrollo** | Planificado para una versión futura. |
-| Notificaciones por email adicionales (alertas operativas, resúmenes) | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Alertas operativas por correo a los responsables | **Pendiente de desarrollo** | Planificado para una versión futura. |
 
 | Artículo | Descripción |
 |---|---|
@@ -290,7 +300,7 @@ Tipos de notificación generados automáticamente por el sistema para empleados 
 | [Configurar preferencias de notificación](09-notificaciones/65-configurar-preferencias-de-notificacion.md) | Eventos notificados en V1; preferencias configurables en roadmap |
 | [Alertas para responsables](09-notificaciones/66-alertas-para-responsables.md) | Empleado que no fichó, fichaje sospechoso, jornada manual pendiente |
 | [Histórico de notificaciones](09-notificaciones/67-historico-de-notificaciones.md) | Centro de notificaciones en V1; historial persistente en roadmap |
-| [Notificaciones por email](09-notificaciones/68-notificaciones-por-email.md) | Bienvenida y restablecimiento en V1; alertas adicionales en roadmap |
+| [Notificaciones por email](09-notificaciones/68-notificaciones-por-email.md) | Bienvenida y estado del acceso, avisos de trabajo por correo, aviso de almacenamiento; alertas operativas en roadmap |
 
 ---
 
@@ -395,14 +405,14 @@ Glosario, códigos de error, planes y preguntas frecuentes.
 |---|---|---|
 | Glosario de términos de la plataforma | **Disponible** | Términos principales definidos, incluidos los de tareas e IA. |
 | Tabla completa de códigos de error | **Disponible** | Todos los códigos del diccionario, por módulo, con causa y solución. |
-| Planes y precios (Bronce y Empresarial) | **Disponible** | Precio, periodo de prueba, módulos incluidos y roadmap. |
+| Planes y precios (Bronce y Empresarial) | **Disponible** | Precio, periodo de prueba, módulos incluidos, complementos, almacenamiento y roadmap. |
 | Preguntas frecuentes de evaluación | **Disponible** | 20 preguntas y respuestas para clientes que evalúan la plataforma. |
 
 | Artículo | Descripción |
 |---|---|
 | [Glosario](14-referencia/89-glosario.md) | Definiciones de los términos principales de la plataforma |
 | [Códigos de error completos](14-referencia/90-codigos-de-error-completos.md) | Tabla de todos los códigos de error con causa y solución |
-| [Planes, precios y funcionalidades](14-referencia/91-planes-y-funcionalidades.md) | Precio de cada plan, periodo de prueba, módulos incluidos y roadmap |
+| [Planes, precios y funcionalidades](14-referencia/91-planes-y-funcionalidades.md) | Precio de cada plan, periodo de prueba, módulos incluidos, complementos, almacenamiento y roadmap |
 | [Preguntas frecuentes](14-referencia/92-preguntas-frecuentes.md) | 20 preguntas y respuestas para clientes que evalúan la plataforma |
 
 ### 15. Integraciones
@@ -471,9 +481,9 @@ Complemento de pago: el material atado a la tarea, a la persona, al sitio y a la
 DOCS/Clients/
 ├── README.md                          (este índice)
 ├── 01-primeros-pasos/                 (5 artículos)
-├── 02-empleados/                      (9 artículos)
-├── 03-control-horario/                (10 artículos)
-├── 04-calendario-y-horarios/          (9 artículos)
+├── 02-empleados/                      (10 artículos)
+├── 03-control-horario/                (11 artículos)
+├── 04-calendario-y-horarios/          (11 artículos)
 ├── 05-gestion-documental/             (9 artículos)
 ├── 06-tareas/                         (11 artículos)
 ├── 07-inteligencia-operativa/         (9 artículos)
@@ -488,4 +498,4 @@ DOCS/Clients/
 └── 16-inventario/                     (8 artículos)
 ```
 
-**Total: 112 artículos**
+**Total: 116 artículos**

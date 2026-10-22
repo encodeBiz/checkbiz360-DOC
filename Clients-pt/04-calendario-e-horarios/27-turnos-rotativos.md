@@ -15,7 +15,7 @@ O CheckBiz360 **não dispõe de um tipo de horário rotativo** com ciclo de alte
 
 ## Como cobrir a rotação com o que existe hoje
 
-Há duas formas de operar com equipas rotativas. A escolha depende de se a rotação é estável ou muda com frequência.
+Há três formas de operar com equipas rotativas. A escolha depende de se a rotação é estável ou muda com frequência.
 
 ### Opção 1: uma sucursal por turno (rotação estável)
 
@@ -29,7 +29,11 @@ Se a rotação for irregular, configure o horário na ficha do **funcionário** 
 
 É mais flexível, mas exige manter a alteração à mão em cada ciclo e para cada pessoa.
 
-> **Aviso:** em ambos os casos, mude o horário **antes** de começar o ciclo novo. Cada registo é validado contra o calendário efetivo em vigor nesse momento; atualizar o horário depois não reavalia os registos já gravados.
+### Opção 3: o modo Calendário (rotação planeada)
+
+Se planeia as semanas com antecedência, coloque a sucursal no modo **Calendário** e carregue os turnos de cada pessoa data a data. **Copiar para a semana seguinte** repete uma semana e depois retoca-se o que mudar, e o importador da escala carrega um mês inteiro a partir de Excel. O ciclo não se gera sozinho, mas não é preciso mudar nenhum horário ao passar de uma semana para a outra. Ver [Calendário: turnos carregados por data](114-calendario-de-turnos-por-data.md).
+
+> **Aviso:** nas duas primeiras opções, mude o horário **antes** de começar o ciclo novo. Cada registo é validado contra o calendário efetivo em vigor nesse momento; atualizar o horário depois não reavalia os registos já gravados.
 
 ---
 

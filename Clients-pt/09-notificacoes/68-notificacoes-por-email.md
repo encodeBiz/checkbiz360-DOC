@@ -21,15 +21,23 @@ Quando o Owner ou um Manager adiciona um novo funcionário à plataforma e envia
 
 Este correio é o primeiro ponto de contacto do funcionário com a plataforma e é fundamental para que possa ativar a sua conta. Por isso, é especialmente importante que o endereço de email do funcionário esteja correto no momento de criar a sua ficha.
 
-### Reenvio de convite
+### Saber se chegou e reenviar o acesso
 
-Se o funcionário não conseguiu ativar a sua conta (não encontrou o correio, a ligação expirou ou introduziu dados incorretos), o responsável pode reenviar o convite a partir do backoffice:
+Na ficha de cada funcionário, o bloco **Acesso à app** diz o que aconteceu ao seu correio de boas-vindas: entregue, devolvido, marcado como spam ou não enviado. Também diz se a pessoa já usou a aplicação. Se o correio não chegou, a página inicial do painel avisa com o alerta **Acesso que não chegou**.
 
-1. Navegue até **Funcionários** e abra a ficha do funcionário cujo convite pretende reenviar.
-2. Localize o indicador de estado da conta. Se a conta não estiver ativada, aparecerá o botão **Reenviar convite**.
-3. Prima o botão. O sistema enviará um novo correio de boas-vindas com uma nova palavra-passe temporária para o endereço de email do funcionário.
+Para o enviar outra vez:
 
-> **Aviso:** reenviar o convite invalida a palavra-passe temporária anterior. Se o funcionário já tinha recebido o primeiro convite e o estava a usar, terá de utilizar a nova palavra-passe do segundo envio.
+1. Navegue até **Funcionários** e abra a ficha do funcionário.
+2. Em **Acesso à app**, prima **Reenviar acesso**.
+3. Confirme. O sistema envia um novo correio de boas-vindas com uma palavra-passe nova.
+
+> **Aviso:** reenviar o acesso invalida a palavra-passe anterior, também para o painel se a pessoa o usar. Se o correio foi devolvido, o endereço está errado: altere-o com **Alterar e-mail** e envie o acesso para o novo.
+
+Explica-se por inteiro em [Acesso à aplicação e alteração de e-mail](../02-funcionarios/116-acesso-a-aplicacao-e-alteracao-de-email.md).
+
+### Cartão do ponto de registo
+
+Com o [ponto de registo](../03-controlo-de-horarios/113-ponto-de-registo.md) contratado, cada pessoa pode receber por correio o seu cartão, com o seu QR e o seu código de 6 dígitos. Envia-se a partir da ficha do funcionário ou, para uma sucursal inteira, a partir de **Ponto de registo → Cartões QR**.
 
 ### Reposição de palavra-passe
 
@@ -42,12 +50,25 @@ O correio inclui:
 
 ---
 
-## Notificações por email adicionais e recurso
+## Avisos de trabalho por correio, para quem não usa a aplicação
+
+Há pessoas que não usam a aplicação, ou que não a consultam. Para elas, em **Horários e feriados** da sua ficha existe a caixa **Enviar notificações por email**. Com ela marcada, além dos avisos da aplicação, a pessoa recebe por correio:
+
+- **As suas tarefas**: as que lhe são atribuídas, alteradas ou retiradas. Chegam agrupadas para não lhe encher a caixa de correio: o correio sai quando passam 15 minutos sem alterações novas. Se a tarefa começar nas próximas 24 horas, o aviso sai de imediato.
+- **O seu horário da semana seguinte**, ao domingo às 18:00 na hora da empresa, com os seus turnos, as suas tarefas e o local de cada uma. Se nada tiver mudado desde o último envio, não se repete.
+
+Nada do registo de ponto vai por correio. A caixa vem desmarcada e marca-se pessoa a pessoa.
+
+## Aviso de armazenamento
+
+Quando a sua empresa chega aos 90 % do armazenamento incluído no seu plano, o proprietário recebe um correio no endereço de faturação. Envia-se uma única vez. Só volta a ser enviado se o uso descer abaixo dos 80 % e depois voltar a subir. Ver [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md#armazenamento).
+
+## Alertas operacionais por correio
 
 > **Estado: Planeada**
 > Esta funcionalidade faz parte do roadmap e ainda não está disponível na versão atual.
 
-O envio de notificações operacionais por email (alertas de eventos, lembretes de confirmação de leitura, avisos de tarefas, etc.) e o mecanismo de recurso automático por email quando uma notificação push não pode ser entregue no dispositivo do utilizador estão planeados para uma versão futura da plataforma.
+O envio por correio dos alertas da página inicial aos responsáveis, e o recurso automático por correio quando uma notificação push não chega ao dispositivo, estão planeados para uma versão futura.
 
 ---
 
@@ -57,13 +78,13 @@ Se um funcionário ou responsável não receber um correio esperado do sistema, 
 
 1. **Verifique a pasta de spam ou correio não solicitado** no cliente de correio. Os correios de `hola@encodebiz.com` podem ser classificados incorretamente na primeira vez.
 2. **Confirme o endereço de email** do destinatário no backoffice. Aceda à ficha do funcionário ou utilizador e confirme que o endereço está escrito corretamente e sem espaços adicionais.
-3. **Reenvie o convite** se se tratar do correio de boas-vindas (ver a secção anterior).
+3. **Veja o bloco Acesso à app** da ficha se se tratar do correio de boas-vindas: diz se foi entregue, se foi devolvido ou se foi marcado como spam. Depois, **reenvie o acesso** (ver a secção anterior).
 4. **Contacte o administrador de TI** da sua organização para verificar que o domínio `encodebiz.com` não está bloqueado ou em quarentena.
 5. Se o problema persistir, contacte o apoio do CheckBiz360 indicando o endereço de email do destinatário e o tipo de correio que não está a chegar.
 
 ---
 
-> **Nota de perfil:** os correios de boas-vindas e de reposição de palavra-passe destinam-se a todos os utilizadores, independentemente do seu perfil. O reenvio de convites pode ser feito pelo **Owner** e pelo **Manager**.
+> **Nota de perfil:** os correios de boas-vindas e de reposição de palavra-passe destinam-se a todos os utilizadores, independentemente do seu perfil. Reenviar o acesso e alterar o e-mail pode ser feito por quem edita as fichas dos funcionários: o **Owner**, os administradores e o **Manager**.
 
 ## Artigos relacionados
 

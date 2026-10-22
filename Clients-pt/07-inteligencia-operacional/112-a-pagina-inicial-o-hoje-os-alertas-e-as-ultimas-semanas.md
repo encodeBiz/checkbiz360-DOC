@@ -32,6 +32,7 @@ Mesmo em cima, se houver algo a ver, uma lista de alertas com um **Ver** que lev
 | **Faltam tarifas** | Uma parte das horas do mês não tem tarifa: o custo estimado fica curto. |
 | **Muitas saídas** | Este mês há muitas saídas em proporção à equipa ativa. |
 | **Disponibilidade baixa** | Um dia desta semana tem menos de um terço das pessoas disponíveis. |
+| **Acesso que não chegou** | A alguém não chegou o e-mail de acesso à aplicação: foi devolvido, marcado como spam ou não saiu. Diz a quem. Ver [Acesso à aplicação e alteração de e-mail](../02-funcionarios/116-acesso-a-aplicacao-e-alteracao-de-email.md). |
 
 ---
 
@@ -98,9 +99,11 @@ O que a operação está a custar em horas trabalhadas, **este mês** face ao **
 
 ---
 
-## Custo estimado do CheckBiz este mês
+## Custo estimado do CheckBiz360 este mês
 
 O que a subscrição lhe custará este mês, calculado com a equipa de hoje e a tarifa de cada serviço contratado, IVA não incluído. Conta a equipa ativa mais os despedidos que registaram este mês, tal como a fatura, e muda sozinho se alguém entrar ou sair. Em período de teste, diz até quando; com preço à medida, indica-o sem valor.
+
+Também soma os complementos. Com o **Ponto de registo**, uma linha com os pontos de registo ativos e o seu escalão. Se a sua empresa passar dos 2 GB de **Armazenamento** incluídos, outra com os GB a mais.
 
 ---
 

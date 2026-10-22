@@ -94,9 +94,15 @@ Nos três casos mostra-lhe a proposta pessoa a pessoa, com os avisos que convém
 
 Não há limite de tarefas: se a escala for muito grande, o assistente carrega-a por partes e só se confirma uma vez no fim. Se a semana mudar, peça-lhe que a proponha outra vez com a versão boa: o que já estava é atualizado e nada se duplica. Os serviços que a pessoa já tinha começado mantêm-se.
 
+### Carregar turnos por data
+
+Se uma sucursal estiver no modo [Calendário](../04-calendario-e-horarios/114-calendario-de-turnos-por-data.md), o assistente carrega-lhe os turnos de cada pessoa data a data, sem criar tarefas: «à Marta e ao Luís, das 7 às 15 de segunda a quinta da próxima semana; na sexta folgam». Mostra-lhe cada dia com o que havia e o que vai ficar, e os feriados ou ausências que calham pelo meio, e escreve quando confirmar. Se não for possível carregar a alguém, diz-lhe porquê.
+
+Também lhe mostra a semana de quem está em Calendário, distinguindo um dia **livre** de um **sem carregar**. Se o que quer são turnos com tarefas dentro, peça-lhe a escala como na secção anterior: cria as tarefas e, em Calendário, também o turno de cada dia. Se não ficar claro qual das duas coisas quer, pergunta-lhe.
+
 ### Mudanças pontuais
 
-Criar uma tarefa, mudá-la de dia ou de hora, passá-la a outra pessoa, cancelá-la. Também mudar a semana-tipo de alguém. Antes de mexer em nada mostra-lhe o antes e o depois e espera pelo seu sim.
+Criar uma tarefa, mudá-la de dia ou de hora, passá-la a outra pessoa, cancelá-la. Também mudar a semana-tipo de alguém, ou passar uma pessoa ou uma sucursal inteira para o modo Calendário e devolvê-la ao horário semanal. Antes de mexer em nada mostra-lhe o antes e o depois e espera pelo seu sim.
 
 ### Dar entrada a pessoas e centros
 

@@ -92,6 +92,12 @@ A jornada de cada dia vai do início do primeiro trabalho ao fim do último.
 
 ---
 
+### Se a sucursal estiver em «Calendário»
+
+Para quem está no modo [Calendário](114-calendario-de-turnos-por-data.md), cada data do modelo carrega também o turno desse dia, da primeira à última hora dos seus trabalhos. Um dia sem trabalhos fica livre. Um modelo com várias semanas carrega todas as suas datas, e as datas passadas são ignoradas. O importador não muda o modo de ninguém.
+
+---
+
 ## Voltar a carregar a mesma semana
 
 Se a semana mudar, preencha o modelo com a versão certa e carregue-o outra vez:

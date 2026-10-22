@@ -96,7 +96,7 @@ Check directly with your organisation's administrator or manager. Only the admin
 
 ## Role note
 
-This article is aimed at **employees** signing in to CheckBiz360 for the first time. If you are an administrator and need to register users or resend activation emails, see the user management documentation in the administration panel.
+This article is aimed at **employees** signing in to CheckBiz360 for the first time. If you are an administrator and need to know whether someone received their access, resend it or change their email, see [App access and email change](../02-employees/116-app-access-and-email-change.md).
 
 ---
 

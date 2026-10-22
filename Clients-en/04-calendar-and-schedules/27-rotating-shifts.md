@@ -15,7 +15,7 @@ CheckBiz360 **does not have a rotating schedule type** with an automatic alterna
 
 ## How to cover rotation with what exists today
 
-There are two ways of operating with rotating teams. The choice depends on whether the rotation is stable or changes frequently.
+There are three ways of operating with rotating teams. The choice depends on whether the rotation is stable or changes frequently.
 
 ### Option 1: one branch per shift (stable rotation)
 
@@ -29,7 +29,11 @@ If the rotation is irregular, configure the schedule on the **employee's** recor
 
 It is more flexible, but it requires maintaining the change by hand on each cycle and for each person.
 
-> **Warning:** in both cases, change the schedule **before** the new cycle starts. Every clock record is validated against the effective calendar in force at that moment; updating the schedule afterwards does not re-evaluate records already stored.
+### Option 3: the Calendar mode (planned rotation)
+
+If you plan the weeks in advance, put the branch on the **Calendar** mode and load each person's shifts date by date. **Copy to next week** repeats a week and then you adjust whatever changes, and the roster importer loads a whole month from Excel. The cycle is not generated on its own, but there is no schedule to change when moving from one week to the next. See [Calendar: shifts loaded by date](114-shift-calendar-by-date.md).
+
+> **Warning:** in the first two options, change the schedule **before** the new cycle starts. Every clock record is validated against the effective calendar in force at that moment; updating the schedule afterwards does not re-evaluate records already stored.
 
 ---
 

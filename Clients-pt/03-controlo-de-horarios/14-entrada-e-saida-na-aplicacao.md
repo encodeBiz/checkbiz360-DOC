@@ -2,6 +2,8 @@
 
 A aplicação móvel do CheckBiz360 é o ponto de entrada principal para o registo de assiduidade. Este artigo explica passo a passo como efetuar um registo de entrada e um registo de saída a partir da aplicação, que informação mostra o ecrã principal de assiduidade e como interpretar as mensagens de erro mais habituais.
 
+Se parte da sua equipa não quer registar o ponto com o telemóvel, o [ponto de registo](113-ponto-de-registo.md) é um dispositivo fixo no local onde cada pessoa regista com o seu QR ou o seu código.
+
 ---
 
 ## O ecrã principal de assiduidade
@@ -101,3 +103,4 @@ O registo de entrada e saída a partir da aplicação é uma ação disponível 
 - [Pausas e descansos](17-pausas-e-descansos.md)
 - [Solicitar jornada manual](19-solicitar-jornada-manual.md)
 - [Estados e códigos de erro](22-estados-e-codigos-de-erro.md)
+- [Ponto de registo](113-ponto-de-registo.md) — para quem não regista o ponto com o telemóvel

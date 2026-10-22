@@ -35,6 +35,7 @@ Las notificaciones de tareas mantienen informados a empleados y responsables sob
 | Tipo | Descripción | Destinatarios |
 |---|---|---|
 | Nueva tarea asignada | Se envía al empleado cuando se le asigna una nueva tarea | Worker |
+| Tarea retirada | La tarea se ha borrado, cancelado o ya no está asignada al empleado | Worker |
 | Recordatorio de vencimiento | Alerta de que una tarea asignada vence en las próximas horas o al día siguiente | Worker |
 | Tarea completada | Notifica al responsable que el empleado ha marcado la tarea como completada | Manager, Supervisor |
 | Tarea pendiente de validación | El empleado ha completado la tarea y el sistema espera validación del responsable | Manager, Supervisor |
@@ -61,9 +62,10 @@ Las notificaciones administrativas informan sobre procesos que requieren interve
 | Tipo | Descripción | Destinatarios |
 |---|---|---|
 | Jornada manual pendiente de aprobación | Un empleado ha solicitado el registro manual de una jornada que requiere validación | Manager, Supervisor |
-| Solicitud de permiso pendiente | El empleado ha enviado una solicitud de ausencia o permiso que requiere aprobación | Manager |
+| Solicitud de vacaciones o permiso | No se envía aviso: la solicitud aparece en **Contacto → Solicitudes**, con el número de pendientes en la pestaña | Owner, administradores |
+| Vacaciones o permiso aprobados / rechazados | Avisa a la persona de la decisión y la lleva a **Mi calendario** (con la próxima versión de la app) | Worker |
 | Empleado nuevo activado | Un nuevo empleado ha completado el proceso de activación de su cuenta | Manager, Owner |
-| Invitación no aceptada | Un empleado invitado no ha activado su cuenta tras el plazo habitual | Manager |
+| Acceso que no ha llegado | Alerta de la portada del panel cuando el correo de acceso de alguien rebotó, se marcó como spam o no salió | Owner, administradores |
 
 ## Canales de entrega
 

@@ -35,6 +35,7 @@ Task notifications keep employees and managers informed about the status of assi
 | Type | Description | Recipients |
 |---|---|---|
 | New task assigned | Sent to the employee when a new task is assigned to them | Worker |
+| Task removed | The task has been deleted, cancelled or is no longer assigned to the employee | Worker |
 | Deadline reminder | Alert that an assigned task is due in the next few hours or the following day | Worker |
 | Task completed | Notifies the manager that the employee has marked the task as completed | Manager, Supervisor |
 | Task pending validation | The employee has completed the task and the system is awaiting the manager's validation | Manager, Supervisor |
@@ -61,9 +62,10 @@ Administrative notifications report on processes requiring manual intervention b
 | Type | Description | Recipients |
 |---|---|---|
 | Manual workday pending approval | An employee has requested the manual recording of a workday requiring validation | Manager, Supervisor |
-| Leave request pending | The employee has submitted an absence or leave request requiring approval | Manager |
+| Vacation or leave request | No notification is sent: the request appears in **Contact → Requests**, with the number pending on the tab | Owner, administrators |
+| Vacation or leave approved / rejected | Tells the person the decision and takes them to **My calendar** (with the next app version) | Worker |
 | New employee activated | A new employee has completed their account activation process | Manager, Owner |
-| Invitation not accepted | An invited employee has not activated their account after the usual period | Manager |
+| Access email not delivered | Alert on the panel's home page when someone's access email bounced, was marked as spam or never went out | Owner, administrators |
 
 ## Delivery channels
 

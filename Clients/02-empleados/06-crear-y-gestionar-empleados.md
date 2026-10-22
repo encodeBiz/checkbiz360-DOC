@@ -11,7 +11,7 @@ Este artículo explica cómo crear un empleado desde cero, qué campos son oblig
 ### Campos obligatorios
 
 - **Nombre completo** — Nombre y apellidos tal como deben aparecer en los registros.
-- **Correo electrónico** — Dirección única en la plataforma. Es el identificador del empleado y la dirección a la que se envía el acceso inicial. **No puede modificarse una vez creado el perfil.**
+- **Correo electrónico** — Dirección única en la plataforma. Es el identificador del empleado y la dirección a la que se envía el acceso inicial. Se cambia aparte, con **Cambiar correo**, porque es con lo que la persona entra en la app. Ver [Acceso a la app y cambio de correo](116-acceso-a-la-app-y-cambio-de-correo.md).
 - **Teléfono** — Número de contacto, con prefijo internacional.
 - **Tipo de relación** — *Plantilla* (personal de la empresa) o *Colaborador* (externo, freelance o proveedor de servicios). Aparece en la ficha junto al estado, y no es un dato menor: los colaboradores **no se incluyen en el informe de registro de jornada**, que es obligatorio para la relación laboral. Ver [Roles y niveles de responsabilidad](07-roles-y-niveles-de-responsabilidad.md#tipo-de-relación-interno-frente-a-colaborador).
 
@@ -30,6 +30,8 @@ Este artículo explica cómo crear un empleado desde cero, qué campos son oblig
 ### Email de bienvenida automático
 
 Al guardar el perfil, CheckBiz360 envía automáticamente un correo al empleado con las instrucciones para activar su cuenta y acceder a la app móvil. No requiere ninguna acción adicional del administrador.
+
+En la ficha, el bloque **Acceso a la app** dice si ese correo se entregó, si rebotó o si la persona ya usa la app. Desde ahí se reenvía el acceso. Se explica en [Acceso a la app y cambio de correo](116-acceso-a-la-app-y-cambio-de-correo.md).
 
 ---
 
@@ -87,7 +89,7 @@ Para cambiar el estado, abra el perfil del empleado, pulse **Editar** y seleccio
 4. Seleccione **Editar** y realice los cambios.
 5. Guarde.
 
-Los cambios surten efecto de forma inmediata. El correo electrónico es el único dato que no puede modificarse.
+Los cambios surten efecto de forma inmediata. El correo electrónico se cambia con su propio botón, **Cambiar correo**, que explica antes de confirmar todo lo que conlleva.
 
 ---
 
@@ -122,3 +124,4 @@ Si empieza con una plantilla de treinta o cuarenta personas, no hace falta crear
 - [Asignar empleados a sucursales](../08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md)
 - [Exportar el listado de empleados](12-exportar-empleados-csv.md)
 - [Equipos](99-equipos.md)
+- [Acceso a la app y cambio de correo](116-acceso-a-la-app-y-cambio-de-correo.md)

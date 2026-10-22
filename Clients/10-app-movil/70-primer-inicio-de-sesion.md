@@ -96,7 +96,7 @@ Consulte directamente con el administrador o manager de su organización. Solo e
 
 ## Nota de rol
 
-Este artículo está dirigido a **empleados** que inician sesión en CheckBiz360 por primera vez. Si usted es administrador y necesita registrar usuarios o reenviar correos de activación, consulte la documentación de gestión de usuarios en el panel de administración.
+Este artículo está dirigido a **empleados** que inician sesión en CheckBiz360 por primera vez. Si usted es administrador y necesita saber si a alguien le llegó el acceso, reenviárselo o cambiarle el correo, consulte [Acceso a la app y cambio de correo](../02-empleados/116-acceso-a-la-app-y-cambio-de-correo.md).
 
 ---
 
