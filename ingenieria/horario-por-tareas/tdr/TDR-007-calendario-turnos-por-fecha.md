@@ -1,7 +1,7 @@
 # TDR-007 — «Calendario»: turnos cargados por fecha, con fichaje normal
 
 **Fecha:** 2026-10-22
-**Estado:** Diseño cerrado en conversación con Jose el 2026-10-22; implementación en `feat/horario-calendario` de `encodebiz-api` (worktree)
+**Estado:** Diseño cerrado con Jose el 2026-10-22 e **implementado el mismo día** en `feat/horario-calendario` de `encodebiz-api` (API entera, §10) y de `encodebiz-front-saas` (§8), en worktrees y sin fusionar a `develop`. Typecheck en verde en los dos repos; pruebas unitarias de shared, merlin y assistant en verde; QA 55 escrita y **sin ejecutar** (necesita los contenedores en staging y la migración 043 en dev). Lo que queda, en §14.
 **Componente:** `encodebiz-api` — `packages/shared` (calendar), `services/checkinbiz` (calendar), `services/firebase_sdk` (`weeklyFromTaskDays`), `services/analytics` (espejo, migración 043), `services/merlin` (cuadrantes `aplicar`), `services/assistant` (`cambiar_modo_horario`); `encodebiz-front-saas` (selector y calendario semanal de turnos)
 **Decisiones de referencia:** [README](../README.md) D1, D3, D11 y **D12**; [TDR-001](./TDR-001-modo-dias-generados-y-escritor.md) §3, §5 y §7
 
@@ -283,3 +283,25 @@ Un patrón de rotación («semana A, semana B, cada cuatro semanas») que genere
 carga a mano o por Excel; si el cliente lo pide, es otro TDR. Que la salida exija las tareas del
 turno completadas: no, la tarea es una lista de trabajo y el fichaje es el registro legal. El
 cuadrante de un ERP en matriz: sigue fuera (cuadrantes, «lo que queda por decidir»).
+
+## 14. Hecho el 2026-10-22, y lo que queda
+
+**API** (`feat/horario-calendario`, commits 1b66263 y ecd50a0 sobre `develop` 10b6234): todo el
+inventario de §10, más `people` en `GET /calendar/days` para que el panel pinte las filas sin
+otra petición. `npm run typecheck` en verde (el único error es el `JsonWebKey` del asistente,
+que ya estaba en `develop`); shared 93/93, merlin 44/44, assistant 137/137.
+
+**Panel** (`feat/horario-calendario` del front, sobre `develop` 689876fc): selector en los tres
+niveles, `ShiftWeekCalendar` en la ficha de la sucursal y de la persona, alta de tarea desde el
+turno, cinco idiomas, PUT en el proxy. `tsc` sin errores propios (los `.svg` sin declaración ya
+fallaban), lint sin errores.
+
+**Lo que queda, en orden:**
+
+1. Migración 043 en dev por SSH y `desplegar.mjs --project dev-encodebiz --solo weeklyFromTaskDays`.
+2. Fusionar a `develop` → `staging` cuando Jose lo decida; lanzar `55-horario-calendario.spec.ts`
+   y dejar aquí el resultado. HCA-06 abre y cierra jornada seguidas: si el fichaje exigiera un
+   mínimo entre entrada y salida, es la prueba la que se ajusta, no el servidor.
+3. Probar el panel con sesión: activar «Calendario» en una sucursal de dev, cargar una semana,
+   copiarla, crear una tarea desde un turno y ver a la persona esperada en Disponibilidad.
+4. El pase a producción (§12 y `proximo-pase-back.md` §15).

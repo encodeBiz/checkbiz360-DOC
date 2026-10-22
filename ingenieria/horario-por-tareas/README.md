@@ -388,7 +388,7 @@ Nada abierto del diseño. Cerradas al implementar:
 | 4. Informe: jornada y huecos | En `develop` y `staging` (API, TDR-004) |
 | 5. Cuadrantes en el modo | Hecho por otra sesión con D10 y D11: `aplicar` no escribe horario a quien está en el modo, solo tareas; la plantilla de sucursal pasa por el mismo `aprobar → aplicar`; prueba en `services/merlin/test/plantilla.test.ts` |
 | — Tareas de varias personas | **Hueco encontrado el 22-oct** (TDR-006): arreglado y en producción desde el 22-oct (hotfix, PR #211) |
-| 6. «Calendario»: turnos por fecha (D12) | Diseñado el 22-oct ([TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md)); en `feat/horario-calendario` (API) y el panel detrás |
+| 6. «Calendario»: turnos por fecha (D12) | Diseñado e implementado el 22-oct ([TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md)): API y panel en `feat/horario-calendario` de cada repo, sin fusionar; QA 55 sin ejecutar |
 
 ## Documentos
 
