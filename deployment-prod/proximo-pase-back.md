@@ -784,6 +784,12 @@ guardado funciona como semanal, así que no hace falta limpiarlo.
 
 **16 bis, 2026-10-22:** #218 (por tareas sustituye la semana; `pasarASemanal` en el asistente), a mano: merlin y assistant reconstruidos y sanos, `restart nginx`, sin workflow.
 
+**16 ter, 2026-10-22 (noche), TDR-009 «tres modos» — EJECUTADO el back; el panel PENDIENTE.** Orden de Jose: «despliega en prod, estamos probando ahí».
+- API `main` 869cc51 en el servidor (`git pull --ff-only`); reconstruidos checkinbiz, analytics, merlin, assistant, tasks e inventory (los que usan los resolutores del horario), todos *healthy*; `restart nginx`. Comprobado en el contenedor: `days_require_calendar_mode` presente. QA 55 en staging antes: 9/9.
+- Functions: `desplegar.mjs --project encodebiz-services --solo onTaskDay,weeklyFromTaskDays,employeePlanifierWorker,planifierNotificationWorker,taskStartNotificationWorker`, «Deploy complete» (llevan el `shared` nuevo).
+- Sin migración. 0 días cargados en prod antes del pase (TDR-009 §4.6).
+- **Panel PENDIENTE:** rama `feat/tres-modos` de `encodebiz-front-saas`, sin empujar. Hasta que salga, el panel de Vercel (TDR-008) no deja cargar turnos a quien está en semanal (la API responde 400 `calendar/days_require_calendar_mode`); se prueba con el panel en local.
+
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
 Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está
