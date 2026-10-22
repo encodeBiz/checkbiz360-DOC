@@ -86,12 +86,9 @@ El tipo lo pone el modo, como en TDR-008 §10:
 
 ### 4.6 Datos ya escritos
 
-Desde el TDR-008 (en producción el 2026-10-22) alguien en `weekly` puede tener semanas cargadas.
-Con esta regla dejarían de leerse y esa persona volvería a su semana tipo. Un script
-(`services/checkinbiz/src/scripts/turnos-en-semanal.ts`) lista, por empresa, quién está en
-`weekly` con días cargados de hoy en adelante. **Simula por defecto**; con `--apply` y
-`--a-turnos` pasa a esas personas a `calendar`. Se ejecuta en producción antes de desplegar este
-TDR y se decide con Jose a quién se pasa.
+Ninguno. Del TDR-008 solo llegó a producción el back (ni el panel ni la app), y comprobado en
+producción el 2026-10-22: **0 días cargados** desde el panel o el cuadrante en las 16 empresas.
+Nadie en `weekly` pierde horario con este cambio, y no hace falta script.
 
 ## 5. El asistente (`services/assistant`)
 
@@ -163,5 +160,5 @@ turnos (§4.3), cargar turnos no toca tareas, y los dos cuadrantes según el mod
 
 ## 9. Despliegue
 
-Orden: el script del §4.6 en producción y la decisión con Jose; servidor (`shared`, `checkinbiz`,
+Orden: servidor (`shared`, `checkinbiz`,
 `analytics`, `merlin`); asistente; panel. Sin migración de base de datos. A mano, sin Actions.
