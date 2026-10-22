@@ -279,6 +279,15 @@ por rebuild de shared); `weeklyFromTaskDays` con `desplegar.mjs --project encode
 
 ## 13. Fuera de este TDR
 
+**La geocerca, decidido por Jose el 2026-10-22: el turno no lleva lugar propio.** En
+«Calendario» el fichaje se mide contra la sucursal, como en semanal, y cada tarea con dirección
+contra su propio lugar al iniciarse (al completarse solo se mide). Si el trabajo es fuera de la
+sucursal, se crea una sucursal con la valla desactivada («fichar donde sea») y el sitio lo
+controla la geocerca de cada tarea. Se descartó una valla por turno: duplica lo que ya da la
+tarea. Lo que queda sin control, y conviene decírselo al cliente: una tarea sin dirección en
+esa sucursal no comprueba nada.
+
+
 Un patrón de rotación («semana A, semana B, cada cuatro semanas») que genere el mes solo: se
 carga a mano o por Excel; si el cliente lo pide, es otro TDR. Que la salida exija las tareas del
 turno completadas: no, la tarea es una lista de trabajo y el fichaje es el registro legal. El
