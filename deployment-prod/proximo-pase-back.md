@@ -536,8 +536,12 @@ informes que pasan sueltos (INF-01-07, INF-05-01), y los conocidos HAL-38.
 - 21-oct, **«Mi semana» en el quiosco** (`b6b0895`, otra sesión): en `staging` y **en prod**
   con el #205 (`c684e9b`, `[skip ci]`): solo `checkinbiz` reconstruido; reglas con `kiosk_views`
   publicadas desde `origin/main` (iguales a `staging`; emulador 0 fallos).
-- Pendiente de Jose: panel `feat/quiosco` a `main` (B y 11), app (C y 12), pruebas (13),
-  `invoice.created` (10).
+- 22-oct, **app (C)**: `feat/quiosco` de `checkbiz360` fusionada en `develop` (`63bbf07`, sin
+  conflictos; incluye «Mi semana» en la tablet, `f10acf6`, sin probar en dispositivo contra el
+  servidor), versión **1.9.0+67** (`6653a43`), `develop → staging → master` empujados. Analyze en
+  su base (67) y 359 tests en verde. El panel ya estaba en `main` (#114 incluye `689876fc`).
+- Pendiente de Jose: **publicar la app** en las tiendas desde `master` 1.9.0+67 (12), pruebas en
+  prod (13), `invoice.created` (10).
 
 **Índices:** comprobados el 20-oct. La revisión del quiosco usa `checklogs (branchId, timestamp)`,
 que ya existe en prod; las demás consultas nuevas tiran de índices de un solo campo. Solo
