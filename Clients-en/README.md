@@ -91,7 +91,7 @@ How the clock-in system works: validations, record types, geofences and workday 
 | Review and approval of clock records by a manager | **Available** | Approval, rejection and resolution flow; a rejected correction leaves the clock record as it was. |
 | Traceability and immutable change history | **Available** | Requests and changes recorded with an audit trail. |
 | Suspicious clock-in detection | **Available** | Automatic indicator based on anomalous patterns. |
-| Clock-in point: a device at the site with QR or code and a photo | **Partially available** | Paid add-on. Subscribed and managed in the panel; the device needs the next version of the app, which is being published. |
+| Clock-in point: a device at the site with QR or code and a photo | **Available** | Paid add-on. Subscribed and managed in the panel; the device uses the CheckBiz360 app. |
 
 | Article | Description |
 |---|---|
@@ -126,9 +126,9 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | Cascading configuration inheritance | **Available** | Priority algorithm used to calculate the effective calendar. |
 | Rotating shifts (automatic A/B alternation) | **Planned** | Covered today with one branch per shift or with an employee-specific schedule. |
 | Weekly schedule from an Excel template | **Available** | A whole branch's week in one upload, one sheet per person, reviewed before applying; also one person's week from their profile. |
-| Schedule from tasks (each day's working time is its tasks) | **Partially available** | Chosen per person on their profile. Their app needs the next version to show it: do not enable it yet. |
+| Schedule from tasks (each day's working time is its tasks) | **Available** | Chosen per person on their profile. |
 | Calendar: shifts loaded by date | **Available** | On the company, a branch or a person; weekly shift calendar, copy to next week and loading from the Excel roster. |
-| Vacation and leave requested from the app | **Partially available** | Approved in Contact → Requests. The app screen and the panel tab arrive with their next version. |
+| Vacation and leave requested from the app | **Available** | "My calendar" in the app; approved in Contact → Requests. |
 
 | Article | Description |
 |---|---|

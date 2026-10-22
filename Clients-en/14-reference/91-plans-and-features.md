@@ -58,7 +58,7 @@ Both plans include the base modules described below. Inventory and Clock-in poin
 - Base schedules with one or several shifts per day and breaks within the shift.
 - Three ways to set the schedule: template week, from tasks or **Calendar**, with shifts loaded date by date and copyable from one week to the next.
 - Work calendar with public holidays and absences —by date range and with a paid mark—, applicable to organisation, branch or employee.
-- Vacation and leave requested from the app and approved in the panel (arrives with the next version of the app and the panel).
+- Vacation and leave requested from the app and approved in the panel.
 - Strict or flexible workday and strict or flexible break, which decide how hours and breaks are counted.
 - Schedule templates to replicate a schedule across several branches.
 - Availability board: coverage by branch and day, who is missing and why, and adding days off from the board itself.

@@ -63,7 +63,7 @@ As notificações administrativas informam sobre processos que exigem intervenç
 |---|---|---|
 | Jornada manual pendente de aprovação | Um funcionário solicitou o registo manual de uma jornada que exige validação | Manager, Supervisor |
 | Pedido de férias ou licença | Não se envia aviso: o pedido aparece em **Contacto → Pedidos**, com o número de pendentes no separador | Owner, administradores |
-| Férias ou licença aprovadas / recusadas | Avisa a pessoa da decisão e leva-a a **O meu calendário** (com a próxima versão da aplicação) | Worker |
+| Férias ou licença aprovadas / recusadas | Avisa a pessoa da decisão e leva-a a **O meu calendário** | Worker |
 | Novo funcionário ativado | Um novo funcionário completou o processo de ativação da sua conta | Manager, Owner |
 | Acesso que não chegou | Alerta da página inicial do painel quando o e-mail de acesso de alguém foi devolvido, marcado como spam ou não saiu | Owner, administradores |
 

@@ -2,8 +2,6 @@
 
 Asking for vacation is usually a message, a phone call or a piece of paper that someone then has to copy into the calendar. With **My calendar**, each person sees in the app which days they work and requests their vacation or leave from there. The company approves or rejects it from the panel, and once approved the days are in their calendar without typing them again.
 
-> **Status: Partially available.** The service is already live. The app screen and the panel tab arrive with their next version.
-
 ---
 
 ## What each person sees

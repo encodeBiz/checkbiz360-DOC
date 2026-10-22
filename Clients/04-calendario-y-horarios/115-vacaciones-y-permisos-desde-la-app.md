@@ -2,8 +2,6 @@
 
 Pedir unas vacaciones suele ser un mensaje, una llamada o un papel que alguien tiene que pasar al calendario. Con **Mi calendario**, cada persona ve en la app qué días trabaja y pide sus vacaciones o permisos desde ahí. La empresa los aprueba o rechaza desde el panel, y al aprobarlos los días quedan en su calendario sin teclearlos otra vez.
 
-> **Estado: Disponible parcialmente.** El servicio ya está activo. La pantalla de la app y la pestaña del panel llegan con su próxima versión.
-
 ---
 
 ## Qué ve cada persona

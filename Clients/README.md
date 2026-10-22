@@ -91,7 +91,7 @@ Cómo funciona el sistema de fichaje: validaciones, tipos de registro, geocercas
 | Revisión y validación de fichajes por responsable | **Disponible** | Flujo de aprobación, rechazo y resolución; una corrección rechazada deja el fichaje como estaba. |
 | Trazabilidad e historial de cambios inmutable | **Disponible** | Registro de solicitudes y modificaciones con auditoría. |
 | Detección de fichaje sospechoso | **Disponible** | Indicador automático basado en patrones anómalos. |
-| Punto de fichaje: dispositivo del centro con QR o código y foto | **Disponible parcialmente** | Complemento de pago. Se contrata y gestiona en el panel; el dispositivo necesita la próxima versión de la app, en publicación. |
+| Punto de fichaje: dispositivo del centro con QR o código y foto | **Disponible** | Complemento de pago. Se contrata y gestiona en el panel; el dispositivo usa la app CheckBiz360. |
 
 | Artículo | Descripción |
 |---|---|
@@ -126,9 +126,9 @@ Configuración de turnos, horarios base, calendarios laborales y excepciones ind
 | Herencia de configuración en cascada | **Disponible** | Algoritmo de prioridad para calcular el calendario efectivo. |
 | Turnos rotativos (alternancia A/B automática) | **Pendiente de desarrollo** | Hoy se cubre con una sucursal por turno o con horario propio del empleado. |
 | Cuadrante semanal por plantilla de Excel | **Disponible** | La semana de toda una sucursal en una subida, con una pestaña por persona y revisión antes de aplicar; también la de una sola persona desde su ficha. |
-| Horario por tareas (la jornada de cada día son sus tareas) | **Disponible parcialmente** | Se elige por persona en su ficha. Su app necesita la próxima versión para mostrarlo: no lo active todavía. |
+| Horario por tareas (la jornada de cada día son sus tareas) | **Disponible** | Se elige por persona en su ficha. |
 | Calendario: turnos cargados por fecha | **Disponible** | En la empresa, una sucursal o una persona; calendario de turnos semanal, copiar a la semana siguiente y carga desde el cuadrante de Excel. |
-| Vacaciones y permisos pedidos desde la app | **Disponible parcialmente** | Se aprueban en Contacto → Solicitudes. La pantalla de la app y la pestaña del panel llegan con su próxima versión. |
+| Vacaciones y permisos pedidos desde la app | **Disponible** | «Mi calendario» en la app; se aprueban en Contacto → Solicitudes. |
 
 | Artículo | Descripción |
 |---|---|

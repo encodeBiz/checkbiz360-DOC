@@ -91,7 +91,7 @@ Como funciona o sistema de registo de ponto: validações, tipos de registo, geo
 | Revisão e validação de registos pelo responsável | **Disponível** | Fluxo de aprovação, recusa e resolução; uma correção recusada deixa o registo como estava. |
 | Rastreabilidade e histórico de alterações imutável | **Disponível** | Registo de pedidos e alterações com auditoria. |
 | Deteção de registo suspeito | **Disponível** | Indicador automático baseado em padrões anómalos. |
-| Ponto de registo: dispositivo do local com QR ou código e foto | **Parcialmente disponível** | Complemento pago. Contrata-se e gere-se no painel; o dispositivo precisa da próxima versão da aplicação, em publicação. |
+| Ponto de registo: dispositivo do local com QR ou código e foto | **Disponível** | Complemento pago. Contrata-se e gere-se no painel; o dispositivo usa a aplicação CheckBiz360. |
 
 | Artigo | Descrição |
 |---|---|
@@ -126,9 +126,9 @@ Configuração de turnos, horários base, calendários laborais e exceções ind
 | Herança de configuração em cascata | **Disponível** | Algoritmo de prioridade para calcular o calendário efetivo. |
 | Turnos rotativos (alternância A/B automática) | **Planeada** | Hoje resolve-se com uma sucursal por turno ou com horário próprio do funcionário. |
 | Escala semanal a partir de um modelo de Excel | **Disponível** | A semana de toda uma sucursal num só carregamento, uma folha por pessoa e revisão antes de aplicar; também a de uma pessoa a partir da sua ficha. |
-| Horário por tarefas (a jornada de cada dia são as suas tarefas) | **Parcialmente disponível** | Escolhe-se por pessoa na sua ficha. A sua aplicação precisa da próxima versão para o mostrar: não o ative ainda. |
+| Horário por tarefas (a jornada de cada dia são as suas tarefas) | **Disponível** | Escolhe-se por pessoa na sua ficha. |
 | Calendário: turnos carregados por data | **Disponível** | Na empresa, numa sucursal ou numa pessoa; calendário de turnos semanal, copiar para a semana seguinte e carregamento a partir da escala de Excel. |
-| Férias e licenças pedidas a partir da aplicação | **Parcialmente disponível** | Aprovam-se em Contacto → Pedidos. O ecrã da aplicação e o separador do painel chegam com a sua próxima versão. |
+| Férias e licenças pedidas a partir da aplicação | **Disponível** | «O meu calendário» na aplicação; aprovam-se em Contacto → Pedidos. |
 
 | Artigo | Descrição |
 |---|---|

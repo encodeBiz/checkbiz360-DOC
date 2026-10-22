@@ -4,8 +4,6 @@ Hay personas que no quieren instalar nada en su móvil personal, y centros donde
 
 Convive con la app. Quien quiera sigue fichando con su móvil, y quien no, ficha en la pared.
 
-> **Estado: Disponible parcialmente.** Se contrata y se gestiona desde el panel. El dispositivo del centro necesita la próxima versión de la app CheckBiz360, que está en publicación.
-
 ---
 
 ## Qué resuelve

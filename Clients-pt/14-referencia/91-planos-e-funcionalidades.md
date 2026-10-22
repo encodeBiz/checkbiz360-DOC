@@ -58,7 +58,7 @@ Ambos os planos incluem os módulos base descritos em seguida. O Inventário e o
 - Horários base com um ou vários turnos por dia e descansos dentro do turno.
 - Três formas de organizar o horário: semana tipo, por tarefas ou **Calendário**, com os turnos carregados data a data e copiáveis de uma semana para a seguinte.
 - Calendário laboral com feriados e ausências —por intervalos de datas e com marca de remunerada—, aplicáveis a entidade, sucursal ou funcionário.
-- Férias e licenças pedidas a partir da aplicação e aprovadas no painel (chega com a próxima versão da aplicação e do painel).
+- Férias e licenças pedidas a partir da aplicação e aprovadas no painel.
 - Jornada estrita ou flexível e descanso estrito ou flexível, que decidem como se contabilizam horas e pausas.
 - Modelos de horário para replicar um horário em várias sucursais.
 - Quadro de disponibilidade: cobertura por sucursal e dia, quem falta e porquê, e registo de dias livres a partir do próprio quadro.

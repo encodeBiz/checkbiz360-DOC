@@ -57,7 +57,7 @@ An address without a street number is not enough: if it can only be located appr
 | **Branch** * | The name of their site, as in the Branches sheet or as it is already called in CheckBiz360. If they work at several, separate them with semicolons. |
 | **Responsibility** | **Worker**, **Supervisor** or **Manager** at that site. Blank means worker. |
 | **Hourly rate** | The one that feeds the cost analysis. Blank means the job title's rate, if it already exists. |
-| **Schedule** | Leave it blank. The **From tasks** option appears in the template, but your app needs the next version to show it: do not use it yet. |
+| **Schedule** | Leave it blank to inherit the branch's schedule, or choose **From tasks** if that person's working day comes from their tasks. |
 
 Columns marked with an asterisk are required.
 

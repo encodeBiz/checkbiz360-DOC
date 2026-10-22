@@ -63,7 +63,7 @@ Administrative notifications report on processes requiring manual intervention b
 |---|---|---|
 | Manual workday pending approval | An employee has requested the manual recording of a workday requiring validation | Manager, Supervisor |
 | Vacation or leave request | No notification is sent: the request appears in **Contact → Requests**, with the number pending on the tab | Owner, administrators |
-| Vacation or leave approved / rejected | Tells the person the decision and takes them to **My calendar** (with the next app version) | Worker |
+| Vacation or leave approved / rejected | Tells the person the decision and takes them to **My calendar** | Worker |
 | New employee activated | A new employee has completed their account activation process | Manager, Owner |
 | Access email not delivered | Alert on the panel's home page when someone's access email bounced, was marked as spam or never went out | Owner, administrators |
 

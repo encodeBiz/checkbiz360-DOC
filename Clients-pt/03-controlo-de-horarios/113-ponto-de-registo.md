@@ -4,8 +4,6 @@ Há pessoas que não querem instalar nada no telemóvel pessoal, e locais onde a
 
 Convive com a aplicação. Quem quiser continua a registar com o telemóvel, e quem não quiser regista na parede.
 
-> **Estado: Parcialmente disponível.** Contrata-se e gere-se a partir do painel. O dispositivo do local precisa da próxima versão da aplicação CheckBiz360, que está em publicação.
-
 ---
 
 ## O que resolve

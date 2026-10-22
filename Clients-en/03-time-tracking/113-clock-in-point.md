@@ -4,8 +4,6 @@ Some people do not want to install anything on their personal phone, and at some
 
 It works alongside the app. Whoever wants to keeps clocking in with their phone, and whoever does not clocks in at the wall.
 
-> **Status: Partially available.** It is subscribed and managed from the panel. The device at the site needs the next version of the CheckBiz360 app, which is being published.
-
 ---
 
 ## What it solves

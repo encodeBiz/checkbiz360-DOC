@@ -2,8 +2,6 @@
 
 Pedir umas férias costuma ser uma mensagem, uma chamada ou um papel que alguém tem de passar para o calendário. Com **O meu calendário**, cada pessoa vê na aplicação que dias trabalha e pede aí as suas férias ou licenças. A empresa aprova-as ou recusa-as a partir do painel, e ao aprová-las os dias ficam no seu calendário sem ser preciso escrevê-los outra vez.
 
-> **Estado: Parcialmente disponível.** O serviço já está ativo. O ecrã da aplicação e o separador do painel chegam com a sua próxima versão.
-
 ---
 
 ## O que cada pessoa vê

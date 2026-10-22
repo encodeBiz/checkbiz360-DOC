@@ -58,7 +58,7 @@ Ambos planes incluyen los módulos base descritos a continuación. Inventario y 
 - Horarios base con uno o varios turnos por día y descansos dentro del turno.
 - Tres formas de organizar el horario: semana tipo, por tareas o **Calendario**, con los turnos cargados fecha a fecha y copiables de una semana a la siguiente.
 - Calendario laboral con festivos y ausencias —por rangos de fechas y con marca de retribuida—, aplicables a entidad, sucursal o empleado.
-- Vacaciones y permisos pedidos desde la app y aprobados en el panel (llega con la próxima versión de la app y del panel).
+- Vacaciones y permisos pedidos desde la app y aprobados en el panel.
 - Jornada estricta o flexible y descanso estricto o flexible, que deciden cómo se computan horas y pausas.
 - Plantillas de horario para replicar un horario en varias sucursales.
 - Tablero de disponibilidad: cobertura por sucursal y día, quién falta y por qué, y alta de días libres desde el propio tablero.

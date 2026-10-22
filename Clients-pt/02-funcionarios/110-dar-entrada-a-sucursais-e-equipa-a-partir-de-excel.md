@@ -57,7 +57,7 @@ Uma morada sem número de porta não chega: se só se localizar de forma aproxim
 | **Sucursal** * | O nome do seu centro, tal como está no separador Sucursais ou como já se chama no CheckBiz360. Se trabalha em várias, separe-as com ponto e vírgula. |
 | **Responsabilidade** | **Trabalhador**, **Supervisor** ou **Gerente** nesse centro. Em branco, trabalhador. |
 | **Preço hora** | O que alimenta a análise de custos. Em branco, o do cargo, se já existir. |
-| **Horário** | Deixe-o em branco. A opção **Por tarefas** aparece no modelo, mas a sua aplicação precisa da próxima versão para a mostrar: não a use ainda. |
+| **Horário** | Deixe-o em branco para herdar o da sucursal, ou escolha **Por tarefas** se a jornada dessa pessoa resulta das suas tarefas. |
 
 As colunas com asterisco são obrigatórias.
 
