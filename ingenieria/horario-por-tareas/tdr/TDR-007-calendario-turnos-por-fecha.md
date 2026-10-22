@@ -341,5 +341,29 @@ Pedido por Jose el 2026-10-22. Lo que ya hace el conector desde este TDR (§9):
 5. **Pruebas** en `services/assistant/test/herramientas.test.ts`, con el core falso, como las
    de `cambiar_modo_horario`.
 
+**Hecho el 2026-10-22** (rama `feat/asistente-calendario` de la API), con lo que decidió Jose
+para el punto 3 («dos herramientas»):
+
+- **`cargar_turnos`** (nueva, `tools/turnos.ts`): turnos por fecha para una o varias personas de
+  una sucursal, **sin tareas**. Vista previa día a día con el antes y el después («sin cargar»,
+  «libre» o los turnos) y los festivos y ausencias que caen; escribe tras el sí, una persona por
+  `PUT /calendar/days`, y si una falla las demás siguen y se dice cuál. Comprueba antes lo mismo
+  que el servicio: de la sucursal y en `calendar` (si no, «no se carga» con el motivo y
+  `cambiar_modo_horario`), sin fechas pasadas (hoy sí), 400 días hacia delante, 100 días por
+  persona y llamada, turnos que no se cruzan. `destructiveHint`: sustituye el día que ya hubiera.
+- **`ver_semana`**: a quien está en `calendar` le enseña sus siete días con los turnos cargados,
+  distinguiendo «sin cargar» de «libre», en una sola lectura (`GET /calendar/days`, por persona o
+  por sucursal); si la lectura falla, lo dice en vez de dar los días por libres.
+- **`proponer_cuadrante`** sigue igual que la plantilla del panel: una tarea por trabajo y, en
+  `calendar`, además el turno de cada día (lo hace `aplicar` de merlin, §7). Su texto y el de
+  `confirmar_cuadrante` lo dicen, y remiten a `cargar_turnos` para turnos sin tareas.
+- **Instrucciones**: los tres modos, que calendario se pone a sucursales y se hereda, que un día
+  sin cargar libra (avisar al cambiar de modo) y qué herramienta usar; si la persona no dice si
+  quiere tareas, preguntarlo.
+- `ver_hoy`, `ver_semanas`, `ver_disponibilidad` y `quien_puede_cubrir` no cambian: leen la
+  disponibilidad, que ya resuelve el modo.
+- Pruebas: ocho nuevas en `herramientas.test.ts` (vista previa y escritura, bloqueadas, fechas y
+  turnos inválidos, fallo parcial, `ver_semana` con y sin calendario, instrucciones).
+
 Contrato de las rutas: §5. En la app no cambia nada: «Calendario» se comporta como semanal
 (fichaje normal y botones de tarea visibles); solo `tasks` mueve tareas al fichar.
