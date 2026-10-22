@@ -690,6 +690,21 @@ Vercel, las funciones por nombre con `desplegar.mjs`, las reglas con `--only fir
 | Panel a producción | 11:30 | Claude | PR encodebiz-front-saas-clean#106 (staging → main, 85 commits, con «calendario de MUI unificado» de otra sesión) fusionado. Vercel: deployment de producción **Ready** a las 11:31 (37 s) (1.10, 2.16, 3.4, 8.5). |
 | Cierre | 11:35 | Claude | Hook `block-prod.sh` rearmado en `.claude/settings.json` con los tres contenedores nuevos. Registro escrito; `2026-10-cuadrantes-plantilla.md` §8 con su fila. |
 
+## 14. Vacaciones y permisos desde la app — PENDIENTE (rama `feat/vacaciones`, 2026-10-22)
+
+Diseño: [ingenieria/vacaciones](../ingenieria/vacaciones/README.md). Solo `checkinbiz` (rutas
+nuevas bajo `/calendar`) y `shared`; aprobar escribe los mismos días libres del empleado que el
+panel. Todo `--project encodebiz-services` explícito y con autorización de Jose.
+
+| # | Qué | Cómo |
+|---|---|---|
+| 14.1 | Código: `checkinbiz` (y `billing` solo por el script de plantillas) | PR desde la rama principal, como siempre |
+| 14.2 | Reglas de Firestore: `absence_requests` cerrada al cliente | `firebase deploy --only firestore:rules --project encodebiz-services` desde `origin/main`; antes, emulador 0 fallos |
+| 14.3 | Índices compuestos de `absence_requests` (colección): `(employeeId ASC, endDate ASC)` y `(status ASC, createdAt DESC)` | `gcloud firestore indexes composite create --collection-group=absence_requests --query-scope=COLLECTION --field-config=field-path=employeeId,order=ascending --field-config=field-path=endDate,order=ascending` y el segundo con `status`/`createdAt desc`. En dev creados el 22-oct |
+| 14.4 | Plantilla de correo `ABSENCE_REQUESTED` (es/en) | `node services/billing/dist/scripts/email-templates.js --apply` (ya la incluye) |
+| 14.5 | Panel (pestaña Calendario → Solicitudes) y app («Mi calendario», versión nueva) | detrás del back; el panel usa el proxy de calendario que ya existe, sin variable nueva |
+| 14.6 | Prueba en prod | pedir desde la app con una persona nuestra, correo al administrador, aprobar en el panel, ver la ausencia en Disponibilidad y el aviso en la app |
+
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
 Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está

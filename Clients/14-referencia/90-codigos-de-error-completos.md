@@ -162,6 +162,22 @@ Los errores más frecuentes en el uso diario. Salvo indicación contraria, los v
 
 ---
 
+## Vacaciones y permisos (`absence_request`)
+
+Solicitudes desde la app, «Mi calendario» (aprueban los administradores en el panel, Calendario → Solicitudes).
+
+| Código | Causa |
+|---|---|
+| `absence_request/invalid_type` | El tipo no es `vacation`, `personal`, `medical` ni `other`. |
+| `absence_request/invalid_dates` | Fechas no válidas o fin anterior al inicio. |
+| `absence_request/past` | La solicitud empieza antes de hoy. El pasado lo registra la empresa desde el panel. |
+| `absence_request/too_long` | Más de 60 días en una sola solicitud. |
+| `absence_request/note_too_long` | La nota supera los 500 caracteres. |
+| `absence_request/overlap` | Se solapa con otra solicitud pendiente o aprobada, o con una ausencia ya registrada. |
+| `absence_request/not_found` | La solicitud no existe o no es de esta persona. |
+| `absence_request/not_pending` | Ya se resolvió o se canceló: no se puede cancelar, aprobar ni rechazar. |
+| `calendar/forbidden` | La cuenta no tiene ficha de empleado activa (rutas de la persona) o no tiene asiento de administrador (rutas del panel). |
+
 ## Otros módulos
 
 | Código | Qué significa | Qué hacer |
