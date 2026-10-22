@@ -1,7 +1,7 @@
 # TDR-006 — Tareas de varias personas en el horario por tareas
 
 **Fecha:** 2026-10-22
-**Estado:** Implementado el 2026-10-22 en `develop` (a3fb7bd) y `staging` (53e8c8b, a mano). Pendiente de producción.
+**Estado:** En producción desde el 2026-10-22 (hotfix, PR #211, b993357; `employeePlanifierWorker` desplegada). También en `develop` y `staging`.
 **Componente:** `encodebiz-api` — `services/checkinbiz` (`tasksModeAttendance.ts`, `createChecklog`), `services/firebase_sdk` (`executeEmployeePlanifier`); `services/tasks` no cambia
 **Decisiones de referencia:** [README](../README.md) D5 y D6; [TDR-003](./TDR-003-el-fichaje-mueve-la-tarea.md); [TDR-005](./TDR-005-alarmas-por-tarea.md); `tasks-service/08_pausas.md`
 

@@ -721,13 +721,33 @@ explícito y con autorización de Jose.
 | 15.4 | Panel: selector con «Calendario» y el calendario semanal de turnos | detrás del back; sin variable nueva |
 | 15.5 | Prueba en prod | una sucursal de prueba en `calendar`, cargar la semana desde el panel, fichar con la app publicada (1.7.0) y ver el turno en Disponibilidad |
 
-## 1c. Horario por tareas: tareas de varias personas (TDR-006) — PENDIENTE
+## 16. Alertas operativas por correo — PENDIENTE (rama `feat/alertas-por-correo`, 2026-10-22; aún no en `staging`)
+
+Diseño: [ingenieria/alertas-por-correo](../ingenieria/alertas-por-correo/README.md). Las 12
+alertas del dashboard salen por correo a owner, admin, direcciones extra y supervisores (estos
+solo las de sus sucursales): el resumen de la mañana (8:00 local de la empresa, fase 2, hecha)
+y las inmediatas (fase 3, pendiente). Todo en Postgres: espejos de destinatarios, histórico y
+cola de envío. Ajustes por empresa (fase 4, pendiente); mientras, los defectos: encendido,
+8:00, todas las reglas, con supervisores.
+
+| # | Qué | Cómo |
+|---|---|---|
+| 16.1 | Migración `044_alertas_por_correo.sql` (dim_entities, dim_panel_users, dim_responsibilities, email/idioma en dim_employees, índice `(entity_id, timestamp)` en checklogs_raw, alert_*, email_outbox) | a mano por SSH, mirando el resultado, **antes** del contenedor de analytics. El índice sobre `checklogs_raw` tarda lo que tarde la tabla de prod |
+| 16.2 | Contenedores: `analytics` (jobs y espejos); `billing` solo por el script de plantillas; los que recompilan por tipos de shared | PR desde la rama principal; `build --no-deps` de los tocados |
+| 16.3 | Plantillas `ALERTS_DIGEST` y `ALERTS_IMMEDIATE` en `emails_template` | `exec -T billing node services/billing/dist/scripts/email-templates.js` (simula) y `--apply` |
+| 16.4 | Función `onChecklogSync` con `retry: true` (el espejo reintenta en vez de soltar el fichaje) | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onChecklogSync` |
+| 16.5 | Primer sync de dimensiones tras la migración (asientos, responsabilidades, correos) | `POST /api/analytics/dimensions/sync` S2S, o esperar al :20 |
+| 16.6 | Variable `PANEL_URL` en `.env.production` (opcional: por defecto `https://saas.encodebiz.com`) | solo si el dominio del panel cambia |
+| 16.7 | SMTP en el contenedor de analytics | ya viene por el `env_file` común; comprobar `SMTP_USER` en `analytics` antes del primer resumen |
+| 16.8 | Prueba en prod | una empresa nuestra con alertas vivas: a las 8:00 locales llega un correo al owner; `alert_digest_runs` y `email_message` con `kind = alerts_digest` |
+
+## 1c. Horario por tareas: tareas de varias personas (TDR-006) — EN PRODUCCIÓN (22-oct)
 
 | # | Paso | Estado |
 |---|---|---|
-| 1c.1 | Contenedores `checkinbiz` y `tasks` con el código de `staging` (53e8c8b o posterior) | PENDIENTE |
-| 1c.2 | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo employeePlanifierWorker` | PENDIENTE |
-| 1c.3 | Comprobar con una tarea de dos personas: entran las dos, la salida de una no completa la tarea | PENDIENTE |
+| 1c.1 | Contenedores `checkinbiz` y `tasks` | **HECHO 2026-10-22 14:42 UTC** como hotfix: PR #211 a main con `[skip ci]` (b993357), `git pull` y `up --build -d --no-deps checkinbiz tasks` + `restart nginx` en el servidor; los dos sanos y con el código nuevo |
+| 1c.2 | `employeePlanifierWorker` | **HECHO 14:44 UTC** con `desplegar.mjs --project encodebiz-services --solo`, desde main; `ACTIVE` |
+| 1c.3 | Comprobar con una tarea de dos personas en prod | PENDIENTE: prueba de Jose con la app |
 
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
