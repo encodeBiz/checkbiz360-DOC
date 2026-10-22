@@ -387,7 +387,7 @@ Nada abierto del diseño. Cerradas al implementar:
 | 3. Alarmas por tarea | En `develop` y `staging` (API, TDR-005), funciones en `dev-encodebiz`; QA 15/15 y alarmas generadas por el trigger real |
 | 4. Informe: jornada y huecos | En `develop` y `staging` (API, TDR-004) |
 | 5. Cuadrantes en el modo | Hecho por otra sesión con D10 y D11: `aplicar` no escribe horario a quien está en el modo, solo tareas; la plantilla de sucursal pasa por el mismo `aprobar → aplicar`; prueba en `services/merlin/test/plantilla.test.ts` |
-| — Tareas de varias personas | **Hueco encontrado el 22-oct** (TDR-006): el fichaje mueve la tarea entera y la primera persona arrastra a las demás. Diseñado, sin implementar |
+| — Tareas de varias personas | **Hueco encontrado el 22-oct** (TDR-006): arreglado en `develop` y `staging`, pendiente de producción |
 | 6. «Calendario»: turnos por fecha (D12) | Diseñado el 22-oct ([TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md)); en `feat/horario-calendario` (API) y el panel detrás |
 
 ## Documentos

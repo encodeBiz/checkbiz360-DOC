@@ -1,7 +1,7 @@
 # TDR-006 — Tareas de varias personas en el horario por tareas
 
 **Fecha:** 2026-10-22
-**Estado:** Diseño, pendiente de implementación. Necesario: Jose lo dio por bueno el 2026-10-22.
+**Estado:** Implementado el 2026-10-22 en `develop` (a3fb7bd) y `staging` (53e8c8b, a mano). Pendiente de producción.
 **Componente:** `encodebiz-api` — `services/checkinbiz` (`tasksModeAttendance.ts`, `createChecklog`), `services/firebase_sdk` (`executeEmployeePlanifier`); `services/tasks` no cambia
 **Decisiones de referencia:** [README](../README.md) D5 y D6; [TDR-003](./TDR-003-el-fichaje-mueve-la-tarea.md); [TDR-005](./TDR-005-alarmas-por-tarea.md); `tasks-service/08_pausas.md`
 
@@ -94,3 +94,27 @@ QA `54-horario-por-tareas`, casos nuevos con una tarea de dos personas, A y B, l
 | Alarma de entrada de B con A ya dentro | Suena (la parte de B sigue `assigned`) |
 
 Y una tarea de una sola persona con todos los pasos, para fijar que no cambia nada.
+
+## 5. Hecho el 2026-10-22
+
+Rama `feat/horario-por-tareas-varias-personas` (empujada). `checkinbiz`: `tasksModeAttendance.ts`
+(`loadMyAssignment`, `isClosedForMe`, `myPartStarted`, `someoneElseWorking`, y `completionPolicy`
+en el gesto de Salir) y `createChecklog`. `tasks`: `updateTaskStatus` acepta «todos completan»
+por la puerta delegada y **un segundo inicio no reescribe el cumplimiento de plazo** (se fija con
+el primero). `firebase_sdk`: la alarma mira la asignación de su persona.
+
+**Antes de escribirlo, qué lee cada cosa que cambia** (Jose: «que no rompa estadísticas ni
+analítica»): el espejo `tasks_raw` solo guarda la tarea entera, no la parte de cada persona; el
+dashboard operativo lee estado, pausa abierta y completado, y no el cumplimiento (ADR-005); el
+informe de tareas, inicio, fin, pausas y su número; los patrones, el cumplimiento y el inicio al
+validar. Con el cambio: la tarea se ve en curso hasta que sale la última, en pausa solo cuando
+para todo el equipo, el tiempo va de la primera entrada a la última salida, y el cumplimiento
+se fija con el primer inicio y se recalcula al completar. Las tareas de una persona, igual.
+
+**Validado en staging:** typecheck de shared, checkinbiz, tasks, firebase_sdk, analytics, reports
+y merlin; 85 pruebas de shared y 5 de reports. QA contra staging: 135/135 (horario por tareas con
+HPT-16-01..03, las seis de tareas, informes y espejo con programadas) y 28/28 (dashboard
+operativo y panel). `employeePlanifierWorker` desplegada en `dev-encodebiz`.
+
+**Para producción:** contenedores `checkinbiz` y `tasks`, y `employeePlanifierWorker` con
+`--solo`. Sin migraciones.

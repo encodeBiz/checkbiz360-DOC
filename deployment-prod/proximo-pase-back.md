@@ -721,6 +721,14 @@ explícito y con autorización de Jose.
 | 15.4 | Panel: selector con «Calendario» y el calendario semanal de turnos | detrás del back; sin variable nueva |
 | 15.5 | Prueba en prod | una sucursal de prueba en `calendar`, cargar la semana desde el panel, fichar con la app publicada (1.7.0) y ver el turno en Disponibilidad |
 
+## 1c. Horario por tareas: tareas de varias personas (TDR-006) — PENDIENTE
+
+| # | Paso | Estado |
+|---|---|---|
+| 1c.1 | Contenedores `checkinbiz` y `tasks` con el código de `staging` (53e8c8b o posterior) | PENDIENTE |
+| 1c.2 | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo employeePlanifierWorker` | PENDIENTE |
+| 1c.3 | Comprobar con una tarea de dos personas: entran las dos, la salida de una no completa la tarea | PENDIENTE |
+
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
 Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está
