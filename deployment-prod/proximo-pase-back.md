@@ -701,9 +701,13 @@ panel. Todo `--project encodebiz-services` explícito y con autorización de Jos
 | 14.1 | Código: `checkinbiz` (y `billing` solo por el script de plantillas) | PR desde la rama principal, como siempre |
 | 14.2 | Reglas de Firestore: `absence_requests` cerrada al cliente | `firebase deploy --only firestore:rules --project encodebiz-services` desde `origin/main`; antes, emulador 0 fallos |
 | 14.3 | Índices compuestos de `absence_requests` (colección): `(employeeId ASC, endDate ASC)` y `(status ASC, createdAt DESC)` | `gcloud firestore indexes composite create --collection-group=absence_requests --query-scope=COLLECTION --field-config=field-path=employeeId,order=ascending --field-config=field-path=endDate,order=ascending` y el segundo con `status`/`createdAt desc`. En dev creados el 22-oct |
-| 14.4 | Plantilla de correo `ABSENCE_REQUESTED` (es/en) | `node services/billing/dist/scripts/email-templates.js --apply` (ya la incluye) |
-| 14.5 | Panel (pestaña Calendario → Solicitudes) y app («Mi calendario», versión nueva) | detrás del back; el panel usa el proxy de calendario que ya existe, sin variable nueva |
-| 14.6 | Prueba en prod | pedir desde la app con una persona nuestra, correo al administrador, aprobar en el panel, ver la ausencia en Disponibilidad y el aviso en la app |
+| 14.4 | ~~Plantilla de correo `ABSENCE_REQUESTED`~~ | Retirada el 22-oct (Jose: «no por email»); las dos filas `ABSENCE_REQUESTED_es/en` subidas a dev y prod quedan sin uso, se pueden borrar de `emails_template` |
+| 14.5 | Panel (Contacto → Solicitudes; «Incidencias» pasa a «Contacto») y app («Mi calendario», versión nueva) | detrás del back; el panel usa el proxy de calendario que ya existe, sin variable nueva |
+| 14.6 | Prueba en prod | pedir desde la app con una persona nuestra, verla en Contacto → Solicitudes, aprobar, ver la ausencia en Horarios y festivos y el aviso en la app |
+
+**Registro del 22-oct:** PR #212 (`release/vacaciones`, idéntico a `staging`) fusionado en `main`;
+reglas publicadas en prod; los dos índices creados (CREATING → READY); plantilla subida y después
+retirada del código (`fix/vacaciones-sin-correo`, en `develop`/`staging`, pendiente de hotfix a prod).
 
 ## 15. «Calendario»: turnos cargados por fecha — PENDIENTE (rama `feat/horario-calendario`, 2026-10-22)
 

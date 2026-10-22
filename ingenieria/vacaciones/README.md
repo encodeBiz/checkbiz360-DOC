@@ -1,9 +1,9 @@
 # Vacaciones y permisos desde la app · Documento de Ingeniería
 
 **Proyecto:** encodeBiz SaaS
-**Dominio:** checkinbiz — Calendario (ausencias) · checkbiz360 — «Mi calendario» · panel — Calendario → Solicitudes
+**Dominio:** checkinbiz — Calendario (ausencias) · checkbiz360 — «Mi calendario» · panel — Contacto → Solicitudes
 **Fecha de inicio:** 2026-10-22
-**Estado:** Diseño cerrado el 2026-10-22 · en implementación (rama `feat/vacaciones` en la API, la app y el panel)
+**Estado:** Diseño cerrado el 2026-10-22 · implementado el mismo día: servidor en producción (PR #212), app y panel en `develop`
 **Autor:** Jose Acevedo
 
 ---
@@ -23,6 +23,17 @@ Tres decisiones de Jose el mismo día:
 3. **«Su disponibilidad» es su calendario mes a mes** en la app: qué días trabaja y con qué
    horario o tareas, libres, festivos, vacaciones aprobadas y solicitudes pendientes. Sin saldo
    de días (eso exige configurar los días por empresa; queda fuera).
+
+Y dos correcciones de Jose la misma tarde, al ver la primera versión:
+
+4. **La solicitud llega a Contacto, no a Calendario.** «Es simplemente un contacto: quiero mis
+   vacaciones tal día». El apartado «Incidencias» del panel pasa a llamarse **Contacto**, con dos
+   pestañas: Incidencias y Solicitudes. Ahí se aprueba o rechaza; al aprobar, los días quedan
+   en Horarios y festivos del empleado como si se hubieran puesto a mano, y desde ahí se
+   siguen gestionando con normalidad.
+5. **Sin correo a los administradores** («no por email»): la solicitud se ve en el panel, con el
+   contador de pendientes en la pestaña. El aviso a la persona (aprobada o rechazada) sí va por
+   push e in-app.
 
 ## Lo que hay hoy (As-Is)
 
@@ -85,9 +96,9 @@ la primera versión.
 
 | Quién | Cuándo | Cómo |
 |---|---|---|
-| Administradores (asientos `owner`/`admin` activos de la empresa) | nueva solicitud | **correo** `ABSENCE_REQUESTED` (persona, tipo, fechas, días, nota, enlace al panel), al `email` de cada asiento; plantilla en `emails_template` con respaldo en código, como las del inventario |
+| Administradores | nueva solicitud | **nada por correo** (decisión 5): la ven en Contacto → Solicitudes, con el contador de pendientes |
 | La persona | aprobada o rechazada | **push + in-app** `absence_request_approved` / `absence_request_rejected` (`CheckbizSentNotificationApp`), `data.module = checkbiz_calendar`, `screen = my_calendar`; si tiene la casilla de avisos por correo, también se apunta como evento (fuera de esta versión) |
-| Panel | siempre | **contador de pendientes** en la pestaña Calendario → Solicitudes |
+| Panel | siempre | **contador de pendientes** en la pestaña Contacto → Solicitudes |
 
 ## Contratos (`checkinbiz`, `/api/v1/checkinbiz/calendar`, ID token de Firebase)
 
@@ -146,7 +157,8 @@ En Herramientas, **«Mi calendario»** (`/attendance/my-calendar`):
 
 ## El panel
 
-Calendario → nueva pestaña **«Solicitudes»**, con el contador de pendientes en la pestaña:
+**Contacto** (antes «Incidencias») → pestaña **«Solicitudes»**, junto a Incidencias, con el contador de
+pendientes en la pestaña:
 
 - Lista de pendientes (persona, sucursal/es, tipo, fechas, días, nota, cuándo la pidió), más
   recientes arriba; filtro para ver aprobadas y rechazadas.
@@ -159,9 +171,9 @@ Calendario → nueva pestaña **«Solicitudes»**, con el contador de pendientes
 
 | Fase | Qué | Dónde | Tamaño |
 |---|---|---|---|
-| 1a | Modelo, validaciones puras y tests; rutas de trabajador y de panel; aprobar escribe los días libres; avisos push/in-app y correo a administradores; reglas | `shared` + `checkinbiz` | 2 días |
+| 1a | Modelo, validaciones puras y tests; rutas de trabajador y de panel; aprobar escribe los días libres; avisos push/in-app a la persona; reglas | `shared` + `checkinbiz` | 2 días |
 | 1b | «Mi calendario» con el mes, las solicitudes y el formulario; entrada en Herramientas; navegación desde los avisos | checkbiz360 | 3 días |
-| 1c | Pestaña Solicitudes con aprobar/rechazar y contador | panel | 1,5 días |
+| 1c | Contacto con las pestañas Incidencias y Solicitudes (aprobar/rechazar y contador) | panel | 1,5 días |
 | 2 | Saldo de días por persona (configurable por empresa), solicitud de deshacer una aprobada, medio día, el aviso por correo también a la persona con la casilla, y la aprobación desde la app para quien tenga asiento | — | después |
 
 ## Fuera de alcance
