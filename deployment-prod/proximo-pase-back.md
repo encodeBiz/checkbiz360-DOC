@@ -782,6 +782,8 @@ Entre las 15:31 (PR #115) y las 17:22 el panel de producción ofreció «Calenda
 sucursal. El espejo de Postgres (15:20) no cubre esa ventana; con el código nuevo, quien lo tenga
 guardado funciona como semanal, así que no hace falta limpiarlo.
 
+**16 bis, 2026-10-22:** #218 (por tareas sustituye la semana; `pasarASemanal` en el asistente), a mano: merlin y assistant reconstruidos y sanos, `restart nginx`, sin workflow.
+
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
 Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está

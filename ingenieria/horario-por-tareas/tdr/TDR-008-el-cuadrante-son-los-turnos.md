@@ -284,3 +284,16 @@ retira la bandera.
 2. Decidir: tareas que cambiaron de hora al resubir un cuadrante por tareas (cancelar o dejar), y
    si el asistente deja de usar `fromTasks`.
 3. Pase a producción: `proximo-pase-back.md` §16. Sin migración.
+
+**Actualización 2026-10-22, más tarde (Jose), en producción con #218:**
+
+- **El cuadrante por tareas sustituye la semana.** Volver a subirlo borra las tareas de cuadrante
+  de esa persona en esa semana que no han empezado y las crea de nuevo desde el fichero: lo que
+  cambie (hora de fin, dirección, trabajo, o la hora de inicio) queda como dice el fichero y no
+  hay duplicados. Las empezadas o terminadas se quedan, porque llevan fichajes, y la propuesta lo
+  dice; también dice cuántas se sustituyen. Solo las que creó un cuadrante para esa persona.
+  Sustituye lo dicho arriba de que ninguna tarea se borra: vale para el cuadrante por turnos, que
+  sigue sin tocar tareas.
+- **El asistente** solo pasa a semanal a quien está por tareas para cargarle turnos si la persona
+  lo pide expresamente (`pasarASemanal` en `cargar_turnos`; sin él, esa persona queda fuera y se
+  le dice que lo pregunte). Cierra la pregunta del `fromTasks`: se queda en el servidor para esto.
