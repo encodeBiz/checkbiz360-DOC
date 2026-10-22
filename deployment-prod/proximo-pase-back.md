@@ -690,7 +690,7 @@ Vercel, las funciones por nombre con `desplegar.mjs`, las reglas con `--only fir
 | Panel a producción | 11:30 | Claude | PR encodebiz-front-saas-clean#106 (staging → main, 85 commits, con «calendario de MUI unificado» de otra sesión) fusionado. Vercel: deployment de producción **Ready** a las 11:31 (37 s) (1.10, 2.16, 3.4, 8.5). |
 | Cierre | 11:35 | Claude | Hook `block-prod.sh` rearmado en `.claude/settings.json` con los tres contenedores nuevos. Registro escrito; `2026-10-cuadrantes-plantilla.md` §8 con su fila. |
 
-## 14. Vacaciones y permisos desde la app — PENDIENTE (rama `feat/vacaciones`, 2026-10-22)
+## 14. Vacaciones y permisos desde la app — servidor EN PROD el 2026-10-22; panel y app pendientes
 
 Diseño: [ingenieria/vacaciones](../ingenieria/vacaciones/README.md). Solo `checkinbiz` (rutas
 nuevas bajo `/calendar`) y `shared`; aprobar escribe los mismos días libres del empleado que el
@@ -707,7 +707,7 @@ panel. Todo `--project encodebiz-services` explícito y con autorización de Jos
 
 **Registro del 22-oct:** PR #212 (`release/vacaciones`, idéntico a `staging`) fusionado en `main`;
 reglas publicadas en prod; los dos índices creados (CREATING → READY); plantilla subida y después
-retirada del código (`fix/vacaciones-sin-correo`, en `develop`/`staging`, pendiente de hotfix a prod).
+retirada del código con el hotfix #213 (`release/vacaciones-sin-correo`, Production CI/CD en verde). **El servidor de vacaciones está completo en prod.** Quedan panel (Contacto → Solicitudes, en `develop`) y app («Mi calendario», en `develop`).
 
 ## 15. «Calendario»: turnos cargados por fecha — PENDIENTE (rama `feat/horario-calendario`, 2026-10-22)
 
