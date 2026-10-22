@@ -156,6 +156,21 @@ Si un día trae varias franjas, varios turnos. Nada más.
 - `ver_semana` enseña la semana efectiva y de dónde sale: cargada o semana tipo.
 - Instrucciones del servidor MCP: la regla del §2, dicha en una frase.
 
+**Hecho el 2026-10-22** en `feat/asistente-cuadrante-son-turnos` (API), en `develop` y `staging`,
+**sin subir a producción hasta que estén §4 y §5.1**:
+
+- La semana efectiva se calcula en el conector con la regla del §2 sobre `GET /calendar/days`
+  (solo `panel` y `cuadrante`, §4.1), así no depende del `GET /calendar` nuevo.
+- La vista previa de `cargar_turnos` aplica la regla de la semana completa: enseña también los
+  días de esa semana que no se mandan y pasan a librar (`noSeManda`,
+  `diasQuePasanALibrarSinMandarse`). Las tareas fuera de turno se enumeran para todos, no solo
+  para quien viene de `tasks` (§4.7). Con alguien en `tasks` manda `fromTasks: true`.
+- `ver_semana` devuelve `semanaEfectiva: {fuente: "turnos cargados" | "semana tipo", dias}` y la
+  `semanaTipo` aparte; a quien tiene `calendar` guardado lo trata y lo nombra como semanal.
+- `cambiar_horario` deja de rechazar `calendar` y avisa de que la semana tipo solo vale en las
+  semanas sin turnos cargados.
+- Pruebas: once en `herramientas.test.ts` (sustituyen las ocho de TDR-007 §15); suite 148/148.
+
 ### 5.3 Crear tareas en bloque
 
 Si un cliente trae una lista de trabajos (el caso de ayuda a domicilio), crear esas tareas es
