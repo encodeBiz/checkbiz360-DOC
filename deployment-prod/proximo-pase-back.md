@@ -705,6 +705,22 @@ panel. Todo `--project encodebiz-services` explícito y con autorización de Jos
 | 14.5 | Panel (pestaña Calendario → Solicitudes) y app («Mi calendario», versión nueva) | detrás del back; el panel usa el proxy de calendario que ya existe, sin variable nueva |
 | 14.6 | Prueba en prod | pedir desde la app con una persona nuestra, correo al administrador, aprobar en el panel, ver la ausencia en Disponibilidad y el aviso en la app |
 
+## 15. «Calendario»: turnos cargados por fecha — PENDIENTE (rama `feat/horario-calendario`, 2026-10-22)
+
+Diseño: [ingenieria/horario-por-tareas/tdr/TDR-007](../ingenieria/horario-por-tareas/tdr/TDR-007-calendario-turnos-por-fecha.md).
+Tercer modo del horario, `scheduleMode: "calendar"`, heredable por empresa y sucursal; los días
+se cargan desde el panel (`PUT /calendar/days`) o por el importador de cuadrantes. Sin reglas
+ni índices nuevos: usa `calendar_days` y su índice de grupo. Todo `--project encodebiz-services`
+explícito y con autorización de Jose.
+
+| # | Qué | Cómo |
+|---|---|---|
+| 15.1 | Migración `043_horario_calendario.sql` (el CHECK de `dim_calendars.schedule_mode` admite `calendar`) | a mano por SSH, mirando el resultado, **antes** de los contenedores |
+| 15.2 | Contenedores: `checkinbiz`, `analytics`, `merlin`, `assistant`; y `tasks`, `reports`, `firebase_sdk` solo porque cambian tipos de shared | PR desde la rama principal; `build --no-deps` de los tocados |
+| 15.3 | Función `weeklyFromTaskDays` (copia la semana también a quien está en `calendar`) | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo weeklyFromTaskDays` |
+| 15.4 | Panel: selector con «Calendario» y el calendario semanal de turnos | detrás del back; sin variable nueva |
+| 15.5 | Prueba en prod | una sucursal de prueba en `calendar`, cargar la semana desde el panel, fichar con la app publicada (1.7.0) y ver el turno en Disponibilidad |
+
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
 Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está

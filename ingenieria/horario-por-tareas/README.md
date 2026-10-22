@@ -314,6 +314,29 @@ suya, aunque el fichaje use bien los días generados. Corrige lo que D3 decía d
 - **El cuadrante (D10)** sigue sin escribir horario para quien está en el modo: crea las tareas,
   el trigger genera los días y el espejo hace el resto.
 
+### D12. «Calendario»: turnos cargados por fecha, con fichaje normal (2026-10-22)
+
+Decidido con Jose el 2026-10-22 a partir del aviso de un cliente que ya ficha por tareas y no
+consigue organizar el cuadrante: generó tareas para hacer de turnos, no puede meter nada dentro
+de una tarea y le resulta lioso. Pide «horarios, como a turnos de forma mensual, fichar normal y
+dentro de esos horarios meter las tareas».
+
+Es un **tercer modo**, `scheduleMode: "calendar"`, que en el panel se llama «Calendario»
+(Jose) junto a «Horario semanal» y «Horario por tareas». El horario de la persona es lo que se
+ha cargado por fecha en sus `calendar_days`; un día sin cargar es libre; ficha con el gesto de
+siempre y las tareas de ese día son tareas normales dentro del turno. Reutiliza entero lo de la
+fase 1 (días por fecha, resolutor, espejo, disponibilidad, planificador, D11): lo único nuevo
+es quién escribe los días, el panel y el importador de cuadrantes, y que el modo **sí se
+hereda** de la empresa y de la sucursal (un cuadrante se planifica por sucursal); `tasks`
+sigue siendo solo del empleado.
+
+Se descartó «la semana tipo con fechas encima»: con la plantilla de respaldo, alguien tendría
+turno un martes que nadie le cargó, y a quien planifica mes a mes eso es un fallo. También se
+descartaron las subtareas: duplicarían el modelo de tareas para un problema de calendario.
+
+Diseño completo en [TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md). La app no se toca:
+ficha normal y pinta la semana desde la plantilla, que D11 ya reescribe.
+
 ## Lo que cambia en la app
 
 Es Flutter, se publica a mano y es el peldaño más lento de la cadena. En el modo: los botones
@@ -365,6 +388,7 @@ Nada abierto del diseño. Cerradas al implementar:
 | 4. Informe: jornada y huecos | En `develop` y `staging` (API, TDR-004) |
 | 5. Cuadrantes en el modo | Hecho por otra sesión con D10 y D11: `aplicar` no escribe horario a quien está en el modo, solo tareas; la plantilla de sucursal pasa por el mismo `aprobar → aplicar`; prueba en `services/merlin/test/plantilla.test.ts` |
 | — Tareas de varias personas | **Hueco encontrado el 22-oct** (TDR-006): el fichaje mueve la tarea entera y la primera persona arrastra a las demás. Diseñado, sin implementar |
+| 6. «Calendario»: turnos por fecha (D12) | Diseñado el 22-oct ([TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md)); en `feat/horario-calendario` (API) y el panel detrás |
 
 ## Documentos
 
@@ -378,6 +402,9 @@ Nada abierto del diseño. Cerradas al implementar:
 - [TDR-005](./tdr/TDR-005-alarmas-por-tarea.md): fase 3, las alarmas pertenecen a la tarea.
 - [TDR-006](./tdr/TDR-006-tareas-de-varias-personas.md): tareas de varias personas; el fichaje
   mueve la parte de cada una (pendiente).
+- [TDR-007](./tdr/TDR-007-calendario-turnos-por-fecha.md): «Calendario», el tercer modo: turnos
+  cargados por fecha con fichaje normal, heredable por sucursal; rutas `/calendar/days`, el
+  importador y el panel.
 - Importación de cuadrantes: [cuadrantes/README.md](../cuadrantes/README.md), que escribe
   hoy la franja de la primera tarea a la última.
 - Pausas de tarea: [tasks-service/08_pausas.md](../tasks-service/08_pausas.md).
