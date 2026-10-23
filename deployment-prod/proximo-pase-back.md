@@ -791,6 +791,24 @@ guardado funciona como semanal, así que no hace falta limpiarlo.
 - merlin: la revisión del cuadrante según el modo (por turnos no habla de tareas; en «Semana tipo» se bloquea), PR #222, f7b32d3, merlin reconstruido en prod y staging.
 - **Panel EJECUTADO:** PR #119 del panel (staging → main, 808788fa), Vercel *success*. Sin variables nuevas.
 
+## 17. Avisos de tareas agrupados — PENDIENTE (rama `feat/avisos-tareas-agrupados`, 2026-10-23; aún no en `staging`)
+
+Diseño: [ingenieria/avisos-agrupados](../ingenieria/avisos-agrupados/README.md). Asignada,
+cambiada y retirada ya no se mandan una a una: se apuntan en `push_digest` y sale **un aviso por
+persona** al minuto sin novedades («Tienes 84 tareas nuevas del 3 al 30 de noviembre»). Una
+tarea suelta llega como siempre, hasta ~2 min más tarde. El tipo del aviso no cambia. Reconfirmar
+un cuadrante sin cambios ya no avisa (también arregla el resumen por correo).
+
+**Orden obligatorio: la función antes que el contenedor.** Con `tasks` nuevo y sin
+`taskPushDigests`, esos avisos se apuntan y no sale ninguno.
+
+| # | Qué | Cómo |
+|---|---|---|
+| 17.1 | Función `taskPushDigests` (cada minuto) | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo taskPushDigests` — **primero** |
+| 17.2 | Contenedor `tasks` | con el pase de la API, `build --no-deps tasks`, **después** de 17.1 |
+| 17.3 | Comprobar | crear una tarea a mano para alguien con la app: un aviso en ~1-2 min; `push_digest` vacío después |
+| 17.4 | App, siguiente versión | `checkbiz_tasks` + `screen: task_list` → listado de tareas en `notification_navigation_handler.dart`. Sin ella el aviso agrupado se ve, pero al tocarlo solo abre la app |
+
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
 Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está

@@ -69,6 +69,10 @@ email_digest/{entityId}_{employeeId} = {
   7:00 no puede esperar.
 - Si una misma tarea se asigna y se retira dentro del margen, se anulan y no se manda nada. Si
   cambia varias veces, se manda el estado final con el «antes» del primer evento.
+- Una retirada y una asignada con la misma referencia externa (un cuadrante reconfirmado, que
+  crea las tareas con otro id) se anulan si título, hora y lugar no cambian; si cambian, cuentan
+  como «cambiada». Es la misma regla que los [avisos agrupados](../avisos-agrupados/README.md)
+  del móvil (2026-10-23).
 - Lo despacha un trabajo cada 5 minutos que toma los resúmenes vencidos, los manda y los borra
   en una transacción (un resumen vencido no se manda dos veces).
 
