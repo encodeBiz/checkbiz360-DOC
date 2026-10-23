@@ -708,6 +708,21 @@ panel. Todo `--project encodebiz-services` explícito y con autorización de Jos
 reglas publicadas en prod; los dos índices creados (CREATING → READY); plantilla subida y después
 retirada del código con el hotfix #213 (`release/vacaciones-sin-correo`, Production CI/CD en verde). **El servidor de vacaciones está completo en prod.** Quedan panel (Contacto → Solicitudes, en `develop`) y app («Mi calendario», en `develop`).
 
+**Registro del 23-oct (14.7, a mano, sin Actions):** PR #224 (`release/mi-calendario-duenos`, idéntico a
+`staging`, un solo fichero: `absenceRequests.controller.ts`) fusionado en `main` a 80b1728. Qué
+cambia: quien tiene asiento de propietario o administrador **y** ficha de empleado ya ve «Mi
+calendario» y pide vacaciones (antes 403, porque el guard compartido no le buscaba la ficha); y el
+aviso de aprobada o rechazada lleva `employeeId` y `uid`, que la app exige para abrir la pantalla.
+Sin migración, índice, variable, función ni reglas. GitHub Actions no arrancaba (facturación:
+«recent account payments have failed or your spending limit needs to be increased»), así que, por
+orden de Jose, Claude lo desplegó a mano en `/opt/encodebiz-api` a las 10:32 UTC: `git pull
+--ff-only origin main` + `up -d --build --no-deps checkinbiz` + `restart nginx`. Comprobado:
+contenedor `healthy` con el código nuevo dentro, `/health` 200, las rutas de calendario responden
+401 sin token (no 502) y el resto de servicios pasan por nginx. Probado antes en staging con
+cuentas reales de dev: dueño con ficha 200 en mes y solicitudes; administrador sin ficha, 403 en
+ambos. La QA automática no corrió (Actions parado). Pendiente de Jose: arreglar la facturación de
+Actions y la prueba 14.6 con sesión real.
+
 ## 15. «Calendario»: turnos cargados por fecha — EJECUTADO el 2026-10-22 (API #214, migración 043, panel #115) y sustituido el mismo día por §16 (TDR-008) y §16 ter (TDR-009)
 
 Diseño: [ingenieria/horario-por-tareas/tdr/TDR-007](../ingenieria/horario-por-tareas/tdr/TDR-007-calendario-turnos-por-fecha.md).
