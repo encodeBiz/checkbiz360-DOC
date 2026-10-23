@@ -1,6 +1,6 @@
 # Seguimiento y resolución de incidencias
 
-Una vez creada, la incidencia vive en la sección **Incidencias** del backoffice hasta que se resuelve. Este artículo describe sus estados, cómo se responde y qué queda registrado.
+Una vez creada, la incidencia vive en **Contacto**, pestaña **Incidencias**, del backoffice hasta que se resuelve. Este artículo describe sus estados, cómo se responde y qué queda registrado.
 
 Recuerde que las incidencias son un canal **interno de su organización**. Para problemas de la plataforma, el canal es el soporte de EncodeBiz: consulte [Contactar con soporte técnico](./87-contactar-con-soporte-tecnico.md).
 
@@ -26,7 +26,7 @@ El estado se cambia de dos formas: editando la incidencia, o **al responder** en
 
 El seguimiento se hace mediante respuestas. Cada respuesta queda en el hilo, con su autor y su fecha, y puede además mover el estado.
 
-1. Acceda a **Incidencias** en el menú lateral.
+1. Acceda a **Contacto** en el menú lateral y quédese en la pestaña **Incidencias**.
 2. Localice la incidencia con los filtros de estado, sucursal o empleado.
 3. Abra su detalle.
 4. Pulse **Responder**.

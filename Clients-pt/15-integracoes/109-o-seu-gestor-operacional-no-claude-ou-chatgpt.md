@@ -90,19 +90,29 @@ Quantas pessoas tem disponíveis em cada dia e em cada centro, e quem falta num 
 - **Do zero**, ditando-lhe os serviços.
 - **A partir de um documento**: a escala que o seu programa de gestão imprime, um Excel, uma fotografia do papel. O assistente lê-o, reconhece a sua equipa e converte-o na semana de cada pessoa.
 
-Nos três casos mostra-lhe a proposta pessoa a pessoa, com os avisos que convém ver (dois serviços que se sobrepõem, um dia que é feriado para alguém), e uma ligação a um Excel com tudo para rever com calma. Cada pessoa recebe a sua semana no telemóvel, com os horários e a morada de cada serviço, só quando confirmar.
+O que se carrega a cada pessoa decide-o o seu [modo do horário](../04-calendario-e-horarios/114-calendario-de-turnos-por-data.md), como no [importador da escala](../04-calendario-e-horarios/108-importar-a-escala-semanal.md):
 
-Não há limite de tarefas: se a escala for muito grande, o assistente carrega-a por partes e só se confirma uma vez no fim. Se a semana mudar, peça-lhe que a proponha outra vez com a versão boa: o que já estava é atualizado e nada se duplica. Os serviços que a pessoa já tinha começado mantêm-se.
+- A quem está **Por turnos**, os seus turnos da semana, sem criar nem tocar em nenhuma tarefa.
+- A quem está **Por tarefas**, os seus serviços como tarefas, que substituem a sua semana. Os serviços que a pessoa já tinha começado mantêm-se.
+- A quem está em **Semana tipo** não se carrega nada: o assistente diz-lho, e para lhe carregar a semana é preciso mudar-lhe antes o modo.
 
-### Carregar turnos por data
+Nos três casos mostra-lhe a proposta pessoa a pessoa, com os avisos que convém ver (dois serviços que se sobrepõem, um dia que é feriado para alguém), e uma ligação a um Excel com tudo para rever com calma. Cada pessoa que entra na proposta vai com a sua semana inteira: os dias sem turnos são folga, e em quem não está na proposta não se toca. Cada pessoa recebe a sua semana no telemóvel só quando confirmar.
 
-Se uma sucursal estiver no modo [Calendário](../04-calendario-e-horarios/114-calendario-de-turnos-por-data.md), o assistente carrega-lhe os turnos de cada pessoa data a data, sem criar tarefas: «à Marta e ao Luís, das 7 às 15 de segunda a quinta da próxima semana; na sexta folgam». Mostra-lhe cada dia com o que havia e o que vai ficar, e os feriados ou ausências que calham pelo meio, e escreve quando confirmar. Se não for possível carregar a alguém, diz-lhe porquê.
+Não há limite: se a escala for muito grande, o assistente carrega-a por partes e só se confirma uma vez no fim. Se a semana mudar, peça-lhe que a proponha outra vez com a versão boa: o que já estava é substituído e nada se duplica.
 
-Também lhe mostra a semana de quem está em Calendário, distinguindo um dia **livre** de um **sem carregar**. Se o que quer são turnos com tarefas dentro, peça-lhe a escala como na secção anterior: cria as tarefas e, em Calendário, também o turno de cada dia. Se não ficar claro qual das duas coisas quer, pergunta-lhe.
+### Carregar turnos em dias concretos
+
+A quem está [Por turnos](../04-calendario-e-horarios/114-calendario-de-turnos-por-data.md), o assistente carrega os turnos dos dias que lhe disser, de uma semana ou de várias, sem criar, mover nem apagar nenhuma tarefa: «à Marta e ao Luís, das 7 às 15 de segunda a quinta da próxima semana; na sexta folgam». Cada dia que lhe envia substitui o que houvesse nesse dia; os outros ficam como estavam. Mostra-lhe cada dia com o que havia e o que vai ficar, e os feriados ou ausências que calham pelo meio, e escreve quando confirmar. Não carrega dias passados.
+
+Se alguém estiver em **Semana tipo**, não lhe carrega turnos: propõe passá-lo antes para **Por turnos**. Se estiver **Por tarefas**, só o passa para **Por turnos** se o pedir expressamente; as suas tarefas ficam, e avisa-o das que ficariam fora dos turnos.
+
+### Ver a semana de qualquer data
+
+Peça-lhe a semana de uma pessoa ou de uma sucursal, da data que quiser. Mostra-lha conforme o modo de cada pessoa: a sua semana tipo, os seus turnos carregados (marcando os dias sem carregar, que são folga) ou as suas tarefas, com os feriados e as ausências.
 
 ### Mudanças pontuais
 
-Criar uma tarefa, mudá-la de dia ou de hora, passá-la a outra pessoa, cancelá-la. Também mudar a semana-tipo de alguém, ou passar uma pessoa ou uma sucursal inteira para o modo Calendário e devolvê-la ao horário semanal. Antes de mexer em nada mostra-lhe o antes e o depois e espera pelo seu sim.
+Criar uma tarefa, mudá-la de dia ou de hora, passá-la a outra pessoa, cancelá-la. Também mudar a semana tipo de quem está em **Semana tipo**, ou mudar o modo do horário: **Semana tipo** ou **Por turnos** a uma pessoa ou a uma sucursal inteira, e **Por tarefas** a uma pessoa. Se alguém tiver tarefas que não encaixam em **Por tarefas** (sem hora de início, de vários dias ou sobrepostas), não o muda e diz-lhe quantas. Antes de mexer em nada mostra-lhe o antes e o depois e espera pelo seu sim.
 
 ### Dar entrada a pessoas e centros
 

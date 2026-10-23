@@ -4,7 +4,7 @@ O horário base define quando se espera que um funcionário esteja presente no s
 
 ---
 
-> **Três formas de organizar o horário.** Em **Horários e feriados**, a secção **Como se organiza o horário** escolhe entre **Horário semanal**, a semana tipo que este artigo descreve; **Horário por tarefas**, em que cada tarefa do dia é um turno; e **Calendário**, em que os turnos se carregam data a data. Se cada semana for diferente, consulte [Calendário: turnos carregados por data](114-calendario-de-turnos-por-data.md).
+> **Três formas de organizar o horário.** Em **Horários e feriados**, a secção **Como se organiza o horário** escolhe entre **Semana tipo**, a que este artigo descreve, igual todas as semanas; **Por turnos**, em que o horário são os turnos carregados semana a semana; e **Por tarefas**, em que cada tarefa do dia é um turno. O horário semanal deste artigo só se vê e só conta em **Semana tipo**. Se cada semana for diferente, consulte [Por turnos: o horário são os turnos que carrega](114-calendario-de-turnos-por-data.md).
 
 ## O que é um horário base
 
@@ -123,4 +123,4 @@ O modelo é uma cópia do **horário já guardado**, e não do que estiver no ec
 - [Jornada estrita e jornada flexível](28-horario-flexivel.md)
 - [Feriados e dias não úteis](29-feriados-e-dias-nao-uteis.md)
 - [Quadro de disponibilidade](98-quadro-de-disponibilidade.md)
-- [Calendário: turnos carregados por data](114-calendario-de-turnos-por-data.md)
+- [Por turnos: o horário são os turnos que carrega](114-calendario-de-turnos-por-data.md)

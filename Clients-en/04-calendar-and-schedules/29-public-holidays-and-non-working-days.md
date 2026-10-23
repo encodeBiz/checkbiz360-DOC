@@ -43,6 +43,19 @@ People can also request their vacation or leave from the app, in **My calendar**
 
 ---
 
+## The name of the day off is what the person sees
+
+From version 1.10.0 of the app, when today is not a working day for a person, the **Attendance** screen explains it. The schedule box says **Non-working day** and, below the day's figures, a highlighted label gives the reason: the name that day off has in the calendar.
+
+- Vacation or leave approved from the app shows its type, for example "Vacation", "Personal leave", "Medical" or "Leave".
+- A public holiday or an absence added in the panel shows the name you gave it.
+- If several fall on that day, the person's own wins over their branch's, and the branch's over the company's.
+- If the day off has no name, no label is shown: only **Non-working day**.
+
+That is why it pays to give every public holiday and every absence a clear name that the person understands without asking: "San Isidro local holiday" or "Closed for stocktaking" rather than "Holiday 2" or an abbreviation.
+
+---
+
 ## How CheckBiz360 blocks clock-ins on non-working days
 
 When an employee tries to record their entry or exit on a date marked as non-working in their effective calendar, the system returns the error code `checklog/day_disabled` and rejects the clock-in.

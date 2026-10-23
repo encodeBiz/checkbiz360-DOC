@@ -6,7 +6,7 @@ Asking for vacation is usually a message, a phone call or a piece of paper that 
 
 ## What each person sees
 
-In the app, in the menu, under **Tools**, there is **My calendar**. It shows their month, with arrows to move to the previous or next one:
+In the app, from version 1.10.0, in the menu, under **Tools**, there is **My calendar**. If someone cannot see it, they should update the app. It shows their month, with arrows to move to the previous or next one:
 
 | In the calendar | What it means |
 |---|---|
@@ -54,7 +54,7 @@ The person gets a notification on their phone when it is approved or rejected, a
 
 ### After approving
 
-Approved days are normal absences. They show in the person's **Schedules & holidays**, on the [availability board](98-availability-board.md), and they block clocking in on those days, like any absence. If an approval needs undoing, remove the days from their calendar, as with any absence.
+Approved days are normal absences. They show in the person's **Schedules & holidays**, on the [availability board](98-availability-board.md), and they block clocking in on those days, like any absence. On those days, the Attendance screen in the app shows **Non-working day** with the reason below, for example "Vacation" or "Leave". If an approval needs undoing, remove the days from their calendar, as with any absence.
 
 ---
 

@@ -56,7 +56,7 @@ Ambos os planos incluem os módulos base descritos em seguida. O Inventário e o
 ### Calendário e horários
 
 - Horários base com um ou vários turnos por dia e descansos dentro do turno.
-- Três formas de organizar o horário: semana tipo, por tarefas ou **Calendário**, com os turnos carregados data a data e copiáveis de uma semana para a seguinte.
+- Três formas de organizar o horário: **Semana tipo**, **Por turnos**, com os turnos carregados semana a semana e copiáveis de uma semana para a seguinte, ou **Por tarefas**.
 - Calendário laboral com feriados e ausências —por intervalos de datas e com marca de remunerada—, aplicáveis a entidade, sucursal ou funcionário.
 - Férias e licenças pedidas a partir da aplicação e aprovadas no painel.
 - Jornada estrita ou flexível e descanso estrito ou flexível, que decidem como se contabilizam horas e pausas.

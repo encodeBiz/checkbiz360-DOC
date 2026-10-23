@@ -1,7 +1,7 @@
 # TDR-007 — «Calendario»: turnos cargados por fecha, con fichaje normal
 
 **Fecha:** 2026-10-22
-**Estado:** API **en producción** desde el 2026-10-22 (PR #214, migración 043, `weeklyFromTaskDays`); conector con `cargar_turnos` en producción el mismo día (otra sesión); panel en `develop` y `staging`, PR 115 sin fusionar. QA 54+55 28/28 en staging. **Sustituido en parte** por [TDR-008](./TDR-008-el-cuadrante-son-los-turnos.md) el mismo día: el modo `calendar` se retira del selector, la regla es la de la semana completa dentro de `weekly`, y el cuadrante deja de crear y retirar tareas. El §7 del TDR-008 dice qué cambia de este.
+**Estado:** API **en producción** desde el 2026-10-22 (PR #214, migración 043, `weeklyFromTaskDays`); conector con `cargar_turnos` en producción el mismo día (otra sesión); panel en prod con el PR #115 (15:31) y retirado del selector con el #116 (17:22) el mismo día. QA 54+55 28/28 en staging. **Sustituido en parte** por [TDR-008](./TDR-008-el-cuadrante-son-los-turnos.md) el mismo día: el modo `calendar` se retira del selector, la regla es la de la semana completa dentro de `weekly`, y el cuadrante deja de crear y retirar tareas. El §7 del TDR-008 dice qué cambia de este.
 **Componente:** `encodebiz-api` — `packages/shared` (calendar), `services/checkinbiz` (calendar), `services/firebase_sdk` (`weeklyFromTaskDays`), `services/analytics` (espejo, migración 043), `services/merlin` (cuadrantes `aplicar`), `services/assistant` (`cambiar_modo_horario`); `encodebiz-front-saas` (selector y calendario semanal de turnos)
 **Decisiones de referencia:** [README](../README.md) D1, D3, D11 y **D12**; [TDR-001](./TDR-001-modo-dias-generados-y-escritor.md) §3, §5 y §7
 

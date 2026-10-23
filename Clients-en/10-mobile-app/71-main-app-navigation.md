@@ -35,7 +35,11 @@ From version 1.3.2, the screen is organised into cards:
 - **Work information**: branch, the day's schedule —one shift per line— and break. With a strict break the minutes are shown; with a flexible break, "Flexible".
 - **Today's tasks**.
 
-If today is not a working day for the employee, the card says so —distinguishing a public holiday from a day off— and the clocking screen explains why you cannot clock in and that, if you worked, you can request a manual workday.
+If today is not a working day for the employee, the card says so —distinguishing a public holiday from a day off— and the clocking screen explains why you cannot clock in and that, if you worked, you can request a manual workday. **From version 1.10.0**, the schedule box says **Non-working day** and the reason appears below the day's figures in a highlighted label: "Vacation", "Leave" or the name of the public holiday, just as that day is named in the calendar. See [Public holidays and non-working days](../04-calendar-and-schedules/29-public-holidays-and-non-working-days.md).
+
+### My calendar
+
+**From version 1.10.0**, the side menu has, under **Tools**, the **My calendar** option: the person's month, with work days, days off, public holidays and their absences. From there they request vacation or leave, and get a notification when the company approves or rejects it. See [Vacation and leave from the app](../04-calendar-and-schedules/115-vacation-and-leave-from-the-app.md).
 
 > **Warning:** To make a clock record you must have an active internet connection and GPS enabled. Without these elements, clocking cannot be completed.
 

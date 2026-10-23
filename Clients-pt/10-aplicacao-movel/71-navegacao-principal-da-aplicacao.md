@@ -35,7 +35,11 @@ A partir da versão 1.3.2, o ecrã organiza-se em cartões:
 - **Informação laboral**: sucursal, horário do dia —um turno por linha— e descanso. Com descanso estrito são mostrados os minutos; com descanso flexível, «Flexível».
 - **Tarefas de hoje**.
 
-Se hoje não for dia útil para o funcionário, o cartão indica-o —distinguindo um feriado de um dia livre— e o registo explica porque não é possível registar e que, se trabalhou, pode pedir uma jornada manual.
+Se hoje não for dia útil para o funcionário, o cartão indica-o —distinguindo um feriado de um dia livre— e o registo explica porque não é possível registar e que, se trabalhou, pode pedir uma jornada manual. **A partir da versão 1.10.0**, a casa do horário diz **Dia não útil** e o motivo aparece por baixo dos números do dia numa etiqueta destacada: o tipo de férias ou licença, ou o nome do feriado, tal como esse dia se chama no calendário. Ver [Feriados e dias não úteis](../04-calendario-e-horarios/29-feriados-e-dias-nao-uteis.md).
+
+### O meu calendário
+
+**A partir da versão 1.10.0**, o menu lateral tem, dentro de **Ferramentas**, a opção **O meu calendário**: o mês da pessoa, com os dias de trabalho, as folgas, os feriados e as suas ausências. A partir daí pede férias ou uma licença, e recebe um aviso quando a empresa a aprova ou a recusa. Ver [Férias e licenças a partir da aplicação](../04-calendario-e-horarios/115-ferias-e-licencas-a-partir-da-aplicacao.md).
 
 > **Aviso:** para efetuar um registo é imprescindível ter ligação à internet ativa e o GPS ativado. Sem estes elementos, o registo não poderá ser concluído.
 

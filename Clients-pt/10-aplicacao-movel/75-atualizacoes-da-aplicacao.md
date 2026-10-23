@@ -19,6 +19,11 @@ Cada nova versão do CheckBiz360 pode incluir:
 
 Algumas funções dependem da versão instalada. Se um funcionário não vir uma delas, a primeira coisa a fazer é confirmar que tem a aplicação atualizada.
 
+### Versão 1.10.0
+
+- **O meu calendário**, no menu, dentro de **Ferramentas**: o mês da pessoa, com os dias de trabalho, as folgas, os feriados e as suas ausências. A partir daí pede férias ou uma licença, e recebe um aviso quando a empresa a aprova ou a recusa. Ver [Férias e licenças a partir da aplicação](../04-calendario-e-horarios/115-ferias-e-licencas-a-partir-da-aplicacao.md).
+- **O motivo do dia não útil**: no ecrã de Presença, a casa do horário diz **Dia não útil** e o motivo aparece por baixo dos números do dia numa etiqueta destacada: o tipo de férias ou licença, ou o nome do feriado. Ver [Feriados e dias não úteis](../04-calendario-e-horarios/29-feriados-e-dias-nao-uteis.md).
+
 ### Versão 1.4.0
 
 - **Pausar e retomar tarefas** a partir da ficha da tarefa. Pausar aparece com a jornada registada; retomar pede o mesmo que iniciar.

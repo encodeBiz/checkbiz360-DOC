@@ -4,7 +4,7 @@ The base schedule defines when an employee is expected to be present at their wo
 
 ---
 
-> **Three ways to set the schedule.** In **Schedules & holidays**, the **How the schedule is set** section chooses between **Weekly schedule**, the template week this article describes; **Schedule from tasks**, where each task of the day is a shift; and **Calendar**, where shifts are loaded date by date. If every week is different, see [Calendar: shifts loaded by date](114-shift-calendar-by-date.md).
+> **Three ways to organise the schedule.** In **Schedules & holidays**, the **How the schedule is organised** section chooses between **Standard week**, the one this article describes, the same every week; **By shifts**, where the schedule is the shifts loaded week by week; and **By tasks**, where each task of the day is a shift. The weekly schedule in this article is only shown and only counts on **Standard week**. If every week is different, see [By shifts: the schedule is the shifts you load](114-shift-calendar-by-date.md).
 
 ## What a base schedule is
 
@@ -123,4 +123,4 @@ It is the practical way to set up a new branch with the same schedule as the oth
 - [Strict and flexible workday](28-flexible-schedule.md)
 - [Public holidays and non-working days](29-public-holidays-and-non-working-days.md)
 - [Availability board](98-availability-board.md)
-- [Calendar: shifts loaded by date](114-shift-calendar-by-date.md)
+- [By shifts: the schedule is the shifts you load](114-shift-calendar-by-date.md)

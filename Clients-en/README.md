@@ -125,9 +125,9 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | Availability board | **Available** | Coverage by branch and day, who is missing and why, adding days off from the board and export to Excel. |
 | Cascading configuration inheritance | **Available** | Priority algorithm used to calculate the effective calendar. |
 | Rotating shifts (automatic A/B alternation) | **Planned** | Covered today with one branch per shift or with an employee-specific schedule. |
-| Weekly schedule from an Excel template | **Available** | A whole branch's week in one upload, one sheet per person, reviewed before applying; also one person's week from their profile. |
-| Schedule from tasks (each day's working time is its tasks) | **Available** | Chosen per person on their profile. |
-| Calendar: shifts loaded by date | **Available** | On the company, a branch or a person; weekly shift calendar, copy to next week and loading from the Excel roster. |
+| Weekly schedule from an Excel template | **Available** | A whole branch's week in one upload, one sheet per person, reviewed before applying; also one person's week from their profile. Depending on each person's mode it loads shifts or tasks; nothing is uploaded for anyone on «Standard week». |
+| Three schedule modes: «Standard week», «By shifts» and «By tasks» | **Available** | The mode is the only source of each person's schedule. «By tasks» is chosen per person on their profile. |
+| «By shifts»: shifts loaded by date | **Available** | On the company, a branch or a person; weekly shift roster with one or several shifts per day, copy to next week and import the roster by shifts. A day with no shifts is off. |
 | Vacation and leave requested from the app | **Available** | "My calendar" in the app; approved in Contact → Requests. |
 
 | Article | Description |
@@ -141,7 +141,7 @@ Configuration of shifts, base schedules, work calendars and individual exception
 | [Public holidays and non-working days](04-calendar-and-schedules/29-public-holidays-and-non-working-days.md) | Holiday types, employee absences, blocking clock-ins, sectors that work on holidays |
 | [Availability board](04-calendar-and-schedules/98-availability-board.md) | Coverage by branch and day, breakdown of who is missing and days off from the board |
 | [Import the weekly schedule](04-calendar-and-schedules/108-import-the-weekly-schedule.md) | The week of a branch's whole staff in one upload, or one person's week from their profile |
-| [Calendar: shifts loaded by date](04-calendar-and-schedules/114-shift-calendar-by-date.md) | The third schedule mode: each day with its shifts, loaded by hand, copied or from Excel |
+| [By shifts: the schedule is the shifts you load](04-calendar-and-schedules/114-shift-calendar-by-date.md) | The three schedule modes and the shift roster: each day with its shifts, loaded by hand, copied or from Excel |
 | [Vacation and leave from the app](04-calendar-and-schedules/115-vacation-and-leave-from-the-app.md) | "My calendar" in the app, requesting vacation or leave and approving it in the panel |
 
 ---
@@ -317,6 +317,8 @@ Downloading, installing, navigating and using the CheckBiz360 app for employees.
 | Pausing and resuming tasks, time spent and history in the app | **Available** | From version 1.4.0. |
 | Task work site with a link to Maps | **Available** | From version 1.3.2. |
 | Profile, 2FA and biometrics configuration | **Available** | Managed from the app's profile section. |
+| "My calendar": each person's month and requesting vacation or leave | **Available** | From version 1.10.0, in the menu, under **Tools**. |
+| Reason for the non-working day on the Attendance screen | **Available** | From version 1.10.0: "Vacation", "Leave" or the name of the holiday. |
 | Viewing cached data offline | **Partially available** | Read-only for previously loaded data; clocking in and updating tasks require a connection. |
 | Offline mode with a clock-in sync queue | **Planned** | Planned for a future version. |
 
@@ -380,7 +382,8 @@ How to create and manage incidents and how to contact the support team.
 
 | Feature | Status | Comment |
 |---|---|---|
-| Creating incidents from the back office | **Available** | Internal channel of the organisation: type, source/target role, branch and comment. |
+| Creating incidents from the back office | **Available** | Internal channel of the organisation: type, source/target role, branch and comment. They are in **Contact**, **Issues** tab. |
+| Vacation and leave requests in Contact | **Available** | **Requests** tab; only the owner and administrators approve or reject. |
 | Tracking through a reply thread | **Available** | Three statuses (pending, under review, resolved); the status changes when you reply. |
 | Contacting technical support by email | **Available** | Indicative response times, not contractual. |
 | Automatic ticket numbering | **Not available** | Incidents do not generate an automatic reference number. |

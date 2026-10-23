@@ -1,7 +1,7 @@
 # TDR-004 — Fase 4: la jornada y los huecos en el informe
 
 **Fecha:** 2026-10-16
-**Estado:** Implementado el 2026-10-16 en `develop` (e2cb877); en `staging` desde el mismo día (1ed0b71, desplegado a mano junto a la fase 3). Comprobado con un PDF y un Excel de muestra generados con el lunes del cuadrante.
+**Estado:** En producción desde el 2026-10-17 (pase §1, `reports`). Implementado el 2026-10-16 en `develop` (e2cb877); en `staging` desde el mismo día (1ed0b71, desplegado a mano junto a la fase 3). Comprobado con un PDF y un Excel de muestra generados con el lunes del cuadrante.
 **Componente:** `encodebiz-api` — `services/reports` (`GenerateReportPDF.ts`, `GenerateReportXLSX.ts`, `domain/daySummary.ts`)
 **Decisiones de referencia:** [README](../README.md) D8
 

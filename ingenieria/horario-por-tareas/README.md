@@ -3,7 +3,7 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** checkinbiz — calendario y fichaje · tasks · alarmas (firebase_sdk) · reports · analytics · app móvil
 **Fecha de inicio:** 2026-10-15
-**Estado:** Diseño decidido en conversación · sin implementar
+**Estado:** En producción: API, funciones y panel desde el 2026-10-17 (pase §1); después TDR-006 a TDR-009, todos en prod el 2026-10-22. app en `master` 1.10.0+68, publicada en tiendas. Registro en `deployment-prod/proximo-pase-back.md`
 **Autor:** Jose Acevedo
 
 ---

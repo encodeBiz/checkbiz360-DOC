@@ -25,8 +25,8 @@ Dia ou intervalo de dias não úteis próprios de um funcionário: férias, lice
 
 ## C
 
-### Calendário (modo de horário)
-Forma de organizar o horário em que cada dia leva os turnos que lhe são carregados por data no *calendário de turnos*. Um dia sem carregar é livre e regista-se com o gesto de sempre. Define-se na empresa, numa sucursal ou numa pessoa. Veja [Calendário: turnos carregados por data](../04-calendario-e-horarios/114-calendario-de-turnos-por-data.md).
+### Como se organiza o horário (modo de horário)
+O que decide de onde sai o horário de cada pessoa, e é a sua única fonte: **Semana tipo** (a mesma semana todas as semanas), **Por turnos** (só os turnos carregados para cada data na *escala de turnos*; um dia sem turnos é folga) ou **Por tarefas** (as tarefas de cada dia). Semana tipo e Por turnos definem-se na empresa, numa sucursal ou numa pessoa; Por tarefas, só numa pessoa. **Por turnos** chamava-se antes *Calendário*. Veja [Por turnos: o horário são os turnos que carrega](../04-calendario-e-horarios/114-calendario-de-turnos-por-data.md).
 
 ### Calendário efetivo
 Configuração que define os dias úteis e feriados para uma sucursal ou para um funcionário concreto. O calendário efetivo determina em que dias o sistema espera registos e que dias se consideram livres ou feriados. Configura-se a partir do backoffice na secção de calendários.

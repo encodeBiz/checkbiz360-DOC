@@ -90,19 +90,29 @@ How many people are available each day at each site, and who is missing on a giv
 - **From scratch**, dictating the jobs.
 - **From a document**: the rota your management software prints, an Excel file, a photo of the paper. The assistant reads it, recognises your people and turns it into each person's week.
 
-In all three cases it shows you the proposal person by person, with the warnings worth checking (two jobs that overlap, a day that is a public holiday for someone), and a link to an Excel file with everything so you can review it calmly. Each person receives their week on their phone, with their hours and the address of each job, only when you confirm.
+What gets loaded for each person is decided by their [schedule mode](../04-calendar-and-schedules/114-shift-calendar-by-date.md#the-three-schedule-modes), as in the [roster importer](../04-calendar-and-schedules/108-import-the-weekly-schedule.md):
 
-There is no limit on the number of tasks: if the rota is very large, the assistant loads it in parts and you confirm once at the end. If the week changes, ask it to propose it again with the right version: what was already there is updated and nothing is duplicated. Jobs the person had already started are kept.
+- For someone **By shifts**, their shifts for the week, without creating or touching any task.
+- For someone **By tasks**, their jobs as tasks, which replace their week. Jobs the person had already started are kept.
+- For someone on **Standard week**, nothing is uploaded: the assistant tells you, and to load their week you first have to change their mode.
 
-### Load shifts by date
+In all three cases it shows you the proposal person by person, with the warnings worth checking (two jobs that overlap, a day that is a public holiday for someone), and a link to an Excel file with everything so you can review it calmly. Each person included in the proposal goes with their whole week: days without shifts are off, and anyone not in the proposal is not touched. Each person receives their week on their phone only when you confirm.
 
-If a branch is on the [Calendar](../04-calendar-and-schedules/114-shift-calendar-by-date.md) mode, the assistant loads each person's shifts date by date, without creating tasks: "Marta and Luis, 7 to 15 Monday to Thursday next week; Friday off". It shows you each day with what was there and what will be left, plus any public holidays or absences that fall in between, and writes when you confirm. If it cannot load someone, it tells you why.
+There is no limit: if the rota is very large, the assistant loads it in parts and you confirm once at the end. If the week changes, ask it to propose it again with the right version: what was already there is replaced and nothing is duplicated.
 
-It also shows you the week of anyone on Calendar, telling a day **off** apart from one **not loaded**. If what you want is shifts with tasks inside, ask for the rota as in the previous section: it creates the tasks and, on Calendar, also each day's shift. If it is not clear which of the two you want, it asks you.
+### Load shifts on specific days
+
+For anyone who is [By shifts](../04-calendar-and-schedules/114-shift-calendar-by-date.md), the assistant loads the shifts on the days you tell it, for one week or several, without creating, moving or deleting any task: "Marta and Luis, 7 to 15 Monday to Thursday next week; Friday off". Each day you send replaces whatever that day had; the others stay as they were. It shows you each day with what was there and what will be left, plus any public holidays or absences that fall in between, and writes when you confirm. It does not load past days.
+
+If someone is on **Standard week**, it does not load shifts for them: it suggests switching them to **By shifts** first. If they are **By tasks**, it only switches them to **By shifts** if you expressly ask; their tasks stay, and it warns you about any that would fall outside the shifts.
+
+### See the week of any date
+
+Ask for the week of a person or a branch, for any date you like. It shows it according to each person's mode: their standard week, their loaded shifts (marking the days not loaded, which are off) or their tasks, with public holidays and absences.
 
 ### Single changes
 
-Create a task, move it to another day or time, hand it to someone else, cancel it. Also change someone's standard week, or move a person or a whole branch to the Calendar mode and back to the weekly schedule. Before touching anything it shows you the before and after and waits for your yes.
+Create a task, move it to another day or time, hand it to someone else, cancel it. Also change the standard week of someone on **Standard week**, or change the schedule mode: **Standard week** or **By shifts** for a person or a whole branch, and **By tasks** for a person. If someone has tasks that do not fit **By tasks** (no start time, spanning several days or overlapping), it does not change it and tells you how many. Before touching anything it shows you the before and after and waits for your yes.
 
 ### Add people and sites
 

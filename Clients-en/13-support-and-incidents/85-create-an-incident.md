@@ -38,7 +38,7 @@ Each incident captures who is reporting it, about which branch, what type it is,
 
 ## How to create an incident from the back office
 
-1. Go to **Incidents** in the side menu.
+1. Go to **Contact** in the side menu (it used to be called *Incidents*) and stay on the **Issues** tab.
 2. Press the create incident button.
 3. Select the **employee** and the **branch** it relates to.
 4. State the **source role** and the **target role**.
@@ -53,9 +53,11 @@ Each incident captures who is reporting it, about which branch, what type it is,
 
 ## What happens next
 
-The incident is listed in **Incidents**, filterable by status, branch and employee. The manager reviews it and **replies** from its detail; each reply can also change the status. The exchange remains as a consultable thread.
+The incident is listed in **Contact**, **Issues** tab, filterable by status, branch and employee. The manager reviews it and **replies** from its detail; each reply can also change the status. The exchange remains as a consultable thread.
 
 While the incident is not resolved, it continues to accept replies. See [Incident tracking and resolution](./86-incident-tracking-and-resolution.md).
+
+The other **Contact** tab, **Requests**, collects the vacation and leave that people request from the app. Only the owner and the administrators see it. See [Vacation and leave from the app](../04-calendar-and-schedules/115-vacation-and-leave-from-the-app.md).
 
 ---
 

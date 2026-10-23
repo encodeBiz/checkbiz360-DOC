@@ -35,8 +35,8 @@ Configuración que obliga a un empleado a autenticarse mediante huella dactilar 
 
 ## C
 
-### Calendario (modo de horario)
-Forma de organizar el horario en la que cada día lleva los turnos que se le cargan por fecha en el *calendario de turnos*. Un día sin cargar es libre y se ficha con el gesto de siempre. Se pone en la empresa, en una sucursal o en una persona. Véase [Calendario: turnos cargados por fecha](../04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md).
+### Cómo se organiza el horario (modo del horario)
+Lo que decide de dónde sale el horario de cada persona, y es su única fuente: **Semana tipo** (la misma semana todas las semanas), **Por turnos** (solo los turnos cargados para cada fecha en el *cuadrante de turnos*; un día sin turnos libra) o **Por tareas** (las tareas de cada día). Semana tipo y Por turnos se ponen en la empresa, en una sucursal o en una persona; Por tareas, solo en una persona. **Por turnos** se llamaba antes *Calendario*. Véase [Por turnos: el horario son los turnos que usted carga](../04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md).
 
 ### Calendario efectivo
 Configuración que define los días laborables y festivos para una sucursal o para un empleado concreto. El calendario efectivo determina qué días el sistema espera fichajes y qué días se consideran libres o festivos. Se configura desde el backoffice en la sección de calendarios.

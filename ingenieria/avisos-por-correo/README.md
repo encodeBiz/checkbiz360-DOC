@@ -3,7 +3,7 @@
 **Proyecto:** encodeBiz SaaS — CheckBiz360
 **Dominio:** notificaciones de tareas y cuadrante × correo
 **Fecha:** 2026-10-20
-**Estado:** Diseño cerrado el 2026-10-20 · sin implementar
+**Estado:** En producción desde el 2026-10-20 (`workEmailDigests`, `weeklyScheduleEmails`, índice y plantillas; pase §13). Diseño cerrado el 2026-10-20
 **Autor:** Jose Acevedo
 
 ---

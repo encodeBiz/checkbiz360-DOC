@@ -44,7 +44,7 @@ que esta lista sobrecuenta: antes del pase hay que cruzarla con lo que corre de 
 
 ---
 
-## 1. Horario por tareas (fases 1 a 4, selector del panel, D11) — EJECUTADO el 2026-10-17 (API, funciones y panel); la app, pendiente
+## 1. Horario por tareas (fases 1 a 4, selector del panel, D11) — EJECUTADO el 2026-10-17 (API, funciones y panel); app en `master` 1.10.0+68, publicada en tiendas
 
 Diseño: `DOCS/ingenieria/horario-por-tareas` (README D1–D11, TDR-001, TDR-002, TDR-003). En
 staging desde el 2026-10-16, QA `54-horario-por-tareas` 15/15 contra staging. Nadie está en el
@@ -79,8 +79,8 @@ Lo que sube, para tenerlo delante:
 | 1.8 | Funciones de Firebase | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo <nombre>` con cada una: `onTaskDay`, `weeklyFromTaskDays` y, por la fase 3 (TDR-005), `employeePlanifierWorker`, `planifierNotificationWorker` y `taskStartNotificationWorker`. Nunca el codebase entero (README de `firebase_sdk`). Las tres de la fase 3 cambian también para quien NO está en el modo solo en que el job de las 04:00 salta a quien sí lo está | HECHO 17-oct, ver registro |
 | 1.9 | Comprobación de la API | `firebase functions:list --project encodebiz-services` con las dos; `\d dim_calendar_days` en prod; `GET /calendar` de cualquier empleado devuelve `scheduleMode: "weekly"`; `PATCH /calendar` con `scope: "branch"` y `scheduleMode: "tasks"` responde 400 `calendar/schedule_mode_employee_only` | HECHO 17-oct, ver registro |
 | 1.10 | Panel | `encodebiz-front-saas`: `develop → main` y promoción en Vercel. Sin variables nuevas. El selector está solo en la ficha del empleado, al apagar «Usar horario base» | HECHO 17-oct, ver registro |
-| 1.11 | App | `checkbiz360`: `develop` con la fase 2 → versión nueva publicada en las dos tiendas | PENDIENTE: el 17-oct `master` y `staging` siguen en 1.7.0+57 y `develop` en 1.8.0+61 con la fase 2 y el material; falta promover y subir a las tiendas |
-| 1.12 | **No activar el modo a nadie en prod** hasta que 1.11 esté publicada y la persona la tenga instalada | Con una app vieja la persona vería los botones de la tarea y la jornada en blanco | SIGUE EN PIE hasta 1.11 |
+| 1.11 | App | `checkbiz360`: `develop` con la fase 2 → versión nueva publicada en las dos tiendas | HECHO: 1.10.0+68 publicada en las dos tiendas (el 17-oct `master` seguía en 1.7.0+57) |
+| 1.12 | **No activar el modo a nadie en prod** hasta que 1.11 esté publicada y la persona la tenga instalada | Con una app vieja la persona vería los botones de la tarea y la jornada en blanco | LEVANTADO: 1.11 publicada |
 
 > **Staging se desplegó a mano el 16-oct** (merge con `[skip ci]`, `git pull` y
 > `up --build -d checkinbiz tasks reports` en el servidor, por indicación de Jose). Para
@@ -540,18 +540,18 @@ informes que pasan sueltos (INF-01-07, INF-05-01), y los conocidos HAL-38.
   conflictos; incluye «Mi semana» en la tablet, `f10acf6`, sin probar en dispositivo contra el
   servidor), versión **1.9.0+67** (`6653a43`), `develop → staging → master` empujados. Analyze en
   su base (67) y 359 tests en verde. El panel ya estaba en `main` (#114 incluye `689876fc`).
-- Pendiente de Jose: **publicar la app** en las tiendas desde `master` 1.9.0+67 (12), pruebas en
+- App publicada en las tiendas (hoy 1.10.0+68). Pendiente de Jose: pruebas en
   prod (13), `invoice.created` (10).
 
 **Índices:** comprobados el 20-oct. La revisión del quiosco usa `checklogs (branchId, timestamp)`,
 que ya existe en prod; las demás consultas nuevas tiran de índices de un solo campo. Solo
 falta el de grupo del paso 4.
 
-**Sin hacer (código), no bloquea el pase:** correo de alta propio del quiosco; aviso push de
+**Sin hacer (código), no bloquea el pase:** ~~correo de alta propio del quiosco~~ (hecho, #204 del 21-oct); aviso push de
 ráfaga al encargado; tareas de varios días en el semanal; comprobar que la app no se rompe con
 el tipo de aviso `task_removed` (§13.7).
 
-## 11. Almacenamiento por empresa: contador y exceso de 2 GB — PENDIENTE (en `staging` el 2026-10-19)
+## 11. Almacenamiento por empresa: contador y exceso de 2 GB — EJECUTADO el 2026-10-20; queda 11.8 (`invoice.created`, decisión de Jose): sin él no se cobra
 
 Diseño: [ingenieria/almacenamiento](../ingenieria/almacenamiento/README.md), ADR-002. Rama
 `feat/almacenamiento-cobro` (e88eda6). Cuenta lo que ocupa cada empresa con triggers de
@@ -583,7 +583,7 @@ medias no lo cuenta nadie):
 
 Pendiente de decidir: las empresas sin suscripción de pago se cuentan y no se cobran.
 
-## 12. Quiosco (punto de fichaje) — en `staging` desde el 2026-10-19; PENDIENTE para prod
+## 12. Quiosco (punto de fichaje) — EJECUTADO el 2026-10-20 y 21 (API, reglas, precio, panel #114) y app publicada; queda la prueba en prod (12.9)
 
 Diseño: [ingenieria/quiosco](../ingenieria/quiosco/README.md) y
 [03_contratos-api](../ingenieria/quiosco/03_contratos-api.md). Las fotos van al bucket del
@@ -628,10 +628,9 @@ Por orden:
 | 12.8 | App: versión con la pantalla Foto | `checkbiz360` `feat/quiosco` → `develop` → publicación Android. El modelo de caras lo baja Play Services al instalar (`com.google.mlkit.vision.DEPENDENCIES=face`); sin él, el fichaje sale sin marca, nunca se bloquea |
 | 12.9 | Prueba en prod con una sucursal | activar, entrar en la tablet, fichar con QR y con código, revisar la foto, desactivar |
 
-**Sin hacer (código):** correo de alta propio del quiosco (hoy llega el genérico de
-CheckBiz); aviso push de ráfaga al encargado (hoy solo se marca y se ve en la revisión).
+**Sin hacer (código):** ~~correo de alta propio del quiosco~~ (hecho, #204 del 21-oct); aviso push de ráfaga al encargado (hoy solo se marca y se ve en la revisión).
 
-## 13. Avisos de trabajo por correo — en `staging` desde el 2026-10-20; PENDIENTE para prod
+## 13. Avisos de trabajo por correo — EJECUTADO el 2026-10-20; queda 13.7 (la app con `task_removed`)
 
 Diseño: [ingenieria/avisos-por-correo](../ingenieria/avisos-por-correo/README.md). Rama
 `feat/avisos-por-correo` (API). Para quien no usa el móvil: casilla «Enviar notificaciones por
@@ -690,7 +689,7 @@ Vercel, las funciones por nombre con `desplegar.mjs`, las reglas con `--only fir
 | Panel a producción | 11:30 | Claude | PR encodebiz-front-saas-clean#106 (staging → main, 85 commits, con «calendario de MUI unificado» de otra sesión) fusionado. Vercel: deployment de producción **Ready** a las 11:31 (37 s) (1.10, 2.16, 3.4, 8.5). |
 | Cierre | 11:35 | Claude | Hook `block-prod.sh` rearmado en `.claude/settings.json` con los tres contenedores nuevos. Registro escrito; `2026-10-cuadrantes-plantilla.md` §8 con su fila. |
 
-## 14. Vacaciones y permisos desde la app — servidor EN PROD el 2026-10-22; panel y app pendientes
+## 14. Vacaciones y permisos desde la app — servidor y panel EN PROD el 2026-10-22 (#212, #118); app en `master` 1.10.0+68, publicada en tiendas
 
 Diseño: [ingenieria/vacaciones](../ingenieria/vacaciones/README.md). Solo `checkinbiz` (rutas
 nuevas bajo `/calendar`) y `shared`; aprobar escribe los mismos días libres del empleado que el
@@ -709,7 +708,7 @@ panel. Todo `--project encodebiz-services` explícito y con autorización de Jos
 reglas publicadas en prod; los dos índices creados (CREATING → READY); plantilla subida y después
 retirada del código con el hotfix #213 (`release/vacaciones-sin-correo`, Production CI/CD en verde). **El servidor de vacaciones está completo en prod.** Quedan panel (Contacto → Solicitudes, en `develop`) y app («Mi calendario», en `develop`).
 
-## 15. «Calendario»: turnos cargados por fecha — PENDIENTE (rama `feat/horario-calendario`, 2026-10-22)
+## 15. «Calendario»: turnos cargados por fecha — EJECUTADO el 2026-10-22 (API #214, migración 043, panel #115) y sustituido el mismo día por §16 (TDR-008) y §16 ter (TDR-009)
 
 Diseño: [ingenieria/horario-por-tareas/tdr/TDR-007](../ingenieria/horario-por-tareas/tdr/TDR-007-calendario-turnos-por-fecha.md).
 Tercer modo del horario, `scheduleMode: "calendar"`, heredable por empresa y sucursal; los días

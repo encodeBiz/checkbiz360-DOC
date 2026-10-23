@@ -43,6 +43,19 @@ Las personas también pueden pedir sus vacaciones o permisos desde la app, en **
 
 ---
 
+## El nombre del día libre es lo que ve la persona
+
+Desde la versión 1.10.0 de la app, cuando hoy no es laborable para una persona, la pantalla de **Asistencia** se lo explica. La casilla del horario dice **No laborable** y, debajo de las cifras del día, una etiqueta destacada dice el motivo: el nombre que tiene ese día libre en el calendario.
+
+- Unas vacaciones o un permiso aprobados desde la app salen con su tipo: «Vacaciones», «Asuntos propios», «Médico» o «Permiso».
+- Un festivo o una ausencia añadidos en el panel salen con el nombre que usted les dio.
+- Si ese día coinciden varios, manda el de la persona sobre el de su sucursal, y el de la sucursal sobre el de la empresa.
+- Si el día libre no tiene nombre, no sale etiqueta: solo **No laborable**.
+
+Por eso conviene dar a cada festivo y a cada ausencia un nombre claro, que la persona entienda sin preguntar: «Fiesta local de San Isidro» o «Cierre por inventario» mejor que «Festivo 2» o una abreviatura.
+
+---
+
 ## Cómo CheckBiz360 bloquea fichajes en días no laborables
 
 Cuando un empleado intenta registrar su entrada o salida en una fecha marcada como no laborable en su calendario efectivo, el sistema devuelve el código de error `checklog/day_disabled` y rechaza el fichaje.

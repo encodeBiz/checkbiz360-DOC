@@ -1,6 +1,6 @@
 # Incident tracking and resolution
 
-Once created, the incident lives in the **Incidents** section of the back office until it is resolved. This article describes its statuses, how replies work and what is recorded.
+Once created, the incident lives in **Contact**, **Issues** tab, of the back office until it is resolved. This article describes its statuses, how replies work and what is recorded.
 
 Remember that incidents are an **internal channel of your organisation**. For platform problems, the channel is EncodeBiz support: see [Contact technical support](./87-contact-technical-support.md).
 
@@ -26,7 +26,7 @@ The status is changed in two ways: by editing the incident, or **when replying**
 
 Tracking is done through replies. Each reply stays in the thread, with its author and its date, and can also move the status.
 
-1. Go to **Incidents** in the side menu.
+1. Go to **Contact** in the side menu and stay on the **Issues** tab.
 2. Find the incident using the status, branch or employee filters.
 3. Open its detail.
 4. Press **Reply**.

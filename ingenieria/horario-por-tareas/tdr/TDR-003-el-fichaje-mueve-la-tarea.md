@@ -1,7 +1,7 @@
 # TDR-003 — Fase 2: el fichaje mueve la tarea
 
 **Fecha:** 2026-10-16
-**Estado:** En implementación (API y app)
+**Estado:** API en producción desde el 2026-10-17 (pase §1, fase 2); app en `master` 1.10.0+68, publicada en tiendas
 **Componente:** `encodebiz-api` — `services/checkinbiz` (fichaje), `services/tasks` (actividad), `services/reports` (descanso); app `checkbiz360`
 **Decisiones de referencia:** [README](../README.md) D5 y D6; [TDR-001](./TDR-001-modo-dias-generados-y-escritor.md)
 

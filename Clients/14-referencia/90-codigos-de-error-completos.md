@@ -179,17 +179,17 @@ Solicitudes desde la app, «Mi calendario» (aprueban los administradores en el 
 | `absence_request/not_pending` | Ya se resolvió o se canceló: no se puede cancelar, aprobar ni rechazar. |
 | `calendar/forbidden` | La cuenta no tiene ficha de empleado activa (rutas de la persona) o no tiene asiento de administrador (rutas del panel). |
 
-## Calendario de turnos (`calendar`)
+## Cuadrante de turnos (`calendar`)
 
-Al cargar turnos por fecha en el modo **Calendario**.
+Al cargar turnos por fecha a quien está **Por turnos**.
 
 | Código | Qué significa | Qué hacer |
 |---|---|---|
-| `calendar/days_require_calendar_mode` | La persona no está en el modo **Calendario** | Elegir **Calendario** en su horario o en el de su sucursal |
+| `calendar/days_require_calendar_mode` | La persona no está **Por turnos**: está en **Semana tipo** o **Por tareas** | Pasarla a **Por turnos** en su ficha o en la de su sucursal |
 | `calendar/day_in_the_past` | Se ha intentado cambiar un día anterior a hoy | Los días pasados no se cambian; hoy sí |
 | `calendar/bad_request` | Un turno no es válido: la salida no es posterior a la entrada, dos turnos se cruzan o la fecha está demasiado lejos | Revisar las horas del día indicado |
 | `calendar/invalid_range` / `calendar/range_too_long` | El periodo pedido no es válido o es demasiado largo | Consultar un periodo más corto |
-| `calendar/schedule_mode_employee_only` | **Horario por tareas** solo se elige en la ficha de una persona | Ponerlo en la persona, no en la sucursal ni en la empresa |
+| `calendar/schedule_mode_employee_only` | **Por tareas** solo se elige en la ficha de una persona | Ponerlo en la persona, no en la sucursal ni en la empresa |
 
 ## Punto de fichaje (`kiosk`)
 

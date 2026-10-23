@@ -125,9 +125,9 @@ Configuração de turnos, horários base, calendários laborais e exceções ind
 | Quadro de disponibilidade | **Disponível** | Cobertura por sucursal e dia, quem falta e porquê, registo de dias livres a partir do quadro e exportação para Excel. |
 | Herança de configuração em cascata | **Disponível** | Algoritmo de prioridade para calcular o calendário efetivo. |
 | Turnos rotativos (alternância A/B automática) | **Planeada** | Hoje resolve-se com uma sucursal por turno ou com horário próprio do funcionário. |
-| Escala semanal a partir de um modelo de Excel | **Disponível** | A semana de toda uma sucursal num só carregamento, uma folha por pessoa e revisão antes de aplicar; também a de uma pessoa a partir da sua ficha. |
-| Horário por tarefas (a jornada de cada dia são as suas tarefas) | **Disponível** | Escolhe-se por pessoa na sua ficha. |
-| Calendário: turnos carregados por data | **Disponível** | Na empresa, numa sucursal ou numa pessoa; calendário de turnos semanal, copiar para a semana seguinte e carregamento a partir da escala de Excel. |
+| Escala semanal a partir de um modelo de Excel | **Disponível** | A semana de toda uma sucursal num só carregamento, uma folha por pessoa e revisão antes de aplicar; também a de uma pessoa a partir da sua ficha. Conforme o modo de cada pessoa carrega turnos ou tarefas; a quem está em «Semana tipo» não se carrega nada. |
+| Três modos do horário: «Semana tipo», «Por turnos» e «Por tarefas» | **Disponível** | O modo é a única fonte do horário de cada pessoa. «Por tarefas» escolhe-se por pessoa na sua ficha. |
+| «Por turnos»: turnos carregados por data | **Disponível** | Na empresa, numa sucursal ou numa pessoa; escala de turnos semanal com um ou vários turnos por dia, copiar para a semana seguinte e importar a escala por turnos. Um dia sem turnos é folga. |
 | Férias e licenças pedidas a partir da aplicação | **Disponível** | «O meu calendário» na aplicação; aprovam-se em Contacto → Pedidos. |
 
 | Artigo | Descrição |
@@ -141,7 +141,7 @@ Configuração de turnos, horários base, calendários laborais e exceções ind
 | [Feriados e dias não úteis](04-calendario-e-horarios/29-feriados-e-dias-nao-uteis.md) | Tipos de feriado, ausências de funcionário, bloqueio de registos, setores que trabalham em feriado |
 | [Quadro de disponibilidade](04-calendario-e-horarios/98-quadro-de-disponibilidade.md) | Cobertura por sucursal e dia, detalhe de quem falta e dias livres a partir do quadro |
 | [Importar a escala semanal](04-calendario-e-horarios/108-importar-a-escala-semanal.md) | A semana de toda a equipa de uma filial num só carregamento, ou a de uma pessoa a partir da sua ficha |
-| [Calendário: turnos carregados por data](04-calendario-e-horarios/114-calendario-de-turnos-por-data.md) | O terceiro modo do horário: cada dia com os seus turnos, carregados à mão, copiados ou a partir de Excel |
+| [Por turnos: o horário são os turnos que carrega](04-calendario-e-horarios/114-calendario-de-turnos-por-data.md) | Os três modos do horário e a escala de turnos: cada dia com os seus turnos, carregados à mão, copiados ou a partir de Excel |
 | [Férias e licenças a partir da aplicação](04-calendario-e-horarios/115-ferias-e-licencas-a-partir-da-aplicacao.md) | «O meu calendário» na aplicação, pedir férias ou licença e aprová-lo no painel |
 
 ---
@@ -317,6 +317,8 @@ Descarga, instalação, navegação e utilização da aplicação CheckBiz360 pa
 | Pausar e retomar tarefas, tempo investido e histórico na aplicação | **Disponível** | A partir da versão 1.4.0. |
 | Local de trabalho da tarefa com ligação ao Maps | **Disponível** | A partir da versão 1.3.2. |
 | Configuração de perfil, 2FA e biometria | **Disponível** | Gerível a partir da secção de perfil da aplicação. |
+| «O meu calendário»: o mês de cada pessoa e pedir férias ou licença | **Disponível** | A partir da versão 1.10.0, no menu, dentro de **Ferramentas**. |
+| Motivo do dia não útil no ecrã de Presença | **Disponível** | A partir da versão 1.10.0: o nome que esse dia livre tem no calendário. |
 | Consulta de dados em cache sem ligação | **Parcialmente disponível** | Apenas leitura de dados previamente carregados; registar e atualizar tarefas requer ligação. |
 | Modo offline com fila de sincronização de registos | **Planeado** | Planeado para uma versão futura. |
 
@@ -380,7 +382,8 @@ Como criar e gerir incidências e como contactar a equipa de apoio.
 
 | Funcionalidade | Estado | Comentário |
 |---|---|---|
-| Criação de incidências a partir do backoffice | **Disponível** | Canal interno da organização: tipo, perfil de origem/destino, sucursal e comentário. |
+| Criação de incidências a partir do backoffice | **Disponível** | Canal interno da organização: tipo, perfil de origem/destino, sucursal e comentário. Estão em **Contacto**, separador **Incidentes**. |
+| Pedidos de férias e licenças em Contacto | **Disponível** | Separador **Pedidos**; só o proprietário e os administradores aprovam ou recusam. |
 | Acompanhamento através de um fio de respostas | **Disponível** | Três estados (pendente, em revisão, resolvida); o estado muda ao responder. |
 | Contacto com o apoio técnico por email | **Disponível** | Tempos de resposta indicativos, não contratuais. |
 | Numeração automática de tickets | **Não disponível** | As incidências não geram número de referência automático. |

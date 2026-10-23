@@ -43,6 +43,19 @@ As pessoas também podem pedir as suas férias ou licenças a partir da aplicaç
 
 ---
 
+## O nome do dia livre é o que a pessoa vê
+
+A partir da versão 1.10.0 da aplicação, quando hoje não é dia útil para uma pessoa, o ecrã de **Presença** explica-lho. A casa do horário diz **Dia não útil** e, por baixo dos números do dia, uma etiqueta destacada diz o motivo: o nome que esse dia livre tem no calendário.
+
+- Umas férias ou uma licença aprovadas a partir da aplicação aparecem com o seu tipo. Por agora esse nome fica em espanhol ou em inglês, conforme o idioma da pessoa: por exemplo «Vacaciones» ou «Vacation».
+- Um feriado ou uma ausência adicionados no painel aparecem com o nome que lhes deu.
+- Se nesse dia coincidirem vários, manda o da pessoa sobre o da sua sucursal, e o da sucursal sobre o da empresa.
+- Se o dia livre não tiver nome, não aparece etiqueta: só **Dia não útil**.
+
+Por isso convém dar a cada feriado e a cada ausência um nome claro, que a pessoa entenda sem perguntar: «Feriado municipal de Santo António» ou «Encerramento para inventário» em vez de «Feriado 2» ou de uma abreviatura.
+
+---
+
 ## Como o CheckBiz360 bloqueia registos em dias não úteis
 
 Quando um funcionário tenta registar a sua entrada ou saída numa data marcada como não útil no seu calendário efetivo, o sistema devolve o código de erro `checklog/day_disabled` e recusa o registo.

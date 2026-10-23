@@ -29,9 +29,9 @@ Se a rotação for irregular, configure o horário na ficha do **funcionário** 
 
 É mais flexível, mas exige manter a alteração à mão em cada ciclo e para cada pessoa.
 
-### Opção 3: o modo Calendário (rotação planeada)
+### Opção 3: o modo Por turnos (rotação planeada)
 
-Se planeia as semanas com antecedência, coloque a sucursal no modo **Calendário** e carregue os turnos de cada pessoa data a data. **Copiar para a semana seguinte** repete uma semana e depois retoca-se o que mudar, e o importador da escala carrega um mês inteiro a partir de Excel. O ciclo não se gera sozinho, mas não é preciso mudar nenhum horário ao passar de uma semana para a outra. Ver [Calendário: turnos carregados por data](114-calendario-de-turnos-por-data.md).
+Se planeia as semanas com antecedência, coloque a sucursal no modo **Por turnos** e carregue os turnos de cada pessoa semana a semana. **Copiar para a semana seguinte** repete uma semana e depois retoca-se o que mudar, e o importador da escala carrega a semana de toda a sucursal a partir de Excel. O ciclo não se gera sozinho, mas não é preciso mudar nenhum horário ao passar de uma semana para a outra. Tenha em conta que, **Por turnos**, uma semana sem nada carregado é folga inteira. Ver [Por turnos: o horário são os turnos que carrega](114-calendario-de-turnos-por-data.md).
 
 > **Aviso:** nas duas primeiras opções, mude o horário **antes** de começar o ciclo novo. Cada registo é validado contra o calendário efetivo em vigor nesse momento; atualizar o horário depois não reavalia os registos já gravados.
 

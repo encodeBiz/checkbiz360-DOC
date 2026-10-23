@@ -3,8 +3,7 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** transversal — Storage de la plataforma (quiosco, documental, tareas, firma, informes) × `billing`
 **Fecha de inicio:** 2026-10-18 · **Rehecho:** 2026-10-19 (modelo simplificado por Jose)
-**Estado:** Diseño cerrado el 2026-10-19 · sin implementar. Lo necesita el quiosco
-([quiosco/README](../quiosco/README.md)) antes de su Fase 1.
+**Estado:** En producción desde el 2026-10-20 (triggers, carga inicial, `billing` y `STRIPE_STORAGE_GB_PRICE`). **El cobro no sale todavía:** falta activar `invoice.created` en el webhook de Stripe de prod (decisión de Jose, pase §11.8). Diseño cerrado el 2026-10-19.
 **Autor:** Jose Acevedo
 
 ---

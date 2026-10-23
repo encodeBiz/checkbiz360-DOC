@@ -38,7 +38,7 @@ Cada incidência reúne quem a reporta, sobre que sucursal, de que tipo é, e ma
 
 ## Como criar uma incidência a partir do backoffice
 
-1. Aceda a **Incidências** no menu lateral.
+1. Aceda a **Contacto** no menu lateral (antes chamava-se *Incidências*) e fique no separador **Incidentes**.
 2. Prima o botão de criar incidência.
 3. Selecione o **funcionário** e a **sucursal** a que se refere.
 4. Indique o **perfil de origem** e o **perfil de destino**.
@@ -53,9 +53,11 @@ Cada incidência reúne quem a reporta, sobre que sucursal, de que tipo é, e ma
 
 ## O que acontece depois
 
-A incidência fica listada em **Incidências**, filtrável por estado, sucursal e funcionário. O responsável revê-a e **responde** a partir do seu detalhe; cada resposta pode ainda mudar o estado. A troca fica como um fio consultável.
+A incidência fica listada em **Contacto**, separador **Incidentes**, filtrável por estado, sucursal e funcionário. O responsável revê-a e **responde** a partir do seu detalhe; cada resposta pode ainda mudar o estado. A troca fica como um fio consultável.
 
 Enquanto a incidência não estiver resolvida, continua a admitir respostas. Consulte [Acompanhamento e resolução de incidências](./86-acompanhamento-e-resolucao-de-incidencias.md).
+
+O outro separador de **Contacto**, **Pedidos**, recolhe as férias e as licenças que as pessoas pedem a partir da aplicação. Só o veem o proprietário e os administradores. Consulte [Férias e licenças a partir da aplicação](../04-calendario-e-horarios/115-ferias-e-licencas-a-partir-da-aplicacao.md).
 
 ---
 

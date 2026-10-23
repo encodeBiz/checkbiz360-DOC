@@ -125,9 +125,9 @@ Configuración de turnos, horarios base, calendarios laborales y excepciones ind
 | Tablero de disponibilidad | **Disponible** | Cobertura por sucursal y día, quién falta y por qué, alta de días libres desde el tablero y exportación a Excel. |
 | Herencia de configuración en cascada | **Disponible** | Algoritmo de prioridad para calcular el calendario efectivo. |
 | Turnos rotativos (alternancia A/B automática) | **Pendiente de desarrollo** | Hoy se cubre con una sucursal por turno o con horario propio del empleado. |
-| Cuadrante semanal por plantilla de Excel | **Disponible** | La semana de toda una sucursal en una subida, con una pestaña por persona y revisión antes de aplicar; también la de una sola persona desde su ficha. |
-| Horario por tareas (la jornada de cada día son sus tareas) | **Disponible** | Se elige por persona en su ficha. |
-| Calendario: turnos cargados por fecha | **Disponible** | En la empresa, una sucursal o una persona; calendario de turnos semanal, copiar a la semana siguiente y carga desde el cuadrante de Excel. |
+| Cuadrante semanal por plantilla de Excel | **Disponible** | La semana de toda una sucursal en una subida, con una pestaña por persona y revisión antes de aplicar; también la de una sola persona desde su ficha. Según el modo de cada persona carga turnos o tareas; a quien está en «Semana tipo» no se le sube. |
+| Tres modos del horario: «Semana tipo», «Por turnos» y «Por tareas» | **Disponible** | El modo es la única fuente del horario de cada persona. «Por tareas» se elige por persona en su ficha. |
+| «Por turnos»: turnos cargados por fecha | **Disponible** | En la empresa, una sucursal o una persona; cuadrante de turnos semanal con uno o varios turnos por día, copiar a la semana siguiente e importar el cuadrante por turnos. Un día sin turnos libra. |
 | Vacaciones y permisos pedidos desde la app | **Disponible** | «Mi calendario» en la app; se aprueban en Contacto → Solicitudes. |
 
 | Artículo | Descripción |
@@ -141,7 +141,7 @@ Configuración de turnos, horarios base, calendarios laborales y excepciones ind
 | [Festivos y días no laborables](04-calendario-y-horarios/29-festivos-y-dias-no-laborables.md) | Tipos de festivo, ausencias de empleado, bloqueo de fichajes, sectores que trabajan en festivo |
 | [Tablero de disponibilidad](04-calendario-y-horarios/98-tablero-de-disponibilidad.md) | Cobertura por sucursal y día, desglose de quién falta y días libres desde el tablero |
 | [Importar el cuadrante semanal](04-calendario-y-horarios/108-importar-el-cuadrante-semanal.md) | La semana de toda la plantilla de una sucursal en una subida, o la de una persona desde su ficha |
-| [Calendario: turnos cargados por fecha](04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md) | El tercer modo del horario: cada día con sus turnos, cargados a mano, copiados o desde Excel |
+| [Por turnos: el horario son los turnos que usted carga](04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md) | Los tres modos del horario y el cuadrante de turnos: cada día con sus turnos, cargados a mano, copiados o desde Excel |
 | [Vacaciones y permisos desde la app](04-calendario-y-horarios/115-vacaciones-y-permisos-desde-la-app.md) | «Mi calendario» en la app, pedir vacaciones o permiso y aprobarlo en el panel |
 
 ---
@@ -317,6 +317,8 @@ Descarga, instalación, navegación y uso de la aplicación CheckBiz360 para emp
 | Pausar y reanudar tareas, tiempo invertido e historial en la app | **Disponible** | Desde la versión 1.4.0. |
 | Lugar de trabajo de la tarea con enlace a Maps | **Disponible** | Desde la versión 1.3.2. |
 | Configuración de perfil, 2FA y biometría | **Disponible** | Gestionable desde la sección de perfil de la app. |
+| «Mi calendario»: el mes de cada persona y pedir vacaciones o permiso | **Disponible** | Desde la versión 1.10.0, en el menú, dentro de **Herramientas**. |
+| Motivo del día no laborable en la pantalla de Asistencia | **Disponible** | Desde la versión 1.10.0: «Vacaciones», «Permiso» o el nombre del festivo. |
 | Consulta de datos en caché sin conexión | **Disponible parcialmente** | Solo lectura de datos previamente cargados; fichar y actualizar tareas requiere conexión. |
 | Modo offline con cola de sincronización de fichajes | **Pendiente de desarrollo** | Planificado para una versión futura. |
 
@@ -380,7 +382,8 @@ Cómo crear y gestionar incidencias y cómo contactar con el equipo de soporte.
 
 | Funcionalidad | Estado | Comentario |
 |---|---|---|
-| Creación de incidencias desde el backoffice | **Disponible** | Canal interno de la organización: tipo, rol origen/destino, sucursal y comentario. |
+| Creación de incidencias desde el backoffice | **Disponible** | Canal interno de la organización: tipo, rol origen/destino, sucursal y comentario. Están en **Contacto**, pestaña **Incidencias**. |
+| Solicitudes de vacaciones y permisos en Contacto | **Disponible** | Pestaña **Solicitudes**; solo propietario y administradores aprueban o rechazan. |
 | Seguimiento mediante hilo de respuestas | **Disponible** | Tres estados (pendiente, en revisión, resuelto); el estado se cambia al responder. |
 | Contacto con soporte técnico por email | **Disponible** | Tiempos de respuesta orientativos, no contractuales. |
 | Numeración automática de tickets | **No disponible** | Las incidencias no generan número de referencia automático. |

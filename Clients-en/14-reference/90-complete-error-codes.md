@@ -179,17 +179,17 @@ Requests from the app, "My calendar" (approved by administrators in the panel, *
 | `absence_request/not_pending` | It has already been decided or cancelled: it cannot be cancelled, approved or rejected. |
 | `calendar/forbidden` | The account has no active employee record (the person's routes) or no administrator seat (the panel's routes). |
 
-## Shift calendar (`calendar`)
+## Shift roster (`calendar`)
 
-When loading shifts by date in the **Calendar** mode.
+When loading shifts by date for someone who is **By shifts**.
 
 | Code | What it means | What to do |
 |---|---|---|
-| `calendar/days_require_calendar_mode` | The person is not on the **Calendar** mode | Choose **Calendar** on their schedule or on their branch's |
+| `calendar/days_require_calendar_mode` | The person is not **By shifts**: they are on **Standard week** or **By tasks** | Switch them to **By shifts** on their profile or on their branch's |
 | `calendar/day_in_the_past` | Someone tried to change a day before today | Past days are not changed; today can be |
 | `calendar/bad_request` | A shift is not valid: the end is not after the start, two shifts overlap or the date is too far ahead | Review the times on the day shown |
 | `calendar/invalid_range` / `calendar/range_too_long` | The period requested is not valid or is too long | Request a shorter period |
-| `calendar/schedule_mode_employee_only` | **Schedule from tasks** is only chosen on a person's record | Set it on the person, not on the branch or the company |
+| `calendar/schedule_mode_employee_only` | **By tasks** is only chosen on a person's record | Set it on the person, not on the branch or the company |
 
 ## Clock-in point (`kiosk`)
 

@@ -6,7 +6,7 @@ Pedir umas férias costuma ser uma mensagem, uma chamada ou um papel que alguém
 
 ## O que cada pessoa vê
 
-Na aplicação, no menu, dentro de **Ferramentas**, está **O meu calendário**. Mostra o seu mês, com setas para passar ao anterior ou ao seguinte:
+Na aplicação, a partir da versão 1.10.0, no menu, dentro de **Ferramentas**, está **O meu calendário**. Se uma pessoa não o vir, deve atualizar a aplicação. Mostra o seu mês, com setas para passar ao anterior ou ao seguinte:
 
 | No calendário | O que significa |
 |---|---|
@@ -54,7 +54,7 @@ A pessoa recebe um aviso no telemóvel quando o pedido é aprovado ou recusado, 
 
 ### Depois de aprovar
 
-Os dias aprovados são ausências normais. Veem-se em **Horários e feriados** da pessoa, no [quadro de disponibilidade](98-quadro-de-disponibilidade.md), e bloqueiam o registo de ponto nesses dias, como qualquer ausência. Se for preciso desfazer uma aprovação, retire os dias no seu calendário, como com qualquer ausência.
+Os dias aprovados são ausências normais. Veem-se em **Horários e feriados** da pessoa, no [quadro de disponibilidade](98-quadro-de-disponibilidade.md), e bloqueiam o registo de ponto nesses dias, como qualquer ausência. Nesses dias, o ecrã de Presença da aplicação mostra **Dia não útil** com o motivo por baixo. Se for preciso desfazer uma aprovação, retire os dias no seu calendário, como com qualquer ausência.
 
 ---
 

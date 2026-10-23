@@ -19,6 +19,11 @@ Cada nueva versión de CheckBiz360 puede incluir:
 
 Algunas funciones dependen de la versión instalada. Si un empleado no ve una de ellas, lo primero es comprobar que tiene la app actualizada.
 
+### Versión 1.10.0
+
+- **Mi calendario**, en el menú, dentro de **Herramientas**: el mes de la persona, con los días de trabajo, los libres, los festivos y sus ausencias. Desde ahí pide vacaciones o un permiso, y recibe un aviso cuando la empresa lo aprueba o lo rechaza. Ver [Vacaciones y permisos desde la app](../04-calendario-y-horarios/115-vacaciones-y-permisos-desde-la-app.md).
+- **El motivo del día no laborable**: en la pantalla de Asistencia, la casilla del horario dice **No laborable** y debajo de las cifras del día sale el motivo en una etiqueta destacada: «Vacaciones», «Permiso» o el nombre del festivo. Ver [Festivos y días no laborables](../04-calendario-y-horarios/29-festivos-y-dias-no-laborables.md).
+
 ### Versión 1.4.0
 
 - **Pausar y reanudar tareas** desde la ficha de la tarea. Pausar aparece con la jornada fichada; reanudar pide lo mismo que iniciar.

@@ -1,7 +1,7 @@
 # TDR-001 — Fase 1: el modo, los días generados y quién los escribe
 
 **Fecha:** 2026-10-15
-**Estado:** Implementado el 2026-10-15 en `feat/horario-por-tareas` de `encodebiz-api` (7 commits, c80b34f..35e8d67), sin fusionar a `develop`; en dev ya están la migración, las reglas, la función y el índice. Lo hecho y lo que queda, en el §13.
+**Estado:** En producción desde el 2026-10-17 (pase §1: migración 037, índices, reglas, `onTaskDay`). Implementado el 2026-10-15 en `feat/horario-por-tareas` (c80b34f..35e8d67). Lo hecho y lo que queda, en el §13.
 **Componente:** `encodebiz-api` — `packages/shared` (calendar), `services/checkinbiz` (calendar, checklog), `services/tasks` (validaciones), `services/firebase_sdk` (trigger), `services/analytics` (espejo y resolutor), `firestore.rules`
 **Decisiones de referencia:** [README](../README.md), D1 a D4 y D10
 

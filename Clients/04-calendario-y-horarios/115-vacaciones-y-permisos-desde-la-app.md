@@ -6,7 +6,7 @@ Pedir unas vacaciones suele ser un mensaje, una llamada o un papel que alguien t
 
 ## Qué ve cada persona
 
-En la app, en el menú, dentro de **Herramientas**, está **Mi calendario**. Enseña su mes, con flechas para pasar al anterior o al siguiente:
+En la app, desde la versión 1.10.0, en el menú, dentro de **Herramientas**, está **Mi calendario**. Si una persona no lo ve, que actualice la app. Enseña su mes, con flechas para pasar al anterior o al siguiente:
 
 | En el calendario | Qué significa |
 |---|---|
@@ -54,7 +54,7 @@ La persona recibe un aviso en el móvil cuando se aprueba o se rechaza, y el avi
 
 ### Después de aprobar
 
-Los días aprobados son ausencias normales. Se ven en **Horarios y festivos** de la persona, en el [tablero de disponibilidad](98-tablero-de-disponibilidad.md), y bloquean el fichaje esos días, como cualquier ausencia. Si hay que deshacer una aprobación, quite los días desde su calendario, como con cualquier ausencia.
+Los días aprobados son ausencias normales. Se ven en **Horarios y festivos** de la persona, en el [tablero de disponibilidad](98-tablero-de-disponibilidad.md), y bloquean el fichaje esos días, como cualquier ausencia. Esos días, la pantalla de Asistencia de la app le dice **No laborable** con el motivo debajo: «Vacaciones», «Asuntos propios», «Médico» o «Permiso». Si hay que deshacer una aprobación, quite los días desde su calendario, como con cualquier ausencia.
 
 ---
 

@@ -1,7 +1,7 @@
 # TDR-005 — Fase 3: las alarmas pertenecen a la tarea
 
 **Fecha:** 2026-10-16
-**Estado:** En `develop` y en `staging` (1ed0b71) desde el 2026-10-16, con las funciones desplegadas en `dev-encodebiz`
+**Estado:** En producción desde el 2026-10-17 (pase §1.8: `employeePlanifierWorker`, `planifierNotificationWorker` y `taskStartNotificationWorker`); redesplegadas con el `shared` del TDR-009 el 2026-10-22
 **Componente:** `encodebiz-api` — `packages/shared` (calendar, notifications), `services/firebase_sdk` (planificador, aviso de tarea no iniciada), `services/checkinbiz` (activación)
 **Decisiones de referencia:** [README](../README.md) D7 y D9
 

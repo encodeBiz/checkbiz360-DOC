@@ -38,7 +38,7 @@ Cada incidencia recoge quién la reporta, sobre qué sucursal, de qué tipo es, 
 
 ## Cómo crear una incidencia desde el backoffice
 
-1. Acceda a **Incidencias** en el menú lateral.
+1. Acceda a **Contacto** en el menú lateral (antes se llamaba *Incidencias*) y quédese en la pestaña **Incidencias**.
 2. Pulse el botón de crear incidencia.
 3. Seleccione el **empleado** y la **sucursal** a los que se refiere.
 4. Indique el **rol origen** y el **rol destino**.
@@ -53,9 +53,11 @@ Cada incidencia recoge quién la reporta, sobre qué sucursal, de qué tipo es, 
 
 ## Qué ocurre después
 
-La incidencia queda listada en **Incidencias**, filtrable por estado, sucursal y empleado. El responsable la revisa y **responde** desde su detalle; cada respuesta puede además cambiar el estado. El intercambio queda como un hilo consultable.
+La incidencia queda listada en **Contacto**, pestaña **Incidencias**, filtrable por estado, sucursal y empleado. El responsable la revisa y **responde** desde su detalle; cada respuesta puede además cambiar el estado. El intercambio queda como un hilo consultable.
 
 Mientras la incidencia no esté resuelta, sigue admitiendo respuestas. Consulte [Seguimiento y resolución de incidencias](./86-seguimiento-y-resolucion-de-incidencias.md).
+
+La otra pestaña de **Contacto**, **Solicitudes**, recoge las vacaciones y los permisos que las personas piden desde la app. Solo la ven el propietario y los administradores. Consulte [Vacaciones y permisos desde la app](../04-calendario-y-horarios/115-vacaciones-y-permisos-desde-la-app.md).
 
 ---
 

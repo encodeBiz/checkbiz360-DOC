@@ -35,9 +35,6 @@ Record of the start (`restin`) and end (`restout`) of a break within the working
 
 ## C
 
-### Calendar (schedule mode)
-Way of setting the schedule in which each day carries the shifts loaded for its date in the *shift calendar*. A day with nothing loaded is a day off and people clock in with the usual gesture. It is set on the company, on a branch or on a person. See [Calendar: shifts loaded by date](../04-calendar-and-schedules/114-shift-calendar-by-date.md).
-
 ### Check-in / Check-out
 Record of an employee's entry (check-in) and exit (check-out) time in their working day. They are the fundamental events of time control. A check-in with no corresponding check-out generates an incomplete workday. See also: Clock record / Checklog.
 
@@ -160,6 +157,9 @@ A user's level of access and permissions within CheckBiz360. The roles available
 
 ### Schedule adjustment
 Concept that **does not apply** in the current version: the clock record always stores the real time and is not rounded. What decides whether time worked outside the official window counts is the calendar's *strict or flexible workday* mode.
+
+### Schedule mode (how the schedule is organised)
+What decides where each person's schedule comes from, and its only source: **Standard week** (the same week every week), **By shifts** (only the shifts loaded for each date in the *shift roster*; a day with no shifts is off) or **By tasks** (each day's tasks). Standard week and By shifts are set on the company, on a branch or on a person; By tasks, only on a person. **By shifts** used to be called *Calendar*. See [By shifts: the schedule is the shifts you load](../04-calendar-and-schedules/114-shift-calendar-by-date.md).
 
 ### Schedule template
 Saved copy of a weekly schedule that is then applied to another branch, to an employee or to the organisation, so as not to configure it day by day. It used to be called a *calendar preset*.

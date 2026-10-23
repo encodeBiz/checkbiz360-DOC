@@ -1,7 +1,7 @@
 # TDR-009: tres modos, y cada uno enseña y aplica solo lo suyo
 
 **Fecha:** 2026-10-22 (noche)
-**Estado:** Diseño cerrado con Jose el 2026-10-22. Sin implementar.
+**Estado:** En producción desde el 2026-10-22 (noche): API `main` 869cc51, cinco funciones, merlin #222 y panel #119. Registro en `deployment-prod/proximo-pase-back.md` §16 ter.
 **Componente:** `encodebiz-api`: `packages/shared` (resolutores), `services/checkinbiz` (`/calendar/days`, `GET /calendar`, fichaje), `services/merlin` (cuadrantes), `services/assistant`; `encodebiz-front-saas` (selector, Editar, ficha)
 **Sustituye:** la regla de la semana del [TDR-008](./TDR-008-el-cuadrante-son-los-turnos.md) (§2, §3, §4.2, §4.4, §4.5 y §6); lo que se enumera en el §8
 **Decisión de referencia:** [README](../README.md), D14

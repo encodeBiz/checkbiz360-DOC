@@ -19,6 +19,11 @@ Each new version of CheckBiz360 may include:
 
 Some features depend on the version installed. If an employee cannot see one of them, the first thing to check is that their app is up to date.
 
+### Version 1.10.0
+
+- **My calendar**, in the menu, under **Tools**: the person's month, with work days, days off, public holidays and their absences. From there they request vacation or leave, and get a notification when the company approves or rejects it. See [Vacation and leave from the app](../04-calendar-and-schedules/115-vacation-and-leave-from-the-app.md).
+- **The reason for the non-working day**: on the Attendance screen, the schedule box says **Non-working day** and the reason appears below the day's figures in a highlighted label: "Vacation", "Leave" or the name of the public holiday. See [Public holidays and non-working days](../04-calendar-and-schedules/29-public-holidays-and-non-working-days.md).
+
 ### Version 1.4.0
 
 - **Pausing and resuming tasks** from the task record. Pause appears once the workday has been clocked in; resume requires the same as starting.

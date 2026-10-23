@@ -4,7 +4,7 @@ El horario base define cuándo se espera que un empleado esté presente en su pu
 
 ---
 
-> **Tres formas de organizar el horario.** En **Horarios y festivos**, el apartado **Cómo se organiza el horario** elige entre **Horario semanal**, la semana tipo que describe este artículo; **Horario por tareas**, donde cada tarea del día es un turno; y **Calendario**, donde los turnos se cargan fecha a fecha. Si cada semana es distinta, consulte [Calendario: turnos cargados por fecha](114-calendario-de-turnos-por-fecha.md).
+> **Tres formas de organizar el horario.** En **Horarios y festivos**, el apartado **Cómo se organiza el horario** elige entre **Semana tipo**, la que describe este artículo, igual todas las semanas; **Por turnos**, donde el horario son los turnos que se cargan semana a semana; y **Por tareas**, donde cada tarea del día es un turno. El horario semanal de este artículo solo se ve y solo cuenta en **Semana tipo**. Si cada semana es distinta, consulte [Por turnos: el horario son los turnos que usted carga](114-calendario-de-turnos-por-fecha.md).
 
 ## Qué es un horario base
 
@@ -123,4 +123,4 @@ Es la vía práctica para dar de alta una sucursal nueva con el horario de las d
 - [Jornada estricta y jornada flexible](28-horario-flexible.md)
 - [Festivos y días no laborables](29-festivos-y-dias-no-laborables.md)
 - [Tablero de disponibilidad](98-tablero-de-disponibilidad.md)
-- [Calendario: turnos cargados por fecha](114-calendario-de-turnos-por-fecha.md)
+- [Por turnos: el horario son los turnos que usted carga](114-calendario-de-turnos-por-fecha.md)

@@ -90,19 +90,29 @@ Cuánta gente tiene disponible cada día y en cada centro, y quién falta un dí
 - **Desde cero**, dictándole los servicios.
 - **Desde un documento**: el cuadrante que imprime su programa de gestión, un Excel, una foto del papel. El asistente lo lee, reconoce a su gente y lo convierte en la semana de cada persona.
 
-En los tres casos le enseña la propuesta persona por persona, con los avisos que conviene mirar (dos servicios que se solapan, un día que es festivo para alguien), y un enlace a un Excel con todo para revisarlo con calma. Cada persona recibe su semana en el móvil, con sus horarios y la dirección de cada servicio, solo cuando usted confirma.
+Lo que se carga a cada persona lo decide su [modo del horario](../04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md#los-tres-modos-del-horario), como en el [importador del cuadrante](../04-calendario-y-horarios/108-importar-el-cuadrante-semanal.md):
 
-No hay límite de tareas: si el cuadrante es muy grande, el asistente lo carga por partes y usted confirma una sola vez al final. Si la semana cambia, pídale que la proponga otra vez con la versión buena: lo que ya estaba se actualiza y no se duplica nada. Los servicios que la persona ya había empezado se quedan.
+- A quien está **Por turnos**, sus turnos de la semana, sin crear ni tocar ninguna tarea.
+- A quien está **Por tareas**, sus servicios como tareas, que sustituyen su semana. Los que la persona ya había empezado se quedan.
+- A quien está en **Semana tipo** no se le sube nada: el asistente se lo dice, y para cargarle la semana hay que cambiarle antes el modo.
 
-### Cargar turnos por fecha
+En los tres casos le enseña la propuesta persona por persona, con los avisos que conviene mirar (dos servicios que se solapan, un día que es festivo para alguien), y un enlace a un Excel con todo para revisarlo con calma. Cada persona que entra en la propuesta va con su semana entera: los días sin turnos libran, y a quien no está en la propuesta no se le toca. Cada persona recibe su semana en el móvil solo cuando usted confirma.
 
-Si una sucursal está en el modo [Calendario](../04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md), el asistente le carga los turnos de cada persona fecha a fecha, sin crear tareas: «a Marta y a Luis, de 7 a 15 de lunes a jueves de la semana que viene; el viernes libran». Le enseña cada día con lo que había y lo que quedará, y los festivos o ausencias que caen en medio, y escribe cuando usted confirma. Si a alguien no se le puede cargar, le dice por qué.
+No hay límite: si el cuadrante es muy grande, el asistente lo carga por partes y usted confirma una sola vez al final. Si la semana cambia, pídale que la proponga otra vez con la versión buena: lo que ya estaba se sustituye y no se duplica nada.
 
-También le enseña la semana de quien está en Calendario, distinguiendo un día **libre** de uno **sin cargar**. Si lo que quiere son turnos con tareas dentro, pídale el cuadrante como en el apartado anterior: crea las tareas y, en Calendario, también el turno de cada día. Si no le queda claro cuál de las dos cosas quiere, se lo pregunta.
+### Cargar turnos en días concretos
+
+A quien está [Por turnos](../04-calendario-y-horarios/114-calendario-de-turnos-por-fecha.md), el asistente le carga los turnos de los días que le diga, de una semana o de varias, sin crear, mover ni borrar ninguna tarea: «a Marta y a Luis, de 7 a 15 de lunes a jueves de la semana que viene; el viernes libran». Cada día que le manda sustituye lo que hubiera ese día; los demás siguen como estaban. Le enseña cada día con lo que había y lo que quedará, y los festivos o ausencias que caen en medio, y escribe cuando usted confirma. No carga días pasados.
+
+Si alguien está en **Semana tipo**, no le carga turnos: le propone pasarlo antes a **Por turnos**. Si está **Por tareas**, solo lo pasa a **Por turnos** si usted se lo pide expresamente; sus tareas se quedan, y le avisa de las que caerían fuera de los turnos.
+
+### Ver la semana de cualquier fecha
+
+Pídale la semana de una persona o de una sucursal, de la fecha que quiera. Se la enseña según el modo de cada persona: su semana tipo, sus turnos cargados (marcando los días sin cargar, que libran) o sus tareas, con los festivos y las ausencias.
 
 ### Cambios sueltos
 
-Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarla. También cambiar la semana tipo de alguien, o pasar a una persona o a una sucursal entera al modo Calendario y devolverla al horario semanal. Antes de tocar nada le enseña el antes y el después y espera su sí.
+Crear una tarea, moverla de día o de hora, pasársela a otra persona, cancelarla. También cambiar la semana tipo de alguien que está en **Semana tipo**, o cambiar el modo del horario: **Semana tipo** o **Por turnos** a una persona o a una sucursal entera, y **Por tareas** a una persona. Si alguien tiene tareas que no encajan en **Por tareas** (sin hora de inicio, de varios días o solapadas), no lo cambia y le dice cuántas. Antes de tocar nada le enseña el antes y el después y espera su sí.
 
 ### Dar de alta gente y centros
 

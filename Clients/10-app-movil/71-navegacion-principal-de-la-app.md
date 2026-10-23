@@ -35,7 +35,11 @@ Desde la versión 1.3.2, la pantalla se organiza en tarjetas:
 - **Información laboral**: sucursal, horario del día —un turno por línea— y descanso. Con descanso estricto se muestran los minutos; con descanso flexible, «Flexible».
 - **Tareas de hoy**.
 
-Si hoy no es día laborable para el empleado, la tarjeta lo indica —distinguiendo un festivo de un día libre— y el fichaje explica por qué no se puede fichar y que, si trabajó, puede pedir una jornada manual.
+Si hoy no es día laborable para el empleado, la tarjeta lo indica —distinguiendo un festivo de un día libre— y el fichaje explica por qué no se puede fichar y que, si trabajó, puede pedir una jornada manual. **Desde la versión 1.10.0**, la casilla del horario dice **No laborable** y debajo de las cifras del día sale el motivo en una etiqueta destacada: «Vacaciones», «Permiso» o el nombre del festivo, tal y como se llama ese día en el calendario. Ver [Festivos y días no laborables](../04-calendario-y-horarios/29-festivos-y-dias-no-laborables.md).
+
+### Mi calendario
+
+**Desde la versión 1.10.0**, el menú lateral tiene, dentro de **Herramientas**, la opción **Mi calendario**: el mes de la persona, con los días de trabajo, los libres, los festivos y sus ausencias. Desde ahí pide vacaciones o un permiso, y recibe un aviso cuando la empresa lo aprueba o lo rechaza. Ver [Vacaciones y permisos desde la app](../04-calendario-y-horarios/115-vacaciones-y-permisos-desde-la-app.md).
 
 > **Aviso:** Para realizar un fichaje es imprescindible contar con conexión a internet activa y el GPS habilitado. Sin estos elementos, el fichaje no podrá completarse.
 

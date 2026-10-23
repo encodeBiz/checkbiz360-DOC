@@ -29,9 +29,9 @@ If the rotation is irregular, configure the schedule on the **employee's** recor
 
 It is more flexible, but it requires maintaining the change by hand on each cycle and for each person.
 
-### Option 3: the Calendar mode (planned rotation)
+### Option 3: the By shifts mode (planned rotation)
 
-If you plan the weeks in advance, put the branch on the **Calendar** mode and load each person's shifts date by date. **Copy to next week** repeats a week and then you adjust whatever changes, and the roster importer loads a whole month from Excel. The cycle is not generated on its own, but there is no schedule to change when moving from one week to the next. See [Calendar: shifts loaded by date](114-shift-calendar-by-date.md).
+If you plan the weeks in advance, put the branch on the **By shifts** mode and load each person's shifts week by week. **Copy to next week** repeats a week and then you adjust whatever changes, and the roster importer loads the whole branch's week from Excel. The cycle is not generated on its own, but there is no schedule to change when moving from one week to the next. Bear in mind that, **By shifts**, a week with nothing loaded is off entirely. See [By shifts: the schedule is the shifts you load](114-shift-calendar-by-date.md).
 
 > **Warning:** in the first two options, change the schedule **before** the new cycle starts. Every clock record is validated against the effective calendar in force at that moment; updating the schedule afterwards does not re-evaluate records already stored.
 

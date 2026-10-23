@@ -29,9 +29,9 @@ Si la rotación es irregular, configure el horario en la ficha del **empleado** 
 
 Es más flexible, pero exige mantener el cambio a mano en cada ciclo y para cada persona.
 
-### Opción 3: el modo Calendario (rotación planificada)
+### Opción 3: el modo Por turnos (rotación planificada)
 
-Si planifica las semanas por adelantado, ponga la sucursal en el modo **Calendario** y cargue los turnos de cada persona fecha a fecha. **Copiar a la semana siguiente** repite una semana y después se retoca lo que cambie, y el importador del cuadrante carga un mes entero desde Excel. El ciclo no se genera solo, pero no hay que cambiar ningún horario al pasar de una semana a otra. Ver [Calendario: turnos cargados por fecha](114-calendario-de-turnos-por-fecha.md).
+Si planifica las semanas por adelantado, ponga la sucursal en el modo **Por turnos** y cargue los turnos de cada persona semana a semana. **Copiar a la semana siguiente** repite una semana y después se retoca lo que cambie, y el importador del cuadrante carga la semana de toda la sucursal desde Excel. El ciclo no se genera solo, pero no hay que cambiar ningún horario al pasar de una semana a otra. Tenga en cuenta que en **Por turnos** una semana sin cargar libra entera. Ver [Por turnos: el horario son los turnos que usted carga](114-calendario-de-turnos-por-fecha.md).
 
 > **Aviso:** en las dos primeras opciones, cambie el horario **antes** de que empiece el ciclo nuevo. Cada fichaje se valida contra el calendario efectivo vigente en ese momento; actualizar el horario después no reevalúa los fichajes ya registrados.
 

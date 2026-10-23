@@ -1,6 +1,6 @@
 # Acompanhamento e resolução de incidências
 
-Depois de criada, a incidência vive na secção **Incidências** do backoffice até ser resolvida. Este artigo descreve os seus estados, como se responde e o que fica registado.
+Depois de criada, a incidência vive em **Contacto**, separador **Incidentes**, do backoffice até ser resolvida. Este artigo descreve os seus estados, como se responde e o que fica registado.
 
 Recorde que as incidências são um canal **interno da sua organização**. Para problemas da plataforma, o canal é o apoio da EncodeBiz: consulte [Contactar o apoio técnico](./87-contactar-o-apoio-tecnico.md).
 
@@ -26,7 +26,7 @@ O estado é alterado de duas formas: editando a incidência, ou **ao responder**
 
 O acompanhamento faz-se através de respostas. Cada resposta fica no fio, com o seu autor e a sua data, e pode ainda mover o estado.
 
-1. Aceda a **Incidências** no menu lateral.
+1. Aceda a **Contacto** no menu lateral e fique no separador **Incidentes**.
 2. Localize a incidência com os filtros de estado, sucursal ou funcionário.
 3. Abra o seu detalhe.
 4. Prima **Responder**.

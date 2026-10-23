@@ -1,7 +1,7 @@
 # TDR-002 — El selector del modo en el panel
 
 **Fecha:** 2026-10-16
-**Estado:** Implementado el 2026-10-16 y fusionado a `develop` de `encodebiz-front-saas` el mismo día. Typecheck en verde; sin probar en navegador.
+**Estado:** En producción desde el 2026-10-17 (pase §1.10). El selector de dos opciones lo sustituye el de tres modos del [TDR-009](./TDR-009-tres-modos-cada-uno-lo-suyo.md), en prod desde el 2026-10-22 (panel #119).
 **Componente:** `encodebiz-front-saas` — `checkinbiz/calendar/components/CalendarSection.tsx`, `EntityCalendarTab.tsx`, `branch/form/form.controller.tsx`, `employee/form/form.controller.tsx`
 **Decisiones de referencia:** [README](../README.md) D1; [TDR-001](./TDR-001-modo-dias-generados-y-escritor.md) §2
 

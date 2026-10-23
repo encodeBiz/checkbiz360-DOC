@@ -3,7 +3,7 @@
 **Proyecto:** encodeBiz SaaS
 **Dominio:** checkinbiz — Calendario (ausencias) · checkbiz360 — «Mi calendario» · panel — Contacto → Solicitudes
 **Fecha de inicio:** 2026-10-22
-**Estado:** Diseño cerrado el 2026-10-22 · implementado el mismo día: servidor en producción (PR #212), app y panel en `develop`
+**Estado:** Diseño cerrado el 2026-10-22 · implementado el mismo día: servidor en producción (PR #212), panel en producción (Contacto → Solicitudes, PR #118) y app en `master` 1.10.0+68, publicada en tiendas
 **Autor:** Jose Acevedo
 
 ---
