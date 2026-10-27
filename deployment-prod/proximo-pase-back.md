@@ -887,7 +887,7 @@ QA en staging: TSK-19 (5) y HPT-17 (3) nuevos; 46-49 y 54 en verde (64). Funció
 ["assigned"]`). Panel: rama en `develop` del front (6f532407); PR #121 contra `main` **sin
 fusionar** hasta que Jose lo pruebe en local.
 
-## 18. Tareas con responsable: ser gestor no exime — API EN PROD el 2026-10-27 12:57 UTC (hotfix #227); panel con el PR #121
+## 18. Tareas con responsable: ser gestor no exime — API EN PROD el 2026-10-27 12:57 UTC (hotfix #227); panel EN PROD el 27-oct (PR #121)
 
 Diseño: [tasks-service/09_encargada](../ingenieria/tasks-service/09_encargada.md). Visto en prod
 el 27-oct (tarea «Prueba», Encodebiz): un gestor asignado, que no era el responsable, la inició.
@@ -897,7 +897,7 @@ para quien no está asignado. En «Por tareas», el fichaje de otra asignada sol
 | # | Qué | Cómo |
 |---|---|---|
 | 18.1 | Contenedor `tasks` | **HECHO 2026-10-27 12:57 UTC**, orden de Jose («mete esto por hotfix y despliega sin ci»): `hotfix/responsable-solo-ella` desde `main`, PR #227 `[skip ci]`, en `/opt/encodebiz-api` `git pull --ff-only` (0a9b6b9) + `up -d --build --no-deps tasks` + `restart nginx`. `tasks` healthy, «Listening on :3006», la API responde por nginx (sin 502). En `develop` (313a668) |
-| 18.2 | Panel: «Responsable» en vez de «Encargada» | commit añadido al PR #121 (`fix/politica-de-terminacion`, 1be97a40), que lleva el selector y sigue PENDIENTE de fusionar a `main`; en `develop` del front (f99f8bad) |
+| 18.2 | Panel: «Responsable» en vez de «Encargada» | **HECHO 2026-10-27**, orden de Jose («listo despliega el panel»): PR #121 (selector de quién termina + «Responsable») fusionado a `main` (a239c317), Vercel en verde. En `develop` del front (f99f8bad) |
 | 18.3 | QA | TSK-19 (incluido 19-06) y HPT-17: PENDIENTE de pasar en staging (staging aún no tiene el cambio) |
 | 18.4 | App, siguiente versión | esconder botones a quien no es responsable; mostrar `task/responsible_only`; «Tu parte está hecha» si la tarea no se cierra |
 
