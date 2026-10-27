@@ -58,8 +58,8 @@ sigue siendo `responsible_worker` / `responsibleEmployeeId`.
 
 ## La app (pendiente, siguiente versión)
 
-- Esconder Iniciar, Pausar, Reanudar y Terminar a quien no es la encargada.
-- Mostrar `task/responsible_only` («Esta tarea tiene encargada: solo ella puede iniciarla,
-  pausarla o completarla») en vez de tragárselo.
+- Esconder Iniciar, Pausar, Reanudar y Terminar a quien no es la persona responsable.
+- Mostrar `task/responsible_only` («Esta tarea tiene una persona responsable: solo ella puede
+  iniciarla, pausarla o completarla») en vez de tragárselo.
 - Si al terminar la tarea sigue sin cerrarse (`status` distinto de `completed`), decir «Tu parte
   está hecha», no «Tarea completada».
