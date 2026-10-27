@@ -823,6 +823,84 @@ un cuadrante sin cambios ya no avisa (también arregla el resumen por correo).
 | 17.3 | Comprobar | crear una tarea a mano para alguien con la app: un aviso en ~1-2 min; `push_digest` vacío después |
 | 17.4 | App, siguiente versión | `checkbiz_tasks` + `screen: task_list` → listado de tareas en `notification_navigation_handler.dart`. Sin ella el aviso agrupado se ve, pero al tocarlo solo abre la app |
 
+## 18. Borrar una sucursal con tareas abiertas — EJECUTADO el 2026-10-26 (orden de Jose: «sí, recuerda sin CI»)
+
+Ramas `hotfix/borrar-sucursal-con-tareas` en la API (67b8142) y en el panel (b838f452).
+El 26-oct un borrado de dos sucursales en Ayudarte (`OPnlEi3npBbLDyKa4wTj`, una prueba) dejó
+306 tareas abiertas colgando de centros inexistentes. `onTaskDay` resuelve el calendario con la
+sucursal de la tarea, falla sin decir nada, y los días y **499 alarmas de noviembre** seguían
+vivos. Reparado a mano ese día en prod: tareas a `draft` sin `scheduledStartNotificationAt`,
+alarmas a `inactive` (`metadata.disabledReason: branch_deleted`), sin enviar ningún push.
+
+Ahora `DELETE /api/v1/branches` con tareas en borrador, asignadas o en curso devuelve 409
+`branch/has_open_tasks`. El panel pregunta: a borrador en otra sucursal, cancelar (avisa a los
+asignados) o no borrar. Rutas nuevas de tareas: `GET/POST /api/v1/tasks/system/branch-open|branch-close`.
+
+**Orden: la API antes que el panel.** Con la API nueva y el panel viejo, el borrado se para con
+un error en inglés, que es seguro. Al revés, el panel manda campos que la API vieja ignora.
+
+| # | Qué | Cómo |
+|---|---|---|
+| 18.1 | Contenedores `tasks` y `branches` | `build --no-deps tasks branches` + reiniciar nginx |
+| 18.2 | Panel | PR del hotfix contra `main` del front (Vercel) |
+| 18.3 | Comprobar | borrar una sucursal de prueba con una tarea asignada: aparece el aviso; a borrador → la tarea está en el destino |
+| 18.4 | Llevar a `develop` | cherry-pick de los dos commits |
+
+**Hecho, sin CI:** API en `develop` (a173fe5), `staging` (30fd50e) y `main` (#225, 437ae9f), con
+`[skip ci]`. Staging y prod reconstruidos a mano (`build --no-deps tasks branches` + nginx).
+QA contra staging: SUC-06 (4 casos nuevos), 36, 54 y 55 en verde (47). En prod,
+`branches → tasks /system/branch-open` contesta 200 con la clave. Panel: #120 en `main`
+(1f67b960), Vercel publicado; `develop` y `staging` del front también. Falta la prueba de
+Jose desde el panel.
+
+Queda fuera del hotfix: `onTaskDay` debería resolver con la sucursal actual de la persona, no
+con la de la tarea; el aviso de «no iniciada» sale también para borradores con asignados
+(`findPendingStartNotifications`); la Cloud Function antigua `deleteBranch` sigue sin bloqueo
+(el panel ya no la usa).
+
+## 19. Quién da la tarea por terminada, con encargada — API EN PRODUCCIÓN el 2026-10-26; panel pendiente de la prueba de Jose
+
+Salió de «Formación PRL» en Ayudarte (13 asignadas, la primera que completó la cerró para
+todas). La API ya aplicaba «todas» desde el 13-sep, pero el panel no dejaba elegir y al editar
+devolvía cualquier tarea a «basta con una». Ahora el formulario ofrece **basta con una / todas /
+una encargada** (buscador entre las asignadas). Con encargada, solo ella inicia, pausa y completa
+desde la app (403 `task/responsible_only` al resto) y al completar la cierra para todas; la gestión
+puede siempre. **Horario por tareas:** el fichaje queda fuera de la regla; la Salida de la
+encargada cierra la tarea, la de las demás solo su parte. La encargada tiene que estar asignada y
+no se la puede quitar sin elegir otra.
+
+De paso: el aviso de «no iniciada» ya no sale para borradores (`findPendingStartNotifications`
+solo `assigned`), que avisaba en las tareas reabiertas o de sucursales borradas.
+
+QA en staging: TSK-19 (5) y HPT-17 (3) nuevos; 46-49 y 54 en verde (64). Función
+`taskStartNotificationWorker` ya desplegada en dev.
+
+| # | Qué | Cómo |
+|---|---|---|
+| 19.1 | Contenedor `tasks` | `build --no-deps tasks` + reiniciar nginx |
+| 19.2 | Función `taskStartNotificationWorker` | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo taskStartNotificationWorker` desde la rama (con `shared` compilado de la rama) |
+| 19.3 | Panel | PR `fix/politica-de-terminacion` del front contra `main` |
+| 19.4 | App, siguiente versión | esconder Iniciar/Pausar/Completar a quien no es la encargada; hoy le sale el error del servidor |
+
+**Hecho, sin CI:** API #226 en `main` (5016e5c), `tasks` reconstruido en prod + nginx, sano.
+`taskStartNotificationWorker` desplegada en `encodebiz-services` (paquete con `status in
+["assigned"]`). Panel: rama en `develop` del front (6f532407); PR #121 contra `main` **sin
+fusionar** hasta que Jose lo pruebe en local.
+
+## 18. Tareas con responsable: ser gestor no exime — PENDIENTE (ramas `fix/encargada-solo-ella` API y `fix/etiquetas-responsable` front, 2026-10-27)
+
+Diseño: [tasks-service/09_encargada](../ingenieria/tasks-service/09_encargada.md). Visto en prod
+el 27-oct (tarea «Prueba», Encodebiz): un gestor asignado, que no era el responsable, la inició.
+Ahora solo la persona responsable la inicia, pausa y completa; la excepción de gestión vale solo
+para quien no está asignado. En «Por tareas», el fichaje de otra asignada solo mueve su parte.
+
+| # | Qué | Cómo |
+|---|---|---|
+| 18.1 | Contenedor `tasks` | con el pase de la API, `build --no-deps tasks` |
+| 18.2 | Panel: «Responsable» en vez de «Encargada» | PR del front a `main` (Vercel) |
+| 18.3 | QA | TSK-19 (incluido 19-06) y HPT-17 en staging antes |
+| 18.4 | App, siguiente versión | esconder botones a quien no es responsable; mostrar `task/responsible_only`; «Tu parte está hecha» si la tarea no se cierra |
+
 ## 6. Firebase: un solo origen para las funciones — PENDIENTE (Jose: «ahora no»)
 
 Comprobado el 2026-10-17 con `gcloud functions describe`: el código de las funciones está
