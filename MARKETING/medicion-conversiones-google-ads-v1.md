@@ -76,7 +76,7 @@ Objetivo: que Google Ads reciba el lead desde la fuente de verdad, sin depender 
 
 ### 3.3 Landing (prioridad 2)
 
-- Persistir `gclid`/`gbraid`/`wbraid` mas alla de la pestana (almacenamiento propio con caducidad de 90 dias) **solo con consentimiento de marketing**. Hoy se pierde al cerrar la pestana.
+- ~~Persistir `gclid`/`gbraid`/`wbraid` mas alla de la pestana~~ **Hecho el 2026-10-29** (`rememberAdClick()` en `src/lib/leads.ts`): se guardan en `localStorage` (`cb360:click`) 90 dias desde el clic, solo con consentimiento de marketing, y se borran al retirarlo. Si la visita no trae clic propio, el lead sale con el guardado y `metadata.clickIdFromEarlierVisit: true`. Pendiente fuera del codigo: anadir `cb360:click` a la politica de cookies de encodebiz.com. Comprobado tambien que las redirecciones (sin www, sin barra final, http) conservan el `gclid`.
 - `vp()` toma el primer cookie que empieza por `_ga_`; si conviven varias propiedades puede leer la equivocada. Leer `_ga_WEYR0DSWBP`.
 
 ### 3.4 GTM (prioridad 2, requiere aprobacion antes de publicar)

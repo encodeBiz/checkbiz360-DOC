@@ -135,3 +135,22 @@ Con 1-2 conversiones al mes, "Maximizar conversiones" no tiene senal para aprend
 ### Por que el grupo SAD es tan pequeno
 
 Las ideas del Planificador a partir de /sad/ tienen volumen alto pero intencion equivocada: "ayuda a domicilio" (2.400), "servicio de ayuda a domicilio" (1.000), "empresas de ayuda a domicilio" (880) o "auxiliar de ayuda a domicilio" (480) las buscan familias que contratan el servicio o personas que buscan empleo. No se pujan. Busquedas operativas como cuadrantes, fichaje o planificacion de ayuda a domicilio no tienen volumen medible. "gesad" (320) es la marca de un ERP del sector: casi todo es navegacional de sus usuarios y el brief prohibe presentarnos como sustitutos; no se puja.
+
+## 10. Revision del 2026-10-28 (pendiente de aplicar en la cuenta)
+
+Propuesta del informe semanal del 2026-10-28, contrastada con la regla del punto 1. Pendiente de aplicar en Google Ads; al aplicarla, anotar la fecha aqui.
+
+Negativas a nivel de campana:
+
+- Exacta: [ayuda a domicilio]. Busca el servicio (punto 9); no bloquea "software ayuda a domicilio".
+- Frase: "gestion administrativa", "media markt", "papel", "seneca", "séneca", "maquina", "máquina". Las negativas no recogen variantes: con y sin tilde van por separado.
+- Frase, plantillas: "plantilla excel", "plantillas excel", "plantilla gratis", "plantillas gratis", "plantilla word". **No** la palabra suelta "plantilla": tambien significa los empleados de la empresa y bloquearia "app gestion de plantilla" o "control de plantilla", que son compra. Si la "plantilla" del punto 6 llego a aplicarse, quitarla.
+- Frase, marcas de la competencia (navegacional, punto 1): "adeplus", "wise lynx", "supershift", "shifter", "gesad", "evertime", "lomaxim", "beep time", "beetime", "osirisapp", "zerocontrol", "timebutler", "orquest", "tweem", "skello", "fieldwire", "ctaima".
+
+Pausas (concordancia amplia, contraria al punto 4; pendientes desde el 2026-10-26):
+
+- "app ordenes de trabajo" (20,42 EUR en 7 dias). "Ordenes de trabajo" es tarea concreta del punto 1: se pausa la amplia y se anaden [app ordenes de trabajo] y [software ordenes de trabajo] como exactas en el grupo Partes de trabajo.
+- "app para operarios": pausar. Solo vuelve como exacta si en sus terminos aparece alguno de compra.
+- "gestion de personal en una empresa" y "rentman": la pausa ya propuesta en el punto 5 y no aplicada el 2026-10-12.
+
+Antes de fiarse de las conversiones de esta revision: la conversion de GTM-MRQR78CK cuelga de `gtm.linkClick` y cuenta dos veces la visita que toca WhatsApp y formulario (ver [medicion](medicion-conversiones-google-ads-v1.md)). Repuntarla a `landing_whatsapp_click` y `landing_generate_lead_browser` va antes que cualquier cambio de puja.
