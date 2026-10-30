@@ -234,7 +234,12 @@ Widget: `lib/features/task/presentation/widgets/task_description_markdown.dart` 
 - **Sin impacto en SPM:** tanto `flutter_markdown_plus` como `markdown` son paquetes Dart puros (sin bloque `plugin:`, sin `ios/`/`android/`). No añaden dependencias nativas ni tocan la resolución de Swift Package Manager.
 - **Checklists:** corrección respecto a lo que decía antes este doc — el paquete `markdown` 7.x **sí** parsea `- [ ]` / `- [x]` cuando el `ExtensionSet` incluye `UnorderedListWithCheckboxSyntax` / `OrderedListWithCheckboxSyntax` (van dentro de `gitHubFlavored`, que es el set por defecto). El builder propio solo hace falta para el **aspecto** del checkbox, no para que aparezca.
 - **Nunca renderizar como HTML:** se usa un `ExtensionSet` propio que **excluye `InlineHtmlSyntax`**, así cualquier etiqueta que escriba el usuario (`<b>`, `<script>`…) se queda como texto literal en vez de interpretarse. Cubierto por test.
-- **Solo lectura:** los checks son parte del texto de la descripción, no un estado persistido. Se pintan no interactivos; marcarlos **no** cambiaría nada en el servidor. El avance de la tarea se sigue reportando con los cambios de estado y las notas/evidencias.
+- **Casillas marcables (TDR-008, pendiente en la app):** hasta ahora se pintaban no interactivas. Pasan a ser pulsables: la marca vive en el propio texto y se guarda con `PATCH /:taskId/description`. Al pulsar, la app cambia `[ ]`↔`[x]` **solo en esa línea** del texto que está enseñando y manda `{entityId, baseDescription: <texto enseñado>, description: <texto nuevo>}`. Pinta el cambio al momento y:
+  - `200` → sustituye la tarea por la respuesta.
+  - `409 task/description_conflict` → la lista había cambiado (otra persona o el gestor): pone la `description` de la respuesta y avisa; el trabajador repite el gesto si hace falta.
+  - `409 task/description_locked` o cualquier otro error → deshace la marca.
+  - Con la tarea en `completed`, `validated` o `cancelled`, casillas sin pulsar.
+  - La app nunca cambia otra cosa del texto por este endpoint: el servidor lo rechaza (`403 task/description_checklist_only`).
 - **Enlaces:** se abren con `url_launcher` en app externa y solo si el esquema es `http`, `https` o `mailto`; si no, snackbar de error (`taskDescriptionLinkOpenError`, en es/en/de/pt).
 - **Estilos:** el `MarkdownStyleSheet` se deriva del design system (`semanticColors`, tokens de spacing/radius), no de los valores por defecto del paquete.
 - **Edición desde móvil:** el formulario de crear/editar tarea sigue con un `TextField` plano. Es correcto y no destructivo — guarda el Markdown tal cual lo escribió el back office.

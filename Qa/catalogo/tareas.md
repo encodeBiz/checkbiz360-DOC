@@ -1022,6 +1022,21 @@ Estados: `draft`, `assigned`, `in_progress`, `completed`, `validated`, `rejected
 
 ---
 
+## PATCH /api/v1/tasks/:taskId/description  ·  TSK-22
+
+Casillas de la descripción que marca el trabajador ([TDR-008](../../ingenieria/tasks-service/tdr/TDR-008-descripcion-y-casillas-marcables.md)). Automatizado en `qa/tests/con-datos/57-tareas-casillas.spec.ts`.
+
+| Caso | Qué se comprueba | Esperado |
+|---|---|---|
+| TSK-22-01 | La asignada marca una casilla | 200; `description_updated` con `checklistOnly: true` y `changes: [{index, line, text, from, to}]`, `before`, `after` |
+| TSK-22-02 | Base vieja (otra ya marcó) | 409 `task/description_conflict` con la `description` actual |
+| TSK-22-03 | La asignada cambia una letra | 403 `task/description_checklist_only` |
+| TSK-22-04 | Trabajadora no asignada | 403 |
+| TSK-22-05 | La gestora cambia el texto | 200; `checklistOnly: false` con antes y después |
+| TSK-22-06 | `PATCH /:taskId` general cambia una casilla | también deja `description_updated` con la casilla |
+| TSK-22-07 | Mismo texto que el guardado | 200 sin actividad nueva |
+| TSK-22-08 | Tarea cancelada, la asignada marca | 409 `task/description_locked` |
+
 ## Resumen
 - Endpoints: 19 (18 rutas de routers y `/health`), más un bloque transversal (TSK-20).
   - Consumidos por clientes: 14. Por el panel, 11: TSK-02, 05, 06, 09, 10, 11, 12, 14, 15, 16 y 17. Por la app, 12: TSK-02, 05, 07, 08, 09, 10, 11, 12, 14, 15, 16 y 17. Por S2S, 1: TSK-18.

@@ -57,6 +57,14 @@ Body: campos editables (`title`, `description`, `priority`, `scheduledStartAt`, 
 `workSite: null` borra la geocerca de la tarea.
 Efectos: `update` + actividad `updated`. `200` → `TaskDetail`.
 
+### `PATCH /:taskId/description` — cambiar la descripción
+Permiso: `canManageTask` cambia cualquier cosa; `canOperateAssignedTask` solo el estado de las casillas (`- [ ]` ↔ `- [x]`) y con la tarea abierta.
+Body: `entityId`, `baseDescription` (el texto que tenía el cliente), `description` (el nuevo).
+Efectos: en una transacción, comprueba la base, aplica y apunta la actividad `description_updated` con `before`, `after` y `changes` (qué casilla, de qué a qué). Marcar casillas no avisa por push; cambiar el texto sí. Evento `task.updated` con `changed_fields: ["description"]`.
+`200` → la tarea (`Task`, como devuelve hoy `PATCH /:taskId`). `403 task/description_checklist_only` cambió más que casillas sin ser gestor. `409 task/description_conflict` la base no coincide (trae `description` actual). `409 task/description_locked` tarea cerrada para quien no es gestor. Diseño en [TDR-008](./tdr/TDR-008-descripcion-y-casillas-marcables.md).
+
+El `PATCH /:taskId` general también apunta `description_updated` cuando cambia la descripción.
+
 ### `DELETE /:taskId` — eliminar tarea
 Permiso: `canManageTask`.
 Query o body: `entityId`.
