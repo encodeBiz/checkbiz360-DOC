@@ -144,6 +144,13 @@ había cambiado; con otro error, deshace. Con la tarea cerrada, casillas sin pul
 *texto*» por cada entrada de `changes`, y «editó la descripción» cuando `checklistOnly` es
 falso. La edición de la descripción puede seguir por el PATCH general (deja el mismo rastro).
 
+**Historial: el mismo en los dos.** La app enseña a la trabajadora el mismo historial que el
+panel a la gestora, entrada por entrada: mismos tipos (ciclo de vida, pausas, intentos
+rechazados fuera del lugar de trabajo y `description_updated`), mismos títulos y las mismas
+notas (motivo de pausa, «Pausa de X», motivo de validación o cancelación, una línea por
+casilla). Si se toca uno, se toca el otro. Tras marcar, la app vuelve a traer la actividad
+para que la entrada salga sin salir de la ficha.
+
 **Manual.** La nota «las casillas no son un estado guardado» de *Crear una tarea* (ES/EN/PT)
 se cambia **cuando la app que las marca esté publicada**; antes sería falsa.
 
