@@ -1036,6 +1036,7 @@ Casillas de la descripción que marca el trabajador ([TDR-008](../../ingenieria/
 | TSK-22-06 | `PATCH /:taskId` general cambia una casilla | también deja `description_updated` con la casilla |
 | TSK-22-07 | Mismo texto que el guardado | 200 sin actividad nueva |
 | TSK-22-08 | Tarea cancelada, la asignada marca | 409 `task/description_locked` |
+| TSK-22-09 | Duplicar una tarea con casillas marcadas | la copia lleva la descripción con todas en `[ ]` |
 
 ## Resumen
 - Endpoints: 19 (18 rutas de routers y `/health`), más un bloque transversal (TSK-20).

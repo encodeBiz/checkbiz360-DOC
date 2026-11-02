@@ -112,6 +112,12 @@ Actividad nueva `description_updated` con:
 - Si cambia el texto (lo hace un gestor), se avisa como en el PATCH general.
 - El evento `task.updated` sale en los dos casos con `changed_fields: ["description"]`.
 
+### D6. Al duplicar, las casillas salen sin marcar
+
+`POST /:taskId/duplicate` copia el encargo, no su ejecución: la descripción viaja con todas
+las casillas en `[ ]`. Lo marcado es de la vez anterior, como las evidencias o el historial.
+El resto del texto (y lo que haya dentro de un bloque de código) queda igual.
+
 ## 3. Contrato
 
 `PATCH /:taskId/description`
