@@ -740,7 +740,24 @@ explícito y con autorización de Jose.
 | 15.0 | Estado | En `staging` de API y panel el 22-oct, QA 54+55 28/28. Sin Actions (minutos agotados): la API de prod se despliega a mano en el servidor, `git pull` + `build --no-deps` de los mismos seis servicios que en staging + `restart nginx`. El panel de `staging` lleva además vacaciones (§14) |
 | 15.5 | Prueba en prod | una sucursal de prueba en `calendar`, cargar la semana desde el panel, fichar con la app publicada (1.7.0) y ver el turno en Disponibilidad |
 
-## 16. Alertas operativas por correo — PENDIENTE (rama `feat/alertas-por-correo`, 2026-10-22; aún no en `staging`)
+## 16. Alertas operativas por correo — EN PRODUCCIÓN el 2026-10-28 (fases 1-2), **para todas las empresas, solo owner y admin**
+
+**Ejecutado el 2026-10-28 por Claude con la orden de Jose («ya bájalo a prod», «para probar primero sobre nosotros»).**
+El código ya estaba en `main` desde el #233 de otra sesión; no hubo PR propio. A mano, sin CI:
+047 aplicada en `encodebiz_analytics` (8 tablas, 10 índices, 4 ALTER, sin error); **las 8 empresas
+restantes con datos, apagadas** (`alert_email_settings.enabled = false`, `updated_by = 'pase-2026-10-28…'`)
+antes de arrancar el contenedor; `build --no-deps analytics billing`, nginx reiniciado, sin 502;
+4 plantillas nuevas (`--apply`: 4 nuevas, 14 al día); SMTP y `SES_CONFIGURATION_SET` presentes en
+`analytics`; sync de dimensiones de `nDON8mv1S1tuPAxx7jQI` (4 usuarios de panel, 6 responsabilidades).
+Por orden de Jose («lánzamelo ahora») se lanzó el resumen real ese día: 3 alertas, 5 correos enviados
+(4 owner/admin, 1 supervisor con solo su centro). **Para encenderlo a todos:**
+`DELETE FROM alert_email_settings WHERE updated_by LIKE 'pase-2026-10-28%';`
+**Pendiente:** 16.4 (`onChecklogSync` con retry, no hace falta para el resumen), fases 3 y 4.
+**Mismo día, más tarde:** Jose vio que a jose@ le llegaba por su responsabilidad de manager:
+«esto solo es para admin y owner, nadie más». Se apagó todo (16:5x UTC), hotfix #235 (fuera
+supervisores, managers y direcciones extra; pie «propietario»/«administrador»), `build --no-deps
+analytics`, y por orden de Jose («actívalos ya para todos») **encendido para todas las empresas**
+(`DELETE` de las 9 filas `pase-2026-10-28%`). Llevado a develop (1172187) y staging (4f23ae6).
 
 Diseño: [ingenieria/alertas-por-correo](../ingenieria/alertas-por-correo/README.md). Las 12
 alertas del dashboard salen por correo a owner, admin, direcciones extra y supervisores (estos
@@ -751,7 +768,7 @@ cola de envío. Ajustes por empresa (fase 4, pendiente); mientras, los defectos:
 
 | # | Qué | Cómo |
 |---|---|---|
-| 16.1 | Migración `044_alertas_por_correo.sql` (dim_entities, dim_panel_users, dim_responsibilities, email/idioma en dim_employees, índice `(entity_id, timestamp)` en checklogs_raw, alert_*, email_outbox) | a mano por SSH, mirando el resultado, **antes** del contenedor de analytics. El índice sobre `checklogs_raw` tarda lo que tarde la tabla de prod |
+| 16.1 | Migración `047_alertas_por_correo.sql` (dim_entities, dim_panel_users, dim_responsibilities, email/idioma en dim_employees, índice `(entity_id, timestamp)` en checklogs_raw, alert_*, email_outbox) | a mano por SSH, mirando el resultado, **antes** del contenedor de analytics. El índice sobre `checklogs_raw` tarda lo que tarde la tabla de prod |
 | 16.2 | Contenedores: `analytics` (jobs y espejos); `billing` solo por el script de plantillas; los que recompilan por tipos de shared | PR desde la rama principal; `build --no-deps` de los tocados |
 | 16.3 | Plantillas `ALERTS_DIGEST` y `ALERTS_IMMEDIATE` en `emails_template` | `exec -T billing node services/billing/dist/scripts/email-templates.js` (simula) y `--apply` |
 | 16.4 | Función `onChecklogSync` con `retry: true` (el espejo reintenta en vez de soltar el fichaje) | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onChecklogSync` |
@@ -805,7 +822,7 @@ guardado funciona como semanal, así que no hace falta limpiarlo.
 - merlin: la revisión del cuadrante según el modo (por turnos no habla de tareas; en «Semana tipo» se bloquea), PR #222, f7b32d3, merlin reconstruido en prod y staging.
 - **Panel EJECUTADO:** PR #119 del panel (staging → main, 808788fa), Vercel *success*. Sin variables nuevas.
 
-## 17. Avisos de tareas agrupados — PENDIENTE (rama `feat/avisos-tareas-agrupados`, 2026-10-23; aún no en `staging`)
+## 17. Avisos de tareas agrupados — EJECUTADO en prod el 2026-10-28 (orden de Jose: «sí, súbelo»)
 
 Diseño: [ingenieria/avisos-agrupados](../ingenieria/avisos-agrupados/README.md). Asignada,
 cambiada y retirada ya no se mandan una a una: se apuntan en `push_digest` y sale **un aviso por
@@ -813,12 +830,26 @@ persona** al minuto sin novedades («Tienes 84 tareas nuevas del 3 al 30 de novi
 tarea suelta llega como siempre, hasta ~2 min más tarde. El tipo del aviso no cambia. Reconfirmar
 un cuadrante sin cambios ya no avisa (también arregla el resumen por correo).
 
+**En dev el 2026-10-28** (orden de Jose: «súbelos, eso es importante»): develop `f1401cc`,
+staging `d0a6187`. Función `taskPushDigests` (y `workEmailDigests`, por el cambio de
+`mergeWorkEvents`) desplegadas en `dev-encodebiz` a las 15:59 UTC; `tasks` reconstruido en el VPS
+a las 16:02. Con TSK-19 (7/7) y HPT-17 (22/22) en verde, la función mandó agrupados sin fallos
+(`{ sent: 2..5, failed: 0 }` por minuto). En prod, 17.1 lleva también `workEmailDigests`.
+
+**En prod el 2026-10-28.** El código llegó a `main` con el #233 (otra sesión, 17:10 Madrid),
+sin reconstruir `tasks`: el contenedor seguía siendo del 27-oct, así que no se perdió ningún aviso.
+16:56 UTC: `taskPushDigests` + `workEmailDigests` en `encodebiz-services` desde `main` `0f6cfc0`
+(el primer intento creó la función y falló en IAM; el segundo, «Successful update»; job de
+Scheduler `* * * * *` ENABLED). 16:58 UTC: `build --no-deps tasks` + `restart nginx`, tasks
+healthy, API 400 (no 502); la función responde 200 cada minuto. Falta 17.3 (tarea real con app)
+y 17.4 (app).
+
 **Orden obligatorio: la función antes que el contenedor.** Con `tasks` nuevo y sin
 `taskPushDigests`, esos avisos se apuntan y no sale ninguno.
 
 | # | Qué | Cómo |
 |---|---|---|
-| 17.1 | Función `taskPushDigests` (cada minuto) | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo taskPushDigests` — **primero** |
+| 17.1 | Función `taskPushDigests` (cada minuto) | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo taskPushDigests,workEmailDigests` — **primero** |
 | 17.2 | Contenedor `tasks` | con el pase de la API, `build --no-deps tasks`, **después** de 17.1 |
 | 17.3 | Comprobar | crear una tarea a mano para alguien con la app: un aviso en ~1-2 min; `push_digest` vacío después |
 | 17.4 | App, siguiente versión | `checkbiz_tasks` + `screen: task_list` → listado de tareas en `notification_navigation_handler.dart`. Sin ella el aviso agrupado se ve, pero al tocarlo solo abre la app |
@@ -915,3 +946,386 @@ después producción**, una a una con `desplegar.mjs --solo`.
 | 6.1 | Inventario en dev: fecha de despliegue de cada una de las 24 frente al porte (12-sep) | PENDIENTE |
 | 6.2 | Desplegar en `dev-encodebiz` las que falten, con `--solo`, y validar cada una (QA `45-espejo-y-programadas` y la prueba propia de cada trigger) | PENDIENTE |
 | 6.3 | Producción, una a una, comprobando cada una | PENDIENTE |
+
+## 20. Panel de dirección y registro de uso del conector — EJECUTADO el 2026-10-28 (orden de Jose: «bajalo a prod»)
+
+Diseño en `DOCS/ingenieria/panel-de-direccion/README.md`. Dos servicios y una migración.
+
+**Lo que sube**
+- Migración **044** `assistant_tool_calls` (aplicada en dev el 28-oct). A mano por SSH, antes
+  que los contenedores; sin ella el conector sigue funcionando y sólo avisa en el log.
+- Contenedor `assistant`: apunta cada llamada a una herramienta (sin argumentos).
+- Contenedor `backoffice`: `GET /api/v1/backoffice/direccion` y la pantalla «Dirección»
+  (entrada por defecto del panel). Sin variables nuevas; opcional
+  `BACKOFFICE_ENTIDADES_INTERNAS=id1,id2` para excluir empresas nuestras que el nombre no delata.
+
+**Guion**: `psql < migrations/044_assistant_tool_calls.sql` → `git pull` → build `--no-deps`
+de `assistant` y `backoffice` → reiniciar nginx → abrir `/backoffice/direccion` y comprobar que
+el aviso «todavía no se mide» no aparece.
+
+**Si algo falla**: la pantalla vieja `/stats` sigue intacta; la tabla puede quedarse vacía sin
+consecuencias.
+
+**Hecho, sin CI (28-oct, 11:11–11:20 UTC):** `develop` (bccbd83) → `staging` (b5dacae) → `main`
+(#228, c5d5fe2), con `[skip ci]`. Staging reconstruido a mano y comprobado (401 en
+`/direccion`, SPA servida). Prod: migración 047 en `encodebiz_analytics` (tabla vacía), `git pull`,
+`up -d --build --no-deps assistant backoffice`, nginx reiniciado; los dos contenedores sanos.
+Falta: la primera lectura de Jose en `/backoffice/direccion` y, si hace falta, poner en
+`BACKOFFICE_ENTIDADES_INTERNAS` los ids de empresas nuestras que el nombre no delata.
+
+## 21. «Estadísticas» pasa a Comercial como «Conversión Ads» — EJECUTADO el 2026-10-28 (orden de Jose: «directo a prod»)
+
+Jose, al ver prod: «las estadísticas siguen siendo la misma mierda […] llévatelo a los CRM y le
+pones Conversión Ads». Solo SPA del backoffice: la serie diaria sale del bloque principal y
+va al grupo Comercial con leads, leads buenos, clics a WhatsApp, medidas en GA4 y lo que se
+pierde (sin medir, sin avisar). `/stats` redirige a `/conversion-ads`. Sin migración ni variables.
+
+**Hecho, sin CI:** `develop` → `staging` (0cc4add) → `main` (#229, f3bed96), con `[skip ci]`;
+staging y prod reconstruidos a mano (`build --no-deps backoffice` + nginx).
+
+## 22. CRM: historial y cierre de acciones, etapas que se corrigen (issue #201) — EJECUTADO el 2026-10-28 (orden de Jose: «baja lo pendiente a prod»)
+
+Diseño en `DOCS/ingenieria/sales-crm/tdr/TDR-010-historial-y-cierre-de-acciones.md` (§1-§7) y
+ADR-003 revisado. Dos servicios y una migración.
+
+**Lo que sube**
+- Migración **045** `sales_crm_historial`: canal `comment` en actividades y acciones,
+  `sales_activities.in_reply_to`, y cada cuenta abierta con `next_action` escrito gana una acción
+  `note` pendiente si tenía fecha, o una nota en la cronología si no la tenía (en prod, 27 de 65
+  textos sin fecha eran comentarios, no tareas). `created_by`/`actor` = `migracion:045`. Idempotente. Las columnas `next_action*` se
+  quedan sin leerse: **PENDIENTE** borrarlas en un pase posterior.
+- `sales`: «Hecho» idempotente, respuesta enlazada, próxima acción derivada, cronología paginada,
+  `crm_list_activities` (19 herramientas MCP), perfil exigido al planificar y no al registrar,
+  cambio de etapa a cualquier otra con `note`, trial/won sin `entityId` obligatorio. La agenda
+  diaria pierde las secciones por cuenta.
+- `backoffice` (API + SPA): ruta `GET /crm/accounts/:id/activities`, cronología, próxima acción,
+  diálogo de etapa nuevo, avisos en rojo, etapa desde la ficha de contacto.
+- Sin variables nuevas.
+
+**Guion**: `psql < migrations/045_sales_crm_historial.sql` → `git pull` → build `--no-deps` de
+`sales` y `backoffice` → reiniciar nginx → `ps` → lectura de comprobación.
+
+**Si algo falla**: la migración solo añade (constraint ampliado, columna nula, filas `note`); el
+código anterior la tolera. Volver a la imagen anterior de `sales`/`backoffice` basta.
+
+**Staging (28-oct, 11:40–11:50 UTC):** `develop` (5103e0f) → `staging` (98e07c6), `[skip ci]`.
+045 aplicada en `encodebiz_staging` (0 cuentas con `next_action`). `sales` y `backoffice`
+reconstruidos, sanos. Recorrido con cuenta de prueba «QA TDR-010» (id 4, queda en dev): alta con
+`nextAction` → nota; reunión sin perfil → 201, `contacted`, `withoutProfile: true`; etapa a mano a
+`demo` con `note` → 200; cronología 2 entradas; MCP 19 herramientas con `crm_list_activities`.
+Proxy del backoffice: `/crm/accounts/4/activities` → 401 sin sesión (ruta montada).
+
+**045 ajustada antes de prod** tras leer prod (solo lectura): `c62553b`, por `develop` (a10e9dc) y
+`staging` (6d59e14) con `commit-tree` porque `develop` estaba abierta en el checkout principal; en
+dev reaplicada (0 filas).
+
+**Producción (28-oct, ~12:15 UTC):** PR #230 → `main` (20a3d48), `[skip ci]`, 37 ficheros. En
+`/opt/encodebiz-api`: `git pull`, 045 en `encodebiz_analytics` → **38 acciones** creadas (textos con
+fecha) y **27 notas** en la cronología (sin fecha), constraints con los nombres esperados;
+`up -d --build --no-deps sales backoffice`, nginx reiniciado, los tres sanos. Lectura de
+comprobación: listado 200 (35/100 con próxima acción, 10 con vencidas), ficha coherente, cronología
+con `inReplyTo`, agenda de hoy 18 acciones, MCP 19 herramientas, proxy `/crm/accounts/1/activities`
+→ 401 sin sesión. Sin errores en los logs.
+**Después:** PENDIENTE la prueba de la responsable de marketing en `/backoffice/crm` y reinstalar
+el plugin de Cowork (skills `crm` e `investigar-cuenta` cambiadas); el conector de claude.ai puede
+necesitar reconectarse para ver `crm_list_activities`.
+
+## 23. CRM: sección de Contenido (ADR-011, TDR-011) — EJECUTADO el 2026-10-28 (orden de Jose: «sube», «prod»)
+
+Marketing planifica contenido (perfiles, fichas, publicaciones con estado y pistas de texto,
+imagen y revisión), sube su Excel del plan editorial y los agentes lo leen por el MCP.
+
+**Lo que sube**
+- Migración **046** `sales_content`: 6 tablas, 8 índices y 5 perfiles sembrados (Instagram y
+  LinkedIn CheckBiz360, Blog, LinkedIn e Instagram encodeBiz). Solo añade.
+- `sales`: API `/crm/content/*`, importación del Excel (`exceljs` + `jszip`, ya en el lock del
+  monorepo), 11 herramientas MCP (30 en total).
+- `backoffice` (API + SPA): proxy, subida de imágenes/PDF al bucket del sistema en
+  `crm/contenido/…` (no cuenta para el cobro de almacenamiento), ficheros servidos con sesión,
+  pantalla «Contenido» en Comercial.
+- **nginx** (`nginx/nginx.conf`, montado): `location /api/v1/backoffice/crm/content/` con
+  `client_max_body_size 22m`. Tras el `git pull`, `nginx -t` y reiniciar.
+- Sin variables nuevas (usa `FIREBASE_STORAGE_BUCKET`, ya presente en el backoffice).
+
+**Guion**: `psql < migrations/046_sales_content.sql` → `git pull` → `build --no-deps sales
+backoffice` → `nginx -t` → reiniciar nginx → lectura de comprobación (`/content/profiles`,
+`/content/items`, MCP 30 herramientas) y POST de 5 MB a `/api/v1/backoffice/crm/content/import`
+sin sesión → 401 (no 413).
+
+**Si algo falla**: la migración solo crea tablas nuevas; volver a la imagen anterior de `sales` y
+`backoffice` basta. El bloque de nginx se puede quitar sin afectar a nada más.
+
+**Staging (28-oct):** `develop` → `staging` (ba8fb91) con `[skip ci]`; 046 aplicada en
+`encodebiz_staging`; `sales`, `backoffice` y nginx reiniciados, sanos. Importado el Excel real de
+marketing (`Plan_editorial_CheckBiz360_actualizado_28-10-2026.xlsx`): simular no escribe; aplicar →
+18 fichas, 45 publicaciones (31 + 14 ya publicadas), 6 dependencias, 2 notas de perfil, 0
+problemas; reimportar → 0 creadas. MCP: un agente que valida sin petición recibe
+`approval_requires_person`. Storage desde el backoffice: escribir/leer/borrar en `crm/contenido/`
+OK. nginx: 5 MB a `/crm/content/import` → 401; a otra ruta del backoffice → 413.
+Destapó y se arregló en staging: el tipo de evento no cabía con el nombre del fichero (y un error de
+base contaba como 62 «problemas»), y las fechas `t="d"` del Excel salían en 1905.
+
+**Producción (28-oct):** PR #231 → `main` (61f3eeb), `[skip ci]`, 45 ficheros. En `/opt/encodebiz-api`:
+`git pull`, 046 en `encodebiz_analytics` (6 tablas, 8 índices, 5 perfiles), `up -d --build --no-deps
+sales backoffice`, `nginx -t` correcto, nginx reiniciado; los tres sanos. Lectura de comprobación:
+perfiles 5, publicaciones 0, ya publicado 0, ficha de empresa con `content`, MCP 30 herramientas,
+bucket `encodebiz-services.firebasestorage.app`; 5 MB a `/crm/content/import` → 401, a otra ruta del
+backoffice → 413; SPA 200; sin errores en los logs. **No se importó nada en prod**: el Excel lo sube
+marketing desde la pantalla. Sin prueba con sesión real todavía (PENDIENTE: marketing).
+**Después:** reinstalar el plugin de Cowork (skills `crm`, `outreach`, `marca-personal`); el
+conector de claude.ai puede necesitar reconectar para ver las herramientas de contenido.
+
+## 24. Hotfix: el menú del backoffice marca la sección activa — EJECUTADO el 2026-10-28 (orden de Jose: «hotfix a prod»)
+
+El menú lateral no resaltaba ninguna sección: `NavLink` pone la clase `active` y MUI solo pinta
+`Mui-selected`. Ahora `selected` va en el enlace más largo que contiene la ruta (`/crm/12` marca
+CRM; `/crm/contenido/fichas/3`, Contenido). Solo `apps/backoffice-web/src/layout/Shell.tsx`.
+
+**Producción:** PR #232 desde `main` → 9eb15ad, `[skip ci]`. `git pull`, `up -d --build --no-deps
+backoffice`, `nginx -t` correcto, nginx reiniciado; sano. La SPA servida cambia de `index-DUCxQn2S.js`
+a `index-D96Eiq2W.js`. **develop** (d707560) y **staging** (13eda0f) con el mismo cambio; desplegado
+en dev. En el VPS de dev el `git pull` necesita `GIT_SSH_COMMAND="ssh -i ~/.ssh/github_deploy -o
+IdentitiesOnly=yes"`: no hay `~/.ssh/config` que use la clave de despliegue.
+
+## 22. Foto diaria de dirección (048) y bloque de crecimiento — EJECUTADO el 2026-10-28 (orden de Jose: «vale, inténtalo de nuevo»)
+
+Jose, al revisar «Dirección» en prod: «no me estás poniendo estadísticas ni gráficos de
+crecimiento ni previsiones de cobro […] lo que tienes que hacer es un snapshot diario de
+históricos de estas estadísticas, así tienes históricos». Lista de campos aprobada por él
+(«por el momento no me falta nada, tú eres el experto»).
+
+**Lo que sube**
+- Migración **048** `direccion_snapshot_daily`: una foto por día (zona Madrid) con tamaño,
+  uso, dinero y asistente, sólo clientes reales. A mano, antes del contenedor.
+- `backoffice`: cosecha a las 3:20 detrás de la de estadísticas, hueco de ayer al arrancar,
+  `POST /direccion/snapshot?date&from`, script `foto-direccion.js`, y bloque «Crecimiento» en
+  la pantalla (titular semana vs semana, tabla semana/mes, curvas a 26 semanas, previsión de
+  cobro con pruebas que vencen y tendencia a 4 y 12 semanas).
+
+**Guion, en orden**
+1. `psql -d encodebiz_analytics < migrations/048_direccion_snapshot_diario.sql`
+2. Fusionar PR #233 (`staging → main`, `[skip ci]`); en `/opt/encodebiz-api`: `git pull --ff-only origin main`
+3. `docker compose --env-file .env.production up -d --build --no-deps backoffice` + `restart nginx`
+4. Relleno hacia atrás (idempotente, ~1 s por día):
+   `docker compose exec -T backoffice node services/backoffice/dist/scripts/foto-direccion.js --from 2025-09-01`
+5. Abrir `/backoffice/direccion`: el bloque «Crecimiento» tiene que decir «N de N fotos son reconstruidas» y no «sin fotos».
+
+**Hecho:** `develop` → `staging` (cd6d224), con `[skip ci]`. Staging reconstruido, migración 048
+aplicada en dev y 57 días rellenados (1-sep a 27-oct); comprobado el cálculo con datos reales.
+**En prod (28-oct, 17:30–17:45 UTC):** #233 fusionado (0f6cfc0), 048 aplicada en
+`encodebiz_analytics`, `backoffice` reconstruido, nginx reiniciado, **422 fotos** rellenadas
+(1-sep-2025 → 27-oct-2026, sin parciales). Primera lectura: 14 clientes, 110 de plantilla,
+8 pagando, 214 € de cuota estimada; este mes frente al anterior: plantilla 62 → 110, cuota
+102 → 214 €, fichajes 371 → 957. La cosecha de cierre empieza con la foto del 28-oct (3:20 del 29).
+
+**OJO, lo que entró en `main` con #233 sin desplegarse:** `develop` traía trabajo de otras
+sesiones (sales, analytics, shared, firebase_sdk, billing, migración 047 alertas por correo).
+Sólo se reconstruyó `backoffice`. Quien lleve §16 (alertas) y lo de analytics/firebase_sdk tiene
+que saber que su código ya está en `main` y en `/opt/encodebiz-api` sin contenedor nuevo.
+
+## 23. Dirección: la prueba la sabe Stripe — EJECUTADO el 2026-10-28
+
+Jose, en prod: «Pagando · en prueba · gratis 8 · 0 · 6 está mal, en pruebas hay uno (Ayudarte)».
+En Firestore `entities/*/subscriptions/checkinbiz` se queda en `active` desde el alta y
+`endTestPeriod` no se rellena: la prueba (45 días) sólo la conoce Stripe (`trial_period_days`).
+
+- `billing`: ruta interna S2S `GET /api/v1/billing/internal/subscriptions/stripe` (todas las
+  suscripciones de Stripe con estado, inicio y fin de prueba, empresa y servicio de los metadatos).
+- `backoffice`: `BillingClient`; cruza Firestore con Stripe; `trialing`/`trial_end` mandan; si
+  billing no responde, sigue con Firestore y lo dice en la pantalla y en la nota de la foto.
+
+**Hecho, sin CI:** develop → staging (2b417fe) → main (#234, dce9c6c). Prod: `billing` y
+`backoffice` reconstruidos, nginx, y las 422 fotos reescritas con los días de prueba. Resultado:
+7 pagando · 1 en prueba · 6 gratis; Ayudarte en prueba hasta el 30-oct (40 €/mes si sigue).
+
+**OJO:** reconstruir `billing` llevó a prod también lo que `main` traía de otras sesiones en
+`shared` (alertas por correo, plantillas ALERTS_*): compila y arranca («Stripe en modo REAL»),
+pero es código ajeno que entró sin su pase. Quien lleve §16 debe saberlo.
+
+Pendiente menor: en la foto, «gratis» cuenta sólo suscripciones `freemium`; en el pulso cuenta
+también las empresas sin suscripción (3 en prod). La tabla de crecimiento no enseña «gratis», así
+que no se nota; alinear en la próxima tanda.
+
+## 25. Hotfix: el alta escribe siempre `enableA2F` y `biometricRequired` — EJECUTADO el 2026-10-29 (orden de Jose: «despliega», «hot fix urgente»)
+
+9 de los 28 empleados de Neteges Bisbal (`eR5gNPUdmipJtxUZskub`) no podían fichar. La app les pedía
+un código del autenticador y el servidor respondía `twofactor/not_activated`. Las fichas venían
+de la puesta en marcha del 05-oct y no tenían `enableA2F`. El panel muestra ese campo vacío como
+desactivado, pero el servidor y la app lo tratan como activado. Además, la celda
+`biometria_obligatoria` vacía se leía como «no». Con A2F activado y sin biometría, el móvil nunca
+queda como de confianza.
+
+- **Datos (prod):** `enableA2F: false` a los 9; antes se pasó una simulación y después se
+  comprobó cada ficha.
+- **Código:** `createEmployee` (shared) escribe siempre `enableA2F` (`false` por defecto) y
+  `biometricRequired` (`true` por defecto). La puesta en marcha lee la celda de biometría vacía
+  como «sí».
+- **Reproducido en staging** contra la API: 401 `untrusted_device` → `not_activated`; con
+  `enableA2F: false`, 201.
+
+**Hecho, sin CI:** PR #236 → `main` (5427b85). Prod: `git pull --ff-only` y se reconstruyeron
+`employees`, `merlin` y `rentman` (healthy, con el código nuevo dentro), y se reinició nginx.
+Llevado a develop (ace8043). Staging no se ha reconstruido.
+
+Barrido de prod: nadie más bloqueado. Quedan 6 fichas sin `enableA2F` (Mayo Software, Lorem
+ipsum, ACB2, Mi empresa SA), todas con la biometría activada.
+
+Pendientes:
+- Los 24 empleados de Neteges siguen con la biometría desactivada. Activarla es decisión del
+  cliente.
+- En la app, ante `not_activated`, llevar a configurar el autenticador en vez de repetir el
+  diálogo del código.
+
+## 26. Informes de una, varias o todas las sucursales — EJECUTADO el 2026-10-29 (orden de Jose: «despliega a prod todo ya»)
+
+El informe de jornada y el de tareas aceptan `branchIds` (ninguna = todas); `branchId` se sigue
+aceptando porque lo usa el conector. En el panel, el campo de sucursal es ahora el buscador de la
+asignación de empleados (índice en servidor). Antes la lista se cargaba con `limit: 100`, y
+Neteges tiene 138 sucursales.
+
+**Hecho, sin CI:**
+- API: PR #237 → `main` (fe0fcd8), con solo el commit de `reports` sacado de `main` en
+  cherry-pick. Prod: se reconstruyó `reports` (healthy) y se reinició nginx.
+- Panel: PR #122 → `main` (fb5f5169) con solo este commit. Vercel Production en success.
+
+En el panel, `develop` lleva dos commits de otras sesiones que NO han ido a main: «Responsable»
+en tareas (e321e741) y el modo de horario independiente de «Horario base» (03e0648e).
+
+Probado en staging contra la API: una, dos, todas y el `branchId` antiguo → 201 con las
+sucursales correctas. Tareas → 204 sin errores. Falta probarlo en prod con Neteges (138).
+
+## 27. Hotfix: el trabajador no ve los borradores en los que figura — EJECUTADO el 2026-10-29 (orden de Jose: «arréglalo como hotfix», «súbelo todo a prod»)
+
+En CENTRO DE FORMACIÓN AYUDARTE (`OPnlEi3npBbLDyKa4wTj`), los empleados veían en la app tareas
+en borrador. Eran las 302 que la reparación del 26-oct (§18) pasó a `draft` dejando a la persona
+asignada. Un borrador con gente dentro también sale de borrar una sucursal con «a borrador», o
+de reabrir una tarea.
+
+**Datos, antes del arreglo (orden de Jose):**
+- Se borraron las 302 en BD, con la cascada del servicio: subcolecciones (1313),
+  Storage (0 ficheros) y `tasks_raw.deleted_at`.
+- No se llamó a `notifyTaskRemoved` ni se emitió `task.deleted`, así que no hubo avisos.
+- Copia completa en `/Volumes/Externo-1/Checkbiz360-Copias-produccion/2026-10-29-ayudarte-borradores/`.
+- Después del borrado no queda ningún borrador en ninguna empresa de prod.
+
+**API: PR #238 → `main` (568376f).** Para quien solo es trabajador:
+- `GET /tasks` filtra los borradores;
+- el calendario los quita de las celdas y de la leyenda (`hiddenStatus`);
+- el detalle y la actividad devuelven 403 (`canViewTask`).
+
+Prod: se reconstruyó `tasks` (healthy) y se reinició nginx. Cherry-pick a `develop` (8e12ab6).
+
+**App: PR #56 → `master` (4ff2238), versión 1.10.1+69.** La lista de Tareas del trabajador
+(stream de Firestore) deja fuera los borradores. Cherry-pick a `develop`. **No está publicada en
+tiendas**: hasta que lo esté, la app instalada sigue enseñando un borrador con gente dentro.
+
+Pendiente:
+- Publicar 1.10.1+69.
+- Decidir si, al pasar las tareas a borrador por borrar su sucursal, se saca de ellas a la gente
+  (cortaría el problema en las apps ya instaladas).
+
+## 28. Alertas por correo, fase 3b: pendientes de decisión — EJECUTADO el 2026-10-29 (orden de Jose: «bájalo a prod, todo llegó bien»)
+
+Diseño: `ingenieria/alertas-por-correo/README.md` §12. Owner y admin reciben, en el resumen de
+la mañana, solicitudes por decidir, incidencias abiertas por la plantilla y documentos sin
+firmar; y al momento, la solicitud que empieza en menos de 48 h, la incidencia nueva de una
+persona y el documento firmado.
+
+Servicios: `shared` (textos, plantilla inmediata genérica, `reportPendingAlert`), `analytics`
+(pendientes en el resumen, `POST /api/analytics/alerts/pending`, job «solicitudes próximas» a
+:05), `documents` (avisa al guardar el acuse), `billing` (solo por el script de plantillas) y
+`firebase_sdk` (`onCreateIssues`).
+
+Fuera del código, por este orden:
+
+1. Sin migración: usa las tablas de la 047.
+2. Desplegar `analytics`, `documents` y `billing` (el `--no-deps` de siempre).
+3. Plantillas: `node services/billing/dist/scripts/email-templates.js --apply --replace` en el
+   contenedor de billing. **Con `--replace`**: `ALERTS_IMMEDIATE` cambia (entrada y botón los
+   pone el código). Mirar antes, sin `--apply`, que lo único distinto sea `ALERTS_IMMEDIATE`; si
+   sale otra plantilla, alguien la retocó a mano y no se pisa sin preguntar.
+4. `firebase deploy --only functions:onCreateIssues --project <dev-encodebiz | encodebiz-services>`
+   desde `services/firebase_sdk`. Comprobar antes qué `onCreateIssues` corre en cada proyecto
+   (este o el del SaaS): si es el del SaaS, el inmediato de incidencias no sale, pero el resumen
+   sí las cuenta. `ANALYTICS_SERVER_URL` y `ANALYTICS_API_KEY` ya están en los `.env`.
+5. Prueba en dev: una solicitud pendiente con inicio mañana (aviso en la siguiente :05), una
+   incidencia abierta desde la app y un acuse firmado; los tres en `email_outbox` y en
+   `alert_sent` con `channel = 'immediate'`.
+
+**Staging, 2026-10-29 (orden de Jose: «despliega en staging»).** `develop` → `staging` (92a9c59) a
+mano, Actions sigue parado; reconstruidos `analytics`, `documents`, `billing` y `tasks` (entró el
+hotfix 8e12ab6, que faltaba en staging). Plantillas en dev con `--replace`: las cuatro de
+alertas; `ALERTS_DIGEST` también difería, solo por el pie de #235 (y ahora el pie lleva a
+Herramientas → Alertas por correo). `onCreateIssues` desplegado en `dev-encodebiz` con
+`desplegar.mjs --solo onCreateIssues`: en dev es el de `firebase_sdk` (se actualizó, no se creó).
+Prueba en EncodeBiz S.L (`Wl8ZCvpdmIXzEE0mhT7W`, solo jose@): solicitudes, incidencia, dos
+documentos y un acuse con «[PRUEBA alertas]» y plantilla `seed-emp-0x`; salieron los cuatro
+correos (documento firmado, incidencia nueva, solicitud próxima y resumen con tres pendientes).
+Ojo: EncodeBiz no tiene fichajes en 30 días y no cuenta como activa; el resumen y la pasada de
+solicitudes se lanzaron a mano solo para ella.
+
+**Producción, 2026-10-29.** #239 (staging → main) chocaba con los squash de #235; cerrado y
+sustituido por #240 (`release/alertas-pendientes`, el árbol exacto de staging encima de main,
+squash d77ca31). En `/opt/encodebiz-api`: `git pull`, `up -d --build --no-deps analytics
+documents billing`, `restart nginx`; los tres sanos, planificador con «solicitudes próximas a
+:05». Plantillas con `--replace`: las cuatro de alertas, comprobado antes que en prod solo
+diferían el pie (#235) y las líneas cambiadas del inmediato. `onCreateIssues` desplegado en
+`encodebiz-services` con `desplegar.mjs --solo onCreateIssues`: era el código del SaaS; el
+portado solo cambia los imports, el título «CheckBiz360» y el aviso a analytics.
+`onIssuesResponse` sigue con el del SaaS.
+
+**Probado en prod el 29-oct con la app 1.10.1+69.**
+- jose@encodebiz.com en Encodebiz se bajó a trabajador, con copia de su responsabilidad de manager.
+- Se creó un borrador para el 30-oct asignado a él, sin avisos.
+- Jose confirmó que en Tareas no le sale.
+- Después se borró la tarea (en `tasks_raw` quedó con `deleted_at`) y se le devolvió el rol de manager.
+
+## 29. Adjuntos en la tarea (TDR-007) — EJECUTADO el 2026-11-02 (orden de Jose: «a prod»); queda la app
+
+Diseño: `ingenieria/tasks-service/tdr/TDR-007-adjuntos-en-la-tarea.md`. Un recurso de la tarea con
+`isEvidence: false` es un adjunto (el expediente de la clienta en ayuda a domicilio): no cuenta
+como evidencia ni en el informe, no avisa, y el duplicado lo lleva como referencia al mismo
+fichero (`tasks/adjuntos/`, se cobra una vez). Ruta nueva `DELETE /:taskId/resources/:resourceId`.
+Sin `isEvidence` es evidencia: la app instalada no cambia.
+
+Servicios: `shared` (tipo y repositorio), `tasks` y `reports`. Commits 291af10 y 312b516.
+
+Fuera del código, por este orden:
+
+1. Sin migración.
+2. **Exención de índice de grupo** para `resources.storagePath` en `encodebiz-services`.
+   `gcloud firestore indexes fields update` no admite el ámbito de grupo: se hace con la API REST
+   (PATCH del campo con `updateMask=indexConfig`), conservando los tres índices de colección por
+   defecto y añadiendo `COLLECTION_GROUP` ascendente. Mirar antes con
+   `gcloud firestore indexes fields describe storagePath --collection-group=resources --project encodebiz-services`.
+   Esperar a `READY`. Sin ella, quitar un adjunto funciona pero el fichero se queda en Storage
+   (log «no se pudo contar quién más usa…»).
+3. Desplegar `tasks` y `reports` (el `--no-deps` de siempre) y `restart nginx`.
+4. Panel: check «Es evidencia del trabajo hecho» al adjuntar y la ficha con «Documentos adjuntos» y «Evidencias». En `develop` del panel (8c49429b, 30-oct); a prod con su PR a `main` y Vercel, **después** de `tasks`.
+5. App: no bloquea; la 1.10.x enseña el PDF con icono de foto y lo abre fuera. Adjuntar al crear y editar, y la ficha separando adjuntos de evidencias, en `develop` de la app (ebaeff9, 30-oct; nueva dependencia `file_picker`): sale con la próxima versión, que debe publicarse **después** de `tasks` en prod (sin el servidor nuevo, el adjunto subido desde la app contaría como evidencia).
+
+**Staging, 2026-10-29 (orden de Jose: «sí»).** `develop` → `staging` a mano (2d97ddd y 268200b,
+Actions sigue parado); `git pull` en el VPS y reconstruidos `tasks` y `reports`. Exención de
+índice creada en `dev-encodebiz` por REST (solo `ADD` del de grupo; READY en unos minutos). QA
+desde el portátil contra staging: `55-tareas-adjuntos` 12/12, y 46, 47, 50, 51 y 54 sin regresión
+(98/98).
+
+**Producción, 2026-11-02 (orden de Jose: «a prod», tras validar en staging).** Ver §30, que fue en el mismo pase.
+
+## 30. Casillas de la descripción (TDR-008) y aviso agrupado con fechas — EJECUTADO el 2026-11-02 (orden de Jose: «a prod»)
+
+`PATCH /:taskId/description` (el trabajador marca casillas; cada cambio deja `description_updated`
+con la casilla), el duplicado con las casillas sin marcar (D6) y el push agrupado con
+`dateFrom`/`dateTo`. Sin migración ni variables.
+
+| Paso | Qué | Hora (UTC) | Resultado |
+|---|---|---|---|
+| 29.2 | Exención de índice de grupo `resources.storagePath` en `encodebiz-services`, por REST | 12:27 | Solo `ADD` del `COLLECTION_GROUP`; los tres de colección intactos. `READY` hacia las 12:40 |
+| 30.1 | API `staging → main` | 12:27 | PR checkbiz-api#241, merge `a527b9a`. El árbol fusionado = `staging` (los hotfixes de `main` ya estaban con otro hash) |
+| 30.2 | Despliegue | 12:28–12:29 | **Actions vuelve a funcionar**: Production CI/CD 41444891438 en verde (1 min 41 s). 17 servicios `healthy`, nginx reiniciado por el CI; `tasks` con el código nuevo |
+| 30.3 | `taskPushDigests` | 12:32 | `desplegar.mjs --project encodebiz-services --solo taskPushDigests` desde un worktree de `main`, con `.env.encodebiz-services` copiado (sin él la función se queda sin configuración: el empaquetador avisa) |
+| 30.4 | Panel `staging → main` | 12:34 | PR front#126, merge `9ba6500f`; conflicto solo de comentario en `ITask.ts`, resuelto con el árbol de `staging`. Vercel `Ready` en `saas.encodebiz.com` a las 12:35. Sin variables nuevas: el código lee las mismas claves que el `main` anterior |
+| 30.5 | Comprobación | 12:45 | `PATCH …/description`, `DELETE …/resources/:id` y `POST …/duplicate` responden 400 sin `entityId` (existen); `tasks` sin errores en el log |
+| 30.6 | App | — | PENDIENTE: publicar la 1.10.1+69 (casillas, adjuntos, historial igual que el panel, responsable, aviso agrupado que abre esos días). Ya puede, porque `tasks` está en prod |
+| 30.7 | Manual | — | PENDIENTE: «las casillas no son un estado guardado» (Crear una tarea, ES/EN/PT) se cambia cuando la app esté publicada |
+
