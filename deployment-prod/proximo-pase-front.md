@@ -177,12 +177,28 @@ producción no hay nada detrás de la ruta nueva.
 | `CREATE_ENTITY`, `UPDATE_ENTITY`, `UPDATE_BRANDNG_ENTITY` | `/api/v1/entities…` | `entities` | no corre |
 | `CREATE_USER`, `RECOVERY_PASS` | `/api/v1/users…` | `entities` | no corre |
 | `UPLOAD_MEDIA`, `DELETE_MEDIA`, `NEXT_PUBLIC_…UPLOAD_MEDIA` | `/api/v1/media` | `entities` | no corre |
-| `CREATE_SUCURSAL`, `UPDATE_SUCURSAL`, `DELETE_SUCURSAL` | `/api/v1/branches…` | `branches` | no corre (el back §2.2 lo arranca solo en red interna) |
-| `CHECKINBIZ_CREATE/UPDATE/DELETE/VALIDATE_EMPLOYEE`, `RESPONSABILITY_HANDLER` | `/api/v1/employees…` | `employees` | corre, pero nginx solo abre `/teams` (y §2.6 abrirá `/import` y `/welcome`) |
+| `CREATE_SUCURSAL`, `UPDATE_SUCURSAL`, `DELETE_SUCURSAL` | `/api/v1/branches…` | `branches` | **MIGRADO el 2026-10-20** (ver nota abajo) |
+| `CHECKINBIZ_CREATE/UPDATE/DELETE/VALIDATE_EMPLOYEE`, `RESPONSABILITY_HANDLER` | `/api/v1/employees…` | `employees` | **MIGRADO el 2026-10-20 salvo `VALIDATE_EMPLOYEE`** (ver nota abajo). Antes: corre, pero nginx solo abre `/teams` (y §2.6 abrirá `/import` y `/welcome`) |
 | `CHECKINBIZ_ENABLE2AF_EMPLOYEE`, `CHECKINBIZ_VERIFY2AF_EMPLOYEE` | `/api/v1/checkinbiz/auth/2fa/…` | `checkinbiz` | por comprobar |
 | `CHECKINBIZ_STATS` | `/api/analytics/heuristic` | `analytics` | por comprobar |
 | `CREATE_WEBHOOK`, `DELETE_WEBHOOK` | — (no están en dev) | — | — |
 | `DELETE_ENTITY` | Cloud Function también en dev | — | — |
+
+**Corte de empleados y sucursales, 2026-10-20 (Claude, con el «hazlo» de Jose).**
+1. Validación: la suite `qa/` pasó contra staging los 45 casos de `35-responsabilidades`,
+   `36-sucursales` y `37-empleados`; `nginx -t` correcto en local.
+2. API: `nginx/nginx.conf` de prod abre `/api/v1/employees/` y `/api/v1/branches/` enteros, con
+   `/delegated/*` cerrado (404). Merge `1f94e92` a `main`, despliegue «Production CI/CD» bien.
+   Sondas sin sesión: editar empleado, responsabilidades y sucursales → 401; `/delegated/x` →
+   404; resto de la API igual. El mismo commit, por cherry-pick, en `staging` y `develop`.
+3. Vercel (producción): `CHECKINBIZ_CREATE/UPDATE/DELETE_EMPLOYEE`, `RESPONSABILITY_HANDLER` y
+   `CHECKINBIZ_CREATE/UPDATE/DELETE_SUCURSAL` a `https://api.checkbiz360.com/api/v1/…`, las mismas
+   rutas que `.env.development`. Redespliegue del deployment de producción tal cual (mismo código).
+4. HECHO 2026-10-20: Jose lo probó en el panel de prod (editar empleado, responsabilidades y sucursales) y pasó todo.
+5. Vuelta atrás: devolver esas siete variables a las Cloud Functions de `.env.production` y
+   redesplegar; revertir `1f94e92` en `main` si hace falta cerrar las rutas.
+
+`VALIDATE_EMPLOYEE` no se tocó: no es asignación y sigue en Cloud Functions.
 
 **Por qué asignar usuario tira a Firebase.** La invitación completa (crear la cuenta si no
 existe y mandar el correo) está portada en `services/entities`, ruta
@@ -227,3 +243,31 @@ Vacío hasta el día del pase.
 
 | Paso | Hora (UTC) | Quién | Resultado y lo que se vio |
 |---|---|---|---|
+
+## Alertas por correo en Herramientas — EJECUTADO el 2026-10-29 (#125, solo el commit del modal; Vercel Ready en saas.encodebiz.com)
+
+Herramientas → «Alertas por correo»: modal con el interruptor, la hora del resumen y una casilla
+por aviso (DOCS `ingenieria/alertas-por-correo` §6). Necesita en el back la API de
+`feat/alertas-pendientes` (pase back §28) desplegada antes.
+
+- Vercel, producción: `NEXT_BACKEND_URI_CHECKINBIZ_ALERT_EMAILS=https://api.checkbiz360.com/api/analytics/panel/alert-emails`.
+  Sin ella el proxy da 403 y el modal enseña «No se han podido cargar las alertas».
+- `.env.development` (staging en el portátil) ya la lleva, apuntando a `api-staging`.
+
+## Hotfixes del panel en producción (sin variables ni back)
+
+Los tres van de una rama `release/` sacada de `main` con un PR a `main`. Vercel desplegó cada uno
+a saas.encodebiz.com y ninguno necesita variables ni despliegue del back.
+
+- **#124, 2026-10-29 (`cc41640c`): ya no te saca a inicio con la tarea a medias.** Firebase
+  renueva el token cada hora y `entityContext` volvía a resolver la entidad, lo que mandaba a
+  inicio en mitad de un alta. Ahora solo resuelve cuando cambia el usuario. La cookie de la 2FA
+  (`twoFASessionCookie.ts`) vive 12 h más que la sesión de 1 h, así que el proxy da «sesión
+  caducada» (el modal para volver a autenticarse) y no «sin sesión» (la redirección a `/auth/2fa`).
+- **#127, 2026-11-03 (`693b9aa6`): «Disponibilidad de la semana» en inicio.** Antes crecía sin
+  tope cuando había muchas sucursales. Ahora enseña las 5 peores con «Ver todos (n)», que abre la
+  tabla completa en un diálogo. Textos en es/en/de/fr/pt.
+- **#128, 2026-11-04 (`54145be4`): política de privacidad.** Antes decía que la ubicación se
+  guardaba solo lo necesario para validar. Ahora dice que la posición del fichaje se conserva con
+  el registro (mínimo 4 años) y añade las tareas con ubicación propia. Solo cambia
+  `/legal/privacy-policy`; la landing lleva el mismo cambio (guía y FAQ en es/en/pt).
