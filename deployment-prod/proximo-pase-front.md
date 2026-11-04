@@ -256,7 +256,7 @@ por aviso (DOCS `ingenieria/alertas-por-correo` §6). Necesita en el back la API
 
 ## Hotfixes del panel en producción (sin variables ni back)
 
-Los tres van de una rama `release/` sacada de `main` con un PR a `main`. Vercel desplegó cada uno
+Todos van de una rama `release/` sacada de `main` con un PR a `main`. Vercel desplegó cada uno
 a saas.encodebiz.com y ninguno necesita variables ni despliegue del back.
 
 - **#124, 2026-10-29 (`cc41640c`): ya no te saca a inicio con la tarea a medias.** Firebase
@@ -271,3 +271,10 @@ a saas.encodebiz.com y ninguno necesita variables ni despliegue del back.
   guardaba solo lo necesario para validar. Ahora dice que la posición del fichaje se conserva con
   el registro (mínimo 4 años) y añade las tareas con ubicación propia. Solo cambia
   `/legal/privacy-policy`; la landing lleva el mismo cambio (guía y FAQ en es/en/pt).
+- **#129, 2026-11-04 (`521fd523`): Merlin avisa de informar al equipo.** Es lo primero que dice
+  al dueño de una cuenta nueva, antes de la bienvenida y del pago. Le explica que tiene que
+  informar por escrito a cada persona antes de su primer fichaje y guardar una firma de
+  «enterado». También le dice que nadie está obligado a fichar con su móvil, y enlaza a la guía de
+  conservación y protección de datos. Solo se cierra con «Entendido». Se guarda en el
+  `localStorage` del onboarding (`dataNoticeAt`), así que sale una vez por navegador. También
+  está en `develop` (`7e6ce526`).
