@@ -43,11 +43,11 @@ The different types of data have different retention periods:
 | Data type | Retention period | Legal basis |
 |---|---|---|
 | Attendance and workday records | Minimum 4 years | RDL 8/2019 — legal obligation |
-| Geolocation data | Only during clock-in validation; not stored indefinitely | Data minimisation principle (GDPR art. 5.1.e) |
+| Geolocation data | Kept with the clock record it belongs to: the same period, at least 4 years | Proof of the clock-in validation, which is part of the record (RDL 8/2019) |
 | Employee identification data | For the duration of the employment relationship + 4 years | Employment and commercial obligations |
 | Task and rating data | For the duration of the employment relationship; configurable by the organisation | Performance of the contract |
 
-> **Warning:** CheckBiz360's geolocation data is not a continuous tracking system. GPS coordinates are recorded at the specific moment of clocking to verify that the employee is within the configured geofence perimeter. No tracking of the employee's position throughout the workday is carried out.
+> **Warning:** CheckBiz360's geolocation data is not a continuous tracking system. GPS coordinates are recorded at the specific moment of clocking to verify that the employee is within the configured geofence perimeter. No tracking of the employee's position throughout the workday is carried out. The coordinates of each clock-in are stored with the record, as proof that it was validated inside the geofence, and are kept for as long as the record is.
 
 ---
 
@@ -76,7 +76,7 @@ Before implementing CheckBiz360, the company has an obligation to inform its emp
 1. The identity of the controller (the company itself).
 2. The purpose of the processing: working-time recording, attendance control and compliance with RDL 8/2019.
 3. The legal basis: performance of the contract and compliance with a legal obligation.
-4. The types of data that will be processed, including one-off geolocation at the moment of clocking.
+4. The types of data that will be processed, including one-off geolocation at the moment of clocking, which is kept with the record.
 5. The data retention period.
 6. The employee's rights and how to exercise them.
 7. The identity of the processor: CheckBiz360 acts as processor on the company's behalf.

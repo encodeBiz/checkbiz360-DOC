@@ -43,11 +43,11 @@ Os diferentes tipos de dados têm períodos de conservação distintos:
 | Tipo de dado | Período de conservação | Base legal |
 |---|---|---|
 | Registos de assiduidade e jornada | Mínimo 4 anos | RDL 8/2019 — obrigação legal |
-| Dados de geolocalização | Apenas durante a validação do registo; não são armazenados indefinidamente | Princípio de minimização de dados (RGPD art. 5.1.e) |
+| Dados de geolocalização | Conservam-se com o registo de ponto a que pertencem: o mesmo prazo, mínimo 4 anos | Prova da validação do registo, que faz parte dele (RDL 8/2019) |
 | Dados identificativos do funcionário | Enquanto durar a relação laboral + 4 anos | Obrigações laborais e comerciais |
 | Dados de tarefas e avaliações | Enquanto durar a relação laboral; configurável pela entidade | Execução do contrato |
 
-> **Aviso:** os dados de geolocalização do CheckBiz360 não constituem um sistema de rastreio contínuo. As coordenadas GPS são gravadas no momento pontual do registo para verificar que o funcionário está dentro do perímetro de geocerca configurado. Não é feito qualquer acompanhamento da posição do funcionário ao longo da jornada.
+> **Aviso:** os dados de geolocalização do CheckBiz360 não constituem um sistema de rastreio contínuo. As coordenadas GPS são gravadas no momento pontual do registo para verificar que o funcionário está dentro do perímetro de geocerca configurado. Não é feito qualquer acompanhamento da posição do funcionário ao longo da jornada. As coordenadas de cada registo de ponto são guardadas junto ao registo, como prova de que foi validado dentro da geocerca, e conservam-se durante o mesmo tempo.
 
 ---
 
@@ -76,7 +76,7 @@ Antes de implementar o CheckBiz360, a empresa tem a obrigação de informar os s
 1. A identidade do responsável pelo tratamento (a própria empresa).
 2. A finalidade do tratamento: registo de jornada, controlo de assiduidade e cumprimento do RDL 8/2019.
 3. A base legal: execução do contrato e cumprimento de obrigação legal.
-4. Os tipos de dados que serão tratados, incluindo a geolocalização pontual no momento do registo.
+4. Os tipos de dados que serão tratados, incluindo a geolocalização pontual no momento do registo, que se conserva com o registo.
 5. O período de conservação dos dados.
 6. Os direitos do funcionário e como exercê-los.
 7. A identidade do subcontratante: o CheckBiz360 atua como subcontratante em nome da empresa.

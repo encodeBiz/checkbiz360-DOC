@@ -43,11 +43,11 @@ Los diferentes tipos de datos tienen periodos de conservación distintos:
 | Tipo de dato | Periodo de conservación | Base legal |
 |---|---|---|
 | Registros de asistencia y jornada | Mínimo 4 años | RDL 8/2019 — obligación legal |
-| Datos de geolocalización | Solo durante la validación del fichaje; no se almacenan indefinidamente | Principio de minimización de datos (RGPD art. 5.1.e) |
+| Datos de geolocalización | Se conservan con el registro de fichaje al que pertenecen: el mismo plazo, mínimo 4 años | Prueba de la validación del fichaje, que forma parte del registro (RDL 8/2019) |
 | Datos identificativos del empleado | Mientras dure la relación laboral + 4 años | Obligaciones laborales y mercantiles |
 | Datos de tareas y valoraciones | Mientras dure la relación laboral; configurable por la entidad | Ejecución del contrato |
 
-> **Aviso:** Los datos de geolocalización de CheckBiz360 no son un sistema de rastreo continuo. Las coordenadas GPS se registran en el momento puntual del fichaje para verificar que el empleado está dentro del perímetro de geocerca configurado. No se realiza un seguimiento de la posición del empleado a lo largo de la jornada.
+> **Aviso:** Los datos de geolocalización de CheckBiz360 no son un sistema de rastreo continuo. Las coordenadas GPS se registran en el momento puntual del fichaje para verificar que el empleado está dentro del perímetro de geocerca configurado. No se realiza un seguimiento de la posición del empleado a lo largo de la jornada. Las coordenadas de cada fichaje se guardan junto al registro, como prueba de que se validó dentro de la geocerca, y se conservan el mismo tiempo que él.
 
 ---
 
@@ -76,7 +76,7 @@ Antes de implantar CheckBiz360, la empresa tiene la obligación de informar a su
 1. La identidad del responsable del tratamiento (la propia empresa).
 2. La finalidad del tratamiento: registro de jornada, control de asistencia y cumplimiento del RDL 8/2019.
 3. La base legal: ejecución del contrato y cumplimiento de obligación legal.
-4. Los tipos de datos que se tratarán, incluyendo la geolocalización puntual en el momento del fichaje.
+4. Los tipos de datos que se tratarán, incluyendo la geolocalización puntual en el momento del fichaje, que se conserva con el registro.
 5. El periodo de conservación de los datos.
 6. Los derechos del empleado y cómo ejercerlos.
 7. La identidad del encargado del tratamiento: CheckBiz360 actúa como encargado del tratamiento en nombre de la empresa.
