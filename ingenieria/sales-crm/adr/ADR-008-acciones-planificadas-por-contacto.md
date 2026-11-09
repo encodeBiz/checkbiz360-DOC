@@ -39,6 +39,7 @@ martes» vive en una nota. Ni el pipeline, ni la agenda, ni la lista de contacto
 
 ## Consecuencias
 
+- *(Revisado el 2026-10-28, [TDR-010](../tdr/TDR-010-historial-y-cierre-de-acciones.md): la próxima acción manual se retira; la de la cuenta es su acción pendiente más cercana, y lo que no es un mensaje es una acción de tipo nota.)*
 - La «próxima acción» manual de la cuenta se conserva (sirve para lo que no es un mensaje a
   alguien: «revisar el pliego»), y la agenda junta las dos.
 - El agente pasa de «redactar y olvidar» a planificar con borrador y marcar como hecho cuando
