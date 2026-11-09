@@ -149,6 +149,39 @@ el texto y el idioma los pone el front. Coherente con no meter copy en el backen
 **`dataHealth` es lo que permite al front informar del estado de madurez** sin inventarse umbrales
 (ADR-004). Es la respuesta a que el módulo de tareas sea reciente: se comunica, no se oculta.
 
+**Regularidad: fracción dentro de banda, sin techo (2026-11-08).** `spine.reliability.detail.regularity`
+es la fracción de entradas a **±15 min de la hora planificada** (con vuelta de reloj), y
+`dispersionMinutes`, la **mediana** de la distancia al plan. Antes era `1 − STDDEV_POP / techo`, con
+el techo en el peor centro de la propia entidad (suelo 0,5 h): no aguantaba atípicos y una empresa
+con un solo centro se medía contra sí misma. En SaludStart (staging, oct-2026) 13 entradas de 1.084
+subían la desviación de ~7 a 27,7 min y dejaban la regularidad en 0,08 y la fiabilidad en 43 % con
+94 % de puntualidad, mientras sus semanas, con otro techo, daban 0,96. Con la banda: mes 0,936 y
+fiabilidad 0,946; semanas 0,946 / 0,947 / 0,962 / 0,896. Una sola definición
+(`services/analytics/src/application/utils/regularity.ts`) para el mes, las semanas
+(`BuildEvolution`), la constancia por persona y el efecto centro; el mes de la entidad se calcula
+sobre todas sus entradas juntas, igual que la serie semanal, y no como mediana de centros. La
+idea de no comparar contra escalas universales se queda donde tiene sentido —percentil entre
+centros, cohortes de personas—; en las unidades de la métrica no lo tenía: un techo relativo
+pone a 0 al peor centro por construcción. Coste conocido: con pocas llegadas tempranas, la
+regularidad se parece mucho a la puntualidad.
+
+**Nivel persona: todo lo publicado es suyo (2026-11-08).** Con `employeeId`, cada bloque se limita
+a esa persona; hasta esta fecha el parámetro solo cambiaba `scope.level` y la respuesta era la de
+la empresa entera, que el conector de asistentes contaba como si fueran sus números. Ahora:
+`scope.employeeName`; `spine.reliability` con sus entradas (mes y mes anterior); `operatingCost`
+con su plan y sus jornadas (`overall`, sus centros, `employeeCount: 1`); `geo` y `checkFailure`
+con sus marcas; `workerProfile` con su cruce; `evolution.entity` es su serie semanal (como a nivel
+sucursal es la del centro); `experience` solo su fila; `dataHealth` con sus conteos y sin
+`branchPatterns`. Lo que solo existe por centro va vacío o `unavailable` con `reason:
+"branch_property"`, y se enumera en `notApplicable`: `environmentEffect`, `fragility`, `coverage`
+(propiedades del centro), `branches` (nivel entidad) y `people` (nivel sucursal). Las referencias
+que necesitan al resto siguen midiéndose contra el censo —la del fallo de fichaje (`peerRate`) y
+«coincide con otra persona» en ubicación—: se filtra lo publicado, no la referencia, y por eso sus
+cifras son idénticas a las que tiene dentro del cálculo de la empresa. Un `employeeId` que no es
+de la entidad es un 404 `employee_not_found`; `branchId` y `employeeId` a la vez, un 400. En
+SaludStart (oct-2026), Youssef Lozano: 45 h planificadas en 20 días, 40,8 h de presencia, 32
+ciclos (30 limpios), 68 marcas, 2 rechazadas por geocerca.
+
 **Compatibilidad.** `POST /api/analytics/panel/stats` (las 19 métricas portadas) se mantiene
 mientras dure la migración del front. Se retira cuando `overview` cubra sus casos de uso.
 
