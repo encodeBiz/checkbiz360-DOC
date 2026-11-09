@@ -1329,3 +1329,1042 @@ con la casilla), el duplicado con las casillas sin marcar (D6) y el push agrupad
 | 30.6 | App | — | PENDIENTE: publicar la 1.10.1+69 (casillas, adjuntos, historial igual que el panel, responsable, aviso agrupado que abre esos días). Ya puede, porque `tasks` está en prod |
 | 30.7 | Manual | — | PENDIENTE: «las casillas no son un estado guardado» (Crear una tarea, ES/EN/PT) se cambia cuando la app esté publicada |
 
+## 31. Hotfix: festivos y ausencias desde el conector — EJECUTADO el 2026-11-03 (orden de Jose: «bájalo directamente a prod, es un hotfix, los clientes esperan»)
+
+El conector solo leía festivos y ausencias; un cliente no pudo meter los de Madrid (2 y 9-nov,
+7, 8 y 25-dic) y el lunes 2 se contó como laborable. Cinco herramientas nuevas en `assistant`:
+`ver_festivos`, `crear_festivos`, `crear_ausencia`, `cambiar_festivo`, `borrar_festivos`. Si es
+retribuido se pregunta siempre (sin respuesta, `falta_retribuido`), con vista previa y
+`confirmacionId`. Solo `services/assistant`; sin migración, variables, índices ni reglas.
+
+| Paso | Qué | Hora (UTC) | Resultado |
+|---|---|---|---|
+| 31.1 | Rama `hotfix/conector-festivos-ausencias` desde `main` | — | Commit `245b242`, 164/164 tests |
+| 31.2 | `develop` y `staging` | ~09:40 | Merges `[skip ci]` `b6ada0f` y `272cc3f`, por `commit-tree`. **Staging del VPS sin reconstruir**: se fue directo a prod por orden de Jose |
+| 31.3 | `main` | ~09:41 | PR checkbiz-api#242, merge `a57e337` con `[skip ci]`; no arrancó ningún CI |
+| 31.4 | Despliegue | ~09:43 | `/opt/encodebiz-api`: `git pull --ff-only` + `up -d --build --no-deps assistant` (con `--env-file .env.production`) + `restart nginx`. `assistant` `healthy`, `festivos.js` en `dist`, MCP sin token 401 |
+| 31.5 | Prueba real | — | PENDIENTE: que el cliente (o Jose) pida al conector meter un festivo y lo vea en el panel. Los conectores ya autorizados tienen que **volver a leer la lista de herramientas** (reconectar o nueva conversación) |
+| 31.6 | Staging del VPS | ~09:47 | `git pull` a `272cc3f` + `up -d --build --no-deps assistant` + `restart nginx`; `healthy` |
+
+## 32. Hotfix: descripciones de cuadrante para el escaneo de OpenAI — EJECUTADO el 2026-11-03
+
+El escaneo del portal marcó `proponer_cuadrante` y `confirmar_cuadrante` como «description missing,
+blank, or unclear». `confirmar_cuadrante` además decía que no tocaba tareas y en «Por tareas» las
+sustituye. De paso, `crear_festivos`/`crear_ausencia` dicen «ya existe» antes de preguntar si es retribuido.
+
+| Paso | Qué | Resultado |
+|---|---|---|
+| 32.1 | `develop` `8dd390a`, `staging` `c8624ad` (`[skip ci]`) | VPS de dev: `assistant` reconstruido + nginx |
+| 32.2 | PR checkbiz-api#243, `main` `04612af` (`[skip ci]`) | Prod: `git pull` + `up -d --build --no-deps assistant` + `restart nginx`; `healthy` |
+| 32.3 | Comprobado con la cuenta de revisión (OAuth real, sin 2FA) | 44 herramientas; descripciones nuevas servidas; los ocho casos responden. Las escrituras, solo en vista previa |
+| 32.4 | PENDIENTE | `ver_hoy` y `ver_alertas` de Encodebiz enseñan «Servi SAD» y «Encodebiz TEST», sucursales borradas, por sus tareas huérfanas; `listar_sucursales` solo da «Encodebiz» |
+| 32.5 | Limpieza de Encodebiz (datos de prod, orden de Jose) | Servi SAD (sucursal borrada): 9 tareas canceladas por `tasks /system/branch-close` (`cancel`). Encodebiz: 18 abiertas anteriores al 02-nov canceladas y «Cocinar doradas fritas…» (23-oct, en curso) completada, por `PATCH /delegated/:id/status` con hola@ como autor. `ver_alertas` sin alertas. **Sigue pendiente:** `ver_hoy` lista «Encodebiz TEST» (borrada) a ceros; el arreglo de fondo es que `analytics` no cuente sucursales borradas |
+
+## 33. Cartera de clientes (MVP + documentos del cliente) — PENDIENTE (en staging el 2026-11-03/04)
+
+Lo que hay en `staging` y no en `main`, por orden de entrada (`git log --first-parent origin/main..origin/develop`):
+
+| Merge en `develop` | Qué | TDR |
+|---|---|---|
+| `5ab4f25` + `ef81b9f` | Servicio `customers:3018`, clientes y sucursales asignadas; fix nginx de la raíz | [TDR-001](../ingenieria/cartera-de-clientes/tdr/TDR-001-fundacion-y-maestros.md) |
+| `0281aa7` | Dirección del cliente (forma del `workSite`) | TDR-001 §Dirección |
+| `d73fbdd` + `e0292ac` | El cliente en la tarea: `Task.customerId/customerSiteId/customer`, `/for-task`, dirección del cliente por defecto como valla; fuera la tarifa | [TDR-002](../ingenieria/cartera-de-clientes/tdr/TDR-002-el-cliente-en-la-tarea.md) |
+| `7bba626` | Documentos del cliente: `scope: "customer"` en el documental, tipos `customer_*`, `contractsExpiring` | [TDR-003](../ingenieria/cartera-de-clientes/tdr/TDR-003-documentos-del-cliente.md) |
+
+Decisión de alcance: 06 §D11 de la cartera (MVP: sin lugares, sin dedicadas, sin «toda la
+empresa», sin horas por cliente; lo que la API conserva de eso no lo usa nadie). **Sin migración
+de Postgres, sin reglas de Firestore, sin funciones, sin variables nuevas en la API.** Todo es
+aditivo: sin cliente, ningún servicio hace nada distinto.
+
+**Lo que cambia en `shared`** (lo leen casi todos los servicios): `checkbiz/customers/*`,
+`searchIndex` (tipo `customer`), `entities/Task` (tres campos opcionales),
+`FirestoreTaskRepository.findAll` (filtro `customerId`), `taskCustomerSnapshot`. Por eso en el
+pase se reconstruye **todo el stack** (`up -d --build`), no solo `customers`.
+
+### 33.a — Servidor (`/opt/encodebiz-api`, por SSH, el día del pase)
+
+| Paso | Qué | Resultado |
+|---|---|---|
+| 33.1 | `docker-compose.yml` de prod: bloque `customers`, copiado del de staging (abajo), con `--env-file .env.production` como el resto. Sin variables nuevas: usa las mismas credenciales que `inventory` | PENDIENTE |
+| 33.2 | `nginx/nginx.conf` de prod: `upstream customers_service { server customers:3018; }` y las dos `location` de abajo. La exacta (`=`) es obligatoria: sin ella la raíz devuelve 301 y el POST del alta llega como GET (comprobado en staging el 03-nov) | PENDIENTE |
+| 33.3 | `git pull --ff-only` a `main` + `docker compose --env-file .env.production up -d --build` (todo: `shared` cambia) + `restart nginx`. Esperar `healthy` en `customers`, `tasks`, `documents` | PENDIENTE |
+| 33.4 | Índices compuestos de Firestore en **`encodebiz-services`** con gcloud (los tres existen ya en dev): `tasks (customerId ASC, dueAt ASC)`, `tasks (customerId ASC, createdAt DESC)`, `documents (customerId ASC, createdAt DESC)`. Tardan minutos en construirse; hasta entonces el filtro por cliente de la lista de tareas y la lista de documentos del cliente dan error de índice, nada más | PENDIENTE |
+| 33.5 | Comprobación sin token: `curl -s -o /dev/null -w "%{http_code}" https://api.checkbiz360.com/api/v1/customers?entityId=x` → **401** (301 = falta la `location =`; 502 = nginx con IPs viejas → `restart nginx`). Con token de owner de una empresa de pruebas: `GET /api/v1/customers?entityId=…` → lista vacía | PENDIENTE |
+| 33.6 | Vuelta atrás: quitar el bloque de nginx y el servicio; las tareas y documentos siguen igual (los campos nuevos son opcionales y el código viejo los ignora). Los índices no estorban | — |
+
+Bloque de compose (igual que `docker-compose.staging.yml`):
+
+```yaml
+  customers:
+    <<: *service
+    build:
+      context: .
+      dockerfile: services/customers/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=3018
+    volumes: *secret-volumes
+    expose:
+      - "3018"
+    healthcheck:
+      <<: *health
+      test: ["CMD", "wget", "-qO-", "http://localhost:3018/health"]
+```
+
+Bloque de nginx (igual que `nginx.staging.conf`):
+
+```nginx
+  upstream customers_service  { server customers:3018; }
+  …
+    # Customers — cartera de clientes. La lista vive en la raíz sin barra: sin la exacta, 301.
+    location = /api/v1/customers {
+      proxy_pass http://customers_service;
+    }
+    location /api/v1/customers/ {
+      proxy_pass http://customers_service/api/v1/customers/;
+    }
+```
+
+### 33.b — Panel (`encodebiz-front-saas`)
+
+Rama `feat/cartera-de-clientes`, **siete commits sin push**, sobre `develop` `9f72ec59`:
+`29f380a3` (lista, ficha, sucursales), `5e3cab2a` (zona horaria de la dirección), `06cdab3e`
+(fuera la tarifa), `fafac272` (cliente en la tarea), `b7ce6ffd` (MVP: fuera lugares y dedicadas,
+dirección por defecto), `ef5b40ff` (cabecera de la ficha), `367b866e` (documentos del cliente).
+Dos de ellos son de la otra sesión de Claude (`encodebiz-front-saas-9a`).
+
+| Paso | Qué | Resultado |
+|---|---|---|
+| 33.7 | Push de la rama, merge a `develop` y de ahí lo que mande el flujo del panel hasta producción (Vercel solo despliega prod; staging del panel es el portátil) | PENDIENTE |
+| 33.8 | Variable en Vercel (prod): `NEXT_BACKEND_URI_CHECKINBIZ_CUSTOMERS_HANDLER=https://api.checkbiz360.com/api/v1/customers`. Sin ella el proxy `checkinbiz_customers_handler` responde error de configuración y la pantalla «Clientes» sale vacía con aviso | PENDIENTE |
+| 33.9 | Comprobar en prod con una empresa de pruebas: menú «Clientes» → alta con dirección y contactos → en una tarea de esa sucursal aparece «Cliente» y el check de la dirección → ficha con bloque «Documentos»: subir ficha (`worker`) y contrato (`manager`, con fecha de fin próxima) → la cabecera avisa del contrato → Gestión documental filtra por «Cliente» | PENDIENTE |
+
+### 33.c — App (`checkbiz360`)
+
+Rama `feat/cliente-en-la-tarea`, commit `9c8b3ed` sobre `develop` `559ef83` (versión `1.11.1+71`,
+la misma que `master`). Añade `customerId`/`customer` al modelo de la tarea, «Cliente: nombre» y
+«Ver datos del cliente» en el detalle, y el panel inferior con notas de campo, contactos con
+llamada y documentos del cliente (`GET /customers/for-task/:taskId` + descarga del documental).
+Sin cliente, la tarea se enseña igual. **Las apps ya instaladas funcionan con la API nueva** (la
+valla del cliente les llega como un `workSite` normal).
+
+| Paso | Qué | Resultado |
+|---|---|---|
+| 33.10 | Merge a `develop` **hecho el 2026-11-05** (`2a53347`, sin CI en el repo de la app). Probar contra dev con `flutter run -t lib/main_development.dart --flavor development --dart-define=ENVIRONMENT=development` (ver `project-app-version-publicada`) en una tarea de la demo de Neteges con cliente: nombre, contactos visibles, ficha visible, contrato NO visible como trabajadora | PENDIENTE |
+| 33.11 | Subir versión (`1.12.0+72`), `master`, publicar en tiendas. Solo después de que la API esté en prod (33.3): la app nueva contra la API vieja pide `/api/v1/customers` y recibe 404 → el panel del cliente dice que no se pudieron cargar los documentos, nada más | PENDIENTE |
+
+### 33.d — Lo que no entra en este pase
+
+- `branches-to-customers` (Neteges): descartado hasta tener todo claro (06 §D11).
+- Horas por cliente, informe y portal: Fases 3 y 6, sin fecha. Los contratos del cliente y su rentabilidad (Fase 5) van aparte, en §35.
+- Columna «Cliente» en la plantilla del cuadrante por tareas: sin decidir.
+
+## 34. Histórico para la previsión: la tarea del fichaje, el puesto con su precio y el historial de la tarea — PENDIENTE (en staging el 2026-11-03/04)
+
+Solo datos: no cambia ninguna pantalla ni ninguna ruta. Es la base de la rentabilidad y la previsión de
+la Fase 5 de la cartera (`DOCS/ingenieria/cartera-de-clientes/03_modelo-de-datos.md` §«El histórico»,
+ADR-006), que no sale en esta versión (06 §D11). En `develop` `8fb2e8a` y `staging` `cdac13d`
+(`[skip ci]`). Sin reglas, sin índices de Firestore, sin variables, sin funciones (`firebase_sdk` no
+escribe historial de tareas: compila y no se despliega).
+
+Tres cosas nuevas en Postgres, todas con relleno hacia atrás: `checklogs_raw.task_id` (sale del JSON
+`schedule_applied`; la migración lo rellena), `dim_responsibilities.job_name/job_price` más
+`responsibility_events` (alta, retirada y cada cambio de puesto o precio; lo siembra el job de
+dimensiones en su primera pasada, un evento de alta por responsabilidad con `changed_at = assignedAt`),
+y `task_events_raw`, espejo 1:1 de la subcolección `activity` escrito desde `shared` por todos los
+servicios que escriben historial (`tasks`, `inventory`, `checkinbiz`).
+
+| Paso | Qué | Resultado |
+|---|---|---|
+| 34.1 | Migración 050 (`050_historico_prevision.sql`), a mano y **antes** de reconstruir `analytics`: su `INSERT` en `dim_responsibilities` lleva `job_name` y sin la columna el job de dimensiones (minuto 20 de cada hora) falla y queda en `dim_sync_log`. `… psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/050_historico_prevision.sql`. Esperado: `ALTER TABLE`, `UPDATE n`, `CREATE INDEX`, `ALTER TABLE` ×2, `CREATE TABLE`, `CREATE INDEX`, `CREATE TABLE`, `CREATE INDEX` ×2. Todo `IF NOT EXISTS`: repetirla no hace daño. En dev: `UPDATE 621` de 10 938 fichajes | PENDIENTE |
+| 34.2 | Contenedores, por SSH y sin CI: `git pull` + `up -d --build --no-deps sync analytics tasks inventory checkinbiz` + `restart nginx`. Los cinco llevan `shared` (`checklogsRaw`, `FirestoreTaskRepository.afterActivity`); `analytics` además `SyncDimensions`. Los demás no cambian | PENDIENTE |
+| 34.3 | Historial hacia atrás: en el contenedor `tasks`, `node services/tasks/dist/scripts/backfill-tasks.js --entity <una grande> --apply --history` y después `--all --apply --history`. Es un upsert; repetirlo no duplica. En dev, `--all` tardó más de diez minutos y dejó 24 787 entradas de 9 685 tareas | PENDIENTE |
+| 34.4 | Esperar al job de dimensiones (minuto 20) y comprobar: `SELECT count(*) FROM responsibility_events` > 0 y `count(*) FROM dim_responsibilities WHERE job_price IS NOT NULL` cerca del total; `dim_sync_log` sin error. En dev: 5 646 eventos, 5 623 con precio | PENDIENTE |
+| 34.5 | Vigilancia: `logs --since 1h tasks inventory checkinbiz` sin «espejo pendiente del historial»; `GET /api/v1/tasks/calendar` sin parámetros → 400 (502 = nginx con IPs viejas) | PENDIENTE |
+| 34.6 | Vuelta atrás: nada que deshacer. Las columnas y tablas nuevas son aditivas y ningún lector las usa todavía; el código viejo las ignora | — |
+
+**Registro de dev, 2026-11-03 22:11 UTC → 04-nov:** `git pull` en el VPS (`cdac13d`), migración 050 con la
+salida esperada (`UPDATE 621`), los cinco contenedores reconstruidos `healthy`, nginx reiniciado,
+`backfill-tasks --all --apply --history` terminado sin fallos (24 787 entradas, 9 685 tareas), job de
+dimensiones de las 08:20 UTC con 5 646 eventos de puesto, sin «espejo pendiente» en el log de `tasks`,
+`/api/v1/tasks/calendar` → 400.
+
+## 35. Contratos del cliente y su rentabilidad (cartera, Fase 5, TDR-004) — PENDIENTE (API en staging y panel commiteado el 2026-11-05)
+
+El contrato cuelga **del cliente**, como un documento más, y un cliente puede tener varios a la
+vez (Jose, 05-nov). Cada tarea dice de qué contrato es (`Task.contractId`): se pone solo si el
+cliente tiene un único contrato vigente en la fecha de la tarea; con varios, lo elige el panel;
+nunca se bloquea una tarea por no tener contrato. El coste de un contrato es la suma de sus
+tareas, **en bruto**: fichajes de la tarea (`checklogs_raw.task_id`, migración 050) o, si no los
+tiene, su reloj por el precio del puesto. Importe, coste y margen solo owner y admin. **Core, sin
+puerta** («el add-on es la capa de app cliente»). La lectura del PDF va por `merlin`, con el borde
+que tacha nombres, DNI, direcciones, teléfonos, correos e IBAN antes de llegar a OpenAI.
+
+Diseño: [TDR-004](../ingenieria/cartera-de-clientes/tdr/TDR-004-rentabilidad-del-montaje.md),
+06 §D17, §D18 y §D11 bis. En `develop` `7335a36` y `staging` `b06ecd4` (`[skip ci]`), rama
+`feat/customers-rentabilidad` (`99f76e1`, `8a56ace`, `69a03ed`, `6e1f2e1`, `0316b1a`, `c4ba349`, `2e51214`, `df52293`, `a12c247`, `233bf33`, `b5815df`, `dabb2d3`, `0045fe5`, `f105998`). Los merges
+`f6f6c67`/`7335a36` y `cd38de2`/`b06ecd4` llevan el mismo contenido (un reintento); no estorban.
+
+**Depende de §33** (servicio `customers` en prod) **y de §34** (`checklogs_raw.task_id` y
+`dim_responsibilities.job_price`, sin los que las horas y el coste salen vacíos). Va en el mismo
+pase o después, nunca antes.
+
+**Lo que cambia en `shared`:** `checkbiz/customers/entities/CustomerContract`, su repositorio,
+`contractForecast`, `taskContract`, `Task.contractId` (opcional) y `downloadPrivateFile`. Si §33 ya
+reconstruye todo el stack, esto entra en esa misma reconstrucción.
+
+### 35.a — Servidor
+
+| Paso | Qué | Resultado |
+|---|---|---|
+| 35.1 | Migración 051 (`051_contratos_montaje.sql`), a mano: `… psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/051_contratos_montaje.sql`. Esperado: `CREATE TABLE` y `CREATE INDEX` ×4 (`customer_contracts`, `contract_events`, `contract_outcomes`, `contract_forecasts`). Todo `IF NOT EXISTS`. Antes de reconstruir `customers`: si no, el espejo falla a mejor esfuerzo y solo deja avisos en el log | PENDIENTE |
+| 35.2 | Contenedores: `customers`, `tasks` y `merlin` (o todo el stack si va con §33). `restart nginx`. Sin variables nuevas: `customers` ya lee `DATABASE_URL` del `env_file` común y `merlin` ya tiene `OPENAI_API_KEY` | PENDIENTE |
+| 35.3 | Firestore: **ningún índice compuesto**. `tasks where contractId ==` usa el de campo único que Firestore crea solo; `customerContracts where customerId == and status ==` se resuelve fusionando índices de igualdad | — |
+| 35.4 | Comprobación sin token: `POST https://api.checkbiz360.com/api/v1/gpt/contratos/leer` → 401; `GET …/api/v1/customers/contracts/x?entityId=x` → 401. Con token de owner de una empresa de pruebas: cliente → contrato con importe y horas → tarea del cliente sin decir contrato → la tarea lleva `contractId` → `GET /:customerId/contracts` con la tarea contada | PENDIENTE |
+| 35.5 | Vuelta atrás: los campos y tablas son aditivos; las tareas con `contractId` siguen funcionando con el código viejo, que lo ignora | — |
+
+**Registro de dev, 2026-11-05:** `git pull` en el VPS (`a0056fb`), migración 051 con la salida
+esperada, `customers`, `tasks` y `merlin` reconstruidos `healthy`, nginx reiniciado. Prueba contra
+staging con la demo de Neteges: contrato con estimación → `initialEstimate` congelado; un vigente
+→ la tarea lo toma sola; dos vigentes → sin contrato, `options` dice 2, el PATCH con id lo pone,
+un id inexistente da 400 y `null` lo quita; la lista suma sin doble cuenta; borrar un contrato con
+tareas da 409; cerrar y reabrir. Datos de prueba borrados de Firestore y de Postgres.
+
+**Registro de dev, 2026-11-05 (2):** `merlin` reconstruido con el arreglo del recuento (`768b052`),
+`POST /api/v1/gpt/contratos/leer` sin token → 401. Prueba de punta a punta **por el proxy del panel
+en local** (`:3100`) contra staging: PDF de contrato inventado subido a un cliente de la demo →
+«Leer el PDF» devuelve importe 8 400 € sin IVA, inicio y fin, 96 h (tres operarios × cuatro jornadas
+× ocho horas) y complejidad 5, cada dato con su frase, sin avisos → contrato creado con lo leído
+(201) y la extracción guardada como evidencia (evento `extracted`) → `options` vigente →
+`contracts` con total. Limpieza: contrato, documento, fichero del bucket, cliente y filas de
+Postgres. **Sin probar todavía:** un PDF real de cliente, uno escaneado (422) y una tarea con
+fichajes reales.
+
+**Registro de dev, 2026-11-05 (3) — RGPD:** Jose fijó que **todo documento que llega a un modelo
+va anonimizado**. La sombra del contrato dejaba pasar nombres que no estaban en Firestore ni
+llevaban «D.»/«Dña.» delante; ahora tacha todo tramo con mayúscula que no sea vocabulario seguro
+de contrato (`0316b1a`, tests de la fuga). `merlin` reconstruido en el VPS con esa versión
+(comprobado dentro del contenedor), nginx reiniciado, `contratos/leer`, `customers`, `tasks` y
+`documents` sin token → 401. **Antes del pase a prod esto es condición:** sin `0316b1a`, la
+lectura de contratos no sale.
+
+**Velocidad de la lectura (05-nov, `c4ba349`).** El modelo con el razonamiento de serie tardaba
+30–41 s en un contrato de 20.000 caracteres; ahora el lector de contratos —y solo él— va con
+`reasoning.effort: "low"`: 17–18 s punta a punta por el endpoint, misma lectura (importe y horas).
+`CONTRATOS_ESFUERZO` en el `.env` lo cambia sin código; en prod **no** hay que ponerla. En
+staging `develop` `9875a38` y `staging` `19f5906` (solo ese fichero: el develop → staging habría
+arrastrado `purgaEmpresas.ts` de otra sesión), `merlin` reconstruido y nginx reiniciado.
+Antes del pase, probar con un contrato real largo que «low» lea igual.
+
+**Rentabilidad desde Postgres (05-nov, `df52293`, migración 053).** Las tareas de cada contrato
+se leían de Firestore en cada apertura de la ficha (una lectura por tarea, sin tope, por
+contrato). Ahora `tasks_raw.contract_id` + `PostgresContractTasks`: 1000 tareas en 1 ms frente a
+1165 lecturas y ~0,35 s. El recuento que impide borrar un contrato con tareas sigue en Firestore.
+Los fichajes de las tareas van con dos uniones por índice (14 ms frente a 26 ms con 100.000
+fichajes). **Orden en prod, que importa:**
+1. Aplicar `053_contrato_en_tasks_raw.sql` en `encodebiz_analytics` (a mano, mirando el resultado).
+2. Desplegar `tasks` (el espejo escribe `contract_id`; sin la 053 cada escritura del espejo
+   fallaría y quedaría para el `remirror`) y `customers`.
+3. `backfill-tasks --all --apply` dentro del contenedor `tasks` (sale con error si no cuadra).
+En staging: 053 aplicada, desplegados, backfill de QA y Neteges Demo «cuadra», la rentabilidad
+de los cuatro contratos idéntica antes y después, y una tarea de prueba espejada con su contrato
+y marcada al borrarla.
+
+**Tareas de un contrato cerrado (06-nov, `a12c247` y `233bf33`).** Editar una tarea cuyo contrato
+se había cerrado devolvía `task/contract_closed` (el panel reenvía el contrato al guardar) y no
+se podía tocar. Ahora el que ya tenía se conserva; asignar uno cerrado sigue rechazado. Duplicar
+copiaba el contrato cerrado; ahora la copia sale sin contrato (no el único vigente: en staging un
+montaje se colgaba del mantenimiento). Reproducido antes y comprobado después en staging, con el
+contrato «Stand feria» de QA cerrado y reabierto.
+
+**Borrar un contrato borra su PDF (06-nov, `b5815df`, solo `customers`).** Jose: «si o si». Se
+van el fichero (y el original si se firmó), la ficha del documento con su historial y su entrada
+de `searchIndex`, salvo que otro contrato del cliente cuelgue del mismo documento. El espacio lo
+descuenta `storageUsageDeleted`. Comprobado en staging (QA Eventos): antes ficha, buscador y
+fichero; después, ninguno.
+
+**La ficha lee los contratos de Postgres (06-nov, `0045fe5` y `f105998`, migración 054).** Todo
+lo calculado ya salía de Postgres; la lista de contratos del cliente y el selector de la tarea
+aún leían Firestore. Ahora leen `customer_contracts` y vuelven a Firestore solo si Postgres no
+responde. La 054 añade `notes`, `extraction` e `initial_amount_cents`. **Orden en prod:** aplicar
+la 054 → desplegar `customers` → `backfill-contracts.js --all` (simula) → `--all --apply`. En
+staging: 5 contratos, 0 faltaban, 0 sobraban; comparado campo a campo con Firestore, iguales
+(solo cambia el orden de claves de `extraction`, que reordena JSONB). La ficha: ~0,4 s.
+
+**Panel, mismo día (`feat/cartera-de-clientes`, sin commitear aún):** el total del cliente dice
+«contratado» y no «cobrado»; las horas del contrato salen «planificadas / hechas / previstas»
+(«10,7 / 0 / 136 h»; sin estimación, las dos primeras; en rojo si las hechas pasan de las
+previstas). Las planificadas las da la API (`plannedMinutes`, solo `customers`): de la hora de
+inicio al vencimiento de cada tarea, por persona asignada, desde `tasks_raw`; el bloque de documentos del cliente dentro de la tarea solo enseña lo visible para
+trabajadores (los contratos se quedan en la ficha del cliente).
+
+**El conflicto de «horario por tareas» con nombre y tarea (05-nov, `2e51214`).**
+`task/incompatible_with_tasks_mode` añade `employeeName` y `withTask {title, date, start, end}`
+(opcionales). El panel monta «X ya tiene «Y» de 09:55 a 12:25 ese día…»; sin esos campos, el
+texto genérico. `tasks` desplegado en staging.
+
+### 35.b — Panel (`encodebiz-front-saas`)
+
+Tres commits más en `feat/cartera-de-clientes`, sin push, encima de los siete de §33.b: `1a094562`
+(documentación administrativa), `c6647d05` (contratos) y `9d5556ab` (aviso de la IA), y otros tres del 05-nov por la tarde, `d75b57c3`, `c627fc28` y `fdbc5393`: «Subir PDF» dentro de «Nuevo contrato» (`ContractFormDialog.tsx`, `CustomerContractsSection.tsx`, cinco locales): el PDF se sube como contrato del cliente, solo gestores, y queda elegido para leerlo. `TaskFormDialog.tsx` deja de poner solo el cliente cuando la sucursal tiene uno (una tarea de administración no es de ningún cliente), `errorLocales.ts` + `task.service.ts` montan el aviso del conflicto de horario por tareas con nombre y tarea, y `ITask.ts` deja «Requerir evidencia al completar» desactivado por defecto (lo había pedido Jose; las tareas existentes conservan su valor). Van en el mismo push y merge que §33.7.
+**Ojo al mergear:** la sesión de la hoja informativa toca `DocumentUploadModal.tsx` como hotfix a
+`main` (un tipo sin fichero); `1a094562` toca el mismo fichero (visibilidad por defecto y aviso).
+
+| Paso | Qué | Resultado |
+|---|---|---|
+| 35.6 | Documentación administrativa: el contrato y el presupuesto del cliente salen visibles solo para gestores, y marcar supervisores o trabajadores enseña un aviso en rojo (06 §D18). `1a094562` | PENDIENTE |
+| 35.7 | Contratos: bloque «Contratos» en la ficha con tarjeta de rentabilidad, total y previsión; diálogo con «Leer el PDF» y la cita debajo de cada dato; «Contrato» en la tarea solo con más de un vigente; nombre del contrato en el detalle. `c6647d05` | PENDIENTE |
+| 35.7b | Aviso de lo que llega a la IA (`AiPrivacyNotice`) en «Leer el PDF» del contrato y en la importación del cuadrante de una persona. `9d5556ab` | PENDIENTE |
+| 35.8 | Variable nueva en Vercel (prod): `NEXT_BACKEND_URI_CONTRATOS_LEER=https://api.checkbiz360.com/api/v1/gpt/contratos/leer`. Sin ella «Leer el PDF» da error de configuración del proxy; el resto de contratos funciona (va por `NEXT_BACKEND_URI_CHECKINBIZ_CUSTOMERS_HANDLER`, de §33.8) | PENDIENTE |
+| 35.9 | Comprobar en prod con una empresa de pruebas: subir un contrato a un cliente → Contratos → Nuevo contrato → elegir el PDF → «Leer el PDF» → revisar citas → guardar → crear una tarea del cliente: sin selector con un contrato; con dos vigentes, el selector sale | PENDIENTE |
+
+**App:** nada.
+
+
+## 36. Cerrar desde administración pide inicio y cierre; informe de tareas desde Postgres — EJECUTADO el 2026-11-05 (orden de Jose: «si ya lo has probado todo y funciona bien bájalo a prod»)
+
+**Por qué.** Un cliente cerraba tareas desde administración y «no salían en el informe»: pasaban
+de Asignada a Completada sin `startedAt` y el Excel dejaba en blanco Inicio, Tiempo y Pausas
+(reproducido en staging). Y el informe leía Firestore con `limit(1000)` por vencimiento: en la
+demo de Neteges de staging, noviembre tiene 1.143 tareas y el lector viejo devolvía 1.000, sin
+aviso. El «verde que no actualiza» de la app (supervisor asignado, «Todas las personas») es solo
+su parte cerrada: el aviso «Tu parte está hecha» está en la app desde el 28-oct y **no está en la
+1.10.0+68** de las tiendas.
+
+**Qué cambia.**
+- `tasks`: cerrar entera una tarea sin inicio sin ser parte de ella exige `startedAt` y
+  `completedAt` (400 `task/times_required` / `task/invalid_times`). La tarea guarda
+  `completionSource` (`administration` | `assignee`) y la actividad `manualTimes`. El espejo
+  gana `evidence_count` y `completion_source`; subir o quitar un recurso reespeja la tarea.
+- `reports`: el informe de tareas sale de `tasks_raw` + `task_ratings_raw` + dimensiones, sin
+  tope; columna nueva «Completada por» con «(desde administración)». El material del add-on sigue
+  en Firestore, por lotes.
+- Panel: diálogo «Completar tarea» con Inicio y Cierre (botón y «Editar»); «Completada por … ·
+  desde administración» en la ficha y las horas en el historial.
+- App: mensaje propio para `task/times_required` (solo llega con la pantalla desfasada).
+
+Ramas `fix/tareas-cierre-desde-gestion` en API (staging `5ce14f9`), panel (`develop` `37d1d86a`)
+y app (`develop` `3579ca1`). QA: TSK-20-01..13, INF-02-20; TSK-11-47 cambió a esperar el 400.
+Panel probado en local contra staging con Playwright (los dos caminos).
+
+**🔴 Orden.** Panel **antes o a la vez** que la API: con la API nueva y el panel viejo, completar
+una tarea sin iniciar desde el panel da error. El panel nuevo contra la API vieja no rompe nada
+(manda dos campos que se ignoran).
+
+| Paso | Qué | Hora (UTC) | Resultado |
+|---|---|---|---|
+| 36.0 | Solo el arreglo, no `staging` | — | `staging`/`develop` llevan §33-§35 sin aprobar: ramas `hotfix/tareas-cierre-desde-gestion` desde `main` con cherry-pick por `merge-tree`. API: `c48f91b`, `f4a8569`, `48b7bce`; único conflicto el `import` de `TaskPgMirror.ts` (sin `TaskActivity`/`upsertTaskEventRaw` del histórico). Panel: `0ef79376`. `tsc` limpio en `tasks`/`reports`, `reports` 5/5; los 29 errores de `tsc` del panel son los mismos que en `main` (imágenes) |
+| 36.1 | Panel a `main` y Vercel | 15:51 | PR front#149, merge `26c0704c` **sin** `[skip ci]` (lo despliega Vercel). Vercel `Production` en verde antes de tocar la API |
+| 36.2 | Migración 052 en `encodebiz_analytics` | 15:51 | `ALTER TABLE` ×2, `ON_ERROR_STOP`; antes no existían las columnas |
+| 36.3 | API a `main` y despliegue | 15:53 | PR checkbiz-api#255, merge `b4696aa` con `[skip ci]` (no arrancó CI). `git pull --ff-only` + `up -d --build --no-deps tasks reports` (con `--env-file .env.production`) + `restart nginx`; los dos `healthy`, `PostgresTaskReportClient.js` en `dist` |
+| 36.4 | Backfill | ~15:56 | Simulado: 5 empresas, 168 tareas, 0 filas a marcar borradas. Con `--apply`: «cuadra» en las cinco; las 168 con `evidence_count` |
+| 36.5 | Comprobación | ~15:58 | Lector nuevo ejecutado en solo lectura dentro de `reports` (oct-nov): nDON8… 66 filas, 27 cerradas, las 27 con inicio; OPnlEi… 15 filas, 8 cerradas, 7 con inicio (la que falta es de antes del arreglo: sin hora que recuperar). **PENDIENTE:** prueba real en el panel (completar una sin iniciar pide horas) y el informe del cliente que se quejó |
+| 36.6 | App | — | PENDIENTE: el mensaje nuevo va con la próxima versión; la 1.11.x ya trae «Tu parte está hecha» |
+
+## 33. Purga de empresas: de 16 a 5 — EJECUTADO el 2026-11-05 (orden de Jose: «cancela suscripción y bórralas también»)
+
+Se quedan Ayudarte, Neteges, Tapissat (`W6aVQj7L…`), Arendel y Encodebiz. Se borraron las otras 11.
+
+**Incidente:** el borrado se ejecutó a las **12:19–12:23 UTC** con la primera versión del script (sin copia previa, con `--resto`), desde una orden que Jose interrumpió en el cliente: el `docker exec` siguió corriendo en el contenedor. Claude lo dio por no ejecutado sin comprobarlo en el servidor y lo descubrió a las 16:20. Borró exactamente las 11 ordenadas (15.306 docs, 7.429 filas, 69 ficheros, 44 cuentas). Sin copia previa; Firestore tiene PITR de 7 días y Storage soft delete de 7 días por si hiciera falta recuperar algo hasta el 12-nov.
+
+| Paso | Qué | Resultado |
+|---|---|---|
+| 33.1 | Stripe | Bitfera `sub_1TdYuv…` cancelada en el acto (0 €). ACB2 LLC ya estaba cancelada en Stripe desde sep. Clientes de Stripe y facturas, intactos |
+| 33.2 | Regla de ciclo de vida | `system/respaldos/r30/` se borra a los 30 días, en `encodebiz-services` y `dev-encodebiz` (las 6 reglas del quiosco, intactas) |
+| 33.3 | Código | PR checkbiz-api#256 (`47af5c0`, `[skip ci]`), solo `backoffice` reconstruido. Probado antes en staging en cuatro pasadas |
+| 33.4 | Residuo limpiado | ACB2 LLC: 191 filas de Postgres reescritas por la sync de analytics durante el borrado; 23 tokens de avisos de las 44 cuentas; 10 docs de `ai-analizer`. Copia de todo en `gs://encodebiz-services.firebasestorage.app/system/respaldos/r30/purga-empresas/2026-11-05/`, con el informe del borrado |
+| 33.5 | Comprobación | 5 empresas, intactas (personas, sucursales, roles, pertenencias, buscador). De las 11: 0 en Firestore, Storage, Auth y Postgres, salvo `backoffice_audit` (se conserva a propósito) |
+| 33.6 | PENDIENTE | Conectar la purga a la pantalla de Mantenimiento del backoffice (`application/maintenance/purgaEmpresas.ts`). `ai-analizer` ya cubierto en develop (`85cbf68`), no en prod |
+| 33.7 | Panel de dirección | Foto provisional del 05-nov (`backfill`, la sustituye el cierre de las 04:20). Histórico: recalculados solo `clientes`, `clientes_de_baja`, `altas` y `clientes_activos` de 379 de 430 fotos con las empresas que existen (orden de Jose: «sí, corrige»); el resto de cada foto, intacto. Valores de antes en `…/purga-empresas/2026-11-05/direccion-contadores-antes.json` |
+| 33.8 | Panel de dirección, suscripciones | Recalculados `pagando`, `en_prueba`, `gratis`, cuota y pruebas que vencen de 379 fotos con las empresas que existen (antes 8 pagando el 04-nov, ahora 4). Comparado antes de escribir: solo cambiaba la parte de las borradas (−4 pagando, −3 gratis, ~−54 €). Valores de antes en `…/2026-11-05/direccion-cuotas-antes.json` |
+| 33.9 | Panel de dirección, plantilla | `plantilla_activa` recalculada en 369 fotos con las empresas que existen (130 → 100 el 04-nov; ninguna sube). Cuadra con la cuota: 100 × 2 € = 200 €. Valores de antes en `…/2026-11-05/direccion-plantilla-antes.json`. Fichajes, empleados que fichan y tareas del histórico siguen con las borradas |
+
+## 37. IVA: todos más IVA, viejos y nuevos — PENDIENTE (en staging el 2026-11-03 y 05)
+
+Diseño: [07_iva-altas-nuevas.md](../ingenieria/billing-v2/07_iva-altas-nuevas.md).
+
+> **DECISIÓN VIGENTE (Jose, 05-nov, noche): «es mejor ponerle el IVA a todos, viejos y
+> nuevos»; «todos por el billing nuevo»; se hace en el pase de esta versión, no antes.** Sustituye
+> a las anteriores (03-nov «solo a los nuevos»; 05-nov tarde «add-ons siempre, el base de los de
+> antes sin IVA»). Mientras no se pase, en prod queda lo hecho el 05-nov: el IVA **incluido y
+> desglosado** en las suscripciones de antes (ver abajo). Con el pase, todos pagan «2 € + IVA».
+
+**Lo que esto añade al pase** (además de 37.1–37.7):
+- `BILLING_VAT_SINCE` con una fecha antigua (p. ej. `2020-01-01T00:00:00Z`): toda alta, de quien
+  sea, es «nueva» y va más IVA; desaparece el hueco del cliente que vuelve.
+- **Migrar las suscripciones que ya existen** al precio «más IVA» con el tipo sumado. Stripe NO
+  deja poner el tipo sumado sobre un precio «IVA incluido» (probado en el Stripe de pruebas el
+  05-nov: *«One or more prices has a `tax_behavior` that conflicts with the tax rates…»*), y la
+  marca de un precio no se cambia: hay que cambiarles el **precio** a `stripePriceVat`. Script en
+  `billing` con la misma lógica que el alta (`vatPrice` + `vatTreatment`), simula por defecto,
+  `--apply`, sin prorrateo; probarlo antes en staging. Afecta a Ayudarte (82 → 99,22 €), Neteges
+  (56 → 67,76), Tapissat (8 → 9,68), Encodebiz (14 → 16,94) y Arendel checkbiz (56 → 67,76); el
+  Departamento de Arendel ya va sumado.
+- **Aviso a cada cliente antes de su próxima factura** (Jose lo envía o da el OK al texto). Antes,
+  mirar cómo figura el precio en la web y en las condiciones aceptadas («2 € + IVA» o «2 €»).
+- Opcional: quitar del código la distinción nuevo/de antes, que deja de tener sentido.
+
+Código (`billing` y `shared`): `433e5fd` (IVA 21 % con tipo fijo de Stripe), `4dab648` (precio
+«más IVA» `stripePriceVat`), `9bdbe55` (add-ons siempre). En staging `e7fb011`, `billing`
+reconstruido el 05-nov; QA de facturación en verde el 03-nov (sin repetir tras `9bdbe55`).
+
+Lo comprobado en staging (Stripe de pruebas, 05-nov): tipo `IVA 21%` con `inclusive: false`;
+Bronze `stripePrice` «inclusive» y `stripePriceVat` «exclusive», los dos 2 €; inventario y
+quiosco `tax_behavior: unspecified` (admiten el tipo sin segundo precio). La regla, con los
+cinco casos (base de antes sin IVA; add-ons de antes, base nuevo y add-on nuevo con IVA; sin
+`BILLING_VAT_TAX_RATE` nada). **Punta a punta (05-nov, 20:41 UTC):** Neteges Demo, cliente de
+Stripe del 30-oct (de antes del corte `2026-11-03`), contrató inventario → suscripción con el
+21 %, sin `[billing][ALERTA]`; en prueba, factura a 0 € no enviada.
+
+**Los clientes que ya están: IVA desglosado, EJECUTADO en prod el 05-nov** (Jose: «no se le suma
+pero se le desglosa», «solo para los que ya están», configuración de Stripe y no código). Antes,
+solo Arendel desglosaba, con el cálculo automático de Stripe que había puesto Jose a mano y que
+costaba ~26 €/mes (≈1,1 % de lo facturado con él). Simulado en el Stripe de pruebas (82 € →
+67,77 + 14,23; 1.950 € → +409,50) y en prod sin escribir; después, con un script desde el
+contenedor `billing` de prod:
+- Suscripciones checkinbiz de Ayudarte, Neteges, Tapissat, Encodebiz y Arendel: tipo **21 %
+  incluido**, mismo total (Ayudarte 82 € = 67,77 + 14,23; Neteges 56 = 46,28 + 9,72; Tapissat
+  8 = 6,61 + 1,39; Encodebiz 14 = 11,57 + 2,43; Arendel igual que antes).
+- Departamento Tecnológico Adjunto de Arendel (1.950 € «más IVA»): tipo **21 % sumado**, mismo
+  2.359,50 €.
+- Las dos de Arendel, cálculo automático **apagado** (fuera la comisión).
+- Ayudarte, Neteges y Tapissat no tenían en Stripe ni CIF ni dirección: se pusieron los de su
+  ficha legal (misma lógica que `completeCustomerForVat`). El CIF de Encodebiz (`ES60466706M`)
+  Stripe no lo acepta como `es_cif`: va como campo «CIF/NIF» de la factura.
+- Sin prorrateo: ninguna factura emitida cambia; se nota desde la próxima de cada uno (Encodebiz
+  17-nov, Neteges 21-nov, Tapissat 22-nov, Arendel DTA 26-nov, Ayudarte 30-nov, Arendel 03-dic).
+  Comprobado con la vista previa de Stripe y leyendo el estado final.
+
+**Hueco que queda con el código del §37:** un cliente de antes que se dé de baja del plan base y
+vuelva sale **sin** IVA (el código solo sabe «sin IVA» para el base de los de antes). Hasta
+cambiarlo, ponerle a mano el tipo incluido. Si se quiere en código: el base de un cliente de antes
+con `txr_…iXjfPX36`.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 37.1 | Tipo de IVA en el Stripe real | **HECHO el 05-nov.** No había ninguno (las facturas a mano de Arendel iban con el cálculo automático, no con un tipo). Creados `txr_1UYXo6JdldmbRy89Ng7DZlRX` (21 %, se suma: el de `BILLING_VAT_TAX_RATE`) y `txr_1UYXo6JdldmbRy89iXjfPX36` (21 % incluido) |
+| 37.2 | Precio «más IVA» de Bronze en el Stripe real | **No existe** (leído el 05-nov: el producto solo tiene 2 € `inclusive` ×2, 2,50 € y 3 € `unspecified`). Crear 2 €/mes `tax_behavior: exclusive` y apuntarlo en `service/checkinbiz/plan/bronze.stripePriceVat` de `encodebiz-services` |
+| 37.3 | Precios de los add-ons en el Stripe real | Leído el 05-nov. **Inventario `price_1UPJ9q…` es `inclusive`** («29 EUR/mes hasta 50 empleados + 0,75 EUR por empleado a partir del 51 (IVA incluido)»): sin su par, el alta de inventario saldría **sin IVA** con `[billing][ALERTA]`. Crear el mismo escalonado `exclusive` y apuntarlo en `service/inventory/plan/standard.stripePriceVat`. Quiosco `price_1UT200…` es `unspecified`: sirve tal cual. (En staging inventario es `unspecified`, por eso allí funcionó.) |
+| 37.4 | `.env.production` | `BILLING_VAT_TAX_RATE=<txr_ de 37.1>` y `BILLING_VAT_SINCE=<fecha y hora del pase, ISO>`: los clientes de Stripe creados desde ahí son «nuevos» |
+| 37.5 | Desplegar `billing` | Por la cadena `staging → main`; `shared` va dentro de la imagen |
+| 37.6 | Verificar | Un alta nueva de prueba con Bronze → la suscripción de Stripe lleva el tipo; el log no dice `[billing][ALERTA]`. Una empresa de antes que contrate un add-on → con IVA; su plan base, sin |
+| 37.7 | Si algo falla | Quitar `BILLING_VAT_TAX_RATE` del `.env` y reiniciar `billing`: sin ella no se aplica IVA a nadie |
+
+## 38. Hotfix: el documento personal de otra persona solo lo ven owner y admin, y desde la app nadie — EJECUTADO el 2026-11-06 (orden de Jose: «sí y urgente», «lo pruebas directamente en main»)
+
+Cindy veía desde la app los documentos de empleado de Jose en Encodebiz. Dos causas: `canRead`
+dejaba ver un documento personal ajeno a cualquier compañero de la misma sucursal con su rol en
+`visibleToRoles` (el panel marca los tres por defecto), y la lista de la app pide sin
+`employeeId`, con lo que a una owner (Cindy lo es) le devolvía todo, contratos incluidos. Regla
+nueva (Jose): empresa y sucursal son públicos para quien pertenece; el de otro empleado solo
+owner/admin, y desde la app nadie sea quien sea. El canal se saca del `User-Agent` (la app lo
+sustituye por la huella del dispositivo; el panel es `Mozilla/…`); Jose lo acepta como hotfix y
+pide un método comprobable en una fase 2 (TDR-002 de `documental-service`). Solo
+`services/documents`; sin migración, variables, índices ni reglas.
+
+| Paso | Qué | Hora (UTC) | Resultado |
+|---|---|---|---|
+| 38.1 | Rama `hotfix/documentos-empleado-solo-propios` desde `main`, en worktree sin `node_modules` (enlaces al árbol principal para `tsc`), borrado al terminar | ~11:30 | Commit `1cbdb33`, `tsc` limpio en `documents` |
+| 38.2 | Foto de antes en prod | ~12:00 | Sonda dentro del contenedor `tasks` (custom token → ID token, `GET /api/v1/documents?entityId=…` con `User-Agent` de dispositivo y de navegador). Cindy (owner, supervisora): 8 personales ajenos en los dos canales. Jose Domingo (worker): 0 —los documentos de Encodebiz van sin sucursal, así que el camino del compañero no se daba aquí |
+| 38.3 | `main` | ~12:05 | PR checkbiz-api#258, merge `953f6a0` con `[skip ci]`; no arrancó ningún CI |
+| 38.4 | Despliegue | ~12:08 | `/opt/encodebiz-api`: `git pull --ff-only` + `up -d --build --no-deps documents` + `restart nginx`. `documents` `healthy` |
+| 38.5 | Foto de después | ~12:10 | Cindy como app: 6 documentos, **0 ajenos**; como panel: los 14 de antes (owner). Jose Domingo y Jose Manuel: 0 ajenos en los dos canales. Sonda borrada del contenedor |
+| 38.6 | `develop` | ~12:15 | Cherry-pick por `merge-tree` + `commit-tree`: `ea665eb` `[skip ci]`. **`staging` sin tocar**: lleva §33-§35 y §37 sin aprobar |
+| 38.7 | Fase 2 | — | PENDIENTE: canal comprobable (dispositivo de confianza del 2FA + cabecera de cliente), opciones y recomendación en TDR-002. Y decidir si `canCreate`/`canArchive` de documentos de empleado pasan también a owner/admin: hoy un manager puede subir uno que ya no puede leer |
+| 38.8 | Panel | — | PENDIENTE (no urgente): el formulario de la ficha del empleado marca `worker/supervisor/manager` por defecto en `visibleToRoles`; ya no abre nada, pero engaña |
+| 38.9 | **Incidente**: la gestión documental del panel salía vacía a owner/admin (reportado por un cliente, ~13:36–14:00 UTC) | ~14:00 | El panel no llama desde el navegador: su servidor en Vercel hace el fetch con Node y llega con `User-Agent: node`, que 38.3 tomaba por app. Respuestas de 121 bytes en nginx. PR checkbiz-api#259 (`6602d82`, `[skip ci]`): `node`, `undici` y `Next.js` son panel. Desplegado igual que 38.4; sonda con tres `User-Agent` (dispositivo, `node`, navegador): Cindy 6/14/14, Jose Domingo 4/4/4 sin ajenos. `develop` `7bb0a6e` |
+| 38.10 | Fase 2 | 10-nov | DECIDIDA con Jose: el panel demuestra que es el panel con un código rotatorio estilo 2FA (`HMAC-SHA256(PANEL_CHANNEL_SECRET, floor(unix/30))` en `X-CheckBiz-Panel`, desde `serverBackendProxy.ts`); válido → panel, todo lo demás → app, y el `User-Agent` desaparece. Tres pasos A/B/C sin ventana vacía. Diseño en TDR-002 «Fase 2»; tarea en CheckBiz360 para Jose Manuel el martes 10-nov 09:00-13:00 (`zGRy0s1AStJ3bWhr1Hyo`) |
+
+## 39. Alertas: jornada de más de 9 h, sin descanso semanal y hoja informativa sin firmar — PENDIENTE en prod; EN STAGING el 2026-11-07 (056 aplicada en encodebiz_staging, analytics y assistant reconstruidos; panel en develop)
+
+Jose, 06-nov: «12 personas con jornada configurada de más de 9 h, esto es crucial igual que los
+empleados sin informe firmado […] debe saltar alarma». Tres reglas nuevas en el panel de alertas
+y en el resumen de la mañana: `long_day` y `no_weekly_rest` (naranja, del `weekPlan` del último
+fichaje) y `notice_unsigned` (rojo, del espejo de la hoja). Diseño en alertas-por-correo §1.
+
+- API: rama `feat/alertas-jornada-y-hoja` (`2a3a62f` + `38c66d9`, que la renumera de 054 a 056; develop `1db8bd7`, staging `1607e35`), servicios `analytics` y `assistant`;
+  `shared` va dentro de las imágenes. **Migración 056** (tres columnas en `dim_employees`).
+- Panel: rama `feat/alertas-jornada-y-hoja` (`4d2cbab5`, ya en develop por avance rápido), solo textos en 5 idiomas y el tipo.
+- Sin variables ni índices. Plantillas de correo sin cambios: las cajas las pinta el código.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 39.1 | Migración 056 en dev, luego en prod | A mano por SSH, **antes** de desplegar `analytics`: sin las columnas el sync de empleados falla en su INSERT y `/panel/alerts` entero da error (si una fuente falla, falla todo, a propósito) |
+| 39.2 | Desplegar `analytics` y `assistant` | Por la cadena, con `[skip ci]` y a mano el servicio que cambia; `restart nginx` después |
+| 39.3 | Primera pasada del espejo | Esperar al job de dimensiones (:20) o lanzarlo por la ruta de sync; comprobar `SELECT COUNT(*) FILTER (WHERE notice_signed_at IS NOT NULL) FROM dim_employees` |
+| 39.4 | Verificar | `GET /api/analytics/panel/alerts` de una empresa con hojas sin firmar y otra con jornadas de 13 h: salen las cajas; el número de `long_day` puede no coincidir con el de la pestaña Análisis (esa recorre el mes entero con el calendario; esta, el último fichaje) |
+| 39.5 | Panel | Vercel, después de la API: sin textos, la caja sale con la clave cruda |
+| 39.6 | Aviso | El primer día saltará «hoja sin firmar» en casi todas las empresas: la plantilla de antes del 04-nov no la tiene. Es lo esperado; la salida es enviarla desde el modal de documentos |
+| 39.7 | Si algo falla | Apagar por empresa con `rules_off`, o revertir `analytics`: las columnas de 056 no molestan a nadie |
+
+**Staging, 2026-11-07:** 39.1–39.4 hechos en dev. Primera pasada del espejo: 263 empresas, 9355
+fichas activas, 146 hojas enviadas y 6 firmadas. Neteges Demo: 29 sin firmar (29 sin enviar);
+empresa QA `h9D8X3tt…`: `notice_unsigned` 80, `no_weekly_rest` 34, `long_day` 27. Falta ver las
+cajas en el panel de develop en local. En prod no se ha tocado nada.
+
+## 40. Salud de la plataforma: servicio `salud`, alertas a support@ e informe diario — EJECUTADO el 2026-11-06 (orden de Jose: «bájalo a prod»)
+
+Jose, 06-nov: «¿se puede hacer automatizado y mostrarlo en backoffice?», «es un servicio nuevo,
+un docker nuevo», «no puede estar ligado a nada del sistema», «alertas en caso de críticos de
+estabilidad al email de support@encodebiz.com», «cada 5 min: disco, memoria, CPU, ancho de
+banda». Diseño en `DOCS/ingenieria/salud-plataforma/README.md`.
+
+- API: rama `feat/salud-plataforma`. Servicio **nuevo** `salud` (carpeta `salud/`, fuera de los
+  workspaces, sin `shared`), **migración 055**, ruta y pantalla del backoffice (permiso
+  `salud:read`, root y admin) y **`nginx/nginx.conf` con el formato de log `combinado_tiempos`**.
+- No va en el CI de nadie: `salud` se construye con su carpeta como contexto.
+- **En dev desde el 2026-11-06 15:24 UTC**: muestras cada 5 min, 14 días reconstruidos (23-oct a
+  05-nov) con todas las partes `ok`, pantalla probada con token root (las tres rutas 200) y un
+  correo de prueba aceptado por SES hacia support@. Cuenta `salud-lector@dev-encodebiz` creada
+  el mismo día con solo `roles/monitoring.viewer` (clave `b14e0395…`).
+
+| # | Paso | Cómo |
+|---|---|---|
+| 40.1 | Migración 055 | A mano: `docker compose --env-file .env.production exec -T postgres psql -v ON_ERROR_STOP=1 -U encodebiz -d encodebiz_analytics -f - < migrations/055_salud_plataforma.sql`. Crea las tres tablas y el rol `salud` **sin acceso** |
+| 40.2 | Contraseña del rol | `P=$(openssl rand -hex 24)`; añadir `SALUD_DB_PASSWORD=$P` a `.env.production`; `ALTER ROLE salud LOGIN PASSWORD '$P';` en `encodebiz_analytics` |
+| 40.3 | Cuenta de Google propia (la decide Jose: es un cambio de IAM en prod) | `gcloud iam service-accounts create salud-lector --project encodebiz-services`; `gcloud projects add-iam-policy-binding encodebiz-services --member=serviceAccount:salud-lector@encodebiz-services.iam.gserviceaccount.com --role=roles/monitoring.viewer --condition=None`; `gcloud iam service-accounts keys create salud-sa.json --iam-account=salud-lector@encodebiz-services.iam.gserviceaccount.com`. **No** se le da el rol a `firebase-adminsdk-fbsvc-clean` |
+| 40.4 | Clave al servidor | `scp` a `/opt/encodebiz-api/secrets/salud-sa.json`, luego `sudo chown root:root` y `chmod 600`: el contenedor es root **sin capacidades** y no lee un 600 de `almalinux` (pasó en dev). Borrar la copia local |
+| 40.5 | Correo | Usa `SMTP_HOST/PORT/SECURE/USER/PASS/FROM` del `.env.production` por interpolación del compose, sin cargar el fichero entero. Comprobar que están; si se quiere un remitente propio, un usuario SMTP de SES aparte |
+| 40.6 | Desplegar | Con el resto del pase, o suelto: `git pull --ff-only origin main` y `docker compose --env-file .env.production up -d --build --no-deps salud backoffice`; después **`restart nginx`** (recoge el formato de log y las IPs nuevas). Probar antes la config: `docker run --rm -v $PWD/nginx/nginx.conf:/etc/nginx/nginx.conf:ro -v $PWD/certbot/conf:/etc/letsencrypt:ro --add-host=… nginx:1.27-alpine nginx -t` |
+| 40.7 | Verificar | `ps` con `salud (healthy)`; `SELECT tomada_en, datos->'cpu', datos->'discoPct' FROM salud_muestras ORDER BY id DESC LIMIT 2`; en el log, «correo configurado» y el informe de ayer «cerrado» al minuto de arrancar |
+| 40.8 | Rellenar hacia atrás | `docker compose exec -T salud node dist/cli.js informe --desde <hace 14 días> --hasta <ayer>`: los días salen «reconstruido», sin recursos (no había muestras). Los logs de nginx de prod llegan hasta finales de octubre |
+| 40.9 | Lo que va a decir el primer día | Ámbar «SSH admite contraseña» todos los días hasta que se cierre (prod sigue con `PasswordAuthentication yes` del `50-cloud-init.conf`). Es verdad y es lo que tiene que decir |
+| 40.10 | Si algo falla | `docker compose stop salud`: nadie depende de él. Las tablas de 055 no molestan a nadie |
+
+**Registro del 2026-11-06 (Claude, con la orden de Jose).** Rama mínima `hotfix/salud-plataforma`
+desde `main` con solo los commits de salud (no arrastra nada de staging): PR #260, #261 (el
+correo: producción solo define `SMTP_USER`/`SMTP_PASS` y el resto sale de los valores por
+defecto de `shared`; el compose los copia) y #262 (certificado reintentado, red con dos
+decimales, «entrada pública» en vez de «borde»). Los tres con `[skip ci]`: ningún workflow.
+
+- 40.1 HECHO 15:45 UTC — 055 aplicada en `encodebiz_analytics`, sin errores.
+- 40.2 HECHO 15:46 — `SALUD_DB_PASSWORD` añadida al final de `.env.production` (comprobado que
+  el resto del fichero no cambió) y `ALTER ROLE salud LOGIN`.
+- 40.3 HECHO 15:48 — `salud-lector@encodebiz-services`, solo `roles/monitoring.viewer`, clave
+  `b8dc6980…`. La cuenta de Firebase no se tocó.
+- 40.4 HECHO 15:49 — clave en `secrets/salud-sa.json`, `root:root 600`; copia local borrada.
+- 40.5 HECHO — el compose resuelve host `email-smtp.eu-north-1.amazonaws.com`, puerto 465,
+  remitente `EncodeBiz <encodebiz@encodebiz.com>`. En dev salió un correo de prueba a support@.
+- 40.6 HECHO 15:51 y 16:00 — `nginx -t` con los certificados reales en verde; `up -d --build
+  --no-deps salud backoffice` y `restart nginx`. 20 contenedores sanos, `/health` y
+  `/backoffice/` 200, el log de nginx ya trae `rt=` y `urt=`.
+- 40.7 HECHO 16:04 — muestras cada 5 min; la de las 16:04 con certificado (44 días), entrada
+  pública en 206 ms, CPU 2 %. La primera tras cada despliegue sale «no responde» porque
+  coincide con el reinicio de nginx: una sola muestra no abre alerta (hacen falta dos). 0 alertas.
+- 40.8 HECHO 15:53 — 14 días reconstruidos (23-oct a 05-nov), todas las partes `ok`. El 05-nov
+  dice en ámbar el 5xx de `employeeplanifierworker`, el timeout que ya se vio a mano.
+- 40.9 Pendiente de que ocurra: el informe de cada día a las 03:30 de Madrid; el ámbar de
+  «SSH admite contraseña» saldrá cada día hasta que se cierre.
+- 40.9 VISTO 07-nov 02:39 UTC — el primer informe automático (06-nov) salió y mandó correo a
+  support@ con un **rojo falso**: «la entrada no respondió en 2 muestras». Eran las de los dos
+  reinicios de nginx de los despliegues, nunca seguidas, y la alerta en vivo no se abrió. Y
+  «faltan 87 de 288»: el servicio arrancó a las 16:51. Corregido en #263 (`[skip ci]`, solo
+  `salud`): rojo con dos muestras seguidas, como la alerta; el día de arranque se cuenta desde la
+  primera muestra. Informe del 06 rehecho: queda el ámbar de SSH y tres info. Desplegado en dev
+  y prod el 07-nov.
+- 40.11 HECHO 07-nov (PR #264, `[skip ci]`, `salud` + `backoffice` + `restart nginx`, dev y prod):
+  «Cuándo se usa más el servidor» en Sistema → Salud. Sale de las muestras de la máquina (CPU,
+  carga, red, disco) por hora de Madrid, no del tráfico de clientes (Jose: «no la de mis
+  clientes»). Hoy dice «sin hora punta»: CPU plana al 0,4 %. La entrada pública por horas pasa
+  a líneas, con clientes y escáneres separados; 14 días rehechos para traer `porHoraClientes`.
+
+## 41. Postgres de producción: `shared_buffers` a 4 GB — EJECUTADO el 2026-11-07 (orden de Jose: «sube postgres a 4 GB»)
+
+PR #265 (`[skip ci]`): `command: ["postgres", "-c", "shared_buffers=4GB"]` en `docker-compose.yml`
+(solo producción; dev sigue con su tope de 1 GB). De fábrica eran 128 MB en 32 GB.
+
+- 07:31 UTC — antes: 25 peticiones en 10 min, ninguna consulta larga, `SHOW shared_buffers` 128MB.
+- 07:36 — `up -d --no-deps postgres`: sano en 11 s, `SHOW shared_buffers` 4GB, sin errores.
+- **Efecto no previsto: analytics se cayó y Docker lo levantó** (07:36:34, `RestartCount` 1). El
+  pool de `shared` (`packages/shared/src/db.ts`) no tiene `pool.on("error")`: cuando Postgres
+  corta una conexión ociosa (57P01), node-postgres emite un error sin capturar y el proceso muere.
+  Solo analytics tenía conexiones abiertas en ese instante; **los 11 servicios que usan ese pool
+  están expuestos a lo mismo en cualquier reinicio de Postgres**. Salud lo vio y avisó a support@
+  (07:37:59, «analytics se ha reiniciado solo»). PENDIENTE de decisión de Jose: añadir el manejador
+  (una línea en `shared`, pero reconstruye todos los servicios).
+- Datos intactos: mismas filas que antes del reinicio en las 7 tablas grandes, 63 MB.
+- **Copia hecha** a las 07:39 UTC: `/var/lib/encodebiz-api/backups/encodebiz_analytics-20261107-0739Z.dump`
+  (`pg_dump -Fc`, 3,8 MB, root 600, 70 tablas con datos verificadas con `pg_restore --list`). Está
+  en el MISMO servidor: protege de un error, no de perder la máquina. Sigue sin haber copias
+  automáticas ni fuera del servidor.
+
+## 42. Copias de seguridad: servidor cifrado y ficheros de Storage, en Europa — EJECUTADO el 2026-11-07 (orden de Jose: «créalo tú y haz toda la configuración»)
+
+Diseño y cómo restaurar: `DOCS/ingenieria/salud-plataforma/copias.md`. PR #266 (copia del
+servidor dentro de `salud`, por indicación de Jose) y #267 (Sistema → Copias), `[skip ci]`.
+
+- HECHO 07:51 UTC — buckets `encodebiz-services-copias` (EU, retención 30 días, borrado a los 90,
+  acceso público bloqueado) y `encodebiz-services-copias-ficheros` (EU, versiones, versiones viejas
+  a los 90 días).
+- RETIRADO 08:00 — exportación diaria de Firestore (tarea de Scheduler, cuenta `copias-firestore`
+  y permisos): duplicaba la PITR de 7 días y la copia semanal nativa. No llegó a correr.
+- HECHO 08:00 — cuenta `copias-servidor` (solo `objectCreator` en el bucket de copias), clave en
+  `secrets/copias-sa.json` (root 600), certificado `secrets/copias-publica.pem`. Clave privada SOLO
+  en el portátil de Jose (`encodebiz-api/secrets/copias-clave-privada.pem`): **PENDIENTE que Jose
+  la guarde en su gestor de contraseñas.**
+- HECHO 08:00 — migración 057 (rol `copias`, solo lectura) y `COPIAS_DB_PASSWORD` en
+  `.env.production`.
+- HECHO 08:03 — primera copia: `servidor/2026/11/07/prod-20261107T080334Z.tar.cms`, 3,9 MB, 70
+  tablas. Restauración probada (descifrado, sumas, `PGDMP`); `gcloud storage rm` rechazado por la
+  retención.
+- HECHO 08:2x — Storage Transfer Service: API activada, agente con lectura en el origen y escritura
+  en el destino, trabajo `copias-ficheros-diaria` a la 01:00 UTC desde el 08-nov. **No se forzó la
+  primera ejecución (Jose: «déjalo para que salte mañana»). PENDIENTE comprobarla el 08-nov.**
+- HECHO 09:00 — Sistema → Copias en el backoffice; 37 días de informes rehechos con el tamaño de
+  cada bucket. Ficheros de clientes: 113 MB el 01-oct, 204 MB el 06-nov.
+- Visto, sin tocar: `gcf-v2-sources-…-us-central1` ocupa 8,9 GB de código de funciones antiguas.
+
+## 43. Documentos «Administración»: solo propietario o administrador, desde el panel — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `0d64a35d`, staging `5d88bfa8`; `documents` y `customers` reconstruidos)
+
+Jose, 07-nov: un documento que **solo se vea desde el panel** y solo por propietario o
+administrador (contrato o presupuesto de un cliente, papeles de dirección). Valor nuevo `admin`
+en `visibleToRoles`, que el panel lee «Administración». Regla y decisiones en TDR-002 §Nivel
+«Administración»; el principio: la app es de la plantilla, y quien entra por ella, aunque sea
+owner, es un empleado más.
+
+- API: rama `feat/documentos-administracion` (`d37d4f9` y `b319668`, desde develop `245ba67`),
+  servicios `documents` y `customers`. Sin migraciones, variables ni índices. `shared` no cambia.
+  `b319668` extiende el principio a todo documento: **por la app**, propietario, administrador y
+  owner operativo leen solo lo que lleve `worker` (supervisor y manager conservan su rol), y el
+  listado no enseña archivados. Esto cambia lo que hoy ve un owner en la app de producción: deja
+  de ver los documentos marcados solo para managers o supervisores.
+- Panel: `3085d580`, ya dentro de `feat/cartera-de-clientes` (fast-forward el 07-nov): va con la
+  cartera, que todavía no está en prod.
+- Comprobado en staging (Neteges Demo, cuenta de Jose, owner): la hoja del cliente de la tarea
+  «QA Visita SAD» por la app lista solo «QA Ficha de la usuaria»; el listado de documentos de QA
+  Usuaria SAD da ficha y contrato con User-Agent de navegador y solo la ficha con el de la app.
+  **Jose lo probó en staging el 07-nov: «probado lo de Administración».**
+- Script opcional `services/customers/src/scripts/contracts-to-administration.ts`: pasa contratos y
+  presupuestos de cliente que están en `["manager"]` exacto a `["admin"]`. Simula por defecto.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 43.1 | `documents` y `customers` a la vez | Por la cadena con `[skip ci]` y a mano los dos servicios; `restart nginx` después. Antes que el panel: un panel nuevo contra una API vieja recibe 400 `invalid_visibility_roles` al subir un contrato. El panel viejo no manda `admin`, así que la API nueva sola no cambia nada visible, salvo que `for-task` (la hoja del cliente en la app) deja de listarle a gestores lo que no es de `worker` |
+| 43.2 | Comprobar la descarga del panel (también es la **lentitud** que vio Jose el 07-nov). **Variable CAMBIADA en Vercel prod el 2026-11-07** (orden de Jose: «cambia esto urgente») a `https://api.checkbiz360.com/api/v1`; `DOWNLOAD_REPORTS` ya existía en prod, así que los informes no caen a ella. Antes se comprobó que `api.checkbiz360.com/api/v1/documents/:id/download` responde 401 sin token. **Redesplegado** el mismo día (`vercel redeploy` del vivo `mpylezpke`, sin cambio de código; nuevo `aebn0n45w`, alias saas.encodebiz.com, orden de Jose: «redespliega tú»). Comprobado: el proxy de descarga responde 401 sin token. Falta que Jose abra un documento real y confirme que va rápido | `NEXT_BACKEND_URI_CHECKINBIZ_DOWNLOAD_DOCUMENTS` en Vercel (es sensible, no se lee): tiene que ir al contenedor (`…/api/v1`) y no a la función `documentsHandler` del SaaS, que no conoce ni el canal ni `admin` y dejaría descargar un solo-`admin` de empresa al owner operativo que tenga el id. Se ve en el log de nginx de prod: una descarga desde el panel tiene que entrar por `/api/v1/documents/:id/download` |
+| 43.3 | Panel | Vercel, después de la API (va con la cartera) |
+| 43.4 | Verificar | Owner desde el panel sube un contrato de cliente: nace «Administración», lo abre. El gerente de una sucursal del cliente no lo ve en el panel, y un PATCH directo suyo da 403. Desde la app nadie lo ve, owner incluido (hoja del cliente de la tarea incluida). Un documento de sucursal solo-`admin` no manda push. Con acuse de recibo, 400 `admin_only_acknowledgement` |
+| 43.5 | Script, solo si Jose lo pide | En el contenedor `customers`: `node services/customers/dist/scripts/contracts-to-administration.js --all`, revisar la lista y repetir con `--apply` |
+| 43.6 | Si algo falla | Revertir `documents` y `customers`. Lo ya marcado `admin` con la API vieja: owner/admin lo ven (también desde la app), el owner operativo también, el gerente no; editarlo da 400 hasta volver a la nueva |
+
+**La descarga lenta en prod (Jose, 07-nov, «tarda una eternidad»).** Sin medir: no se ha tocado
+prod. Lo que dice el código: `.env.production` del panel apunta
+`NEXT_BACKEND_URI_CHECKINBIZ_DOWNLOAD_DOCUMENTS` a la función `documentsHandler` en `us-central1`
+(1 GiB, sin instancias mínimas), que ya no tiene rutas propias y reenvía al contenedor de OVH. Si
+Vercel tiene lo mismo, cada descarga cruza el Atlántico dos veces y, en frío, arranca la función.
+En desarrollo la variable va directa a `api-staging…/api/v1`. El arreglo es el de 43.2:
+reapuntarla en Vercel a `https://api.checkbiz360.com/api/v1`, con OK de Jose. **Sin token:** la
+URL que devuelve la API es una URL firmada de Storage que caduca al minuto
+(`SIGNED_URL_TTL_MINUTES = 1`); conseguirla sí exige token y permiso, abrirla no.
+
+
+## 44. Ficha de cliente con análisis de Merlin en el backoffice — EJECUTADO el 2026-11-07 (orden de Jose: «bájalo hasta prod… baja solo tu rama directa a producción, después súbela a develop»)
+
+Página por cliente en el backoffice (`/backoffice/clientes/:id`, enlazada desde Clientes y
+Dirección) y botón «Analizar con Merlin»: dossier de agregados sin personas → `gpt-5.5` con
+razonamiento alto, en un hilo de OpenAI por cliente. Diseño en
+`ingenieria/ficha-de-cliente/README.md`. Solo esta rama: **nada de `staging`**, que lleva trabajo
+de otras sesiones sin aprobar. Toca `backoffice`, `merlin` y `billing` (ruta interna nueva) y
+añade la migración 058; nginx no cambia.
+
+| Paso | Qué | Hora (UTC) | Resultado |
+|---|---|---|---|
+| 44.1 | Esquema de prod, solo lectura | ~09:35 | Faltan `tasks_raw.contract_id` (053) y `dim_employees.notice_*` (056). La 053 ya tenía alternativa; para la 056 se añadió (`b396e46`). Las 21 consultas de la ficha, en `BEGIN READ ONLY` contra `encodebiz_analytics`: 20/21, la que falla es la de `contract_id` y su alternativa pasa |
+| 44.2 | Rama `feat/backoffice-ficha-cliente-prod` desde `main` con solo los commits de la ficha (`merge-tree` + `commit-tree`) | ~09:40 | Mismos 22 ficheros que la rama; `tsc` limpio en backoffice, billing, merlin y web sobre `main`; 13 tests |
+| 44.3 | `main` | ~09:45 | PR checkbiz-api#268, merge `b5e67b5` con `[skip ci]`; no arrancó ningún CI |
+| 44.4 | Migración 058 `backoffice_cliente_hilo` en `encodebiz_analytics` | ~09:52 | `CREATE TABLE`; tabla nueva, ninguna de clientes tocada |
+| 44.5 | Despliegue | ~09:53 | `/opt/encodebiz-api` en `53df6c8` sin cambios locales → `git pull --ff-only` + `up -d --build --no-deps backoffice merlin billing` + `restart nginx`. Los tres `healthy`; borde 200. Entró con billing el `shared` de firma/hoja/tareas ya desplegado en los servicios que lo usan |
+| 44.6 | Prueba real | ~10:00 | Ficha de Neteges en el contenedor: 2,8 s, señales coherentes (13 de 29 sin fichar nunca, 47 cierres del sistema, un solo gestor). Análisis real de **Encodebiz** (interna): `gpt-5.5`, 127 s, 7.046 entrada / 9.369 salida; hilo creado en OpenAI, apuntado en la 058 y releído. Scripts de prueba borrados del contenedor |
+| 44.7 | Plantilla paginada y buscador (petición de Jose) y títulos de Merlin sin su explicación | ~10:30 | PR checkbiz-api#269, merge `abc4319` `[skip ci]`; `up -d --build --no-deps backoffice merlin` + `restart nginx`. Probado en prod: 29/31, filtros, «MARÍA» = «maria», `%_` escapado |
+| 44.8 | Hoja informativa | — | **Sin Firestore** (Jose: «espera al espejado»): sale de `dim_employees.notice_*`; en prod «sin medir» hasta que baje la 056 (§39) |
+| 44.9 | `develop` | ~10:40 | Merge `f37fe0b` `[skip ci]` por `commit-tree`. `staging` sin tocar |
+| 44.10 | Dev | — | PENDIENTE cuando la ficha suba a `staging`: aplicar la 058 en `encodebiz_staging` (`psql -f - < migrations/058_backoffice_cliente_hilo.sql`) y reconstruir `backoffice merlin billing` |
+| 44.11 | Pendiente de producto | — | Último acceso al panel de quien lleva la cuenta (no se recoge; sale «sin medir»). Queda en el hilo de Encodebiz el análisis de prueba de 44.6 |
+| 44.12 | Webhooks internos fuera de los recuentos (pregunta de Jose: «¿a qué URL se han entregado?») | ~11:00 | Las 716 de Ayudarte iban a `wh_internal_inventory`, nuestro inventario suscrito a `task.*`; en prod las 1.017 entregas son internas, ninguna de cliente. Ficha, módulo Webhooks de Dirección y foto diaria las contaban como integración (el fallo de Dirección es anterior a la ficha). PR checkbiz-api#270, merge `7a8a965` `[skip ci]`; `up -d --build --no-deps backoffice` + `restart nginx`. `develop` `1092459`. Estadísticas sigue contándolas (salud de las entregas). Fotos diarias ya guardadas (`direccion_snapshot_daily.modulos.webhooks`) con el recuento viejo: **se dejan así** (Jose, 07-nov: «eventualmente se corrige sola»), las nuevas salen bien; el análisis de prueba de Encodebiz (44.6) recomendó Plan Empresarial por «301 webhooks», que eran internos |
+
+## 48. El nombre del cliente a la plantilla, solo con autorización, y «Datos complementarios» en la app — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `fe3c62b0`, staging `a8fa6c74`; `customers` y `tasks` reconstruidos)
+
+Jose, 07-nov, en la QA de la app: el nombre del cliente es un dato sensible —en una subcontrata,
+nombre más teléfono del contacto es entregar el cliente— y tiene que ser una autorización expresa
+del cliente, apagada por defecto; y los datos del cliente, una tarjeta más del detalle de la tarea,
+no un botón. Diseño: [cartera-de-clientes/tdr/TDR-005](../ingenieria/cartera-de-clientes/tdr/TDR-005-datos-complementarios-y-nombre-del-cliente.md).
+
+- API: rama `feat/datos-complementarios` (`ca2d144`, desde develop). Toca `shared` (`Customer`,
+  `TaskCustomerSnapshot`, `taskCustomerSnapshot`), así que hay que reconstruir **`customers` y
+  `tasks`** (y todo servicio que use la copia: ninguno más la lee hoy). Sin migraciones ni
+  variables. Script `refresh-task-customer-copies` (simula por defecto).
+- Panel: `38228381` en `feat/cartera-de-clientes`: casilla «Mostrar el nombre del cliente a la
+  plantilla» con su ayuda, aviso en los contactos visibles, el detalle de la tarea lee el nombre del
+  cliente. Va con la cartera.
+- App: `checkbiz360` rama `feat/datos-complementarios` (`7c0f94a`, desde develop `71e0609`, sin
+  push): tarjeta «Datos complementarios» encima de «Equipo», perezosa (`visibility_detector`),
+  oculta si no hay datos o si falla; fuera el botón y la hoja. Próxima versión de tiendas.
+- Comprobado en staging (Neteges Demo): tras el script, la copia de «QA Visita SAD» y `for-task`
+  van sin nombre y con `nameVisible: false`; marcar la casilla en QA Eventos S.A. pone el nombre en
+  sus dos tareas abiertas sin editarlas.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 48.1 | `customers` y `tasks` | Con la cartera (§33–§35) o después: por la cadena con `[skip ci]` y a mano los dos; `restart nginx` |
+| 48.2 | Script | En prod la cartera aún no tiene tareas con cliente, así que no debería haber nada: `node services/customers/dist/scripts/refresh-task-customer-copies.js --all`, y `--apply` solo si lista algo |
+| 48.3 | Panel | Con la cartera, después de la API |
+| 48.4 | App | La versión que lleve `7c0f94a`. Una app vieja con la API nueva no pinta nombre si no viene: deja de verlo, que es lo seguro |
+| 48.5 | Verificar | Cliente sin la casilla: la app no ve su nombre ni en la tarea ni en la tarjeta, y el documento de la tarea en Firestore no lleva `customer.name`. Marcarla: sus tareas abiertas lo enseñan sin editarlas. El panel sigue mostrando el nombre en el detalle de la tarea |
+| 48.6 | Si algo falla | Revertir `customers` y `tasks`: las copias nuevas quedan sin nombre (la app vieja no lo pinta); el panel lo lee del cliente igual |
+
+**Fuera de este trabajo:** el nombre del lugar (`siteName`) sigue en la copia y puede delatar al
+cliente si se le llama como él; y `searchIndex` guarda los nombres de los clientes y hoy lo lee
+cualquier sesión (reglas 2b).
+
+## 45. El radio de la valla con la dirección del cliente — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `6947d0c9`, staging `cade6a96`; `tasks` reconstruido)
+
+Jose, 07-nov, en la QA de la app (A8): la tarea con la dirección del cliente cogía la valla con
+100 m y no había dónde cambiarlo. La dirección del cliente se captura sin radio y el panel, al
+marcar «usar la dirección del cliente», escondía el campo de la valla entero.
+
+- API: `b1c085a` (rama `fix/radio-direccion-cliente`), servicio `tasks`: alta y edición aceptan
+  `workSiteRadiusMeters` junto a `useCustomerAddress`; ausente, se queda el de la dirección;
+  negativo o no numérico, 400 `task/worksite_invalid`.
+- Panel: `eba7909e` en `feat/cartera-de-clientes`: el radio sale debajo de la dirección del
+  cliente. Va con la cartera.
+- Comprobado en staging: «QA Visita SAD» con 250 m queda en Carrer del Mar 40 a 250 m; `-3` da 400.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 45.1 | `tasks` | Con la cartera (§33–§35); un panel viejo no manda el campo y todo sigue igual |
+| 45.2 | Verificar | Tarea con cliente y su dirección: cambiar el radio en el panel, guardar, reabrir: conserva el radio |
+
+
+## 46. Eliminar documentos y liberar el espacio — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `cbf96af9`, staging `58f6f881`; `documents`, `inventory` y `events` reconstruidos)
+
+Jose, 07-nov: «cobramos por espacio pero no dejamos a los clientes liberar; hay que poder
+eliminar documentos con sus avisos». Y: «se borra todo, y en los registros se queda el registro y
+estado borrado; así, si nos reclaman, tenemos pruebas». Diseño en
+`DOCS/ingenieria/documental-service/09_eliminar-documentos.md`.
+
+- API: `bd3388a` + `48e1390` (límite de 50 por llamada), rama `feat/eliminar-documentos`. `documents`: `GET /:id/delete-preview`,
+  `POST /:id/delete`, `POST /delete` (hasta 50 por llamada; el panel manda lotes de 50); solo owner/admin desde el panel. Borra del bucket
+  el fichero, el original firmado, los PDF firmados, la evidencia de cada firma y su acta; el
+  documento queda con `status: "deleted"`, acuses y actividad. Descargar un eliminado da 410.
+  `inventory` y `shared` (cumplimiento de equipos) dejan de contar los eliminados; `events`, el
+  tipo `document.deleted` en el catálogo. Sin migración, sin variables, sin índices.
+- Panel: `e893995d` + `97f32164` (lotes de 50), rama `feat/eliminar-documentos`, ya en develop por avance rápido. Ficha:
+  Eliminar junto a Archivar, con los avisos en rojo y casilla; lista: selección y eliminar varios;
+  estado «Eliminado». Textos en 5 idiomas.
+- Comprobado en staging (script dentro de `documents`, empresa QA `h9D8X3tt…`): un documento con
+  fichero, PDF firmado, evidencia, acta y acuse → vista previa 4 ficheros / 3.700 B con el
+  firmante; eliminado: los 4 fuera del bucket, el contador los descontó (sus registros de
+  `storage_objects` desaparecieron), registro `deleted` con motivo y bytes, acuse conservado,
+  actividad `deleted`; la segunda vez, `already_deleted`. Rutas vivas tras nginx (401 sin token).
+  Falta probarlo desde el panel de develop en local.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 46.1 | `documents`, `inventory`, `events` | Por la cadena con `[skip ci]` y a mano solo esos tres; `restart nginx` |
+| 46.2 | Panel | Vercel, después de la API: sin ella, la vista previa da 404 y el modal se cierra con error |
+| 46.3 | Verificar | En una empresa de prueba de prod: subir un documento, eliminarlo, ver que la ficha enseña el registro sin descarga y que el almacenamiento usado de la empresa baja |
+| 46.4 | Saber contestar | Las copias de ficheros (§42) guardan lo copiado antes de eliminarlo hasta 90 días, como versión vieja; el bucket, 7 días de borrado blando. «Se borra todo» es del producto, no de las copias |
+| 46.5 | Si algo falla | Revertir `documents`: los ya eliminados se quedan como registro (`status: "deleted"`); la versión anterior no los da a la plantilla (solo ve activos), pero a Administración se le verían en la lista con la descarga rota |
+
+## 49. El cliente en los análisis: parte, pestaña «Análisis», resumen de Inicio y alertas — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `424f8129`, staging `19153fde`; 059 aplicada en `encodebiz_staging`; `tasks customers reports analytics` reconstruidos)
+
+Jose, 07-nov: «es uno de los pluses que más van a convertir». Diseño:
+[cartera-de-clientes/tdr/TDR-006](../ingenieria/cartera-de-clientes/tdr/TDR-006-parte-del-cliente.md).
+
+- API: `1d7eac5` (rama `feat/cliente-en-analisis`) + `fix/analisis-cliente-param` (un `$4` sin
+  tipo en la consulta de personas: 503 `source_unavailable`). Toca `shared` (`customerReader`,
+  textos de `alertEmail`), así que reconstruir **`tasks customers reports analytics`**. `reports`
+  gana `sharp` (misma versión que `entities`, imagen `node:22-alpine`).
+- Migración **`059_cliente_en_analisis.sql`**: `tasks_raw.customer_id`/`customer_site_id`, índice,
+  `dim_customers`. **Antes** de desplegar `tasks` y `customers`.
+- Backfills, por entidad o `--all`, primero sin `--apply`: `backfill-customers` (contenedor
+  `customers`) y `backfill-tasks` (contenedor `tasks`).
+- Panel: `da45c4e8`, ya dentro de `feat/cartera-de-clientes` (merge `dfa3d7de` del 07-nov, sobre
+  `5c21bafa` de la sesión del panel: filtros de documentos y tarjeta del cliente en la tarea). Va con la
+  cartera. Sin push.
+- Variables nuevas del panel (Vercel prod y `.env.development`):
+  `NEXT_BACKEND_URI_CHECKINBIZ_CUSTOMERS_ANALYTICS=<API>/api/analytics/customers` y
+  `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_CUSTOMER=<API>/api/reports/customer`. Sin ellas, 403.
+- Comprobado en staging (Neteges Demo, cuenta de Jose): espejo con el cliente en 6 tareas;
+  `summary` lista QA Eventos, QA Comunidad y QA Usuaria; `overview` de QA Eventos responde
+  (`enoughData: false`: tareas solo de noviembre); parte de QA Eventos de noviembre en PDF (201,
+  1,9 s) y Excel (201, 0,8 s).
+
+- **Cliente en el informe de tareas** (Jose, 07-nov): `5a35cf73` (rama `feat/informe-tareas-cliente`,
+  develop `4d449f80`, staging `f6b9b836`), servicio `reports`. Columna «Cliente» detrás de «Centro»,
+  de `dim_customers` (059), solo si alguna tarea del informe lleva cliente. Comprobado en staging:
+  octubre de Neteges Demo, 838 filas con cliente, 19 columnas.
+- **Inicio más claro** (Jose, 07-nov: «no sé qué son esos números»): `b296341e` (develop `c36723be`,
+  staging `76d9fff5`), `analytics`, añade `period`, `customersWithTasks`, `totalMinutes`, `sharePct` y
+  `missedCustomers` al resumen; panel `a928838e` en `feat/cartera-de-clientes`.
+
+- **Análisis a fondo del cliente** (TDR-007, Jose 07-nov: «no estás mostrando si el cliente es
+  rentable»): `8a4564e5` + arreglo `d3bc1050` (rama `feat/cliente-analisis-a-fondo` y
+  `fix/insights-cifras`; develop `d384e9aa`, staging `8e5837ca`), servicio `analytics`:
+  `GET /api/analytics/customers/:id/insights`. Sin migración: lee `tasks_raw`, `customer_contracts`,
+  `dim_responsibilities.job_price`, `task_ratings_raw` e `item_movements_raw`. Panel `28996dce` en
+  `feat/cartera-de-clientes` (el proxy deja pasar `/:id/insights` con la misma variable
+  `…_CUSTOMERS_ANALYTICS`). Comprobado en staging: Bon Preu rentable (octubre 16 173 € frente a
+  9 106 €, 44 %), señales «4 sin hacer» y «horas del contrato agotadas», 17 personas; Cardona 10 «sin
+  importe». **Para que la rentabilidad salga, los puestos tienen que tener precio** (`job_price`):
+  en prod, comprobar cuántas empresas lo tienen antes de anunciarlo.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 49.1 | 059 | A mano por SSH en `encodebiz_analytics`, mirando el resultado |
+| 49.2 | `tasks customers reports analytics` | Por la cadena con `[skip ci]` y a mano; `restart nginx` |
+| 49.3 | Backfills | `backfill-customers --all` y `backfill-tasks --all`, revisar, repetir con `--apply` |
+| 49.4 | Panel | Con la cartera; las dos variables en Vercel **antes** del despliegue |
+| 49.5 | Verificar | Ficha de un cliente: pestaña Análisis; «Parte del cliente» en PDF y Excel; Inicio con el bloque «Clientes» si hay tareas este mes; un gerente solo ve sus sucursales y no ve las alertas de contrato |
+| 49.6 | Si algo falla | Revertir los cuatro servicios; la 059 solo añade columnas y una tabla, se queda |
+
+
+## 47. Corregir una jornada incompleta de una vez — PENDIENTE en prod; API EN STAGING el 2026-11-07 (develop `a7a299b`, staging `cec6647`; `checkinbiz` reconstruido); panel en develop y en `feat/cartera-de-clientes`; app en develop
+
+Jose, 07-nov: «levantaría un modal con las que hay en esa jornada y confirmaría cada una de las
+jornadas incompletas y un solo motivo que se replique a todas […] lo mismo con la app: imagina una
+jornada partida de 5 turnos, qué caos». Diseño en `DOCS/ingenieria/correccion-de-jornada/README.md`.
+
+- API: `e3730ad` (rama `feat/correccion-jornada`). `checkinbiz`: `GET`/`POST
+  /checklogs/update/workday` (gestora: owner/admin o responsable ≥ 2) y `POST
+  /checklogs/update/workday/respond` (solo la propia persona). Lote en
+  `entities/{id}/workdayCorrections`; cada fichaje con su entrada en `requestUpdates` + `groupId`.
+  Un push por jornada y un aviso de bandeja por fichaje (la app publicada los acepta uno a uno; `/update`
+  cierra el lote al caer el último). Al aceptar, las incidencias `incomplete_workday_*` de la jornada
+  pasan a `resolved` sin escribir respuestas. `shared`: la clave `update_workday_pending` (es/en). Sin
+  migración, sin variables, sin índices nuevos.
+- Panel: `da0876f1` (rama `feat/correccion-jornada`, en develop `2bbe369c`; el 07-nov, por orden de Jose, también en
+  `feat/cartera-de-clientes` como `d4a1608f` —cherry-pick, no merge: el merge arrastraba lo de eliminar
+  documentos de develop—, así que sube a Vercel con la cartera si va antes). «Corregir jornada» en el
+  detalle de la incidencia; estado de la corrección en la propia incidencia. El handler
+  `checkinbiz_update_log` admite `GET` y la subruta `/workday`: **sin variable nueva en Vercel**.
+  Textos en 5 idiomas.
+- App: `8d33535` + `75e9265` + `0c75a84` (rama `feat/correccion-jornada`, en develop `d8c1f74`). La bandeja junta los avisos
+  del mismo `groupId` en una tarjeta; pantalla «Corrección de tu jornada» con una tarjeta por tramo (entrada,
+  descansos y salida; lo corregido, tachado; la salida que puso el sistema, «sin fichar → hora») y Aceptar
+  jornada o Rechazar con motivo. Cada bloque se llama «Turno n» (Jose: «no pongas tramo», también en el panel:
+  `c1bb7479`, develop `eaa0f5e2`, cartera `8e429751`). Sale con la próxima versión; mientras, la publicada acepta fichaje a fichaje.
+- Comprobado contra Firestore de `dev-encodebiz` llamando a los controladores (empresa QA ficticia,
+  borrada después), 32 comprobaciones: jornada de 2 tramos y 6 fichajes, 403 sin permiso, 400 por
+  fichaje de otro día y por hora futura, 409 por propuesta encima y por responder dos veces; rechazo →
+  fichajes de vuelta a `incomplete_workday` e incidencia abierta con el motivo; aceptación → los 6
+  `valid`, la salida a la hora corregida y las 2 incidencias cerradas; aceptar por `/update` (app
+  vieja) cierra el lote y la incidencia. Rutas vivas tras nginx (401 sin token). Falta probarlo
+  desde el panel de develop en local y con la app de develop.
+- Para probarlo en staging hay una jornada partida incompleta sembrada (06-nov, 2 tramos, 2 incidencias)
+  para «QA op_worker» en la empresa QA `zhSbHC7PnPkfd34QUke5`, marcada `qaSeed: "correccion-jornada"`;
+  propietario `success+qa-20261106-17w1-prop@simulator.amazonses.com` con contraseña de prueba. Borrarla al acabar.
+- Demo pedida por Jose (07-nov): en «Neteges Demo (ficticia)» (`318Ey5ZH…`), Jose Manuel Acevedo Medina, jornada
+  del 06-nov con 4 tramos partidos (06:00, 10:00, 15:00 y 19:00), cada uno con su descanso y sin salida: 16 fichajes y
+  4 incidencias, marcados `qaSeed: "demo-correccion-jornada"`. Solo en staging.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 47.1 | `checkinbiz` | Por la cadena con `[skip ci]` y a mano solo `checkinbiz` (lleva `shared`, que se compila dentro); `restart nginx` |
+| 47.2 | Panel | Vercel, después de la API: sin ella el modal no carga la jornada (404). Si la cartera (§33.b) sube antes, este commit ya va dentro: la API de §47.1 tiene que estar en prod para entonces |
+| 47.3 | App | Con la próxima versión publicada; no hace falta esperarla para 47.1 y 47.2 |
+| 47.4 | Verificar | En una empresa de prueba de prod: una jornada sin salida → incidencia → «Corregir jornada» → llega un solo push → aceptar → fichajes válidos e incidencia resuelta |
+| 47.5 | Si algo falla | Revertir `checkinbiz` y el panel. Un lote pendiente se puede seguir aceptando fichaje a fichaje con la app publicada; `workdayCorrections` se queda, no lo lee nadie más |
+
+## 50. Cartera de clientes entera: el orden del pase — PENDIENTE en prod (resumen del 2026-11-07)
+
+La cartera sube a prod de una vez, pero está repartida en §33, §34, §35, §43, §45, §48 y §49. Esto
+es el orden conjunto, sin repetir lo que dice cada sección; el detalle y la verificación, en ella.
+**Producción no se toca sin la orden de Jose**, y las migraciones van a mano, una a una, mirando la
+salida.
+
+| # | Paso | Dónde |
+|---|---|---|
+| 50.1 | Migraciones en `encodebiz_analytics`, por este orden: **050 → 051 → 053 → 054 → 059 → 060 → 061 → 062** | §34.1, §35.1, §35 (053 y 054), §49 |
+| 50.2 | `docker-compose.yml` y `nginx.conf` de prod: bloque `customers` y sus `location` (la exacta `=` incluida) | §33.1, §33.2 |
+| 50.3 | API a prod por la cadena (`develop → staging → main`), sin CI y a mano. Al tocar `shared`, el stack entero: como mínimo `customers tasks documents reports analytics merlin sync inventory checkinbiz`; `restart nginx` | §33.3, §34.2, §35.2, §43.1, §45.1, §48.1, §49.2 |
+| 50.4 | Índices compuestos de Firestore en `encodebiz-services` con gcloud | §33.4 |
+| 50.5 | Backfills, primero sin `--apply`: `backfill-tasks --all --apply --history` (rellena también contrato y cliente), `backfill-contracts --all`, `backfill-customers --all`, `refresh-task-customer-copies --all` (en prod no debería listar nada) | §34.3, §35, §49.3, §48.2 |
+| 50.6 | Variables en Vercel prod **antes** del panel: `NEXT_BACKEND_URI_CHECKINBIZ_CUSTOMERS_HANDLER`, `NEXT_BACKEND_URI_CONTRATOS_LEER`, `NEXT_BACKEND_URI_CHECKINBIZ_CUSTOMERS_ANALYTICS`, `NEXT_BACKEND_URI_CHECKBIZ360_REPORTS_CUSTOMER`. `…_DOWNLOAD_DOCUMENTS` ya está hecha (§43.2) | §33.8, §35.8, §49.4 |
+| 50.7 | Panel: `feat/cartera-de-clientes` (`dfa3d7de` el 07-nov, **sin push**; lleva también los filtros de documentos y la tarjeta del cliente en la tarea de la sesión del panel) → push, PR a `develop` y de ahí a `main` | §33.7 |
+| 50.8 | App, después de la API: la versión que lleve «el cliente en la tarea» (`9c8b3ed`, en develop) y «Datos complementarios» (`7c0f94a`, rama `feat/datos-complementarios`, sin push) | §33.10–11, §48.4 |
+| 50.9 | Verificar con una empresa de pruebas, sección por sección | §33.9, §35.4, §43.4, §45.2, §48.5, §49.5 |
+
+**No sube a prod:** los datos de demo de Neteges Demo en staging (117 clientes `DEMO-*`, octubre
+recreado con `demo-cartera-oct`, fotos en `…/tasks/demo-cartera/`). Son para enseñar, solo en staging.
+
+**Abierto, antes o después del pase, a decidir por Jose:** la alerta `customer_hours_drop` pide 10 h
+en el mes anterior a la misma altura, y en una empresa de visitas semanales (Neteges) solo la
+alcanza un cliente: se propuso cambiarla por «visitas que faltan frente a su ritmo de siempre».
+
+## 51. Gastos externos del contrato (TDR-008, Fase 1) — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `2e4e4a70`, staging `1fa6a28d`; 060 aplicada en `encodebiz_staging`; `customers` y `analytics` reconstruidos)
+
+Jose, 07-nov: «a los contratos le puedas meter un campo de gastos adicionales … para que sea aún más
+preciso». Diseño: [cartera-de-clientes/tdr/TDR-008](../ingenieria/cartera-de-clientes/tdr/TDR-008-gastos-externos.md).
+
+- API: `d4e4be4d` (rama `feat/gastos-externos`). Migración **`060_gastos_externos.sql`**
+  (`customer_expenses`, dos índices). `customers`: `GET/POST /contracts/:id/expenses`,
+  `PATCH/DELETE /contracts/expenses/:id`, solo propietario y administrador; el coste del contrato
+  gana `expenses`. `analytics`: `insights` gana `expenseCents` por mes y lo resta del margen.
+- Panel: `04a30078` en `feat/cartera-de-clientes` (tarjeta con 5 y «Cargar más»; Editar con lista
+  dinámica, fila a fila; contratos cerrados con «Añadir gasto» propio). Va con la cartera.
+- Comprobado en staging: 7 gastos en el contrato de Bon Preu (1 962 €): página de 5 + 2, el contrato
+  los suma al coste, el margen de octubre del cliente baja del 44 % al 32 %.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 51.1 | 060 | A mano en `encodebiz_analytics`, después de la 059 (orden de §50.1: **050 → 051 → 053 → 054 → 059 → 060**) |
+| 51.2 | `customers` y `analytics` | Con la cartera (§50.3) |
+| 51.3 | Verificar | Un contrato: añadir, cambiar y borrar un gasto en Editar; la tarjeta enseña el total; el gerente no ve nada y `POST` le da 403 |
+
+## 52. Gastos desde la tarea y su aprobación (TDR-008, Fases 2 y 3) — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `0c26002e`, staging `79af80e8`; 061 aplicada en `encodebiz_staging`; `customers analytics merlin` reconstruidos)
+
+Jose, 07-nov: «las dos fases, es muy importante y tributa directamente al cliente»; D1 (reembolso) no,
+D2 (la IA lee el ticket) sí. Diseño: TDR-008 §6 bis.
+
+- API: `9035ed03` (rama `feat/gastos-desde-la-tarea`). Migración **`061_gastos_desde_la_tarea.sql`**
+  (`resource_id`, `rejection_reason`, `reviewed_by`, `reviewed_at`, índice por tarea). `customers`:
+  gastos de la tarea, aprobar/rechazar, pendientes de la empresa. `merlin`: `POST /api/v1/gpt/gastos/leer`
+  por el borde de anonimización; **las fotos no se leen** (sin texto que anonimizar), solo PDF con texto:
+  pendiente de decisión de Jose. `analytics`: alerta `expenses_pending`. `shared`: textos del correo.
+- Panel: `c0a2e87e` dentro de `feat/cartera-de-clientes` (merge `95cbaede`), más el arreglo del proxy
+  `9f42338d` (la Fase 1 daba 403 desde el panel). Variable nueva **`NEXT_BACKEND_URI_GASTOS_LEER`**
+  (`.env.development` hecho; Vercel prod, con el resto de §50.6).
+- App: `checkbiz360` `75e7bc2` (rama `feat/gastos-desde-la-tarea`, sobre `feat/datos-complementarios`,
+  sin push). Próxima versión de tiendas.
+- **nginx de prod no tiene `customers`** todavía: lo añade §33.2.
+- Comprobado en staging (Neteges Demo): Mireia sube un ticket y apunta 3,50 € en «Martí Pujol 428» →
+  `pending`, origen app, con su contrato; ella no puede aprobar (403); la alerta cuenta 1; Jose lo
+  aprueba y Mireia lo ve aprobado. La lectura de una foto devuelve vacío sin error.
+
+- **IVA del ticket y tickets sueltos** (§6 ter, Jose «como tú digas» y «ponla en el panel también»):
+  API `fcc17b15` (develop `f1129806`, staging `966d1d6d`), migración **`062_gastos_iva.sql`** (`total_cents`,
+  `vat_unknown`), `customers`: total obligatorio para la asignada, base al aprobar, `DELETE
+  /tasks/:id/tickets/:resourceId`. Panel `7c1d1461` en `feat/cartera-de-clientes`. App `856e112` en
+  `feat/gastos-desde-la-tarea`.
+- **Fotos de tickets con OCR local** (opción A, Jose «vale»): `5cdfd5f3` (develop `45192972`, staging
+  `05d0a1da`), `merlin`: `sharp` + **Tesseract 5.5 en el Dockerfile de merlin** (`apk add tesseract-ocr
+  tesseract-ocr-data-spa tesseract-ocr-data-eng`, `OMP_THREAD_LIMIT=1`; la imagen crece unos 45 MB). La
+  imagen no sale del servidor: al modelo solo llega el texto tachado. Comprobado en staging con el modelo
+  real: parking (8,40 / base 6,94), taller con nombre, NIF y matrícula tachados (102,85 / 85,00),
+  ferretería y térmico «IVA incluido» sin base inventada; de 8 a 14 s por ticket. HEIC no se lee (la
+  app manda JPEG).
+
+- **Justificante de gasto** (§6 quater): API `a338f4c` + `07cde46b` (develop `b9439870`, staging `49b98055`),
+  `documents` (tipo `customer_expense`, no subible a mano: 400 `documents/type_not_uploadable`) y
+  `customers` (al aprobar, copia el ticket al documental del cliente, solo Administración; borrar el
+  gasto lo archiva). Script **`file-expense-receipts`** (simula por defecto) para los aprobados antes del
+  cambio. Panel `55cfef6d` en `feat/cartera-de-clientes`. Comprobado en staging: el gasto de Mireia
+  tiene su justificante «Parking comunidad · 3,50 € · 07/11/2026»; Jose lo ve en el panel, no por la
+  app; Mireia, 403.
+- **App en develop** el 07-nov (`bea1179`): «Datos complementarios» y gastos desde la tarea con el
+  total del ticket; conflictos solo de traducciones, resueltos juntando las claves.
+
+- **La lectura del ticket con IA, descartada en panel y app** (Jose, 07-nov: «solo provoca
+  inseguridad»; «déjalo en la API»). Panel `b6134149` sin el botón ni el proxy: **ya no hace falta
+  `NEXT_BACKEND_URI_GASTOS_LEER` en Vercel** (52.3 se cae). La ruta, el OCR y Tesseract siguen en
+  `merlin` sin uso. App sin lectura en develop: merge `2d6b250` (rama `fix/gastos-sin-lectura-ia`,
+  `fd41521`; la trabajadora apunta concepto y total, la base la pone quien aprueba). También en la rama de la cartera: «Añadir gasto» directo en el contrato con
+  fichero (`86f4450b`) y su API (`2cc5d71`, ya en staging).
+
+| # | Paso | Cómo |
+|---|---|---|
+| 52.1 | 061 y 062 | A mano, después de la 060 (§50.1 queda **… → 059 → 060 → 061 → 062**) |
+| 52.2 | `customers analytics merlin documents` | Con la cartera (§50.3); `merlin` con Tesseract en la imagen. Después, `file-expense-receipts --all` y `--apply` |
+| 52.3 | Vercel | ~~`NEXT_BACKEND_URI_GASTOS_LEER`~~: ya no hace falta (lectura descartada en el panel, 07-nov) |
+| 52.4 | App | La versión que lleve `75e7bc2`, después de la API |
+| 52.5 | Verificar | Trabajadora apunta un gasto con ticket → pendiente; alerta en Inicio; aprobar desde la tarea o el contrato; rechazar con motivo y verlo en la app |
+
+## 53. Fichaje sospechoso según el turno planificado — PENDIENTE en prod; EN STAGING el 2026-11-08 (develop `1bd93a9`, staging `90e106b`; `checkinbiz` y `analytics` reconstruidos)
+
+Dos fallos con más de una jornada al día («Por tareas», turno partido, semana tipo con salida al
+mediodía), vistos el 08-nov con la demo Neteges y los fichajes reales del 30-oct. Los dos **hotfixes
+ya están en prod** desde el 08-nov, a mano y sin CI: **#271** (`checkinbiz`: un ciclo con
+`scheduleApplied.source === "tasks"` queda fuera de la regla 3-10 h) y **#272** (`analytics`: Inicio
+mide la llegada con la PRIMERA jornada del día contra el primer turno; antes cogía la última y todo
+el que tenía dos jornadas salía «llegó tarde»; también `ver_hoy` y el cierre diario).
+
+Lo que queda para el pase es la **regla buena**, acordada con la sesión de cartera (`2d72cd8`,
+`CreateChecklog.ts`, funciones `plannedMinutesOf` / `isSuspectDuration`): planificado = minutos del
+turno de la ENTRADA (`scheduleApplied.start/end`; +24 h si cruza medianoche; `null` con `source:
+"default"`); sospechoso si dura menos de la mitad o más de planificado + 2 h; sin horario, los 3 y
+10 h de siempre. La excepción de «tareas» desaparece. No va como hotfix: cambia el significado de
+«sospechoso» para todos los clientes. Solo afecta a fichajes nuevos. Aceptar una corrección de
+jornada (§47) **no recalcula** `isSuspect`; queda fuera a propósito.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 53.1 | `checkinbiz` | Con el resto del pase; sin migración |
+| 53.2 | Decidir con Jose | Script que desmarque las salidas ya guardadas como sospechosas (simula por defecto, `--apply`, primero dev); y si se recalculan los cierres diarios desde el 30-oct, que tienen el retraso inflado |
+| 53.3 | Verificar | Ciclo de tarea de 2 h → no sospechoso; refuerzo de 2 h cumplido → no; jornada de 8 h cerrada a las 3 h → sí; persona con dos jornadas puntual → sin «llegó tarde» en Inicio |
+
+
+## 54. Auditoría del análisis: previsión, fiabilidad, heurística contra el plan, overview por persona, señales y patrones en transacción — PENDIENTE en prod; EN STAGING el 2026-11-08 (develop `27238c4`, staging `d3f1f91`; `analytics merlin assistant` reconstruidos; `onChecklogWrite` desplegada en `dev-encodebiz`; panel `c6a9fc65` en `feat/cartera-de-clientes`)
+
+Sale de auditar el análisis contra la siembra de SaludStart (staging). Lo que se cuenta (horas,
+coste, tareas, alertas, material) ya era exacto; lo que fallaba era la interpretación:
+
+- **Previsión de fin de mes del cliente** (`CustomerInsights.ts`, `insightRules.ts`): se restaba el
+  coste del mes entero al ingreso solo hasta hoy, y 11 de los 18 clientes rentables salían con
+  pérdidas. Ahora el ingreso es el del mes completo. Además, el 1/12 de un contrato sin fin se
+  recorta hasta hoy en lo realizado. TDR-007.
+- **Fiabilidad** (`utils/regularity.ts`, `BuildBranchBehaviour`, `BuildEvolution`,
+  `BuildEmployeeReliability`, `BuildBranchEffect`): la regularidad pasa a ser la fracción de
+  entradas a ±15 min del plan, sin techo relativo. `dispersionMinutes` es ahora la mediana del
+  desvío. SaludStart, octubre: 43 % → 94,5 %. TDR-004.
+- **Heurística y Merlin contra el plan** (`packages/shared/src/analysis/planTiming.ts`, `HeuristicCore`,
+  `ProfileClassifier`, `heuristic.router.ts`, `merlin` `fetchPlanTiming.ts` y los prompt builders):
+  - la variabilidad se mide contra lo planificado de cada ciclo, con P10-P90 robusto;
+  - el número de tareas sale de `tasks_raw`;
+  - con lectura contra el plan, `efficiencyIndex` es la cobertura del plan, y eso también mueve
+    `promote_high_performer` y `role_reassignment_candidate`.
+
+  SaludStart: «variabilidad horaria elevada» 25 → 0; maverick 26 → 0. Nuevo TDR-008 en
+  `report-pipeline-v2`.
+- **Overview por persona** (`BuildPanelOverview.buildEmployeeOverview` y el conector `assistant`):
+  con `employeeId` devolvía la empresa entera. Ahora cada bloque es de la persona, o `unavailable`
+  con su motivo. 404 si la persona no es de la entidad; 400 con sucursal y persona a la vez. TDR-004.
+- **Señales del cliente:** las comparaciones con meses anteriores solo usan meses con trabajo.
+  - Nueva señal `contract_hours_over`, con la fecha del cruce, en rojo y visible al gerente.
+  - El último día del contrato cuenta entero, en la zona de la entidad.
+  - SaludStart: de 36 señales a 9. TDR-007 §3.1.
+- **Patrones en transacción** (`firebase_sdk/src/fichaje/writeController.ts`): sucursal, persona en
+  la sucursal y persona global se leen, recalculan y escriben en `runTransaction`. Antes dos salidas
+  a la vez se pisaban, y Badalona de SaludStart quedó en 9 dataPoints con 1344 ciclos.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 54.1 | `analytics`, `merlin`, `assistant` | Con el resto del pase; sin migración. `shared` cambia (`planTiming`), así que se reconstruyen los tres |
+| 54.2 | `onChecklogWrite` | `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo onChecklogWrite`, tras confirmar que en prod la función viene de `firebase_sdk` y no del SaaS, que tiene otra copia en `dataProcessing/writeController.ts` sin arreglar |
+| 54.3 | Panel | `c6a9fc65`: el texto de `contract_hours_over` en los 5 idiomas, con la cartera (§50) |
+| 54.4 | Decidir con Jose | Si se rehacen los patrones de sucursal de prod que hayan perdido puntos. Script de la siembra: `siembra-saludstart/auditoria/a6-rehacer-patron-sucursal.js`, que simula por defecto y hay que portar antes |
+| 54.6 | Señales de tareas con las completadas (`e3669c8`, `5a78912`, staging `8eee17b`) | `onTaskPattern` cuenta cada tarea una vez al terminarse (completed, validated o rejected); una completada que se revisa después solo mueve validación y rechazo. Sin valoraciones no hay nota media (`ratingCount > 0`), en el clasificador de analytics y en el del trigger: sin esto, al llegar las señales a quien nadie valora, salía «at-risk». Desplegar `--solo onTaskPattern,onChecklogWrite` y reconstruir `analytics` |
+| 54.7 | Decidir con Jose | La media móvil de las señales de tareas (α 0,15) solo mira las últimas ~12 tareas. En una sucursal con 50 al día da un 64 % a tiempo frente al 88 % real (Badalona de SaludStart). Es diseño, no un fallo del pase |
+| 54.5 | Verificar | Un cliente rentable da un margen de fin de mes positivo. La fiabilidad de la empresa cuadra con sus semanas. Una persona «Por tareas» puntual no recibe `correct_high_variability`. `ver_mes` con `personaId` trae solo sus cifras |
+
+## 55. Tarea con cliente: guardar, gastos sin contrato, el contrato recoge lo que cubre, el panel firma como administración y contratos por páginas — PENDIENTE en prod; EN STAGING el 2026-11-08 (develop → staging `ec68b92` y `2351871`; `tasks customers documents` reconstruidos; panel en `develop` `b90ada6d`, `e5e70675`)
+
+Visto con Cuidama (staging). Lo que entra en el pase:
+
+- **Guardar con cliente** (`task.helpers.ts` `sameWorkSite`, `updateTask.controller.ts`; panel `TaskFormDialog`):
+  - Editar una tarea con una valla sin `placeId` (las del cuadrante o el asistente) daba 400 `task/worksite_invalid`.
+  - Ahora, si es el mismo sitio, se queda con la valla que tenía.
+  - El panel solo reenvía la valla si cambió.
+- **Gastos sin contrato** (`customers`):
+  - `GET /:customerId/expenses/without-contract`, para el bloque «Gastos sin contrato» de la ficha.
+  - `PATCH /expenses/:id/contract`, para asignar, cambiar o quitar el contrato. Queda en `contract_events` como `expense_assigned` / `expense_unassigned`.
+  - Un gasto nuevo toma el contrato de su tarea o, si la tarea no tiene, el único vigente ese día.
+  - El proxy del panel tiene que dejar pasar las dos rutas: `b90ada6d`. Sin eso, el bloque sale vacío.
+- **El contrato recoge lo que cubre** (`application/linkCustomerContracts.ts`):
+  - Al crear un contrato, cambiar su vigencia o reabrirlo, entran las tareas con cliente y sin contrato, y sus gastos, que ahora cubre. Solo si es el único vigente en esa fecha.
+  - Queda en `contract_events` como `tasks_linked`.
+  - Script `link-task-contracts --entity <id> [--customer <id>] [--apply]`, que simula por defecto.
+- **El panel firma como administración**:
+  - `packages/shared/src/checkbiz/auth/clientChannel.ts` (`resolveClientChannel`, el que ya usaba documents) y `services/tasks/.../taskActor.ts`.
+  - Con canal panel o asistente y asiento owner/admin, firma la cuenta: actorId = uid y actorRole = owner/admin. Desde la app, la ficha de empleado, como siempre.
+  - En prod hoy toda acción del panel de un owner/admin con ficha queda firmada con su ficha, y con el rol de su responsabilidad en la sucursal.
+  - Panel `031ccc18`: «Asignada a {nombres}» / «Asignación retirada» y «Por {cuenta} · Administración».
+  - La app tiene el mismo fallo de pintado; el contrato se pasó a su sesión.
+- **Contratos por páginas:** `GET /:customerId/contracts?limit&cursor` → `{items, nextCursor, count, totals}`, con totales solo en la primera página. Sin `limit`, igual que antes.
+- **Céntimos:** el panel redondeaba a euros los importes del contrato y del análisis (`e5e70675`).
+
+| # | Paso | Cómo |
+|---|---|---|
+| 55.1 | `tasks`, `customers`, `documents` | Con el resto del pase; sin migración (`contract_events.type` es texto). `shared` cambia (`clientChannel`) |
+| 55.2 | Panel | `develop` del panel con las ramas de la cartera (§50) |
+| 55.3 | Decidir con Jose | Medir en prod con `reattribute-panel-activity --all`, SOLO simulación, cuántas entradas firmó la ficha en lugar de la cuenta. En staging: 4013 movidas, 132 sin tocar. Aplicar solo con su OK |
+| 55.4 | Verificar | Editar una tarea del cuadrante con cliente guarda. Un gasto de la app sin contrato sale en la ficha y se asigna. Cambiar las fechas de un contrato recoge las tareas del cliente. El historial de una acción del panel dice «Administración» |
