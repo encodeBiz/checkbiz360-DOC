@@ -239,12 +239,14 @@ Widget: `lib/features/task/presentation/widgets/task_description_markdown.dart` 
   - `409 task/description_conflict` → la lista había cambiado (otra persona o el gestor): pone la `description` de la respuesta y avisa; el trabajador repite el gesto si hace falta.
   - `409 task/description_locked` o cualquier otro error → deshace la marca.
   - Con la tarea en `completed`, `validated` o `cancelled`, casillas sin pulsar.
-  - La app nunca cambia otra cosa del texto por este endpoint: el servidor lo rechaza (`403 task/description_checklist_only`).
+  - Quien no gestiona la tarea solo cambia casillas por este endpoint: el servidor rechaza lo demás (`403 task/description_checklist_only`). Quien la gestiona edita el texto entero por el mismo endpoint (ver «Edición desde móvil»).
 - **Enlaces:** se abren con `url_launcher` en app externa y solo si el esquema es `http`, `https` o `mailto`; si no, snackbar de error (`taskDescriptionLinkOpenError`, en es/en/de/pt).
 - **Estilos:** el `MarkdownStyleSheet` se deriva del design system (`semanticColors`, tokens de spacing/radius), no de los valores por defecto del paquete.
-- **Edición desde móvil:** el formulario de crear/editar tarea sigue con un `TextField` plano. Es correcto y no destructivo — guarda el Markdown tal cual lo escribió el back office.
+- **Edición desde móvil:** la descripción se enseña en un recuadro (`TaskDescriptionBox`) con «Editar». En la ficha va **entera**, nunca recortada: es la lista que el trabajador marca y no puede quedar oculta. Solo en crear/editar tarea se recorta a unas seis líneas con «Ver más» (si no cabe). «Ver más» y «Editar» abren un panel inferior (`TaskDescriptionSheet`): lector con las casillas marcables, o editor con pestañas «Escribir / Vista previa» y barra de formato pegada al teclado (negrita, cursiva, título, casillas, viñetas, numerada, cita, enlace). La lógica de la barra y la de continuar listas con Intro (`task_description_editing.dart`) es la del `RichTextEditor` del panel: si se toca una, se toca la otra.
+  - En la ficha, «Editar» sale con el mismo permiso que el lápiz (`taskBranchAdministrativePermissionProvider`, tarea no validada) y guarda con `PATCH /:taskId/description` mandando el texto sobre el que se editó. Un `409 task/description_conflict` no pisa nada: se pregunta si cargar la de ahora o guardar la propia encima (reintento con la de ahora como base).
+  - En crear/editar tarea el editor solo deja el texto en el formulario; se manda con el resto de la tarea.
 
-Tests: `test/widget/task/task_description_markdown_test.dart` (ejemplo del contrato con checklists, listas/cita/separador/enlace, HTML literal, texto plano).
+Tests: `test/widget/task/task_description_markdown_test.dart` (ejemplo del contrato con checklists, listas/cita/separador/enlace, HTML literal, texto plano), `test/widget/task/task_description_sheet_test.dart` (recuadro, guardar, descartar, conflicto) y `test/unit/task/task_description_editing_test.dart` (barra de formato y listas).
 
 > Alternativa mínima si otro cliente no quiere dependencia: pintar el campo tal cual con un `Text`. Es legible sin más — por eso se eligió Markdown y no HTML.
 

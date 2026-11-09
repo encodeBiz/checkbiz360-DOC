@@ -56,10 +56,14 @@ En el panel se llama **«Responsable»** («Una persona responsable» en el sele
 «Encargada»: puede ser cualquiera. Rama del front `fix/etiquetas-responsable`. En el código
 sigue siendo `responsible_worker` / `responsibleEmployeeId`.
 
-## La app (pendiente, siguiente versión)
+## La app (rama `feat/tareas-responsable-y-avisos-agrupados`, 6be850a, 2026-10-28; sin publicar)
 
-- Esconder Iniciar, Pausar, Reanudar y Terminar a quien no es la persona responsable.
-- Mostrar `task/responsible_only` («Esta tarea tiene una persona responsable: solo ella puede
-  iniciarla, pausarla o completarla») en vez de tragárselo.
-- Si al terminar la tarea sigue sin cerrarse (`status` distinto de `completed`), decir «Tu parte
-  está hecha», no «Tarea completada».
+- Iniciar, Pausar, Reanudar y Completar solo los ve la persona responsable, en la ficha y en
+  las tarjetas. A las otras asignadas, la ficha les dice quién es la responsable. Quien gestiona
+  sin estar asignado conserva los botones.
+- `task/responsible_only` se traduce («Esta tarea tiene una persona responsable: solo ella
+  puede iniciarla, pausarla o completarla»), antes que el 403 genérico.
+- Si al completar la tarea sigue en curso, dice «Tu parte está hecha», no «Tarea completada».
+- **Editar desde la app conserva a la responsable.** Hasta 1.10.0 el formulario reescribía
+  `completionPolicy` a `all_assigned_workers` o `any_assigned_worker`: guardar desde el móvil le
+  quitaba la responsable a la tarea. Las versiones publicadas lo siguen haciendo.
