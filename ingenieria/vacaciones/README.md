@@ -96,7 +96,7 @@ la primera versión.
 
 | Quién | Cuándo | Cómo |
 |---|---|---|
-| Administradores | nueva solicitud | **nada por correo** (decisión 5): la ven en Contacto → Solicitudes, con el contador de pendientes |
+| Administradores | nueva solicitud | **nada por correo** (decisión 5): la ven en Contacto → Solicitudes, con el contador de pendientes. **Superada el 2026-10-29**: con las alertas por correo en producción, las pendientes entran en el resumen de la mañana a owner y admin, y una que empieza en menos de 48 h sin respuesta avisa al momento ([alertas-por-correo §12](../alertas-por-correo/README.md#12-pendientes-de-decisión-fase-3b)) |
 | La persona | aprobada o rechazada | **push + in-app** `absence_request_approved` / `absence_request_rejected` (`CheckbizSentNotificationApp`), `data.module = checkbiz_calendar`, `screen = my_calendar`; si tiene la casilla de avisos por correo, también se apunta como evento (fuera de esta versión) |
 | Panel | siempre | **contador de pendientes** en la pestaña Contacto → Solicitudes |
 

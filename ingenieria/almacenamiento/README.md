@@ -99,6 +99,7 @@ no, no. Rutas comprobadas en el código el 2026-10-19:
 | `kiosk` — fotos del quiosco (bucket del sistema) | `kiosk/r{días}/{entityId}/…`, `kiosk/hold/{entityId}/…` | sí |
 | Marca de la empresa (logos, imágenes del panel) | `media/entities/{entityId}/{tipo}/…` (todo lo que no es `checkinbiz/`) | **no** (Jose, 2026-10-19) |
 | Campañas in-app | `campaigns/images/…` | **no**: las hace el backoffice para todos, no son de ninguna empresa |
+| Contenido del CRM (imágenes y PDF de fichas y publicaciones) | `crm/contenido/{briefs\|items}/{id}/…` | **no**: es marketing nuestro, no de ninguna empresa cliente (sales-crm TDR-011, 2026-10-28) |
 | Cualquier otra ruta | — | no; el trigger la ignora |
 
 La tabla es el contrato. Un módulo nuevo que guarde ficheros de una empresa pone el

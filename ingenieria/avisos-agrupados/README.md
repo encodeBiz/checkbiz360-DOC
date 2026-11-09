@@ -87,7 +87,9 @@ push_digest/{entityId}_{employeeId} = {
   - «Ya no tienes 12 tareas del 10 al 14 de noviembre.»
 
   Los datos llevan `module: "checkbiz_tasks"`, `screen: "task_list"`, `private: true`,
-  `entityId` y `branchId` (si todas son de la misma sucursal), sin `taskId`.
+  `entityId` y `branchId` (si todas son de la misma sucursal), sin `taskId`. Si alguna tarea
+  tiene fecha, también `dateFrom` y `dateTo` (`yyyy-MM-dd`, día de la empresa): el mismo rango
+  que dice el texto.
 
 Idioma: el de la persona, después el de la empresa y, en último caso, inglés. Es la regla de
 siempre.
@@ -102,7 +104,11 @@ Comprobado en master 1.10.0, 1.7.0 y 1.4.0, que se comportan igual:
   del aviso con el título y el texto. No rompe nada y no hace falta publicar versión.
 - **Siguiente versión**: una rama más en `notification_navigation_handler.dart`:
   `checkbiz_tasks` + `task_list` → `AppConstants.taskRoute`, con las mismas comprobaciones de
-  `private` y de destinatario que el resto de avisos privados.
+  `private` y de destinatario que el resto de avisos privados. Con `dateFrom`/`dateTo` va a
+  `/attendance/tasks?from=…&to=…&at=…`: la lista quita los filtros de estado, sucursal y persona
+  y pone el rango del aviso (`TaskListNotifier.showRange`). `at` cambia en cada toque, para que
+  el mismo aviso vuelva a poner el rango aunque la pestaña siga abierta. Sin fechas, la lista
+  con el filtro que tuviera.
 
 ## Piezas
 
@@ -112,7 +118,8 @@ Comprobado en master 1.10.0, 1.7.0 y 1.4.0, que se comportan igual:
 | Agrupar, redactar (textos es/en del resumen) y mandar los vencidos | `shared/checkbiz/notifications/taskPushDigest` |
 | Juntar también por `externalRef` (push y correo) | `shared/checkbiz/notifications/workEmail` (`mergeWorkEvents`) |
 | Trabajo cada minuto, `taskPushDigests` | `services/firebase_sdk/src/programadas/avisosAgrupados` |
-| `checkbiz_tasks` + `task_list` → listado de tareas | app, próxima versión |
+| `checkbiz_tasks` + `task_list` → listado de tareas | app, rama `feat/tareas-responsable-y-avisos-agrupados` (6be850a), sin publicar |
+| `dateFrom`/`dateTo` en el aviso y la lista filtrada por esos días | servidor `feat/aviso-agrupado-con-fechas`; app `feat/aviso-agrupado-abre-fechas` (encima de la anterior) |
 | `push_digest` solo servidor | sin regla: lo que ninguna regla abre, Firestore lo niega al cliente |
 
 ## Orden de despliegue

@@ -125,6 +125,7 @@ facturación es otra cosa y no debe mezclarse con él.
 | Add-on | Estado | Detalle |
 |---|---|---|
 | [RentmanBiz](rentman.md) | beta — capa de horas en producción de código, catálogo sembrado en dev | `rentman-integration/` |
+| Nómina a3innuva (`nominabiz-a3`, nombre provisional) | diseño propuesto 2026-10-26, a la espera de cuenta A3 | `a3-nomina/` |
 
 ---
 
