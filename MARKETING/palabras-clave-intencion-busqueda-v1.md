@@ -154,3 +154,11 @@ Pausas (concordancia amplia, contraria al punto 4; pendientes desde el 2026-10-2
 - "gestion de personal en una empresa" y "rentman": la pausa ya propuesta en el punto 5 y no aplicada el 2026-10-12.
 
 Antes de fiarse de las conversiones de esta revision: la conversion de GTM-MRQR78CK cuelga de `gtm.linkClick` y cuenta dos veces la visita que toca WhatsApp y formulario (ver [medicion](medicion-conversiones-google-ads-v1.md)). Repuntarla a `landing_whatsapp_click` y `landing_generate_lead_browser` va antes que cualquier cambio de puja.
+
+### Aplicado el 2026-10-29 (pedido por el usuario)
+
+- 26 negativas a nivel de campana: [ayuda a domicilio] en exacta y, en frase, "gestion administrativa", "media markt", "papel", "séneca", "maquina", "máquina", "plantilla gratis", "plantillas gratis", "plantilla word" y las 17 marcas de la lista. Ya existian y no se han duplicado: "seneca", "supershift", "plantilla excel" y "plantillas excel". Lista de negativas: de 297 a 322.
+- Quitada la negativa de frase "plantilla" (campana).
+- En pausa (amplia): app órdenes de trabajo, app para operarios (General), gestion de personal en una empresa (Construccion) y rentman (Eventos).
+- Nuevas exactas en CheckBiz360-General (no existe grupo Partes de trabajo; las de partes viven ahi): [app órdenes de trabajo] (no apta por volumen bajo, en revision) y [software órdenes de trabajo] (pendiente, en revision).
+- GTM: no aplicado. En GTM-MRQR78CK (workspace 18) ninguna etiqueta usa `gtm.linkClick` y en Ads ninguna accion de conversion depende de un clic de enlace; falta localizar de donde sale la doble conversion.
