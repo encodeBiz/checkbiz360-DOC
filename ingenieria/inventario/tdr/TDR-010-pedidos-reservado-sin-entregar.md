@@ -100,6 +100,20 @@ destino, de 5 en 5. Cada pedido es una tarjeta con el destino (enlace a su ficha
 la tarea si la tiene y sus líneas; **«Entregar todo»** abre el diálogo con las cantidades
 editables y entrega en una sola petición.
 
+## Operables (2026-11-10)
+
+Un operable no se reserva por cantidad: va a `unit_reservations` con su ejemplar y su horario
+(ADR-006), así que el libro no lo ve. Jose, 2026-11-10: «el pedido no contempló el operable de
+escalera a la tarea». El pedido de una tarea suma una línea por **ejemplar reservado que aún no
+ha salido**: reserva en `reserved` y sin hecho `picked_up` de esa reserva en
+`unit_positions_raw`. La línea lleva `unit: { unitId, label, startAt, endAt }` y su almacén es la
+base del ejemplar (`dim_item_units`).
+
+**Entregar todo** pide, para cada operable, **quién se lo lleva** (buscador de empleados,
+cualquiera) y apunta la salida con `POST /units/:unitId/pickup` (ADR-008, ampliación del
+2026-11-10). Sin persona no sale. Lo que no se marca sigue en el pedido. La agenda no cambia: la
+reserva pasa a «en uso» cuando la tarea arranca, como siempre.
+
 ## Fuera de esta fase
 
 - Albarán en PDF y acta firmada por quien recibe (módulo de firma).

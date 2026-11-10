@@ -237,3 +237,36 @@ duplicar; todo lo creado se borró.
 **Pendiente en la API:** el reespejo periódico del rastro a Postgres (hoy solo en la petición) y
 los contratos en [04](../04_contratos-api.md).
 
+
+## Ampliación 2026-11-10 — Quién se lo llevó y quién lo trajo
+
+**Contexto.** Al revisar Pedidos (TDR-010) apareció el hueco que deja esta decisión: el rastro
+dice dónde estuvo el ejemplar, pero no **quién se lo llevó del almacén** ni **quién lo trajo**.
+Jose, 2026-11-10: «cuando se pierde una escalera, ¿a quién pregunto? Ejemplo: tarea A, pero la
+escalera la llevó un supervisor autorizado que ni está registrado en la tarea». La tarea no
+responde a esa pregunta: dice para qué se usó el equipo, no quién lo tenía.
+
+**Decisión.** Solo para operables (los consumibles no se pierden como un equipo):
+
+- **Salida del almacén** — hecho nuevo `picked_up`: `{ kind: "person", employeeId, reservationId?,
+  taskId? }`. Lo apunta el almacén (supervisor o superior, `canReserve`) eligiendo **a cualquier
+  empleado** con el buscador, esté o no en la tarea. `POST /units/:unitId/pickup`. Desde Pedidos
+  es obligatorio para cada operable al «Entregar todo».
+- **Vuelta al almacén** — la recepción (`POST /units/:unitId/receive`) gana `returnedBy`: quién lo
+  trae, con el mismo buscador. Va en el hecho `received` como `employeeId`.
+- **A cargo de** — el ejemplar guarda `custody: { employeeId, since, by, positionId,
+  reservationId? }`, escrito por el servicio en la misma transacción que el hecho, como
+  `position`. Lo pone `picked_up` y lo quita la recepción (`received`) y la devolución de una
+  entrega (`assignment_returned`). **Lo que haga la tarea no lo toca**: que arranque mueve la
+  posición al sitio de la tarea y que se cierre la libera, pero el ejemplar sigue a cargo de
+  quien lo sacó hasta que alguien lo devuelve. Si se declara perdido, el hecho `lost` lleva
+  el `employeeId` de quien lo tenía a cargo.
+
+**No es una entrega de ADR-007.** La entrega a una persona («Mi material») lleva acuse con
+huella y saca el ejemplar de la agenda de tareas. Llevárselo es una salida apuntada: no pide
+acuse y **no toca la agenda**, el ejemplar se sigue pudiendo reservar.
+
+**Por qué guardar `custody` y no deducirlo del rastro.** Después de `picked_up` llegan los hechos
+de la tarea (`task_in_progress`, `task_closed`), así que el último hecho ya no dice quién lo
+tiene; habría que leer el rastro hacia atrás en cada ficha y cada tablero. Como `position`, es el
+único sitio donde vive ese dato, no una copia de otro.
