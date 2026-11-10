@@ -2184,6 +2184,12 @@ salida.
 | 50.8 | App, después de la API: la versión que lleve «el cliente en la tarea» (`9c8b3ed`, en develop) y «Datos complementarios» (`7c0f94a`, rama `feat/datos-complementarios`, sin push) | §33.10–11, §48.4 |
 | 50.9 | Verificar con una empresa de pruebas, sección por sección | §33.9, §35.4, §43.4, §45.2, §48.5, §49.5 |
 
+**Va con la cartera:** el conector del asistente (`assistant`) no tenía frase para
+`customer_tasks_missed`, `customer_hours_drop`, `contract_hours_over`, `contract_ending` ni
+`expenses_pending`, y `ver_alertas` las daba como «Alerta sin texto: díselo a soporte.». Arreglado
+el 2026-11-10 (develop `98fca80`, staging `d67c161`, `assistant` reconstruido en staging) con el
+texto del panel; un test compara `rules.ts` con el mapa `ALERTA`. Sube con `assistant` en §50.3.
+
 **No sube a prod:** los datos de demo de Neteges Demo en staging (117 clientes `DEMO-*`, octubre
 recreado con `demo-cartera-oct`, fotos en `…/tasks/demo-cartera/`). Son para enseñar, solo en staging.
 
@@ -2368,3 +2374,25 @@ Visto con Cuidama (staging). Lo que entra en el pase:
 | 55.2 | Panel | `develop` del panel con las ramas de la cartera (§50) |
 | 55.3 | Decidir con Jose | Medir en prod con `reattribute-panel-activity --all`, SOLO simulación, cuántas entradas firmó la ficha en lugar de la cuenta. En staging: 4013 movidas, 132 sin tocar. Aplicar solo con su OK |
 | 55.4 | Verificar | Editar una tarea del cuadrante con cliente guarda. Un gasto de la app sin contrato sale en la ficha y se asigna. Cambiar las fechas de un contrato recoge las tareas del cliente. El historial de una acción del panel dice «Administración» |
+
+## 60. «Nadie ha fichado» con todo el centro ya fuera — PENDIENTE en prod; EN STAGING el 2026-11-10 (develop `98fca80`, staging `d67c161`; `analytics` y `assistant` reconstruidos)
+
+**Candidato a hotfix desde `main`. Jose aún no lo ha autorizado.** El fallo está en producción.
+
+- **Lo observado.** La alerta `no_presence` («Nadie ha fichado y había N personas previstas»)
+  solo miraba a quien seguía trabajando o en pausa. En cuanto la plantilla de un centro terminaba
+  la jornada, saltaba. Caso real en staging el 10-nov: SaludStart (`318Ey5ZHBMeqm5fsQ0Md`),
+  Oficina Barcelona (`FzXKjZW8odGbnw7AVjFX`), 20 entradas y 20 salidas con la alerta encendida.
+- **El arreglo** (`services/analytics/src/application/operational/OperationalDay.ts`, `alertFor`).
+  Solo salta si nadie ha tenido hoy jornada en el centro. Cuentan trabajando, en pausa,
+  terminada, sin cerrar, pendiente de validar y quien fichó sin estar previsto. Lo cubre el test
+  `services/analytics/test/operationalDayAlert.test.ts` y un caso de `verificar-dia-operativo.ts`.
+- **Cambia en:** el panel (`/panel/today`, `/panel/alerts`), el resumen por correo
+  (`no_presence` es de hoy, `digest.ts`) y el conector (`ver_alertas`, `ver_hoy`).
+
+| # | Paso | Cómo |
+|---|---|---|
+| 60.1 | Orden de Jose | Hotfix desde `main` o con el próximo pase |
+| 60.2 | Hotfix | Worktree desde `origin/main`, cherry-pick de `945af58` (solo `analytics`: `OperationalDay.ts`, el test y el script de verificación), PR a `main` con `[skip ci]`; después, `up -d --build --no-deps analytics` y `restart nginx`. Sin migración ni `shared` |
+| 60.3 | Verificar en prod | Pasada la hora de salida, un centro con todas sus jornadas cerradas no sale en `/panel/alerts`. Un centro sin ningún fichaje pasada la hora de entrada sigue saliendo |
+| 60.4 | Verificado en staging | HECHO el 2026-11-10, ~12:52 UTC. Oficina Barcelona da `alert: "none"`, con 11 terminadas, 1 en otro centro y nadie dentro. `/panel/alerts` de SaludStart ya no lleva `no_presence`, y `ver_alertas` del conector tampoco |
