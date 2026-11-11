@@ -2423,3 +2423,50 @@ la operación» decía que faltaba evidencia, que era falso.
 | 62.3 | Panel | Con el siguiente PR del panel a `main` |
 | 62.4 | Verificar en prod | Antes y después, `profileCounts` de una empresa con jornadas bien cerradas: lo que baja de `underworked` pasa a `reliable`, y nada más se mueve |
 | 62.5 | Verificado en staging | HECHO el 2026-11-11 con `buildPanelOverview` dentro del contenedor: de `{underworked: 27, insufficient: 2}` a `{underworked: 14, reliable: 13, insufficient: 2}`, mismas desviaciones antes y después (todo el cambio es del criterio). `overall.profile` de `underworked` a `reliable` (−9,2 %); `topPerformers` de 0 a 5; eje de horas del perfil de 27 a 14 `trabaja_de_menos` |
+
+## 64. Inventario: Pedidos, equipos fuera del almacén, traspaso entre tareas y cancelar un pedido — PENDIENTE en prod; EN STAGING el 2026-11-11 (último: develop `2135c0e` mergeado, staging `119295d`; `inventory` reconstruido; panel en `develop` `8696f1ad`)
+
+Diseño: [inventario/tdr/TDR-010](../ingenieria/inventario/tdr/TDR-010-pedidos-reservado-sin-entregar.md)
+(Pedidos, operables y cancelar), [ADR-008](../ingenieria/inventario/adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md)
+(sacar es un registro, no custodia; un solo «Recibir en almacén»; traspaso de una tarea a otra) y
+[TDR-008 §11b](../ingenieria/inventario/tdr/TDR-008-cuentas-de-material-por-destino.md) («Fuera del
+almacén» desde Postgres). Decisiones de Jose del 09 al 11-nov.
+
+- **Qué sube** (rama `feat/inventario-pendiente-producto`, solo los commits de inventario; la rama
+  sale de develop y arrastra lo demás, que va por sus propias secciones):
+  - `0d62c2a` cuadrar un artículo de una tarea terminada desde la ficha del artículo.
+  - `068ebfd` Pedidos: `GET /orders`, lo reservado sin entregar por tarea, persona o sucursal.
+  - `fd50851`, `97e2672` los equipos en Pedidos; «Entregar todo» apunta quién se los lleva
+    (`POST /units/:id/pickup`). Sacar es **solo un registro** (`takenOut` en el ejemplar): no es
+    custodia ni sale en «Mi material»; mientras está fuera no se entrega en «Mi material» (409
+    `inventory/unit_picked_up`).
+  - `383b111`, `604424e`, `de11fa9` «Fuera del almacén»: `GET /materials/outside`, consumibles y
+    equipos juntos, de Postgres, de 25 en 25, con buscador por artículo. Script
+    `remirror-positions`. (`/units/outside` de `383b111` se quitó después.)
+  - `2edb5f6`, `5e20609` traspaso de una tarea a otra sin pasar por el almacén (hecho
+    `task_handover`); fuera no cuenta como libre en la ficha ni en Stock; el equipo vuelve al pedido
+    de su reserva tras traspasarlo o recibirlo.
+  - `2135c0e` `POST /orders/cancel`: cancelar un pedido entero o una línea.
+- Toca `shared` solo en tipos (`ItemUnit.takenOut`, motivos `picked_up` y `task_handover` de
+  `UnitPosition`): basta reconstruir `inventory`, que compila `shared` en su imagen.
+- **Sin migraciones.** `unit_positions_raw.reason` es `VARCHAR(24)` sin CHECK: caben los motivos
+  nuevos. Sin índices de Firestore, sin variables, sin plantillas.
+- **Panel** (`encodebiz-front-saas`, rama `feat/inventario-pendiente-producto`, en `develop`):
+  `24f549f2`, `430c5a01`, `6eb67344`, `cc83e934`, `9110bdbf`, `2bf7af84`, `3cb21cd0`, `15e00128`,
+  `e8c83905`, `f6c55dac`, `7e4c04c6`. Cambia el proxy (`serverBackendProxy.ts`: `orders`,
+  `orders/cancel`, `materials/outside`, `units/:id/pickup`): va **después** de la API, o Pedidos y
+  «Fuera del almacén» dan error.
+- **App:** sin cambios. No sabe sacar, traspasar ni enseñar quién; no bloquea nada.
+- 🔴 **El espejo de posiciones está incompleto.** En dev, Netaclara tenía en Postgres los hechos de
+  1 de 43 ejemplares: se escribe a mejor esfuerzo, sin reintento, y lo sembrado a mano no pasó por
+  el repositorio. «Fuera del almacén» y Pedidos leen de ahí: sin `remirror-positions`, los equipos
+  fuera de su base no salen. En prod, **para cada empresa con inventario**, simular y después
+  `--apply`. Queda pendiente un job que reintente (no entra en este pase).
+
+| # | Paso | Cómo |
+|---|---|---|
+| 64.1 | Orden de Jose | Pendiente |
+| 64.2 | API | PR a `main` con `[skip ci]`; en `/opt/encodebiz-api`, `git pull --ff-only origin main`, `docker compose up -d --build --no-deps inventory` y `restart nginx` |
+| 64.3 | Espejo de posiciones | Por cada empresa con inventario: `docker compose exec -T inventory node services/inventory/dist/scripts/remirror-positions.js --entity <id>` (simula) y luego con `--apply`. Apuntar aquí cuántos faltaban en cada una |
+| 64.4 | Panel | PR de `develop` a `main` del panel con estos commits, después de 64.2 |
+| 64.5 | Prueba en prod | Pedidos: entregar un consumible y un equipo con quién se lo lleva; el equipo sale en «Fuera del almacén» con quién lo sacó; traspasarlo a otra tarea; recibirlo; cancelar una línea y un pedido entero y ver que lo reservado vuelve a estar disponible |
