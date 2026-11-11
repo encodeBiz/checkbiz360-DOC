@@ -2396,3 +2396,30 @@ Visto con Cuidama (staging). Lo que entra en el pase:
 | 60.2 | Hotfix | Worktree desde `origin/main`, cherry-pick de `945af58` (solo `analytics`: `OperationalDay.ts`, el test y el script de verificación), PR a `main` con `[skip ci]`; después, `up -d --build --no-deps analytics` y `restart nginx`. Sin migración ni `shared` |
 | 60.3 | Verificar en prod | Pasada la hora de salida, un centro con todas sus jornadas cerradas no sale en `/panel/alerts`. Un centro sin ningún fichaje pasada la hora de entrada sigue saliendo |
 | 60.4 | Verificado en staging | HECHO el 2026-11-10, ~12:52 UTC. Oficina Barcelona da `alert: "none"`, con 11 terminadas, 1 en otro centro y nadie dentro. `/panel/alerts` de SaludStart ya no lleva `no_presence`, y `ver_alertas` del conector tampoco |
+
+## 62. «Trabaja menos» solo con un déficit claro, y la lista de destacados vacía dice por qué — PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `03a9022`, staging `f9e50b4`; `analytics` reconstruido; panel en `develop` `fb7873da` y `a9fa7bcb`)
+
+Decisión de Jose del 2026-11-11 («arréglalo todo»). En la demo de staging (Netaclara,
+`318Ey5ZHBMeqm5fsQ0Md`, noviembre) 27 de 29 personas que cierran el 99 % de sus jornadas salían
+`underworked` por fichar un 5-15 % menos de lo planificado, y la tarjeta «Quién sostiene mejor
+la operación» decía que faltaba evidencia, que era falso.
+
+- **Criterio** (`services/analytics/src/application/BuildOperatingCost.ts`, `classify`): con
+  buen cierre, `underworked` solo por debajo del −10 % (`CLEAR_SHORTFALL_PCT`); entre −10 % y
+  +5 % es `reliable`. `overworked` (> +5 %), el registro roto y la banda intermedia no cambian.
+  El perfil global (`overall.profile`) pasa por el mismo `classify`.
+- **Perfil por persona** (`BuildWorkerProfile.ts`): importa los cortes en vez de copiarlos, y
+  su eje de horas dice `trabaja_de_menos` con el mismo 10 %.
+- **Panel** (`EmployeesTab.tsx`, claves `employees.noTopNoneMeets`, `noTopNoneMeetsHelp`,
+  `noTopSeeAttention` en los cinco idiomas): con gente clasificada y la lista vacía dice que
+  nadie cumple a la vez registro y horas; el texto de «sin evidencia» queda para cuando nadie
+  está clasificado. En francés el bloque `employees` no existía y se añade con sus cuatro claves.
+- Sin migración, sin `shared`, sin variables.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 62.1 | Orden de Jose | Con el próximo pase, o hotfix si lo pide |
+| 62.2 | API | Solo `analytics`: `up -d --build --no-deps analytics` y `restart nginx` |
+| 62.3 | Panel | Con el siguiente PR del panel a `main` |
+| 62.4 | Verificar en prod | Antes y después, `profileCounts` de una empresa con jornadas bien cerradas: lo que baja de `underworked` pasa a `reliable`, y nada más se mueve |
+| 62.5 | Verificado en staging | HECHO el 2026-11-11 con `buildPanelOverview` dentro del contenedor: de `{underworked: 27, insufficient: 2}` a `{underworked: 14, reliable: 13, insufficient: 2}`, mismas desviaciones antes y después (todo el cambio es del criterio). `overall.profile` de `underworked` a `reliable` (−9,2 %); `topPerformers` de 0 a 5; eje de horas del perfil de 27 a 14 `trabaja_de_menos` |
