@@ -1679,7 +1679,7 @@ Se quedan Ayudarte, Neteges, Tapissat (`W6aVQj7L…`), Arendel y Encodebiz. Se b
 | 33.8 | Panel de dirección, suscripciones | Recalculados `pagando`, `en_prueba`, `gratis`, cuota y pruebas que vencen de 379 fotos con las empresas que existen (antes 8 pagando el 04-nov, ahora 4). Comparado antes de escribir: solo cambiaba la parte de las borradas (−4 pagando, −3 gratis, ~−54 €). Valores de antes en `…/2026-11-05/direccion-cuotas-antes.json` |
 | 33.9 | Panel de dirección, plantilla | `plantilla_activa` recalculada en 369 fotos con las empresas que existen (130 → 100 el 04-nov; ninguna sube). Cuadra con la cuota: 100 × 2 € = 200 €. Valores de antes en `…/2026-11-05/direccion-plantilla-antes.json`. Fichajes, empleados que fichan y tareas del histórico siguen con las borradas |
 
-## 37. IVA: todos más IVA, viejos y nuevos — CÓDIGO EN PROD el 2026-11-11 sin IVA activo (BILLING_VAT_* sin poner); Stripe 37.2–37.4 y migración de suscripciones PENDIENTES de Jose (registro §68); antes PENDIENTE (en staging el 2026-11-03 y 05)
+## 37. IVA: todos más IVA, viejos y nuevos — EJECUTADO ENTERO el 2026-11-11, 22:35–22:50 UTC (orden de Jose: «esto hazlo hoy», «ahora»; registro §68 y abajo); antes PENDIENTE (en staging el 2026-11-03 y 05)
 
 Diseño: [07_iva-altas-nuevas.md](../ingenieria/billing-v2/07_iva-altas-nuevas.md).
 
@@ -1739,6 +1739,34 @@ contenedor `billing` de prod:
 vuelva sale **sin** IVA (el código solo sabe «sin IVA» para el base de los de antes). Hasta
 cambiarlo, ponerle a mano el tipo incluido. Si se quiere en código: el base de un cliente de antes
 con `txr_…iXjfPX36`.
+
+
+**EJECUTADO el 2026-11-11 (22:35–22:50 UTC), desde el contenedor `billing` de prod (la clave de Stripe no sale del servidor), en este orden:**
+1. **37.2 y 37.3, precios «más IVA» en el Stripe real** (`tax_behavior: exclusive`, mismos importes; los de antes no se tocan):
+   Bronze 2 €/mes por persona `price_1Uak4zJdldmbRy89KEnKW2lC` (producto `prod_TzmyZRTyI10Siy`) e Inventario escalonado
+   29 € hasta 50 + 0,75 €/persona desde la 51 `price_1Uak4zJdldmbRy89lpsii8Wi` (`prod_VQ9ScpOvvMYTWE`). Metadatos
+   `planId`, `serviceId`, `vat: exclusive`, `createdBy: pase-2026-11-11`. Quiosco (`unspecified`) no necesita par.
+2. **Firestore `encodebiz-services`:** `service/checkinbiz/plan/bronze.stripePriceVat` y
+   `service/inventory/plan/standard.stripePriceVat` apuntan a esos dos (más `stripePriceVatSetAt`).
+3. **Migración de las suscripciones existentes** (script `stripe-migrar-subs.js` de la sesión, simula por defecto; la
+   simulación es la vista previa de la próxima factura que da el propio Stripe, `invoices.createPreview`, y cuadró al
+   céntimo con lo apuntado arriba y con **0 líneas de prorrateo**). Con `--apply`: `subscriptions.update` con el precio
+   nuevo, `default_tax_rates = [txr_1UYXo6JdldmbRy89Ng7DZlRX]` (21 % sumado, fuera el incluido) y
+   `proration_behavior: none`; metadatos `vatMigratedAt` y `vatMigratedFrom`. Resultado, próxima factura de cada una:
+   Ayudarte (x41) 82 → **99,22 €** el 30-nov · Neteges (x28) 56 → **67,76 €** el 21-nov · Tapissat (x4) 8 → **9,68 €** el
+   22-nov · Arendel checkbiz (x28) 56 → **67,76 €** el 03-dic · Encodebiz plan (x7) sigue a **0 €** por su descuento el
+   17-nov · **Encodebiz inventario** (x5, iba sin ningún tipo) 29 → **35,09 €** el 26-nov (no estaba en la lista de arriba;
+   es la casa y así todo queda igual). Ninguna factura emitida cambió (0 facturas creadas en la ventana). El DTA de
+   Arendel (1.950 € «más IVA») ya iba sumado y no se tocó.
+4. **37.4 `.env.production`:** `BILLING_VAT_TAX_RATE=txr_1UYXo6JdldmbRy89Ng7DZlRX` y `BILLING_VAT_SINCE=2020-01-01T00:00:00Z`
+   (toda alta cuenta como nueva: «todos más IVA»). `billing` recreado con `up -d --no-deps --force-recreate` (un
+   `restart` no relee el `env_file`), `healthy`, variables comprobadas dentro del contenedor, `restart nginx`,
+   `/health` 200 por el borde. Arranque: «Stripe en modo REAL», sin `[billing][ALERTA]`.
+
+**Queda (37.6):** la primera alta nueva real con Bronze tiene que salir con el tipo y sin `[billing][ALERTA]` en el log;
+y el 17-nov (Encodebiz), 21-nov (Neteges) y 22-nov (Tapissat) mirar que la factura real coincide con la vista previa.
+Vuelta atrás (37.7): quitar `BILLING_VAT_TAX_RATE` del `.env` y recrear `billing` deja las altas nuevas sin IVA; las
+suscripciones migradas se deshacen una a una con el mismo script invirtiendo el mapa.
 
 | # | Paso | Cómo |
 |---|---|---|
