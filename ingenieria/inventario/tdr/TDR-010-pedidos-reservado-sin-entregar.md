@@ -114,6 +114,35 @@ cualquiera) y apunta la salida con `POST /units/:unitId/pickup` (ADR-008, amplia
 2026-11-10). Sin persona no sale. Lo que no se marca sigue en el pedido. La agenda no cambia: la
 reserva pasa a «en uso» cuando la tarea arranca, como siempre.
 
+## Cancelar un pedido (2026-11-11)
+
+Jose, 2026-11-11: «también debo poder cancelar un pedido». Un pedido que ya no va a salir se
+quedaba en la lista hasta que alguien liberase cada cosa desde la tarea o desde la ficha.
+Cancelar es la decisión explícita de que **lo reservado y aún no salido no va a salir**; la
+tarea, la persona o la sucursal siguen igual, sin ese material.
+
+```
+POST /orders/cancel   (supervisor o superior: canReserve)
+{ kind, id, movementId, lines?: [{ itemId, warehouseId? } | { unitId }] }
+→ { released: { consumables, units } }
+```
+
+- Sin `lines`, el pedido entero; con `lines`, solo esas (la papelera de cada línea).
+- **Consumibles:** un apunte `reservation_released` por lo pendiente de cada línea
+  (`outstandingReservation`), con quién y cuándo. Es el mismo apunte que el cuadre; lo que ya
+  salió no se toca y se cuadra como siempre.
+- **Equipos:** se libera la reserva `reserved` de la tarea (`releasedReason: "manual"`), y la
+  agenda queda libre. **La posición no se mueve**: no llegó a salir con esa reserva, y si el
+  equipo ya estaba fuera con otra tarea (el «Traspaso»), sigue donde está y con quién lo sacó
+  (ADR-008). Una reserva que ya salió (`takenOut.reservationId` es la suya) no está en el pedido
+  y no se cancela.
+- Idempotente: los apuntes llevan id derivado de `movementId`, y lo ya liberado no se repite.
+- Sin motivo: el apunte dice quién y cuándo, y la reserva de un equipo no tiene dónde guardar
+  una nota. Si hace falta, va con el albarán.
+
+En el panel, **«Cancelar pedido»** junto a «Entregar todo» y una papelera en cada línea, las
+dos con confirmación que enseña lo que se suelta.
+
 ## Fuera de esta fase
 
 - Albarán en PDF y acta firmada por quien recibe (módulo de firma).
