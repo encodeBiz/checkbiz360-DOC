@@ -276,6 +276,31 @@ cierra la entrega abierta. Queda solo «Recibir en almacén» para todo lo que e
 entregado, «quién lo trae» viene relleno con esa persona y va en el hecho `assignment_returned`.
 `POST /assignments/:id/return` sigue en la API.
 
+**De una tarea a otra sin pasar por el almacén** (Jose, 2026-11-11: «hay entregables que no
+tienen que ir necesariamente al almacén; se pueden trasladar de una tarea a otra directamente,
+por ejemplo esa misma escalera»). Con la salida apuntada, la escalera que salió para A y está
+reservada para B aparecía en el pedido de B como «por entregar» y, al entregarla, daba
+`409 inventory/unit_picked_up`. Decisión:
+
+- **Traspasar a otra tarea** — hecho nuevo `task_handover` (`kind: "task_site"`, `employeeId` de
+  quien la lleva ahora, `reservationId` y `taskId` de la tarea nueva). Es la misma salida
+  apuntada, desde fuera: renueva `takenOut` (quién la lleva y para qué tarea) y la anterior
+  queda en el rastro. `POST /units/:unitId/pickup` lo apunta solo cuando el equipo ya está
+  fuera; si no, es `picked_up`. Ya no da 409.
+- **En Pedidos**, un equipo reservado que ya está fuera sale «Ya fuera · la sacó X para «A»»
+  y su acción es «Traspasar a esta tarea», con el mismo buscador para quién la lleva ahora. Queda
+  «La pasó Antonio de «A» a «B» · hora», y desde ese momento consta Antonio. (No confundir con
+  el traspaso de base de la tabla de hechos, que cambia su almacén.)
+- **En la ficha**, si el equipo está fuera y tiene reservada otra tarea, «Traspasar a «B»».
+- **Si nadie lo registra**, no se rompe: cuando B arranca, el rastro lo pone en B y se ve que
+  pasó de A a B sin almacén; quien lo llevó sigue siendo el último apuntado.
+- **Estado entre una tarea y otra**: «Fuera del almacén». Mientras la reserva está en su
+  horario, «Reservado» o «En uso» como siempre; fuera de ese horario, un equipo con salida
+  abierta no es «Libre» (ni cuenta como libre en Existencias). Sigue pudiéndose reservar: es
+  el nombre del estado, no la agenda (regla 2 de arriba).
+- **Lo que sigue bloqueado**: entregarlo a una persona (ADR-007) mientras está fuera; antes se
+  recibe.
+
 **No es una entrega de ADR-007.** La entrega a una persona («Mi material») lleva acuse con
 huella y saca el ejemplar de la agenda de tareas. Llevárselo es una salida apuntada: no pide
 acuse y **no toca la agenda**, el ejemplar se sigue pudiendo reservar.
