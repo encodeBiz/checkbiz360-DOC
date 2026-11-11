@@ -98,6 +98,7 @@ cambiar el conector del CRM, que sigue como está.
 | [ADR-009 — Una conexión es una persona, con todas sus empresas](./adr/ADR-009-una-conexion-es-una-persona.md) | Aceptado (Jose, 2026-10-17); sustituye a ADR-002 |
 | [TDR-002 — Las herramientas de la semana](./tdr/TDR-002-herramientas-de-la-semana.md) | En implementación |
 | [TDR-003 — Fase 3: el gestor operativo](./tdr/TDR-003-el-gestor-operativo.md) | En implementación |
+| [TDR-004 — El conector al paso de staging](./tdr/TDR-004-el-conector-al-paso-de-staging.md) | Propuesta (11-nov) |
 
 ## Decisiones cerradas (Jose, 2026-10-15)
 
