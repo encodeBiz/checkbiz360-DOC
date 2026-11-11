@@ -2522,3 +2522,50 @@ tarea se leyeron de Firestore (sin espejo todavía) y los ficheros se borraron a
 - **«No consigue fichar»:** de 6 rechazos en 323 intentos pasa a **53 en 381**.
 - **Por persona:** una persona tiene 17 rechazos en tareas en 2 días, a una mediana de 2,3 km, y sale `patron_de_conducta`. Otra tiene 27 rechazos en un solo día con un exceso mediano de 41 m, dentro del margen del GPS.
 - §62 en Ayudarte mueve una sola persona de `underworked` a `reliable`.
+
+## 66. Tarea sin empezar: a los 5 minutos, correo a owner y admin, y en Inicio desde una sola — PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `414814b`, staging `6e73d93`; `analytics tasks assistant` reconstruidos; worker en `dev-encodebiz`; panel en `develop` `b85a3790`)
+
+Pedido por Jose el 2026-11-11: «la tarea no ha iniciado en tiempo: llega el push pero no el correo
+a administración, ni en las alertas de Inicio». Luego: «15 minutos es demasiado, máximo 5». Y, al ver
+la cola: «ojo en producción, que no vayan a llegar mil».
+
+Lo que había:
+- El aviso solo mandaba push a quien tenía la tarea, a los 15 minutos del inicio, y el worker pasaba
+  cada 5 (llegaba entre el minuto 15 y el 20).
+- Inicio solo lo enseñaba a partir de 3 tareas por centro, y sin ningún margen.
+- **La cola del worker se atascaba**: la consulta descartaba las tareas ya avisadas DESPUÉS de
+  `limit(200)`. En dev las 200 devueltas estaban todas avisadas y ninguna tarea nueva avisaba, ni
+  push ni nada. En prod, medido el 2026-11-11 a las 17:35 UTC (solo lectura): 1 tarea en la consulta
+  y 0 sin avisar. Todavía no está atascada.
+
+Lo que entra:
+- **5 minutos para todo** (`TASK_START_GRACE_MINUTES` en `shared`): el push, el correo y Inicio. El
+  worker pasa **cada minuto**. Las tareas guardadas con +15 avisan también a los 5 (la consulta mira
+  10 minutos por delante y el corte lo pone la hora de inicio). Sin migración de datos.
+- **La cola no se atasca**: al avisar se borra `scheduledStartNotificationAt`, y las avisadas que
+  aparezcan en la consulta se liberan en la misma pasada.
+- **Tope de una hora**: una tarea cuyo inicio pasó hace más de 60 minutos se marca como avisada
+  **sin push ni correo**. Ni una cola que se libera ni un despliegue pueden soltar avisos viejos.
+- **Correo a owner y admin** (regla inmediata `task_not_started`): **uno por empresa y pasada**.
+  Lleva la tarea, o la lista de hasta 3 con su hora (y su centro, si son de varios) y «y N más».
+  Va también para quien está «por tareas». Respeta las horas de noche y tiene su casilla en
+  Herramientas → Alertas por correo.
+- **Inicio**: `tasksStartLateMin` de 3 a 1, y el texto en singular cuando es una.
+- `shared` cambia (`Task.ts`, `FirestoreTaskRepository.ts`, `pendingAlert.ts`, `alertEmail.ts`).
+  Sin migración y sin variables.
+
+**Lo que pasó en dev (para que no pase en prod):** a las 17:38:15 UTC, el primer despliegue liberó la
+cola atascada **antes** de existir el tope. Salieron 82 avisos de la empresa de staging «Alvarez», uno
+por centro (164 correos, solo a `hola@encodebiz.com` y `encodebiz@gmail.com`): 50 se enviaron y 114 se
+aparcaron a mano en `email_outbox` (`not_before` 2099, `last_error` «aparcado a mano 2026-11-11…»).
+De ahí salieron el tope de una hora y el correo por empresa. Con los dos, la siguiente pasada mandó un
+solo correo con las dos tareas de prueba de Cuidama.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 66.0 | Antes de desplegar, medir la cola de prod | Solo lectura en el contenedor `tasks`: la consulta del worker (`scheduledStartNotificationAt <= ahora+10min`, `status in [assigned]`, `limit 200`) y cuántas NO tienen `scheduledStartNotifiedAt` **y** empezaron hace menos de una hora: esas son las únicas que pueden avisar en la primera pasada. El 11-nov a las 17:35 eran 0 |
+| 66.1 | API | `analytics`, `tasks` y `assistant` (`up -d --build --no-deps`) y `restart nginx`. Si `shared` entra por otras secciones, va con el resto |
+| 66.2 | Worker, **después de analytics** | Solo esa función: `node services/firebase_sdk/scripts/desplegar.mjs --project encodebiz-services --solo taskStartNotificationWorker`. Si un evento llega a un analytics viejo, da 400 y se pierde ese correo, sin más daño |
+| 66.3 | Panel | Con el siguiente PR del panel a `main`: la casilla del modal y el plural |
+| 66.4 | Verificar en prod | Los primeros minutos: `SELECT entity_id, count(*) FROM alert_sent WHERE rule = 'task_not_started' AND created_at > now() - interval '15 minutes' GROUP BY 1`, como mucho una fila por empresa y pasada. Vuelta atrás si algo sale mal: volver a desplegar el worker desde un checkout de `main` con el mismo comando de 66.2. Para cortar solo el correo sin tocar el push: añadir `task_not_started` a `rules_off` de la empresa en `alert_email_settings` |
+| 66.5 | Verificado en staging | HECHO el 2026-11-11 en Cuidama (`3xcfwyMj6ixsFyDbPera`, único destinatario `hola@encodebiz.com`). Con dos tareas de prueba del mismo centro salió **un solo correo** con las dos y sus horas de Madrid. Con una tarea de inicio a las 17:39:34 UTC, el aviso salió a las **17:45:17** (5 min 43 s). Tareas de prueba borradas después. Tests: `analytics` 125, `tasks` 19, `assistant` 167 |
