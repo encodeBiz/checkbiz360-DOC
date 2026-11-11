@@ -248,25 +248,33 @@ responde a esa pregunta: dice para qué se usó el equipo, no quién lo tenía.
 
 **Decisión.** Solo para operables (los consumibles no se pierden como un equipo):
 
-- **Salida del almacén** — hecho nuevo `picked_up`: `{ kind: "person", employeeId, reservationId?,
-  taskId? }`. Lo apunta el almacén (supervisor o superior, `canReserve`) eligiendo **a cualquier
+- **Salida del almacén** — hecho nuevo `picked_up`: `{ kind, employeeId, reservationId?, taskId? }`,
+  con `kind: "task_site"` si sale para una tarea y `"person"` si sale sin tarea. Lo apunta el almacén (supervisor o superior, `canReserve`) eligiendo **a cualquier
   empleado** con el buscador, esté o no en la tarea. `POST /units/:unitId/pickup`. Desde Pedidos
   es obligatorio para cada operable al «Entregar todo».
 - **Vuelta al almacén** — la recepción (`POST /units/:unitId/receive`) gana `returnedBy`: quién lo
   trae, con el mismo buscador. Va en el hecho `received` como `employeeId`.
-- **A cargo de** — el ejemplar guarda `custody: { employeeId, since, by, positionId,
-  reservationId? }`, escrito por el servicio en la misma transacción que el hecho, como
+- **Salida apuntada** — el ejemplar guarda `takenOut: { employeeId, at, by, positionId,
+  reservationId?, taskId? }`, escrito por el servicio en la misma transacción que el hecho, como
   `position`. Lo pone `picked_up` y lo quita la recepción (`received`) y la devolución de una
   entrega (`assignment_returned`). **Lo que haga la tarea no lo toca**: que arranque mueve la
-  posición al sitio de la tarea y que se cierre la libera, pero el ejemplar sigue a cargo de
-  quien lo sacó hasta que alguien lo devuelve. Si se declara perdido, el hecho `lost` lleva
-  el `employeeId` de quien lo tenía a cargo.
+  posición al sitio de la tarea y que se cierre la libera, pero sigue constando quién lo sacó
+  hasta que vuelve. Si se declara perdido, el hecho `lost` lleva el `employeeId` de quien lo
+  sacó.
+- **Es un registro, no deja el equipo a cargo de nadie** (Jose, 2026-11-10: «lo sacó Jose, que ni
+  siquiera está en esa tarea; eso no quiere decir que esté a su cargo, ni puede aparecer en su
+  material, porque está ligada a la tarea: es el registro de quién la sacó»). Sacado para una
+  tarea, el equipo va con la tarea; la persona es solo quien lo sacó. El panel lo dice así: «La
+  sacó Fulano para «tarea» · fecha». No entra en «Mi material» de nadie.
+- **Fuera, no se entrega ni se vuelve a sacar** — con `takenOut`, la entrega de ADR-007 y otra
+  salida responden `409 inventory/unit_picked_up`: primero se recibe. Jose, 2026-11-10: se pudo
+  entregar desde la ficha una escalera que ya estaba fuera para una tarea.
 
 **No es una entrega de ADR-007.** La entrega a una persona («Mi material») lleva acuse con
 huella y saca el ejemplar de la agenda de tareas. Llevárselo es una salida apuntada: no pide
 acuse y **no toca la agenda**, el ejemplar se sigue pudiendo reservar.
 
-**Por qué guardar `custody` y no deducirlo del rastro.** Después de `picked_up` llegan los hechos
+**Por qué guardar `takenOut` y no deducirlo del rastro.** Después de `picked_up` llegan los hechos
 de la tarea (`task_in_progress`, `task_closed`), así que el último hecho ya no dice quién lo
-tiene; habría que leer el rastro hacia atrás en cada ficha y cada tablero. Como `position`, es el
+sacó; habría que leer el rastro hacia atrás en cada ficha y cada tablero. Como `position`, es el
 único sitio donde vive ese dato, no una copia de otro.
