@@ -2507,8 +2507,18 @@ ni dentro, ni fuera, ni con rechazos.
 
 | # | Paso | Cómo |
 |---|---|---|
-| 65.1 | Requisito | §34 aplicado en prod: 050 + relleno de `task_events_raw`. Comprobar `SELECT count(*) FROM task_events_raw WHERE type IN ('started','start_rejected') AND payload->'metadata' ? 'workSite'` > 0 en `encodebiz_analytics` |
+| 65.1 | Requisito | §34.1 aplicado en prod (migración 050: crea `task_events_raw`). También la 064 de §63 antes de reconstruir `analytics`: el código de staging lee `tasks_raw.incident_status`, y sin ella «Hoy» falla con `column "incident_status" does not exist` (visto en la simulación) |
+| 65.1b | **Poblar los datos que faltan** | Pedido por Jose el 2026-11-11. El espejo solo recoge lo que pasa a partir del despliegue: el historial anterior hay que rellenarlo, o la tarjeta sale sin tareas. En el contenedor `tasks` de prod: primero `node services/tasks/dist/scripts/backfill-tasks.js --entity OPnlEi3npBbLDyKa4wTj --history` (Ayudarte, sin `--apply`: solo cuenta), luego lo mismo con `--apply`, y al final `--all --apply --history` (es §34.3; upsert, repetirlo no duplica). En dev `--all` tardó más de diez minutos |
+| 65.1c | Comprobar el relleno | En `encodebiz_analytics`: `SELECT type, count(*) FROM task_events_raw WHERE entity_id = 'OPnlEi3npBbLDyKa4wTj' AND type IN ('started','resumed','start_rejected','resume_rejected') AND payload->'metadata' ? 'workSite' AND occurred_at >= '2026-09-25' GROUP BY 1`. En Firestore, el 2026-11-11 a las ~17:00 UTC había **18 `started` y 55 `start_rejected`** (73 marcas en 31 tareas con valla): debe salir eso o más. Si sale menos, el relleno no está completo y la tarjeta mentiría por defecto |
 | 65.2 | API | `up -d --build --no-deps analytics assistant merlin` y `restart nginx` |
 | 65.3 | Panel | Con el siguiente PR del panel a `main` |
 | 65.4 | Verificar en prod | Overview de Ayudarte de este mes: `geo.balanced` y `observationsBalanced` a `true`, `geo.bySource.task.total` > 0 y `checkFailure.taskAttempts` > 0. La tarjeta muestra la línea «De ellas, N son inicios de tarea…» |
 | 65.5 | Verificado en staging | HECHO el 2026-11-11 con `buildPanelOverview` dentro del contenedor. Netaclara, noviembre: 1220 marcas (837 fichajes y 383 inicios de tarea, todos dentro), cajones cuadrados, `taskAttempts` 383. `Wl8ZCvpdmIXzEE0mhT7W`, septiembre: 5 marcas de tarea, 4 fuera por `start_rejected` (`taskRejections` 4), cuadrado. Tests: `analytics` 122, `assistant` 167, `merlin` 163, todos verdes (nuevo `test/geoValladeTareas.test.ts`) |
+
+**Simulación con los datos reales de Ayudarte, 2026-11-11 (solo lectura).** Se ejecutó el código de
+staging dentro del contenedor `analytics` de prod con `default_transaction_read_only=on`. Las marcas de
+tarea se leyeron de Firestore (sin espejo todavía) y los ficheros se borraron al acabar. Noviembre:
+- **Ubicación:** de 331 marcas, 264 en remoto y solo 6 fuera, pasa a 389 marcas con **58 inicios de tarea, 47 fuera de su valla**.
+- **«No consigue fichar»:** de 6 rechazos en 323 intentos pasa a **53 en 381**.
+- **Por persona:** una persona tiene 17 rechazos en tareas en 2 días, a una mediana de 2,3 km, y sale `patron_de_conducta`. Otra tiene 27 rechazos en un solo día con un exceso mediano de 41 m, dentro del margen del GPS.
+- §62 en Ayudarte mueve una sola persona de `underworked` a `reliable`.
