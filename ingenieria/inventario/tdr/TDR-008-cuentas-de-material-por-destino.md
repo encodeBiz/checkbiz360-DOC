@@ -377,7 +377,7 @@ leía las cuentas de material, y los equipos fuera se veían aparte, con el filt
 de Existencias. A quien lleva el almacén le falta igual una escalera que unas bolsas. Y después:
 «no estás paginando el listado» — la pestaña cargaba todas las cuentas de Firestore de golpe.
 
-`GET /materials/outside?kind&warehouseId&page` (`canReserve`), de Postgres, de 25 en 25, de lo
+`GET /materials/outside?q&kind&warehouseId&page` (`canReserve`), de Postgres, de 25 en 25, de lo
 último que se movió a lo primero, consumibles y equipos en la misma lista:
 
 - **Consumible pendiente** por (destino, artículo): salidas − consumido − devuelto en
@@ -388,6 +388,8 @@ de Existencias. A quien lleva el almacén le falta igual una escalera que unas b
   `unit_positions_raw` no es su almacén base (`dim_item_units.warehouse_id`) — la regla de
   `isOutOfBase`. Con su posición con nombres y la salida apuntada que siga abierta (el último
   `picked_up` sin `received` ni `assignment_returned` después).
+- Buscador `q` (Jose, 2026-11-11): por el nombre del artículo y, en un equipo, también por su
+  identificador o etiqueta; sin mayúsculas ni tildes, en SQL, como Pedidos.
 - Filtros: `kind=task`, consumibles de tareas y equipos en el sitio de una tarea; `employee`,
   de personas y equipos con una persona; `branch` no tiene equipos. `warehouseId`, el almacén
   de la salida o la base del equipo.

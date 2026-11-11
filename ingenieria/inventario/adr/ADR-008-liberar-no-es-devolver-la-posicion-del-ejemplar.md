@@ -270,6 +270,12 @@ responde a esa pregunta: dice para qué se usó el equipo, no quién lo tenía.
   salida responden `409 inventory/unit_picked_up`: primero se recibe. Jose, 2026-11-10: se pudo
   entregar desde la ficha una escalera que ya estaba fuera para una tarea.
 
+**Un solo «Recibir en almacén»** (Jose, 2026-11-11: «¿por qué tengo Recibir de vuelta y Recibir
+en almacén?»). La ficha tenía los dos para un equipo entregado y hacían lo mismo: recibir ya
+cierra la entrega abierta. Queda solo «Recibir en almacén» para todo lo que está fuera; si está
+entregado, «quién lo trae» viene relleno con esa persona y va en el hecho `assignment_returned`.
+`POST /assignments/:id/return` sigue en la API.
+
 **No es una entrega de ADR-007.** La entrega a una persona («Mi material») lleva acuse con
 huella y saca el ejemplar de la agenda de tareas. Llevárselo es una salida apuntada: no pide
 acuse y **no toca la agenda**, el ejemplar se sigue pudiendo reservar.
