@@ -374,17 +374,32 @@ dos órdenes) y añadir las rutas a la allowlist del proxy del panel (§6).
 
 Jose, 2026-11-11: «¿por qué en Fuera del almacén no me salen los operables?». La pestaña solo
 leía las cuentas de material, y los equipos fuera se veían aparte, con el filtro «Fuera de base»
-de Existencias. A quien lleva el almacén le falta igual una escalera que unas bolsas.
+de Existencias. A quien lleva el almacén le falta igual una escalera que unas bolsas. Y después:
+«no estás paginando el listado» — la pestaña cargaba todas las cuentas de Firestore de golpe.
 
-- `GET /units/outside?kind&warehouseId` (`canReserve`): los ejemplares activos, no retirados,
-  con `outOfBase` (el mismo campo que el filtro de Existencias, así que las dos vistas cuentan
-  lo mismo), de lo último que se movió a lo primero. Cada uno con su posición con nombres
-  (ADR-008), su almacén base y la salida apuntada (`takenOut`: quién lo sacó y para qué tarea).
-- Filtros de la pestaña: `kind=task` son los que están en el sitio de una tarea; `employee`, los
-  que están con una persona; `branch` no tiene equipos. `warehouseId` es su almacén base.
-- En la tabla van detrás de los consumibles: destino = dónde está, con «La sacó X para «tarea»»
-  debajo; artículo = nombre · identificador, enlace a su ficha (donde se recibe); la columna de
-  cantidad lleva el chip «Equipo».
+`GET /materials/outside?kind&warehouseId&page` (`canReserve`), de Postgres, de 25 en 25, de lo
+último que se movió a lo primero, consumibles y equipos en la misma lista:
+
+- **Consumible pendiente** por (destino, artículo): salidas − consumido − devuelto en
+  `item_movements_raw` con `account_kind`; su almacén, el de la última salida. Es el mismo
+  `pending` que guardan `task_materials` y `material_accounts` (comprobado en staging el
+  2026-11-11: las tres entidades con material, iguales).
+- **Equipo fuera de su base**: ejemplar activo y no retirado cuyo último hecho en
+  `unit_positions_raw` no es su almacén base (`dim_item_units.warehouse_id`) — la regla de
+  `isOutOfBase`. Con su posición con nombres y la salida apuntada que siga abierta (el último
+  `picked_up` sin `received` ni `assignment_returned` después).
+- Filtros: `kind=task`, consumibles de tareas y equipos en el sitio de una tarea; `employee`,
+  de personas y equipos con una persona; `branch` no tiene equipos. `warehouseId`, el almacén
+  de la salida o la base del equipo.
+
+**El rastro tiene que estar entero en Postgres.** Su espejo se escribe en la petición, a mejor
+esfuerzo y sin reintento, y en staging faltaba casi todo: 1 de 43 ejemplares de la demo tenía
+rastro en Postgres (las entregas de la siembra solo estaban en Firestore). `remirror-positions`
+copia lo que falta (simula; `--apply` escribe). Se pasa por entidad antes de abrir la pestaña en
+un entorno, y queda pendiente que el rastro tenga su reintento como el libro (`remirror`).
+
+Panel: la tabla de siempre con «Equipo» en la columna de cantidad, «La sacó X para «tarea»»
+debajo de dónde está, enlace a la ficha del artículo, y las flechas de página de Pedidos.
 
 ## 12. Para el pase a producción
 
