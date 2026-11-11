@@ -1360,7 +1360,7 @@ sustituye. De paso, `crear_festivos`/`crear_ausencia` dicen «ya existe» antes 
 | 32.4 | PENDIENTE | `ver_hoy` y `ver_alertas` de Encodebiz enseñan «Servi SAD» y «Encodebiz TEST», sucursales borradas, por sus tareas huérfanas; `listar_sucursales` solo da «Encodebiz» |
 | 32.5 | Limpieza de Encodebiz (datos de prod, orden de Jose) | Servi SAD (sucursal borrada): 9 tareas canceladas por `tasks /system/branch-close` (`cancel`). Encodebiz: 18 abiertas anteriores al 02-nov canceladas y «Cocinar doradas fritas…» (23-oct, en curso) completada, por `PATCH /delegated/:id/status` con hola@ como autor. `ver_alertas` sin alertas. **Sigue pendiente:** `ver_hoy` lista «Encodebiz TEST» (borrada) a ceros; el arreglo de fondo es que `analytics` no cuente sucursales borradas |
 
-## 33. Cartera de clientes (MVP + documentos del cliente) — PENDIENTE (en staging el 2026-11-03/04)
+## 33. Cartera de clientes (MVP + documentos del cliente) — EJECUTADO el 2026-11-11 (registro §68; antes en staging el 2026-11-03/04)
 
 Lo que hay en `staging` y no en `main`, por orden de entrada (`git log --first-parent origin/main..origin/develop`):
 
@@ -1459,7 +1459,7 @@ valla del cliente les llega como un `workSite` normal).
 - Horas por cliente, informe y portal: Fases 3 y 6, sin fecha. Los contratos del cliente y su rentabilidad (Fase 5) van aparte, en §35.
 - Columna «Cliente» en la plantilla del cuadrante por tareas: sin decidir.
 
-## 34. Histórico para la previsión: la tarea del fichaje, el puesto con su precio y el historial de la tarea — PENDIENTE (en staging el 2026-11-03/04)
+## 34. Histórico para la previsión: la tarea del fichaje, el puesto con su precio y el historial de la tarea — EJECUTADO el 2026-11-11 (registro §68; antes en staging el 2026-11-03/04)
 
 Solo datos: no cambia ninguna pantalla ni ninguna ruta. Es la base de la rentabilidad y la previsión de
 la Fase 5 de la cartera (`DOCS/ingenieria/cartera-de-clientes/03_modelo-de-datos.md` §«El histórico»,
@@ -1489,7 +1489,7 @@ salida esperada (`UPDATE 621`), los cinco contenedores reconstruidos `healthy`, 
 dimensiones de las 08:20 UTC con 5 646 eventos de puesto, sin «espejo pendiente» en el log de `tasks`,
 `/api/v1/tasks/calendar` → 400.
 
-## 35. Contratos del cliente y su rentabilidad (cartera, Fase 5, TDR-004) — PENDIENTE (API en staging y panel commiteado el 2026-11-05)
+## 35. Contratos del cliente y su rentabilidad (cartera, Fase 5, TDR-004) — EJECUTADO el 2026-11-11 (registro §68; antes API en staging y panel commiteado el 2026-11-05)
 
 El contrato cuelga **del cliente**, como un documento más, y un cliente puede tener varios a la
 vez (Jose, 05-nov). Cada tarea dice de qué contrato es (`Task.contractId`): se pone solo si el
@@ -1679,7 +1679,7 @@ Se quedan Ayudarte, Neteges, Tapissat (`W6aVQj7L…`), Arendel y Encodebiz. Se b
 | 33.8 | Panel de dirección, suscripciones | Recalculados `pagando`, `en_prueba`, `gratis`, cuota y pruebas que vencen de 379 fotos con las empresas que existen (antes 8 pagando el 04-nov, ahora 4). Comparado antes de escribir: solo cambiaba la parte de las borradas (−4 pagando, −3 gratis, ~−54 €). Valores de antes en `…/2026-11-05/direccion-cuotas-antes.json` |
 | 33.9 | Panel de dirección, plantilla | `plantilla_activa` recalculada en 369 fotos con las empresas que existen (130 → 100 el 04-nov; ninguna sube). Cuadra con la cuota: 100 × 2 € = 200 €. Valores de antes en `…/2026-11-05/direccion-plantilla-antes.json`. Fichajes, empleados que fichan y tareas del histórico siguen con las borradas |
 
-## 37. IVA: todos más IVA, viejos y nuevos — PENDIENTE (en staging el 2026-11-03 y 05)
+## 37. IVA: todos más IVA, viejos y nuevos — CÓDIGO EN PROD el 2026-11-11 sin IVA activo (BILLING_VAT_* sin poner); Stripe 37.2–37.4 y migración de suscripciones PENDIENTES de Jose (registro §68); antes PENDIENTE (en staging el 2026-11-03 y 05)
 
 Diseño: [07_iva-altas-nuevas.md](../ingenieria/billing-v2/07_iva-altas-nuevas.md).
 
@@ -1775,7 +1775,7 @@ pide un método comprobable en una fase 2 (TDR-002 de `documental-service`). Sol
 | 38.9 | **Incidente**: la gestión documental del panel salía vacía a owner/admin (reportado por un cliente, ~13:36–14:00 UTC) | ~14:00 | El panel no llama desde el navegador: su servidor en Vercel hace el fetch con Node y llega con `User-Agent: node`, que 38.3 tomaba por app. Respuestas de 121 bytes en nginx. PR checkbiz-api#259 (`6602d82`, `[skip ci]`): `node`, `undici` y `Next.js` son panel. Desplegado igual que 38.4; sonda con tres `User-Agent` (dispositivo, `node`, navegador): Cindy 6/14/14, Jose Domingo 4/4/4 sin ajenos. `develop` `7bb0a6e` |
 | 38.10 | Fase 2 | 10-nov | DECIDIDA con Jose: el panel demuestra que es el panel con un código rotatorio estilo 2FA (`HMAC-SHA256(PANEL_CHANNEL_SECRET, floor(unix/30))` en `X-CheckBiz-Panel`, desde `serverBackendProxy.ts`); válido → panel, todo lo demás → app, y el `User-Agent` desaparece. Tres pasos A/B/C sin ventana vacía. Diseño en TDR-002 «Fase 2»; tarea en CheckBiz360 para Jose Manuel el martes 10-nov 09:00-13:00 (`zGRy0s1AStJ3bWhr1Hyo`) |
 
-## 39. Alertas: jornada de más de 9 h, sin descanso semanal y hoja informativa sin firmar — PENDIENTE en prod; EN STAGING el 2026-11-07 (056 aplicada en encodebiz_staging, analytics y assistant reconstruidos; panel en develop)
+## 39. Alertas: jornada de más de 9 h, sin descanso semanal y hoja informativa sin firmar — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-07 (056 aplicada en encodebiz_staging, analytics y assistant reconstruidos; panel en develop)
 
 Jose, 06-nov: «12 personas con jornada configurada de más de 9 h, esto es crucial igual que los
 empleados sin informe firmado […] debe saltar alarma». Tres reglas nuevas en el panel de alertas
@@ -1914,7 +1914,7 @@ servidor dentro de `salud`, por indicación de Jose) y #267 (Sistema → Copias)
   cada bucket. Ficheros de clientes: 113 MB el 01-oct, 204 MB el 06-nov.
 - Visto, sin tocar: `gcf-v2-sources-…-us-central1` ocupa 8,9 GB de código de funciones antiguas.
 
-## 43. Documentos «Administración»: solo propietario o administrador, desde el panel — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `0d64a35d`, staging `5d88bfa8`; `documents` y `customers` reconstruidos)
+## 43. Documentos «Administración»: solo propietario o administrador, desde el panel — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `0d64a35d`, staging `5d88bfa8`; `documents` y `customers` reconstruidos)
 
 Jose, 07-nov: un documento que **solo se vea desde el panel** y solo por propietario o
 administrador (contrato o presupuesto de un cliente, papeles de dirección). Valor nuevo `admin`
@@ -1981,7 +1981,7 @@ añade la migración 058; nginx no cambia.
 | 44.11 | Pendiente de producto | — | Último acceso al panel de quien lleva la cuenta (no se recoge; sale «sin medir»). Queda en el hilo de Encodebiz el análisis de prueba de 44.6 |
 | 44.12 | Webhooks internos fuera de los recuentos (pregunta de Jose: «¿a qué URL se han entregado?») | ~11:00 | Las 716 de Ayudarte iban a `wh_internal_inventory`, nuestro inventario suscrito a `task.*`; en prod las 1.017 entregas son internas, ninguna de cliente. Ficha, módulo Webhooks de Dirección y foto diaria las contaban como integración (el fallo de Dirección es anterior a la ficha). PR checkbiz-api#270, merge `7a8a965` `[skip ci]`; `up -d --build --no-deps backoffice` + `restart nginx`. `develop` `1092459`. Estadísticas sigue contándolas (salud de las entregas). Fotos diarias ya guardadas (`direccion_snapshot_daily.modulos.webhooks`) con el recuento viejo: **se dejan así** (Jose, 07-nov: «eventualmente se corrige sola»), las nuevas salen bien; el análisis de prueba de Encodebiz (44.6) recomendó Plan Empresarial por «301 webhooks», que eran internos |
 
-## 48. El nombre del cliente a la plantilla, solo con autorización, y «Datos complementarios» en la app — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `fe3c62b0`, staging `a8fa6c74`; `customers` y `tasks` reconstruidos)
+## 48. El nombre del cliente a la plantilla, solo con autorización, y «Datos complementarios» en la app — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `fe3c62b0`, staging `a8fa6c74`; `customers` y `tasks` reconstruidos)
 
 Jose, 07-nov, en la QA de la app: el nombre del cliente es un dato sensible —en una subcontrata,
 nombre más teléfono del contacto es entregar el cliente— y tiene que ser una autorización expresa
@@ -2015,7 +2015,7 @@ no un botón. Diseño: [cartera-de-clientes/tdr/TDR-005](../ingenieria/cartera-d
 cliente si se le llama como él; y `searchIndex` guarda los nombres de los clientes y hoy lo lee
 cualquier sesión (reglas 2b).
 
-## 45. El radio de la valla con la dirección del cliente — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `6947d0c9`, staging `cade6a96`; `tasks` reconstruido)
+## 45. El radio de la valla con la dirección del cliente — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `6947d0c9`, staging `cade6a96`; `tasks` reconstruido)
 
 Jose, 07-nov, en la QA de la app (A8): la tarea con la dirección del cliente cogía la valla con
 100 m y no había dónde cambiarlo. La dirección del cliente se captura sin radio y el panel, al
@@ -2034,7 +2034,7 @@ marcar «usar la dirección del cliente», escondía el campo de la valla entero
 | 45.2 | Verificar | Tarea con cliente y su dirección: cambiar el radio en el panel, guardar, reabrir: conserva el radio |
 
 
-## 46. Eliminar documentos y liberar el espacio — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `cbf96af9`, staging `58f6f881`; `documents`, `inventory` y `events` reconstruidos)
+## 46. Eliminar documentos y liberar el espacio — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `cbf96af9`, staging `58f6f881`; `documents`, `inventory` y `events` reconstruidos)
 
 Jose, 07-nov: «cobramos por espacio pero no dejamos a los clientes liberar; hay que poder
 eliminar documentos con sus avisos». Y: «se borra todo, y en los registros se queda el registro y
@@ -2065,7 +2065,7 @@ estado borrado; así, si nos reclaman, tenemos pruebas». Diseño en
 | 46.4 | Saber contestar | Las copias de ficheros (§42) guardan lo copiado antes de eliminarlo hasta 90 días, como versión vieja; el bucket, 7 días de borrado blando. «Se borra todo» es del producto, no de las copias |
 | 46.5 | Si algo falla | Revertir `documents`: los ya eliminados se quedan como registro (`status: "deleted"`); la versión anterior no los da a la plantilla (solo ve activos), pero a Administración se le verían en la lista con la descarga rota |
 
-## 49. El cliente en los análisis: parte, pestaña «Análisis», resumen de Inicio y alertas — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `424f8129`, staging `19153fde`; 059 aplicada en `encodebiz_staging`; `tasks customers reports analytics` reconstruidos)
+## 49. El cliente en los análisis: parte, pestaña «Análisis», resumen de Inicio y alertas — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `424f8129`, staging `19153fde`; 059 aplicada en `encodebiz_staging`; `tasks customers reports analytics` reconstruidos)
 
 Jose, 07-nov: «es uno de los pluses que más van a convertir». Diseño:
 [cartera-de-clientes/tdr/TDR-006](../ingenieria/cartera-de-clientes/tdr/TDR-006-parte-del-cliente.md).
@@ -2118,7 +2118,7 @@ Jose, 07-nov: «es uno de los pluses que más van a convertir». Diseño:
 | 49.6 | Si algo falla | Revertir los cuatro servicios; la 059 solo añade columnas y una tabla, se queda |
 
 
-## 47. Corregir una jornada incompleta de una vez — PENDIENTE en prod; API EN STAGING el 2026-11-07 (develop `a7a299b`, staging `cec6647`; `checkinbiz` reconstruido); panel en develop y en `feat/cartera-de-clientes`; app en develop
+## 47. Corregir una jornada incompleta de una vez — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; API EN STAGING el 2026-11-07 (develop `a7a299b`, staging `cec6647`; `checkinbiz` reconstruido); panel en develop y en `feat/cartera-de-clientes`; app en develop
 
 Jose, 07-nov: «levantaría un modal con las que hay en esa jornada y confirmaría cada una de las
 jornadas incompletas y un solo motivo que se replique a todas […] lo mismo con la app: imagina una
@@ -2165,7 +2165,7 @@ jornada partida de 5 turnos, qué caos». Diseño en `DOCS/ingenieria/correccion
 | 47.4 | Verificar | En una empresa de prueba de prod: una jornada sin salida → incidencia → «Corregir jornada» → llega un solo push → aceptar → fichajes válidos e incidencia resuelta |
 | 47.5 | Si algo falla | Revertir `checkinbiz` y el panel. Un lote pendiente se puede seguir aceptando fichaje a fichaje con la app publicada; `workdayCorrections` se queda, no lo lee nadie más |
 
-## 50. Cartera de clientes entera: el orden del pase — PENDIENTE en prod (resumen del 2026-11-07)
+## 50. Cartera de clientes entera: el orden del pase — EJECUTADO el 2026-11-11 (registro §68; resumen del 2026-11-07)
 
 La cartera sube a prod de una vez, pero está repartida en §33, §34, §35, §43, §45, §48 y §49. Esto
 es el orden conjunto, sin repetir lo que dice cada sección; el detalle y la verificación, en ella.
@@ -2197,7 +2197,7 @@ recreado con `demo-cartera-oct`, fotos en `…/tasks/demo-cartera/`). Son para e
 en el mes anterior a la misma altura, y en una empresa de visitas semanales (Neteges) solo la
 alcanza un cliente: se propuso cambiarla por «visitas que faltan frente a su ritmo de siempre».
 
-## 51. Gastos externos del contrato (TDR-008, Fase 1) — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `2e4e4a70`, staging `1fa6a28d`; 060 aplicada en `encodebiz_staging`; `customers` y `analytics` reconstruidos)
+## 51. Gastos externos del contrato (TDR-008, Fase 1) — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `2e4e4a70`, staging `1fa6a28d`; 060 aplicada en `encodebiz_staging`; `customers` y `analytics` reconstruidos)
 
 Jose, 07-nov: «a los contratos le puedas meter un campo de gastos adicionales … para que sea aún más
 preciso». Diseño: [cartera-de-clientes/tdr/TDR-008](../ingenieria/cartera-de-clientes/tdr/TDR-008-gastos-externos.md).
@@ -2217,7 +2217,7 @@ preciso». Diseño: [cartera-de-clientes/tdr/TDR-008](../ingenieria/cartera-de-c
 | 51.2 | `customers` y `analytics` | Con la cartera (§50.3) |
 | 51.3 | Verificar | Un contrato: añadir, cambiar y borrar un gasto en Editar; la tarjeta enseña el total; el gerente no ve nada y `POST` le da 403 |
 
-## 52. Gastos desde la tarea y su aprobación (TDR-008, Fases 2 y 3) — PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `0c26002e`, staging `79af80e8`; 061 aplicada en `encodebiz_staging`; `customers analytics merlin` reconstruidos)
+## 52. Gastos desde la tarea y su aprobación (TDR-008, Fases 2 y 3) — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-07 (develop `0c26002e`, staging `79af80e8`; 061 aplicada en `encodebiz_staging`; `customers analytics merlin` reconstruidos)
 
 Jose, 07-nov: «las dos fases, es muy importante y tributa directamente al cliente»; D1 (reembolso) no,
 D2 (la IA lee el ticket) sí. Diseño: TDR-008 §6 bis.
@@ -2275,7 +2275,7 @@ D2 (la IA lee el ticket) sí. Diseño: TDR-008 §6 bis.
 | 52.4 | App | La versión que lleve `75e7bc2`, después de la API |
 | 52.5 | Verificar | Trabajadora apunta un gasto con ticket → pendiente; alerta en Inicio; aprobar desde la tarea o el contrato; rechazar con motivo y verlo en la app |
 
-## 53. Fichaje sospechoso según el turno planificado — PENDIENTE en prod; EN STAGING el 2026-11-08 (develop `1bd93a9`, staging `90e106b`; `checkinbiz` y `analytics` reconstruidos)
+## 53. Fichaje sospechoso según el turno planificado — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-08 (develop `1bd93a9`, staging `90e106b`; `checkinbiz` y `analytics` reconstruidos)
 
 Dos fallos con más de una jornada al día («Por tareas», turno partido, semana tipo con salida al
 mediodía), vistos el 08-nov con la demo Neteges y los fichajes reales del 30-oct. Los dos **hotfixes
@@ -2299,7 +2299,7 @@ jornada (§47) **no recalcula** `isSuspect`; queda fuera a propósito.
 | 53.3 | Verificar | Ciclo de tarea de 2 h → no sospechoso; refuerzo de 2 h cumplido → no; jornada de 8 h cerrada a las 3 h → sí; persona con dos jornadas puntual → sin «llegó tarde» en Inicio |
 
 
-## 54. Auditoría del análisis: previsión, fiabilidad, heurística contra el plan, overview por persona, señales y patrones en transacción — PENDIENTE en prod; EN STAGING el 2026-11-08 (develop `27238c4`, staging `d3f1f91`; `analytics merlin assistant` reconstruidos; `onChecklogWrite` desplegada en `dev-encodebiz`; panel `c6a9fc65` en `feat/cartera-de-clientes`)
+## 54. Auditoría del análisis: previsión, fiabilidad, heurística contra el plan, overview por persona, señales y patrones en transacción — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-08 (develop `27238c4`, staging `d3f1f91`; `analytics merlin assistant` reconstruidos; `onChecklogWrite` desplegada en `dev-encodebiz`; panel `c6a9fc65` en `feat/cartera-de-clientes`)
 
 Sale de auditar el análisis contra la siembra de SaludStart (staging). Lo que se cuenta (horas,
 coste, tareas, alertas, material) ya era exacto; lo que fallaba era la interpretación:
@@ -2342,7 +2342,7 @@ coste, tareas, alertas, material) ya era exacto; lo que fallaba era la interpret
 | 54.7 | Decidir con Jose | La media móvil de las señales de tareas (α 0,15) solo mira las últimas ~12 tareas. En una sucursal con 50 al día da un 64 % a tiempo frente al 88 % real (Badalona de SaludStart). Es diseño, no un fallo del pase |
 | 54.5 | Verificar | Un cliente rentable da un margen de fin de mes positivo. La fiabilidad de la empresa cuadra con sus semanas. Una persona «Por tareas» puntual no recibe `correct_high_variability`. `ver_mes` con `personaId` trae solo sus cifras |
 
-## 55. Tarea con cliente: guardar, gastos sin contrato, el contrato recoge lo que cubre, el panel firma como administración y contratos por páginas — PENDIENTE en prod; EN STAGING el 2026-11-08 (develop → staging `ec68b92` y `2351871`; `tasks customers documents` reconstruidos; panel en `develop` `b90ada6d`, `e5e70675`)
+## 55. Tarea con cliente: guardar, gastos sin contrato, el contrato recoge lo que cubre, el panel firma como administración y contratos por páginas — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-08 (develop → staging `ec68b92` y `2351871`; `tasks customers documents` reconstruidos; panel en `develop` `b90ada6d`, `e5e70675`)
 
 Visto con Cuidama (staging). Lo que entra en el pase:
 
@@ -2375,7 +2375,7 @@ Visto con Cuidama (staging). Lo que entra en el pase:
 | 55.3 | Decidir con Jose | Medir en prod con `reattribute-panel-activity --all`, SOLO simulación, cuántas entradas firmó la ficha en lugar de la cuenta. En staging: 4013 movidas, 132 sin tocar. Aplicar solo con su OK |
 | 55.4 | Verificar | Editar una tarea del cuadrante con cliente guarda. Un gasto de la app sin contrato sale en la ficha y se asigna. Cambiar las fechas de un contrato recoge las tareas del cliente. El historial de una acción del panel dice «Administración» |
 
-## 60. «Nadie ha fichado» con todo el centro ya fuera — PENDIENTE en prod; EN STAGING el 2026-11-10 (develop `98fca80`, staging `d67c161`; `analytics` y `assistant` reconstruidos)
+## 60. «Nadie ha fichado» con todo el centro ya fuera — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-10 (develop `98fca80`, staging `d67c161`; `analytics` y `assistant` reconstruidos)
 
 **Candidato a hotfix desde `main`. Jose aún no lo ha autorizado.** El fallo está en producción.
 
@@ -2397,7 +2397,7 @@ Visto con Cuidama (staging). Lo que entra en el pase:
 | 60.3 | Verificar en prod | Pasada la hora de salida, un centro con todas sus jornadas cerradas no sale en `/panel/alerts`. Un centro sin ningún fichaje pasada la hora de entrada sigue saliendo |
 | 60.4 | Verificado en staging | HECHO el 2026-11-10, ~12:52 UTC. Oficina Barcelona da `alert: "none"`, con 11 terminadas, 1 en otro centro y nadie dentro. `/panel/alerts` de SaludStart ya no lleva `no_presence`, y `ver_alertas` del conector tampoco |
 
-## 62. «Trabaja menos» solo con un déficit claro, y la lista de destacados vacía dice por qué — PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `03a9022`, staging `f9e50b4`; `analytics` reconstruido; panel en `develop` `fb7873da` y `a9fa7bcb`)
+## 62. «Trabaja menos» solo con un déficit claro, y la lista de destacados vacía dice por qué — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `03a9022`, staging `f9e50b4`; `analytics` reconstruido; panel en `develop` `fb7873da` y `a9fa7bcb`)
 
 Decisión de Jose del 2026-11-11 («arréglalo todo»). En la demo de staging (Netaclara,
 `318Ey5ZHBMeqm5fsQ0Md`, noviembre) 27 de 29 personas que cierran el 99 % de sus jornadas salían
@@ -2424,7 +2424,7 @@ la operación» decía que faltaba evidencia, que era falso.
 | 62.4 | Verificar en prod | Antes y después, `profileCounts` de una empresa con jornadas bien cerradas: lo que baja de `underworked` pasa a `reliable`, y nada más se mueve |
 | 62.5 | Verificado en staging | HECHO el 2026-11-11 con `buildPanelOverview` dentro del contenedor: de `{underworked: 27, insufficient: 2}` a `{underworked: 14, reliable: 13, insufficient: 2}`, mismas desviaciones antes y después (todo el cambio es del criterio). `overall.profile` de `underworked` a `reliable` (−9,2 %); `topPerformers` de 0 a 5; eje de horas del perfil de 27 a 14 `trabaja_de_menos` |
 
-## 64. Inventario: Pedidos, equipos fuera del almacén, traspaso entre tareas y cancelar un pedido — PENDIENTE en prod; EN STAGING el 2026-11-11 (último: develop `2135c0e` mergeado, staging `119295d`; `inventory` reconstruido; panel en `develop` `8696f1ad`)
+## 64. Inventario: Pedidos, equipos fuera del almacén, traspaso entre tareas y cancelar un pedido — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-11 (último: develop `2135c0e` mergeado, staging `119295d`; `inventory` reconstruido; panel en `develop` `8696f1ad`)
 
 Diseño: [inventario/tdr/TDR-010](../ingenieria/inventario/tdr/TDR-010-pedidos-reservado-sin-entregar.md)
 (Pedidos, operables y cancelar), [ADR-008](../ingenieria/inventario/adr/ADR-008-liberar-no-es-devolver-la-posicion-del-ejemplar.md)
@@ -2471,7 +2471,7 @@ almacén» desde Postgres). Decisiones de Jose del 09 al 11-nov.
 | 64.4 | Panel | PR de `develop` a `main` del panel con estos commits, después de 64.2 |
 | 64.5 | Prueba en prod | Pedidos: entregar un consumible y un equipo con quién se lo lleva; el equipo sale en «Fuera del almacén» con quién lo sacó; traspasarlo a otra tarea; recibirlo; cancelar una línea y un pedido entero y ver que lo reservado vuelve a estar disponible |
 
-## 65. Cumplimiento de ubicación con la valla de las tareas — PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `31d4c58`, staging `c70f6e6`; `analytics assistant merlin` reconstruidos; panel en `develop` `4df3da09`)
+## 65. Cumplimiento de ubicación con la valla de las tareas — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `31d4c58`, staging `c70f6e6`; `analytics assistant merlin` reconstruidos; panel en `develop` `4df3da09`)
 
 Pedido por Jose el 2026-11-11, con urgencia por Ayudarte, que trabaja por tareas («no lo
 bajes por hotfix… documéntalo en el pase a prod»). La tarjeta «Cumplimiento de ubicación» y
@@ -2523,7 +2523,7 @@ tarea se leyeron de Firestore (sin espejo todavía) y los ficheros se borraron a
 - **Por persona:** una persona tiene 17 rechazos en tareas en 2 días, a una mediana de 2,3 km, y sale `patron_de_conducta`. Otra tiene 27 rechazos en un solo día con un exceso mediano de 41 m, dentro del margen del GPS.
 - §62 en Ayudarte mueve una sola persona de `underworked` a `reliable`.
 
-## 66. Tarea sin empezar: a los 5 minutos, correo a owner y admin, y en Inicio desde una sola — PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `414814b`, staging `6e73d93`; `analytics tasks assistant` reconstruidos; worker en `dev-encodebiz`; panel en `develop` `b85a3790`)
+## 66. Tarea sin empezar: a los 5 minutos, correo a owner y admin, y en Inicio desde una sola — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `414814b`, staging `6e73d93`; `analytics tasks assistant` reconstruidos; worker en `dev-encodebiz`; panel en `develop` `b85a3790`)
 
 Pedido por Jose el 2026-11-11: «la tarea no ha iniciado en tiempo: llega el push pero no el correo
 a administración, ni en las alertas de Inicio». Luego: «15 minutos es demasiado, máximo 5». Y, al ver
@@ -2570,3 +2570,42 @@ solo correo con las dos tareas de prueba de Cuidama.
 | 66.4 | Verificar en prod | Los primeros minutos: `SELECT entity_id, count(*) FROM alert_sent WHERE rule = 'task_not_started' AND created_at > now() - interval '15 minutes' GROUP BY 1`, como mucho una fila por empresa y pasada. Vuelta atrás si algo sale mal: volver a desplegar el worker desde un checkout de `main` con el mismo comando de 66.2. Para cortar solo el correo sin tocar el push: añadir `task_not_started` a `rules_off` de la empresa en `alert_email_settings` |
 | 66.5 | Verificado en staging | HECHO el 2026-11-11 en Cuidama (`3xcfwyMj6ixsFyDbPera`, único destinatario `hola@encodebiz.com`). Con dos tareas de prueba del mismo centro salió **un solo correo** con las dos y sus horas de Madrid. Con una tarea de inicio a las 17:39:34 UTC, el aviso salió a las **17:45:17** (5 min 43 s). Tareas de prueba borradas después. Tests: `analytics` 125, `tasks` 19, `assistant` 167 |
 | 66.6 | Alertas por correo: grupo propio | Jose, 2026-11-11: «estos avisos nuevos deben ir en la configuración de avisos». La tarea sin empezar va en un grupo nuevo, `operation` («Al momento, en la operación»): no es resumen ni espera decisión. La frase de arriba del modal lo nombra, y «Gastos por aprobar» (de §52), que salía sin etiqueta, tiene ya la suya en los cinco idiomas. API develop `ab5bfd7`, staging `ad1c39d` (`analytics` reconstruido); panel develop `c675ff3f` (el tipo `AlertEmailGroup` admite `operation`). **Panel y API van juntos**: un panel viejo con la API nueva pinta el grupo sin título |
+
+## 68. Registro del pase — 2026-11-11, de 21:40 a 22:00 UTC (orden de Jose: «ahora es ahora»; «evitar fumigar a emails pendientes a los clientes»)
+
+Ejecutado por Claude (sesión encodebiz-api-78) con la orden de Jose a las 22:40 CET, con gente
+todavía fichando (Arendel 22:26, Ayudarte 22:23, Neteges con 25 jornadas abiertas). Para que
+doliera lo menos posible: imágenes construidas antes de tocar nada y un solo `up -d`; el corte
+real fue de unos 25 segundos. Un fork de Claude hizo el merge en un worktree aparte
+(`encodebiz-api-pase`, rama `release/pase-2026-11-11`); la sesión del panel
+(`encodebiz-front-saas-c1`) llevó el panel y Vercel.
+
+**Lo que subió:** §33, §34, §35, §37 (solo código), §39, §43, §45–§49, §50, §51, §52, §53, §54,
+§55, §58, §59, §60, §62–§67. Contenedores: los 19 (`shared` cambia), `customers` nuevo.
+
+| Hora UTC | Paso | Resultado |
+|---|---|---|
+| 21:3x | Línea base en prod, solo lectura | `email_outbox`: 0 pendientes, último envío 07:00 (resumen). `alert_sent` última hora: 0. Inventario: `eR5gNPUdmipJtxUZskub` (1 movimiento) y `nDON8mv1S1tuPAxx7jQI` (7). `dim_sync_log` OK 21:20 |
+| 21:4x | 33.4 índices de Firestore en `encodebiz-services` (gcloud, `--async`) | `tasks (customerId, dueAt)`, `tasks (customerId, createdAt desc)`, `documents (customerId, createdAt desc)`. READY a las 22:1x |
+| 21:46 | 50.1 + 39.1 + 59.1 + 63.2: migraciones **050 051 053 054 056 059 060 061 062 063 064**, una a una con `ON_ERROR_STOP` | Todas OK. 050: `UPDATE 65` (fichajes con tarea). 063: `UPDATE 2451` (fotos del patrón). El resto CREATE/ALTER/COMMENT |
+| 21:52 | 66.0 cola del worker (solo lectura, contenedor `tasks`) | 1 tarea devuelta, ya avisada; **0 avisarían en la primera pasada** |
+| 21:5x | Variables de entorno | El código nuevo solo añade `BILLING_VAT_*` (a propósito sin poner, §37), `CONTRATOS_ESFUERZO` y `GASTOS_ESFUERZO` (opcionales). Nada que añadir a `.env.production` |
+| 22:0x | Merge `staging → main` (fork, worktree) | 15 ficheros en conflicto, todos a favor de `staging`: cada commit de `main` que no estaba en `staging` tenía parche equivalente (`git cherry`) o estaba subsumido por commits posteriores de staging sobre el mismo fichero (hoja propia, purga, informe de tareas). `git diff --stat origin/staging` **vacío**. tsc OK en documents, reports, tasks, backoffice, checkinbiz, customers, analytics. `f511771` merge + `44c3e11` customers en `docker-compose.yml` y `nginx/nginx.conf` (33.1, 33.2). PR #278, merge `575342f` con `[skip ci]`; ningún workflow arrancó |
+| 21:4x–21:52 | `git pull --ff-only` + `docker compose build` de todo | rc=0, 19 imágenes nuevas. El `nginx -t` en contenedor aparte solo falló en «host not found: customers» (aún no existía) |
+| 21:53:09–21:53:32 | 33.3 `up -d` de todo + `restart nginx` | 18 recreados y `customers` creado; todos `healthy` en 7 s; `nginx -t` en contenedor aparte OK con `customers` ya resoluble; nginx reiniciado |
+| 21:54 | 33.5 / 35.4 / 34.5 sondas por el borde sin token | 401 en customers, contracts, contracts/x/tasks, gpt/contratos/leer, gpt/gastos/leer, inventory/orders, analytics/customers/summary, POST reports/customer; 400 tasks/calendar; 200 /health. Las que dan 400/404/500 sin cuerpo (delete-preview, update/workday, POST incident, GET reports/customer) dan **lo mismo en staging**: artefacto de la sonda |
+| 21:54 | Correo tras el cambio | `email_outbox` y `alert_sent` creados desde 21:50: **0 y 0** (también a las 22:02). Logs: 0 errores salvo 2 líneas en `tasks`, «expected multipart/form-data», que son las sondas |
+| 21:54 | 50.5 / 64.3 backfills, simulados | `backfill-tasks` Ayudarte 36 tareas; `backfill-contracts --all` 0 contratos; `backfill-customers --all` 0 clientes; `refresh-task-customer-copies --all` 0; `remirror-positions` en las dos empresas con inventario: 0 faltaban (48.2, 64.3: nada que aplicar) |
+| 21:55 | 34.3 / 65.1b `backfill-tasks --all --apply --history` | 5 empresas, todas «cuadra»: Ayudarte 36 tareas / 229 entradas; `W6aVQj7LH8l8SfJ0VLVW` 11 / 58; `nDON8mv1S1tuPAxx7jQI` 181 / 835; dos vacías. 15 s |
+| 21:55 | 65.1c relleno de marcas de Ayudarte | `task_events_raw` con `workSite` desde el 25-sep: **62 `start_rejected` y 20 `started`** (≥ 55 + 18 ✓) |
+| 21:54–21:57 | 54.2 / 54.6 / 59.3 / 66.2 funciones | `desplegar.mjs --project encodebiz-services --solo onChecklogWrite,onTaskPattern,onBranchPatternSync,onEmpPatternSync,onBranchPattern,onEmpPattern,taskStartNotificationWorker` desde el bundle del worktree (`.env.encodebiz-services` copiado del árbol principal; sin él el empaquetador avisa «sin configuración»). Las 7 ACTIVE a las 21:56. Sin WARNING ni ERROR en sus logs a las 22:03 |
+| 21:59 | 65.4 / 62.4 verificación (`buildPanelOverview` dentro de `analytics`, solo lectura) | **Ayudarte 2026-11:** 397 marcas = 331 fichajes + **66 inicios de tarea (12 dentro, 54 fuera)**; `balanced` y `observationsBalanced` `true`; «no consigue fichar» 60 rechazos / 389 intentos, de ellos 54 / 66 de tareas; perfiles reliable 13, underworked 1, overworked 1, at_risk 1, unregistered 5; global `reliable`. `nDON`: 0 marcas de tarea (no usa tareas con valla). 186 ms y 24 ms |
+| 21:56 | Panel | «API arriba» a `encodebiz-front-saas-c1`: PR #159 (`release/pase-2026-11-11` → `main`, 12 conflictos a favor de develop, árbol idéntico a develop) y las 4 variables de Vercel (`…CUSTOMERS_HANDLER`, `…CONTRATOS_LEER`, `…CUSTOMERS_ANALYTICS`, `…REPORTS_CUSTOMER`) creadas con OK de Jose. `GASTOS_LEER` no la usa el panel. **Jose paró el merge: panel y apps se suben el 12-nov.** La sesión del panel revisó que el panel de prod (`main`) aguanta la API nueva: solo degradaciones menores (extraText de la hoja, toasts genéricos en inventario) |
+| 22:1x | App publicada **1.11.1+71** (`fc4a504` de `checkbiz360`) contra la API nueva | Compatible, con evidencia: rutas de la API 181 → 225 y **0 quitadas** (`git grep` de los routers en `d04c312` y `575342f`); las 47 rutas que llama la app (constantes de `app_constants.dart` + interpolaciones) siguen todas; los 4xx nuevos en ficheros ya existentes (`task/worksite_invalid`, `task/contract_invalid`, `task/customer_invalid`, `documents/customer_not_found`, `documents/bad_request`, `task/incident_file_not_removable`) solo saltan por campos que la app no manda. Lo que sí nota: §43 (owner por la app solo ve documentos `worker`), §53 (regla de sospechoso en fichajes nuevos), §66 (push a los 5 min) |
+| 22:20 | 34.4 / 39.3 job de dimensiones | Pasó a las 22:20:38–39 UTC, 14 dimensiones `success`, sin error. `responsibility_events` **205** (antes 0); `dim_responsibilities` con `job_price` **163 de 205**; `dim_employees`: hoja enviada 22, firmada 17, de 121 empleados. Series diarias (`operational_daily`, `headcount_daily`, `direccion_snapshot_daily`, `backoffice_snapshot_daily`, `salud_diaria`) al día: última fila 2026-11-10 (la del 11 sale esta noche) |
+
+**Queda, y es de Jose:**
+- **§37 IVA.** El código está en prod pero **sin `BILLING_VAT_TAX_RATE` ni `BILLING_VAT_SINCE`**: nadie paga distinto que ayer. Faltan 37.2 (precio Bronze «más IVA» en el Stripe real), 37.3 (par `exclusive` del escalonado de inventario), 37.4 (las dos variables en `.env.production` y reiniciar `billing`) y la migración de las suscripciones existentes al precio «más IVA» (script, simula, `--apply`). Es dinero: con Jose delante y de día, no a medianoche.
+- 53.2: desmarcar las salidas ya guardadas como sospechosas y recalcular cierres desde el 30-oct. 54.4: rehacer patrones de sucursal que perdieron puntos. 54.7: la media móvil de ~12 tareas. 55.3: `reattribute-panel-activity --all`, medir antes. 59.4: recalcular los patrones guardados (hasta entonces siguen con el perfil del reloj hasta acumular 10 ciclos con plan). 43.5: `contracts-to-administration`, solo si lo pide.
+- App (`checkbiz360`): 33.10–33.11, 47.3, 48.4, 52 (gastos), 63.4 (`replanned`): versión nueva en tiendas detrás de esta API.
+- Resumen de mañana (07:00 UTC): llevará por primera vez `long_day`, `no_weekly_rest` y `notice_unsigned` (§39) para todas las empresas. Es lo que pidió Jose el 06-nov; si no lo quiere mañana, `rules_off` en `alert_email_settings` esta noche.
