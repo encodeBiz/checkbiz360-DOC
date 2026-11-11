@@ -2470,3 +2470,45 @@ almacén» desde Postgres). Decisiones de Jose del 09 al 11-nov.
 | 64.3 | Espejo de posiciones | Por cada empresa con inventario: `docker compose exec -T inventory node services/inventory/dist/scripts/remirror-positions.js --entity <id>` (simula) y luego con `--apply`. Apuntar aquí cuántos faltaban en cada una |
 | 64.4 | Panel | PR de `develop` a `main` del panel con estos commits, después de 64.2 |
 | 64.5 | Prueba en prod | Pedidos: entregar un consumible y un equipo con quién se lo lleva; el equipo sale en «Fuera del almacén» con quién lo sacó; traspasarlo a otra tarea; recibirlo; cancelar una línea y un pedido entero y ver que lo reservado vuelve a estar disponible |
+
+## 65. Cumplimiento de ubicación con la valla de las tareas — PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `31d4c58`, staging `c70f6e6`; `analytics assistant merlin` reconstruidos; panel en `develop` `4df3da09`)
+
+Pedido por Jose el 2026-11-11, con urgencia por Ayudarte, que trabaja por tareas («no lo
+bajes por hotfix… documéntalo en el pase a prod»). La tarjeta «Cumplimiento de ubicación» y
+«no consigue fichar» solo leían los fichajes de jornada, medidos contra la valla del centro.
+A quien trabaja por tareas en casa del cliente le exigen la valla de cada tarea, y su fichaje
+va en remoto o sin posición. El resultado era que esa plantilla no aparecía en el eje: no salía
+ni dentro, ni fuera, ni con rechazos.
+
+- **Marcas de tarea** (`services/analytics/src/application/taskGeoMarks.ts`): `started`,
+  `resumed`, `start_rejected` y `resume_rejected` de `task_events_raw`, solo los que llevan
+  `metadata.workSite`. El radio y la distancia son los congelados en la marca. La hora local es
+  la de `tasks_raw.work_site_tz` o, si falta, la de la empresa. `completed` no entra, porque al
+  terminar solo se mide y no se bloquea.
+- **Ubicación** (`BuildGeoCompliance.ts`): las marcas de tarea van a los mismos cajones y al
+  mismo veredicto. Hay campos nuevos:
+  - `bySource` (`checklog` y `task`, que suman `total` y `buckets`);
+  - `taskMarks` y `taskOutside` por persona y por centro.
+  - El `radius` del centro sale solo de sus fichajes. «Cae dentro de otro centro» no se observa
+    en marcas de tarea, porque al empezar una tarea no se elige centro.
+- **No consigue fichar** (`BuildCheckFailure.ts`): un inicio de tarea es un intento, y uno
+  rechazado es un rechazo. Hay campos nuevos `taskAttempts` y `taskRejections`.
+- **Conector** (`assistant`, `analisis.ts`): `ubicacion.deTareas` y `falloDelFichaje.deTareas`.
+  **Merlin** (`panelAnalysis.builder.ts` y `domain`): una línea con las marcas de tarea en la
+  geocerca y en el fichaje (campos opcionales).
+- **Panel** (`AnalysisTab.tsx`, `usePanelOverview.ts`, `merlinPanelPayload.ts`, clave
+  `statsDashboard.operational.geo.sourceSplit` en los cinco idiomas): debajo del resumen de la
+  tarjeta dice cuántas marcas son inicios de tarea (y cuántas fuera) y cuántas son fichajes. Los
+  campos son opcionales, así que el panel nuevo no se rompe con una API vieja.
+- **DEPENDE DE §34**: lee `task_events_raw`, que en prod no existe hasta la migración 050 y el
+  relleno del historial (`backfill-tasks --history`). Sin eso la consulta falla y se cae el
+  overview entero. Va **después** de §34.1 y de su relleno, nunca antes. Sin migración propia,
+  sin `shared` y sin variables.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 65.1 | Requisito | §34 aplicado en prod: 050 + relleno de `task_events_raw`. Comprobar `SELECT count(*) FROM task_events_raw WHERE type IN ('started','start_rejected') AND payload->'metadata' ? 'workSite'` > 0 en `encodebiz_analytics` |
+| 65.2 | API | `up -d --build --no-deps analytics assistant merlin` y `restart nginx` |
+| 65.3 | Panel | Con el siguiente PR del panel a `main` |
+| 65.4 | Verificar en prod | Overview de Ayudarte de este mes: `geo.balanced` y `observationsBalanced` a `true`, `geo.bySource.task.total` > 0 y `checkFailure.taskAttempts` > 0. La tarjeta muestra la línea «De ellas, N son inicios de tarea…» |
+| 65.5 | Verificado en staging | HECHO el 2026-11-11 con `buildPanelOverview` dentro del contenedor. Netaclara, noviembre: 1220 marcas (837 fichajes y 383 inicios de tarea, todos dentro), cajones cuadrados, `taskAttempts` 383. `Wl8ZCvpdmIXzEE0mhT7W`, septiembre: 5 marcas de tarea, 4 fuera por `start_rejected` (`taskRejections` 4), cuadrado. Tests: `analytics` 122, `assistant` 167, `merlin` 163, todos verdes (nuevo `test/geoValladeTareas.test.ts`) |
