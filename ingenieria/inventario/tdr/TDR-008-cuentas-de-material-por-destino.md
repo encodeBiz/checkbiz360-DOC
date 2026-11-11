@@ -370,6 +370,22 @@ dos órdenes) y añadir las rutas a la allowlist del proxy del panel (§6).
 - Sin el add-on, o con una API sin `/materials` (404), no aparece nada.
 - `flutter analyze` limpio en lo tocado. Sin probar en un dispositivo.
 
+## 11b. Los equipos en «Fuera del almacén» (2026-11-11)
+
+Jose, 2026-11-11: «¿por qué en Fuera del almacén no me salen los operables?». La pestaña solo
+leía las cuentas de material, y los equipos fuera se veían aparte, con el filtro «Fuera de base»
+de Existencias. A quien lleva el almacén le falta igual una escalera que unas bolsas.
+
+- `GET /units/outside?kind&warehouseId` (`canReserve`): los ejemplares activos, no retirados,
+  con `outOfBase` (el mismo campo que el filtro de Existencias, así que las dos vistas cuentan
+  lo mismo), de lo último que se movió a lo primero. Cada uno con su posición con nombres
+  (ADR-008), su almacén base y la salida apuntada (`takenOut`: quién lo sacó y para qué tarea).
+- Filtros de la pestaña: `kind=task` son los que están en el sitio de una tarea; `employee`, los
+  que están con una persona; `branch` no tiene equipos. `warehouseId` es su almacén base.
+- En la tabla van detrás de los consumibles: destino = dónde está, con «La sacó X para «tarea»»
+  debajo; artículo = nombre · identificador, enlace a su ficha (donde se recibe); la columna de
+  cantidad lleva el chip «Equipo».
+
 ## 12. Para el pase a producción
 
 1. Migración `034_inventario_cuentas_destino.sql` a mano, **antes** del despliegue. El espejo
