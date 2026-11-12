@@ -2638,3 +2638,28 @@ real fue de unos 25 segundos. Un fork de Claude hizo el merge en un worktree apa
 - 53.2: desmarcar las salidas ya guardadas como sospechosas y recalcular cierres desde el 30-oct. 54.4: rehacer patrones de sucursal que perdieron puntos. 54.7: la media móvil de ~12 tareas. 55.3: `reattribute-panel-activity --all`, medir antes. 59.4: recalcular los patrones guardados (hasta entonces siguen con el perfil del reloj hasta acumular 10 ciclos con plan). 43.5: `contracts-to-administration`, solo si lo pide.
 - App (`checkbiz360`): 33.10–33.11, 47.3, 48.4, 52 (gastos), 63.4 (`replanned`): versión nueva en tiendas detrás de esta API.
 - Resumen de mañana (07:00 UTC): llevará por primera vez `long_day`, `no_weekly_rest` y `notice_unsigned` (§39) para todas las empresas. Es lo que pidió Jose el 06-nov; si no lo quiere mañana, `rules_off` en `alert_email_settings` esta noche.
+
+## 69. Métricas del backoffice: cartera, contratos, gastos e incidencias — PENDIENTE en prod; EN STAGING el 2026-11-12 (develop `7cd9700`, staging `719fea6`; `backoffice` reconstruido)
+
+Jose, 12-nov: «en las métricas del backoffice no se agregaron estas cosas». Dirección contaba el uso por
+módulos (fichaje, quiosco, tareas, inventario, valoraciones, webhooks, asistente) y no conocía nada de lo
+que subió el 11-nov.
+
+- **Dirección** (`services/backoffice/src/application/direccion/`): cuatro módulos nuevos, por empresa,
+  en el periodo y en el anterior. «Cartera de clientes» = tareas para un cliente creadas en el periodo
+  (`tasks_raw.customer_id`, 059); «Contratos de cliente» = `customer_contracts.created_at` (051);
+  «Gastos» = `customer_expenses.created_at` (060/061); «Incidencias en tareas» = `task_events_raw`
+  `incident_reported` (TDR-009). Si una tabla o columna falta en un entorno, el módulo cuenta cero.
+- **Foto diaria** (`foto.ts`): los cuatro entran en la lista de módulos del día. La serie de clientes
+  activos no cambia, para que el crecimiento siga comparando lo mismo.
+- **Ficha de cliente** (`clientes/`): contratos, gastos e incidencias a 30 días; la cartera pasa a contar
+  tareas con cliente (antes, con contrato).
+- **Web** (`apps/backoffice-web`, va dentro de la imagen de `backoffice`): etiquetas cortas de los módulos.
+- Sin migración, sin `shared`, sin variables. «Estadísticas» no se toca: guarda cada cifra en una columna
+  fija y añadir estas pediría migración.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 69.1 | API | Solo `backoffice`: `up -d --build --no-deps backoffice` y `restart nginx` |
+| 69.2 | Verificar en prod | Dirección → «Qué se usa» enseña los cuatro módulos nuevos (hoy, a cero: en prod nadie ha usado todavía la cartera). La ficha de Ayudarte lista «Contratos de cliente», «Gastos» e «Incidencias en tareas» |
+| 69.3 | Verificado en staging | HECHO el 2026-11-12 dentro del contenedor: cartera 4 empresas (Netaclara 1.582 tareas con cliente a 30 días), contratos 7, gastos 3, incidencias 3. Las consultas, en solo lectura contra prod, dan 0 en los cuatro. Tests de `backoffice` 16/16, tsc limpio en el servicio y la web |
