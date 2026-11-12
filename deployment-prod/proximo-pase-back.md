@@ -2639,7 +2639,7 @@ real fue de unos 25 segundos. Un fork de Claude hizo el merge en un worktree apa
 - App (`checkbiz360`): 33.10–33.11, 47.3, 48.4, 52 (gastos), 63.4 (`replanned`): versión nueva en tiendas detrás de esta API.
 - Resumen de mañana (07:00 UTC): llevará por primera vez `long_day`, `no_weekly_rest` y `notice_unsigned` (§39) para todas las empresas. Es lo que pidió Jose el 06-nov; si no lo quiere mañana, `rules_off` en `alert_email_settings` esta noche.
 
-## 69. Métricas del backoffice: cartera, contratos, gastos e incidencias — PENDIENTE en prod; EN STAGING el 2026-11-12 (develop `7cd9700`, staging `719fea6`; `backoffice` reconstruido)
+## 69. Métricas del backoffice: cartera, contratos, gastos e incidencias — EN PROD el 2026-11-12 (hotfix #279, merge `3e59884`; orden de Jose: «súbelo a prod en hotfix»); EN STAGING el 2026-11-12 (develop `7cd9700`, staging `719fea6`; `backoffice` reconstruido)
 
 Jose, 12-nov: «en las métricas del backoffice no se agregaron estas cosas». Dirección contaba el uso por
 módulos (fichaje, quiosco, tareas, inventario, valoraciones, webhooks, asistente) y no conocía nada de lo
@@ -2663,3 +2663,4 @@ que subió el 11-nov.
 | 69.1 | API | Solo `backoffice`: `up -d --build --no-deps backoffice` y `restart nginx` |
 | 69.2 | Verificar en prod | Dirección → «Qué se usa» enseña los cuatro módulos nuevos (hoy, a cero: en prod nadie ha usado todavía la cartera). La ficha de Ayudarte lista «Contratos de cliente», «Gastos» e «Incidencias en tareas» |
 | 69.3 | Verificado en staging | HECHO el 2026-11-12 dentro del contenedor: cartera 4 empresas (Netaclara 1.582 tareas con cliente a 30 días), contratos 7, gastos 3, incidencias 3. Las consultas, en solo lectura contra prod, dan 0 en los cuatro. Tests de `backoffice` 16/16, tsc limpio en el servicio y la web |
+| 69.4 | Hotfix a prod | HECHO el 2026-11-12, 20:55 UTC: PR #279 (commit sobre `main` con el árbol de `bee0caa`), merge `3e59884` con `[skip ci]`, sin workflow. `git pull --ff-only`, `build backoffice`, `up -d --no-deps backoffice` (healthy), `restart nginx`; `/health` 200 y `/api/v1/backoffice/direccion` 401 sin sesión. Las cuatro consultas dentro del contenedor de prod dan 0 empresas, como se esperaba; 0 errores en el log |
