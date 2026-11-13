@@ -2664,3 +2664,25 @@ que subió el 11-nov.
 | 69.2 | Verificar en prod | Dirección → «Qué se usa» enseña los cuatro módulos nuevos (hoy, a cero: en prod nadie ha usado todavía la cartera). La ficha de Ayudarte lista «Contratos de cliente», «Gastos» e «Incidencias en tareas» |
 | 69.3 | Verificado en staging | HECHO el 2026-11-12 dentro del contenedor: cartera 4 empresas (Netaclara 1.582 tareas con cliente a 30 días), contratos 7, gastos 3, incidencias 3. Las consultas, en solo lectura contra prod, dan 0 en los cuatro. Tests de `backoffice` 16/16, tsc limpio en el servicio y la web |
 | 69.4 | Hotfix a prod | HECHO el 2026-11-12, 20:55 UTC: PR #279 (commit sobre `main` con el árbol de `bee0caa`), merge `3e59884` con `[skip ci]`, sin workflow. `git pull --ff-only`, `build backoffice`, `up -d --no-deps backoffice` (healthy), `restart nginx`; `/health` 200 y `/api/v1/backoffice/direccion` 401 sin sesión. Las cuatro consultas dentro del contenedor de prod dan 0 empresas, como se esperaba; 0 errores en el log |
+
+## 70. Freno de correo en desarrollo (`EMAIL_SEND_ONLY_TO`) — EN STAGING el 2026-11-13 (develop `2b7279c`, staging `e6c641c`; stack entero reconstruido; `onCreateEmployee` y `onCreateSentEmail` en `dev-encodebiz`)
+
+Jose, 13-nov: «parar el envío de correos en dev; el SMTP de Amazon solo en caso de tests directos». En staging
+se enviaba con el mismo SMTP que en producción y las demos y pruebas mandaban sus avisos de verdad (el 11-nov,
+50 de «Alvarez» de golpe).
+
+- `shared/notifications/emailGuard.ts` + `EmailService.sendEmail`: con `EMAIL_SEND_ONLY_TO` (lista de `@dominio`,
+  direcciones y `entity:<id>`), un correo solo sale a lo permitido. Lo demás no se envía y queda en
+  `email_message` con `status = 'suppressed'` (destinatarios y asunto incluidos). `analytics` acepta ese estado.
+- Valor en staging (`.env.staging` del VPS) y en `services/firebase_sdk/.env.dev-encodebiz` (sin commitear):
+  `@simulator.amazonses.com,entity:3xcfwyMj6ixsFyDbPera` → la QA (simulador de SES) y Cuidama (pruebas directas).
+- Probado en staging el 13-nov: a `jordi@netegesbisbal.cat` con otra empresa → `suppressed`, no salió; al
+  simulador → `sent`. Tests de `shared` 202/202 (5 nuevos).
+- No cubre las funciones que siguen en el repo del SaaS, que envían con su propio código. Medido en
+  `dev-encodebiz` del 6 al 13-nov: no enviaron nada (`processPendingEmails`: «No pending emails»).
+- `salud` tiene su propio envío y en staging no manda nada (falla la autenticación del SMTP).
+
+| # | Paso | Cómo |
+|---|---|---|
+| 70.1 | Prod | Va con el siguiente pase (toca `shared`). **En producción NO se pone `EMAIL_SEND_ONLY_TO`**: sin la variable el código no cambia nada. Comprobar que no está en `.env.production` ni en `.env.encodebiz-services` |
+| 70.2 | Prueba directa a otra dirección en dev | Añadirla a `EMAIL_SEND_ONLY_TO` en `.env.staging`, `up -d --no-deps <servicio>` (un `restart` no relee el `env_file`), y quitarla al acabar |
