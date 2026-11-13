@@ -100,6 +100,10 @@ A gap in the record is a working day on which an employee should have worked but
 
 If you have made corrections to employees' records, make sure they all have a documented reason. A compliance report with corrections lacking a recorded reason can raise questions from the inspector about the system's integrity.
 
+### Have proof of having informed the staff
+
+The **Information sheet** column in the employee list says who has signed the data protection sheet and when; each document's record keeps the signature record. See [Data protection information sheet](./137-data-protection-information-sheet.md).
+
 ### Have the organisation's basic information to hand
 
 Prepare in advance:

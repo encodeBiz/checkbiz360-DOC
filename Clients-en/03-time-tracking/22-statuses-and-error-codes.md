@@ -31,7 +31,7 @@ This status is temporary. It appears when a manual workday is created or when a 
 
 ### `incomplete_workday` status
 
-Indicates that the employee recorded their entry but not their exit. The workday remains open. This status can be resolved by recording the corresponding checkout (manually or from the app) or by the manager creating a manual checkout.
+Indicates that the employee recorded their entry but not their exit. The workday remains open. This status can be resolved by recording the corresponding checkout (manually or from the app) or by the manager creating a manual checkout. From the incident that is opened, the manager can correct the entire workday in one go: see [Correct an incomplete workday in one go](134-correct-an-incomplete-workday.md).
 
 ---
 

@@ -63,12 +63,12 @@ Nothing about clock-ins goes by email. The box comes unticked and is ticked pers
 
 When your company reaches 90% of the storage included in its plan, the owner receives an email at the billing address. It is sent only once. It is sent again only if usage drops below 80% and then rises again. See [Plans, prices and features](../14-reference/91-plans-and-features.md#storage).
 
-## Operational alerts by email
+## Email alerts
+
+The owner and the administrators receive every morning a summary with the home page alerts and what is waiting for their decision (requests, incidents, unsigned documents), and at once whatever cannot wait. You choose which alerts arrive and at what time in **Tools → Email alerts**. It is explained in [Email alerts](./133-email-alerts.md).
 
 > **Status: Planned**
-> This feature is part of the roadmap and is not available yet in the current version.
-
-Sending the home page alerts to managers by email, and the automatic email fallback when a push notification does not reach the device, are planned for a future version.
+> The automatic email fallback when a push notification does not reach the device is planned for a future version.
 
 ---
 
@@ -92,3 +92,4 @@ If an employee or manager does not receive an expected email from the system, fo
 - [Push notifications in the app](64-push-notifications-in-the-app.md)
 - [Configure notification preferences](65-configure-notification-preferences.md)
 - [Notification history](67-notification-history.md)
+- [Email alerts](133-email-alerts.md)

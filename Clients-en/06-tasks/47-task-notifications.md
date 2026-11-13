@@ -30,6 +30,14 @@ Task notifications are distributed through two channels:
 
 ---
 
+### Grouped notifications: many tasks, one notification
+
+When a person receives many tasks at once —when a rota is loaded, when the month is planned—, they do not get one notification per task. The **new**, **changed** and **removed** tasks are grouped and **a single notification** arrives once changes stop coming in, for example: *You have 84 new tasks from 3 to 30 November, 2 changed*. When tapped, the app opens their task list with those days.
+
+A single task arrives as always, with its title, at most a couple of minutes later. If a task is removed from the person or cancelled, the notification says so: *You no longer have the task …: it has been removed or cancelled.* Confirming a rota again without changes sends nothing.
+
+---
+
 ### Task validated
 
 **Recipient:** Employee whose task has been validated.
@@ -70,13 +78,23 @@ Task notifications are distributed through two channels:
 
 ### Late-start warning
 
-**Recipient:** the people involved in the task.
+**Recipient:** the assigned people, with a notification in the app, and the owners and administrators, by email.
 
-**When it is sent:** when **15 minutes** have passed since the expected start date without the task having been started.
+**When it is sent:** when **5 minutes** have passed since the expected start date without the task having been started. Tasks left unstarted at the same time go in a single email. It is explained in full in [Task not started on time](./126-task-not-started-on-time.md).
 
 **Requirements:** the task must have an **expected start date** and the **Notify if not started on time** option enabled. Without an expected start date, the option has no effect.
 
 It is the only alert configured task by task, and it is enabled when creating or editing the task. The dispatch is recorded in the task's activity, so the manager can check whether it actually went out.
+
+---
+
+### Task incident
+
+**Recipient:** the branch managers and the supervisors, with a notification in the app; the owners and administrators, by email and with a red alert on **Home**.
+
+**When it is sent:** at once, when someone reports that they cannot do the task.
+
+**Content:** who reported it, the task, the branch and the note. It is explained in [Task incident](./125-task-incident.md).
 
 ---
 
@@ -120,3 +138,5 @@ If the employee has disabled the device's notification permissions, the alerts w
 | [Priorities and deadlines](./44-priorities-and-deadlines.md) | Deadline alerts and configuration |
 | [Task validation](./45-task-validation.md) | Notification on validating or rejecting |
 | [What the tasks module is](./39-what-is-the-tasks-module.md) | Overview of the module |
+| [Task not started on time](./126-task-not-started-on-time.md) | The warning after 5 minutes and how to turn off the email |
+| [Task incident](./125-task-incident.md) | The immediate notification when a task cannot be done |

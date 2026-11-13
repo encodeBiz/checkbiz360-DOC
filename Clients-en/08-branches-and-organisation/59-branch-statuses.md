@@ -40,6 +40,16 @@ Deactivating and deleting are different operations with very different consequen
 
 > **Warning:** CheckBiz360 does not allow branches with associated clock records, workdays or documents to be deleted. If you need to permanently close a branch with historical data, the correct operation is to deactivate it and ask the support team for definitive unlinking should it be necessary for data protection compliance.
 
+### Deleting a branch with unfinished tasks
+
+If the branch has draft, assigned or in-progress tasks, the panel does not simply delete it: it opens **It has unfinished tasks** and asks you to choose what to do with them:
+
+- **Move them to draft and send them to:** another branch, chosen in **Destination**. The tasks stay there as drafts, to be reviewed and put back into circulation. If there is no other branch, the option is **Move them to draft** without moving them.
+- **Cancel them**: they are cancelled and the assigned people are notified.
+- **Don't delete**: the branch stays as it is.
+
+That way no task is left hanging from a site that no longer exists or keeps sending notifications.
+
 In practice, the vast majority of branch closures —whether temporary or permanent— should be handled through deactivation, not through deletion.
 
 ## How to change a branch's status

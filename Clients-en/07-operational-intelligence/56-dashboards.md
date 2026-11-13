@@ -69,9 +69,18 @@ Opening a site reveals two blocks:
 
 Who is meeting expectations, who is leaving no record and who is being affected by their site.
 
+Each person with enough evidence receives a reading: *Meets hours and records*, *Meets hours, does not record*, *Records well, works less*, *Works beyond plan*, *Needs attention* or *Depends on the site*. **"Records well, works less"** is only given with a clear shortfall: someone who closes their workdays properly and clocks somewhat less than planned, but no more than 10% less, counts as *Meets hours and records*.
+
+The **Who holds the operation up best** list says why it is empty when it is:
+
+- *Nobody has enough evidence to be highlighted yet*: data is missing, it is not a zero.
+- *In this period nobody meets both the time record and the planned hours*: there is evidence, but nobody both closes their workdays properly and reaches their hours. What needs looking at is in **Where to act**.
+
 ### Analysis
 
 The patterns that belong neither to one site nor to one person in particular: where and when clocking fails, and the cross-reference between the two axes. It is read from least to most pointed: first what belongs to the process and the configuration, and only at the end the people.
+
+The **Location compliance** card also counts **task starts** with their own work site, measured against each task's margin, and not only clock-ins measured against the site. That way the staff who work at the customer's home show up in the analysis. Below the summary it says how many marks are task starts (and how many outside) and how many are clock-ins. Likewise, in **Who cannot clock in**, each task start is an attempt, and one rejected for being outside the site counts as failed.
 
 ---
 

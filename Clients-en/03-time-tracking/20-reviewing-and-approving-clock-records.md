@@ -20,6 +20,8 @@ There are two main situations in which a record enters `pending-employee-validat
 
 **Manager correction:** When a manager proposes a correction to an existing clock record for the employee (for example, adjusting the entry or exit time), the change is not applied until the employee accepts it. In the meantime, the record remains pending validation. The proposed time cannot be in the future: the form does not allow it and the server rejects it with `checklog_update/future_not_allowed`.
 
+**Correcting an entire incomplete workday:** if a workday is missing its exit, especially a split one, all its clock records are corrected at once from the incident, with a single reason, and the person accepts or rejects the whole workday. See [Correct an incomplete workday in one go](134-correct-an-incomplete-workday.md).
+
 ---
 
 ## How the employee validates or rejects a pending record
@@ -93,3 +95,4 @@ Users with the **employee** role can validate or reject pending records from the
 - [Traceability and change history](21-traceability-and-change-history.md)
 - [Statuses and error codes](22-statuses-and-error-codes.md)
 - [How clocking in works](13-how-clocking-in-works.md)
+- [Correct an incomplete workday in one go](134-correct-an-incomplete-workday.md)

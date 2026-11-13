@@ -2,7 +2,7 @@
 
 Welcome to the CheckBiz360 documentation, the digital attendance control platform by EncodeBiz. This documentation gathers the complete material aimed at the end customer: account owners, human resources leads, area managers and team supervisors.
 
-The articles are organised into 16 thematic sections. Each section covers a module or functional area of the platform and contains independent articles that can be read one at a time or as a sequence.
+The articles are organised into 17 thematic sections. Each section covers a module or functional area of the platform and contains independent articles that can be read one at a time or as a sequence.
 
 ---
 
@@ -90,8 +90,9 @@ How the clock-in system works: validations, record types, geofences and workday 
 | Manual workday request (Mode A and Mode B) | **Available** | Requires manager approval. |
 | Review and approval of clock records by a manager | **Available** | Approval, rejection and resolution flow; a rejected correction leaves the clock record as it was. |
 | Traceability and immutable change history | **Available** | Requests and changes recorded with an audit trail. |
-| Suspicious clock-in detection | **Available** | Automatic indicator based on anomalous patterns. |
+| Suspicious clock-in detection | **Available** | Based on the length of the planned shift; with no schedule, under 3 h or over 10 h. |
 | Clock-in point: a device at the site with QR or code and a photo | **Available** | Paid add-on. Subscribed and managed in the panel; the device uses the CheckBiz360 app. |
+| Correct an incomplete workday in one go | **Available** | From the incident, all the shifts and a single reason; the person accepts or rejects the whole workday from the app. |
 
 | Article | Description |
 |---|---|
@@ -106,6 +107,7 @@ How the clock-in system works: validations, record types, geofences and workday 
 | [Traceability and change history](03-time-tracking/21-traceability-and-change-history.md) | requestUpdates, immutability and use in audits |
 | [Statuses and error codes](03-time-tracking/22-statuses-and-error-codes.md) | Status and error-code tables with causes and solutions |
 | [Clock-in point](03-time-tracking/113-clock-in-point.md) | Clocking in from a tablet at the site with a QR or code and a photo, no biometrics |
+| [Correct an incomplete workday in one go](03-time-tracking/134-correct-an-incomplete-workday.md) | Correcting the whole split workday with a single notification to the person |
 
 ---
 
@@ -161,6 +163,8 @@ Uploading, organising, acknowledging and controlling access to employment docume
 | Confirmation signed from the phone | **Available** | Downloadable signature record and signed PDF for PDF documents addressed to a single employee. |
 | Automatic version history | **Planned** | Planned for a future version. |
 | Bulk document download (ZIP) | **Planned** | Planned for a future version. |
+| Delete documents and free up space | **Available** | Owner and administrators only; one or several; the record of who received it and who deleted it remains. |
+| "Administration" visibility level | **Available** | Owner and administrators only, from the panel; in the app it appears to nobody. |
 
 | Article | Description |
 |---|---|
@@ -173,6 +177,8 @@ Uploading, organising, acknowledging and controlling access to employment docume
 | [Version history](05-document-management/36-version-history.md) | Manual flow available in V1; automatic history on the roadmap |
 | [Document access permissions](05-document-management/37-document-access-permissions.md) | Permission table by role: upload, view, confirm, archive |
 | [Export documents](05-document-management/38-export-documents.md) | Individual download in V1; bulk download on the roadmap |
+| [Delete documents and free up space](05-document-management/135-delete-documents.md) | Archive or delete, warnings and what remains of the document |
+| [Who sees each document](05-document-management/136-who-sees-each-document.md) | Administration, personal documents and the difference between panel and app |
 
 ---
 
@@ -186,26 +192,30 @@ Creating, assigning, tracking and rating operational tasks.
 | Own work site per task | **Available** | Its own address and margin; starting requires being there, from the app. |
 | Duplicate a task | **Available** | Copies the job, unassigned and as a draft; asks for the dates again. |
 | Pause and resume tasks | **Available** | From the back office and from app 1.4.0; time paused appears in the report. |
-| Task history | **Available** | Who created, started, paused, completed, validated or cancelled it, with date and role. |
-| Formatted description (lists, checklists, links) | **Available** | Editor with a formatting bar and preview. |
+| Task history | **Available** | Who created, started, paused, completed, validated or cancelled it; boxes ticked, incidents and "Administration" when the panel acts. |
+| Formatted description (lists, checklists, links) | **Available** | The boxes are ticked from the app and each tick goes into the history. |
 | Photo and video evidence | **Available** | Photo (JPG, PNG, WEBP) up to 5 MB; video up to 25 MB from the app. |
 | Task statuses: draft, assigned, in progress, completed, validated, rejected, cancelled | **Available** | Seven statuses with full traceability. |
 | Four priorities: low, medium, high and critical | **Available** | Colour-coded in the list. |
 | Time-compliance indicator | **Available** | On time, at risk, overdue, completed on time or late. |
-| Expected start date and late-start warning | **Available** | Notification after 15 minutes, configurable per task. |
+| Expected start date and late-start warning | **Available** | After 5 minutes: app notification to the person and email to owner and administrator; on Home from a single task. |
 | Task validation and rating by the manager | **Available** | Delegable to the supervisor per task; rejection requires a reason. |
-| Task push notifications | **Available** | Assignment, validation, rejection, late start and overdue. |
+| Task push notifications | **Available** | Assignment, validation, rejection, late start, overdue and incident; many tasks at once arrive in a single notification. |
 | Exportable task report | **Available** | Excel (XLSX), filterable by branch, status and due period, with time spent and time paused; with inventory subscribed, also each task's material. |
-| Document-type attachments (PDF, Word, Excel) | **Planned** | Evidence currently accepts photo and video. |
+| Document-type attachments (PDF, Word, Excel) | **Partially available** | Attached documents in PDF and photos, separate from evidence and copied when duplicating; not Word or Excel. |
 | Automatic "overdue" status once the deadline passes | **Planned** | Today the deadline is reflected in the time-compliance indicator. |
 | Configuring how far in advance due warnings are sent | **Planned** | The warnings are issued; their lead time is not configurable. |
 | Aggregate task metrics (completion rate, average time) | **Planned** | Calculable today from the Excel report. |
 | Weekly task calendar | **Available** | A tab next to the list: the week by day and hour, with the gaps, the overlaps and what is due; same filters as the list. |
+| Task incident | **Available** | Mandatory note and photo or PDF; email, red alert on Home and notification to managers; resolved from the panel; shows in the report. |
+| Who considers the task finished | **Available** | One person is enough, all, or one responsible person. |
+| Completing from administration | **Available** | Asks for start and close if nobody started it; "from administration" shows on the record and in the report. |
+| Deleting a branch with open tasks | **Available** | Asks to move them to draft in another branch, cancel them or not delete. |
 
 | Article | Description |
 |---|---|
 | [What the tasks module is](06-tasks/39-what-is-the-tasks-module.md) | What it is for and how it differs from attendance control |
-| [Create a task](06-tasks/40-create-a-task.md) | Fields, own work site, duplicating a task and photo/video attachments |
+| [Create a task](06-tasks/40-create-a-task.md) | Fields, own work site, duplicating, attached documents and evidence, tick boxes |
 | [Assign tasks to employees](06-tasks/41-assign-tasks-to-employees.md) | Individual and bulk assignment, reassignment, notification |
 | [Task statuses](06-tasks/42-task-statuses.md) | Life cycle, reopening a task, paused task and the time-compliance indicator |
 | [Tracking and updates](06-tasks/43-tracking-and-updates.md) | Starting, pausing and resuming, notes and the task history |
@@ -215,6 +225,9 @@ Creating, assigning, tracking and rating operational tasks.
 | [Task notifications](06-tasks/47-task-notifications.md) | Events notified in V1; reminders on the roadmap |
 | [Task reports](06-tasks/48-task-reports.md) | Metrics in the back office and the Excel report, with its time columns |
 | [Weekly task calendar](06-tasks/111-weekly-task-calendar.md) | The week at a glance: what there is each day, at what time, in what status and what is due |
+| [Task incident](06-tasks/125-task-incident.md) | Warning that a task cannot be done, who it reaches and how it is resolved |
+| [Task not started on time](06-tasks/126-task-not-started-on-time.md) | The warning after 5 minutes through the app, by email and on Home, and how to turn it off |
+| [Who finishes the task and closing it from administration](06-tasks/127-who-finishes-the-task-and-closing-from-administration.md) | One, all or one responsible person; completing with times from the panel |
 
 ---
 
@@ -238,6 +251,7 @@ Analysis of behaviour patterns, performance indices, costs and anomaly detection
 | Configurable cost-overrun alerts | **Planned** | Planned for a future version. |
 | Dashboard data export (CSV/PDF) | **Planned** | Planned for a future version. |
 | "Home" page: today by site, alerts, recent weeks, this week's availability, headcount over time and estimated costs | **Available** | The first thing you see when you sign in; it refreshes on its own and shows only what needs attention. |
+| Location compliance with the tasks' fence | **Available** | Task starts count against each task's margin, alongside clock-ins. |
 
 | Article | Description |
 |---|---|
@@ -263,9 +277,10 @@ Creating and configuring branches, assigning employees and the multi-branch glob
 | Advanced branch configuration (geofence, breaks, tolerance) | **Available** | All operational parameters configurable. |
 | Assign employees to branches with responsibilities | **Available** | Multi-branch with an effective calendar per assignment. |
 | Organisation configuration (tax details, time zone) | **Available** | Changes propagated to dependent branches. |
-| Storage per company | **Available** | 2 GB included; above that, €0.25 per full GB if extra storage is turned on. Shown in Organisation → Subscriptions. |
+| Storage per company | **Available** | 2 GB included; above that, €0.25 + VAT per full GB if extra storage is turned on. Shown in Organisation → Subscriptions. |
 | Back office collaborators (owner and administrator) | **Available** | Invitation, role change and removal; the organisation is never left without an active owner. |
 | Multi-branch global view | **Available** | The home page shows today by site and the alerts; the Operations panel compares sites by period. |
+| Request deletion of the company | **Available** | From Entity, with a mandatory reason; the team confirms it before deleting anything. |
 
 | Article | Description |
 |---|---|
@@ -291,7 +306,7 @@ Notification types generated automatically by the system for employees and manag
 | Task and weekly schedule notices by email, for people who do not use the app | **Available** | A box per person in Schedules & holidays; nothing about clock-ins. |
 | User-configurable notification preferences | **Planned** | Planned for a future version. |
 | Persistent notification history | **Planned** | Planned for a future version. |
-| Operational alerts by email to managers | **Planned** | Planned for a future version. |
+| Email alerts to owner and administrators | **Available** | Morning summary (6:00–10:00), immediate alerts and items awaiting decision; chosen in Tools. Nothing between 22:00 and 6:00. |
 
 | Article | Description |
 |---|---|
@@ -301,6 +316,7 @@ Notification types generated automatically by the system for employees and manag
 | [Alerts for managers](09-notifications/66-alerts-for-managers.md) | Employee who did not clock in, suspicious clock-in, pending manual workday |
 | [Notification history](09-notifications/67-notification-history.md) | Notification centre in V1; persistent history on the roadmap |
 | [Email notifications](09-notifications/68-email-notifications.md) | Welcome and access status, work notices by email, storage warning; operational alerts on the roadmap |
+| [Email alerts](09-notifications/133-email-alerts.md) | What arrives, when and how to choose it |
 
 ---
 
@@ -346,6 +362,7 @@ Generating, filtering and exporting attendance, cost and compliance reports.
 | RDL 8/2019 compliance report for inspections | **Available** | Generated from the back office. |
 | Export of the operational intelligence dashboards | **Planned** | Costs, anomalies and comparisons are consulted on screen. |
 | Automatic periodic reports sent by email | **Planned** | Planned for a future version. |
+| Reports for one, several or all branches | **Available** | Workday and tasks, with a branch search box. |
 
 | Article | Description |
 |---|---|
@@ -366,6 +383,7 @@ Mandatory time recording in Spain, data protection and preparing for inspections
 | Time recording compliant with RDL 8/2019 | **Available** | Immutable timestamp with full traceability. |
 | Labour inspection report | **Available** | Generated from the back office with all the required data. |
 | Data retention compliant with LOPD/GDPR | **Available** | Legal basis, retention periods and employee rights. |
+| Data protection information sheet signed from the app | **Available** | CheckBiz360's sheet or the company's own; status in the employee list and an alert if missing. |
 
 | Article | Description |
 |---|---|
@@ -373,6 +391,7 @@ Mandatory time recording in Spain, data protection and preparing for inspections
 | [How CheckBiz360 complies with RDL 8/2019](12-regulatory-compliance/82-how-checkbiz360-complies-with-rdl-8-2019.md) | Technical mechanisms: timestamp, immutability, traceability |
 | [Data retention and protection](12-regulatory-compliance/83-data-retention-and-protection.md) | LOPD/GDPR: legal basis, retention and employee rights |
 | [Preparing for a labour inspection](12-regulatory-compliance/84-preparing-for-a-labour-inspection.md) | What documentation to request, which report to present and prior recommendations |
+| [Data protection information sheet](12-regulatory-compliance/137-data-protection-information-sheet.md) | Sending it, having it signed from the app and keeping the proof |
 
 ---
 
@@ -410,6 +429,7 @@ Glossary, error codes, plans and frequently asked questions.
 | Complete error-code table | **Available** | Every code in the dictionary, by module, with cause and solution. |
 | Plans and prices (Bronze and Enterprise) | **Available** | Price, trial period, included modules, add-ons, storage and roadmap. |
 | Frequently asked evaluation questions | **Available** | 20 questions and answers for customers evaluating the platform. |
+| Prices plus VAT | **Available** | From 11 Nov 2026 everything is price + VAT (21%), broken down on the invoice. |
 
 | Article | Description |
 |---|---|
@@ -478,6 +498,33 @@ Paid add-on: material tied to the task, the person, the place and the time.
 
 ---
 
+### 17. Customer portfolio
+
+The customer portfolio ties each task to its customer: their record, their documents, their contracts with their margin, the expenses and a report ready to send them. It is included in CheckBiz360 and is in the "Customers" menu.
+
+| Feature | Status | Comment |
+|---|---|---|
+| Customer record, branches serving them and search box | **Available** | Company or person, with address, contacts, field and management notes; search by name, tax ID or reference. |
+| Customer on the task and their address as the work site | **Available** | With its margin in metres; the customer's name only reaches the staff with authorisation. |
+| Additional details in the app | **Available** | Field notes, visible contacts and documents for workers, on the task itself. |
+| Customer documents and "Administration" level | **Available** | Contracts and quotes for owner and administrators only, from the panel; never from the app. |
+| Contracts with amount, hours and profitability | **Available** | Several per customer; PDF reading with anonymised AI; margin, forecast and the contract's tasks. |
+| Contract and task expenses | **Available** | Receipt from the app, approval with net amount excl. VAT, receipt filed and "Expenses without a contract". |
+| Customer analysis, PDF/Excel report, Home block and alerts | **Available** | Profitability requires each person's hourly rate. |
+| Customer portal | **Planned** | No date. |
+
+| Article | Description |
+|---|---|
+| [What is the customer portfolio](17-customer-portfolio/117-what-is-the-customer-portfolio.md) | What it solves, who sees what and how to get started |
+| [Add customers](17-customer-portfolio/118-add-customers.md) | Record, address, branches, contacts and search box |
+| [The customer on the task](17-customer-portfolio/119-the-customer-on-the-task.md) | Customer and contract on the task, their address as the work site and what the staff see |
+| [Customer documents](17-customer-portfolio/120-customer-documents.md) | Records, quotes and contracts, and the Administration level |
+| [Contracts and profitability](17-customer-portfolio/121-contracts-and-profitability.md) | Amount, hours, PDF reading with AI, margin and forecast |
+| [Contract and task expenses](17-customer-portfolio/122-contract-and-task-expenses.md) | What is paid outside, with receipt and approval |
+| [The customer in the analyses](17-customer-portfolio/123-the-customer-in-the-analyses.md) | Analysis tab, customer report, Home and alerts |
+
+---
+
 ## File structure
 
 ```
@@ -485,20 +532,21 @@ DOCS/Clients-en/
 ├── README.md                           (this index)
 ├── 01-getting-started/                 (5 articles)
 ├── 02-employees/                       (10 articles)
-├── 03-time-tracking/                   (11 articles)
+├── 03-time-tracking/                   (12 articles)
 ├── 04-calendar-and-schedules/          (11 articles)
-├── 05-document-management/             (9 articles)
-├── 06-tasks/                           (11 articles)
+├── 05-document-management/             (11 articles)
+├── 06-tasks/                           (14 articles)
 ├── 07-operational-intelligence/        (9 articles)
 ├── 08-branches-and-organisation/       (6 articles)
-├── 09-notifications/                   (6 articles)
+├── 09-notifications/                   (7 articles)
 ├── 10-mobile-app/                      (7 articles)
 ├── 11-reports-and-exports/             (5 articles)
-├── 12-regulatory-compliance/           (4 articles)
+├── 12-regulatory-compliance/           (5 articles)
 ├── 13-support-and-incidents/           (4 articles)
 ├── 14-reference/                       (4 articles)
 ├── 15-integrations/                    (6 articles)
-└── 16-inventory/                       (8 articles)
+├── 16-inventory/                       (8 articles)
+└── 17-customer-portfolio/              (7 articles)
 ```
 
-**Total: 116 articles**
+**Total: 131 articles**

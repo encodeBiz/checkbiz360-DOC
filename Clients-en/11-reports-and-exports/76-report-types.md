@@ -70,7 +70,7 @@ The task report gathers the period's tasks with their status and their deadline 
 
 - The tasks whose **deadline** falls within the selected period, with their status and their time compliance.
 - The time for each task: time spent, time paused, number of pauses and time spent excluding pauses. They are explained in [Task reports](../06-tasks/48-task-reports.md#what-it-contains).
-- Filters by branch and by task status.
+- Filters by one, several or all branches and by task status.
 - The data needed to calculate whatever is required in the spreadsheet: completed versus assigned, overdue, rejected.
 
 - With [inventory](../16-inventory/100-what-is-inventory.md) subscribed: the material consumed per task, its cost and what was left unsettled, plus a detail sheet per item. See [Task reports](../06-tasks/48-task-reports.md#material-for-each-task).

@@ -36,7 +36,7 @@ You can filter by a particular employee or include all the employees in the scop
 
 ### Branch
 
-If your organisation has more than one branch, you can select a particular branch or include all of them. Owners and managers with multi-site access see every branch; managers with restricted access see only their own.
+The workday report and the task report can be run for **one, several or all branches** at once. In the **Branch** field, type to search and add the ones you want; if you leave it empty (*All*), the report includes all of them. The search works the same with 5 branches as with 150. Owners and managers with multi-site access see every branch; managers with restricted access see only their own.
 
 ### Event type
 

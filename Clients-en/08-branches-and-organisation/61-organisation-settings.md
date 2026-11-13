@@ -80,7 +80,7 @@ If your organisation needs 2FA across the board, enable it employee by employee 
 
 From **Subscriptions** the Owner consults the plan contracted and its status, and from **Invoices** the history. Payment methods are managed under **Billing setup**.
 
-Billing for the Bronze plan is **per employee and month**: there is no included employee quota that can be used up. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
+Billing for the Bronze plan is **per employee and month**: there is no included employee quota that can be used up. All prices are **plus VAT**: from 11 November 2026 the invoice adds 21% and breaks it down (base, VAT and total). For the invoice to be complete, keep the legal name, tax ID and address up to date in **Company Data**. See [Plans, prices and features](../14-reference/91-plans-and-features.md).
 
 ### Storage
 
@@ -132,6 +132,20 @@ The rule is simple: what affects the company as a whole is configured at the org
 > **Role note:** organisation configuration, and in particular the subscription, is the **Owner's** responsibility. To delegate day-to-day management —branches, employees, tasks and documents— use the **Manager** role.
 
 ---
+
+## Deleting the company: it is requested
+
+The company is not deleted from the panel: it is requested, and the CheckBiz360 team contacts you to confirm it before deleting anything. That way nobody loses the account, the staff and the time records with one click.
+
+1. In **Entity → Company Data**, press **Request company deletion**, at the bottom.
+2. Write the **Reason for the request**. It is mandatory.
+3. Send it. The panel confirms: *Request sent. We'll contact you to confirm it.*
+
+From that moment on, every panel screen shows a red notice at the top with the date of the request, and the button becomes **Deletion requested**. Meanwhile, the company keeps working normally. If you change your mind, write to **hola@encodebiz.com**.
+
+Only the **owner** can request it.
+
+> **Warning:** before requesting it, download whatever you need to keep, especially the time records, which the law requires to be kept for four years. See [Regulatory compliance report](../11-reports-and-exports/79-regulatory-compliance-report.md).
 
 ## Electronic signature
 

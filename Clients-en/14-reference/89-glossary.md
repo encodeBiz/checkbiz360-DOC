@@ -171,13 +171,13 @@ Time window assigned to an employee for a particular workday, defining their exp
 Indicator comparing each person's performance **at a particular site** with their own overall performance. The average of those differences across everyone who passes through there measures the effect the site exerts on people, with individual talent already discounted. It answers whether the problem is the person or the place.
 
 ### Storage
-Space taken up by what your company uploads: documents, task photos, signatures, reports and clock-in point photos. 2 GB are included; above that, each full GB is billed at €0.25 a month if extra storage is turned on. See [Plans, prices and features](./91-plans-and-features.md#storage).
+Space taken up by what your company uploads: documents, task photos, signatures, reports and clock-in point photos. 2 GB are included; above that, each full GB is billed at €0.25 + VAT a month if extra storage is turned on. See [Plans, prices and features](./91-plans-and-features.md#storage).
 
 ### Strict / flexible workday
 Calendar counting mode. With a **strict workday** the official schedule governs: what is worked before or after is not counted, and delays and early exits are deducted. With a **flexible workday** the real time governs: what is worked outside the window is added as extra. The same distinction exists for breaks.
 
 ### Subscription plan
-CheckBiz360's contracting mode. There are two: **Bronze**, €5 per employee per month (2026 rate of €2 when subscribing up to and including 31 December 2026), and **Enterprise**, with bespoke pricing, which adds priority support and integrations. Both give access to every module on the platform. See [Plans, prices and features](./91-plans-and-features.md).
+CheckBiz360's contracting mode. There are two: **Bronze**, €2 + VAT per employee per month (2026 rate, when subscribing up to and including 31 December 2026), and **Enterprise**, with bespoke pricing, which adds priority support and integrations. Both give access to every module on the platform. See [Plans, prices and features](./91-plans-and-features.md).
 
 ### Supervisor
 Intermediate role between Manager and Worker. The Supervisor can review the clock records and tasks of the employees on their direct team if the Manager has granted them that capability, but has no access to the branch's global configuration or to cost or anomaly reports.

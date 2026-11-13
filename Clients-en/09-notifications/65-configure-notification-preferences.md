@@ -24,7 +24,7 @@ The system generates notifications for the following types of event:
 | Manual workday pending approval | An employee has submitted a workday request requiring validation |
 | Read receipt recorded | An employee has confirmed reading an assigned document |
 | Task completed | An employee has marked a task as finished |
-| Task not started on time | 15 minutes have passed since the expected start time without the task beginning |
+| Task not started on time | 5 minutes have passed since the expected start time without the task beginning |
 
 ---
 

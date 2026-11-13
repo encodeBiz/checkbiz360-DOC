@@ -1,5 +1,7 @@
 # Alerts for managers
 
+> **Email alerts:** the morning summary and the alerts waiting for a decision reach the company's owner and administrators by email, not managers or supervisors. They are set up in **Tools → Email alerts**. See [Email alerts](133-email-alerts.md).
+
 Alerts for managers are operational notifications the system sends to the Manager and Supervisor roles when events occur that require attention or action from the management team. Unlike notifications aimed at employees, these alerts are designed to detect irregularities, guarantee process compliance and allow a rapid response to situations that could affect operations. This article describes the alert types available, how to configure them and how to adjust the activation thresholds.
 
 ## Types of alert for managers
@@ -27,6 +29,8 @@ CheckBiz360's analysis engine evaluates every clock record in context and can fl
 - GPS coordinates inconsistent with the physical movement possible in the time elapsed.
 - Clocking patterns matching known control-evasion behaviour.
 - Clocking from a device other than the usual one without prior authorisation.
+
+In addition, a workday is flagged as suspicious when its length does not fit the planned shift for that entry: if it lasts **less than half** the shift or **more than 2 hours over** it. That way a 2-hour extra shift completed, or a short task by someone working on a task-based schedule, does not show up as suspicious, and an 8-hour workday closed after 3 does. If the person has no planned shift that day, workdays of under 3 hours or over 10 are flagged. This rule applies to clock records from 11 November 2026; earlier ones keep their flag.
 
 When this alert is generated, the manager receives the notification with the detail of the suspicious record and can decide to validate it, modify it or escalate it for investigation.
 
@@ -88,4 +92,5 @@ Reviewed alerts are archived automatically and remain available in the notificat
 - [Notification types](63-notification-types.md)
 - [Configure notification preferences](65-configure-notification-preferences.md)
 - [Notification history](67-notification-history.md)
+- [Email alerts](133-email-alerts.md)
 - [Multi-branch global view](../08-branches-and-organisation/62-multi-branch-global-view.md)

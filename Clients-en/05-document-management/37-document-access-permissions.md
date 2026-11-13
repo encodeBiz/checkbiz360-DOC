@@ -1,5 +1,7 @@
 # Document access permissions
 
+> **Who sees each document:** a person's personal document is seen only by them and, from the panel, by the owner and the administrators; from the app nobody sees another person's document, the owner included. And there is an **Administration** level for what only the owner and administrators should open. See [Who sees each document](136-who-sees-each-document.md), which takes precedence over the tables in this article.
+
 The CheckBiz360 document module applies a role-based permission model that determines which actions each user can perform on documents. Understanding this structure is essential to configuring access correctly, protecting sensitive documentation and guaranteeing that each person in the organisation sees only what concerns them.
 
 ## Roles and general permissions
@@ -12,7 +14,7 @@ CheckBiz360 defines four main roles with different levels of access to the docum
 | View other employees' documents | No | Their team only (if permitted) | Yes (their organisation) | Yes (whole organisation) |
 | Upload documents | No | Subject to delegation | Yes | Yes |
 | Edit documents | No | Subject to delegation | Yes | Yes |
-| Delete documents | No | No | Yes | Yes |
+| Delete documents | No | No | No (can archive) | Yes |
 | Request a signature | No | No | Yes | Yes |
 | Acknowledge receipt | Yes (their own) | Yes (their own) | Not applicable | Not applicable |
 | View private documents | No | Subject to delegation | Yes | Yes |
@@ -64,14 +66,9 @@ To configure permission delegation:
 4. In the supervisor's permissions section, enable the corresponding document options.
 5. Save the changes.
 
-## Deletion permissions
+## Archive and delete
 
-Deleting documents is an irreversible action that only users with the Manager or Owner role can perform. Before deleting a document, check:
-
-- If the document has a registered signature, deletion will also erase the signature traceability record.
-- If the document forms part of a file that has to be retained by legal obligation, do not delete it even if its immediate operational usefulness has ended.
-
-Marking obsolete documents as private rather than deleting them is recommended, especially for documents with a signature or with employment relevance, so as to preserve the history without exposing the document to the employee.
+Archiving removes the document from view and keeps the file. **Deleting** erases the file, the signed document and the signature record, and frees up the space; what remains is the record of who received it, who deleted it and why. Only the **owner** and the **administrators** can delete, from the panel. See [Delete documents and free up space](135-delete-documents.md).
 
 ## Related articles
 
@@ -80,3 +77,6 @@ Marking obsolete documents as private rather than deleting them is recommended, 
 - [Read receipt](35-electronic-signature.md)
 - [Export documents](38-export-documents.md)
 - [Upload and organise documents](31-upload-and-organise-documents.md)
+- [Who sees each document](136-who-sees-each-document.md)
+- [Delete documents and free up space](135-delete-documents.md)
+- [Customer documents](../17-customer-portfolio/120-customer-documents.md)

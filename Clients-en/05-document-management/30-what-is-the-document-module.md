@@ -16,6 +16,8 @@ With the document module you can:
 - Control which roles can view each document.
 - Require a **read receipt** and check who has given it and who has not.
 - Archive a document when it is no longer current, without losing it.
+- Delete a document you no longer need to free up space, keeping the record of who received it and who deleted it ([Delete documents](135-delete-documents.md)).
+- Send the data protection information sheet so that each person signs it from the app ([Information sheet](../12-regulatory-compliance/137-data-protection-information-sheet.md)).
 
 ## Types of document that can be managed
 

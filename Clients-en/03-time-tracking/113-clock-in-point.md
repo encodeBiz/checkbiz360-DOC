@@ -39,8 +39,8 @@ The clock-in point is a paid add-on, like inventory. It is in the panel's side m
 
 | | |
 |---|---|
-| Price | **€19 a month**, covering up to **20 active clock-in points** |
-| From the 21st | **€0.90 a month** for each active clock-in point |
+| Price | **€19 + VAT a month**, covering up to **20 active clock-in points** |
+| From the 21st | **€0.90 + VAT a month** for each active clock-in point |
 | Trial | **15 days** on your first subscription |
 | Invoice | Separate from your plan |
 

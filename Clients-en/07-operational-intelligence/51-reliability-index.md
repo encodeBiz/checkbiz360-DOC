@@ -22,6 +22,8 @@ The reliability index is built from the accumulated analysis of several behaviou
 
 **Schedule deviations.** The system looks not only at whether the employee arrives late or leaves early, but at the size of those deviations over time. Small, sporadic deviations have less impact than large, recurring ones.
 
+**Consistency.** This is the share of entries that fall within 15 minutes of the planned time. It is measured against what was planned for each workday: someone who has different shifts every day or works by tasks does not show up as irregular for changing times, only if they depart from what they had planned.
+
 ## How it is presented
 
 Reliability is not published as a mark out of 100 or as a ranking. It is shown with its **variation against the previous period** —which usually says more than the absolute value— and with its **maturity state**:

@@ -12,7 +12,7 @@ When you sign in to the panel, the first thing you see is today's operation: how
 - **Whether the week is going worse than the previous ones**, with the same figures week by week.
 - **What needs attention**, in a short list that disappears when there is nothing.
 
-It all comes from the clock-ins, tasks and schedules you already have in CheckBiz360: there is nothing to set up or maintain.
+It all comes from the clock-ins, tasks and schedules you already have in CheckBiz360: there is nothing to set up or maintain. The same reaches you every morning by email if you are an owner or administrator: see [Email alerts](../09-notifications/133-email-alerts.md).
 
 ---
 
@@ -22,16 +22,21 @@ At the very top, if there is something to look at, a list of alerts with a **Vie
 
 | Alert | What happened |
 |---|---|
-| **No one on site** | People were expected at a site and nobody has clocked in. |
+| **Incident on a task** | Someone has reported that they cannot do a task. It appears first, in red, with the title and the note, and disappears once it is resolved. See [Task incident](../06-tasks/125-task-incident.md). |
+| **No one on site** | People were expected at a site and nobody has had a workday today. If the staff have already clocked in and finished their workday, it does not trigger. |
 | **Low check-ins today** | Of those who should already be in, fewer than expected have clocked in. |
 | **Many late arrivals** | A high share of those who clocked in today arrived late. |
 | **Low check-ins** | Last week, only a small share of the planned working days had a clock-in. |
-| **Overdue tasks** / **Tasks not started** | There are overdue tasks still open, or tasks that did not start on time. |
+| **Overdue tasks** / **Tasks not started** | There are overdue tasks still open, or tasks that have gone 5 minutes without starting since their expected time. A single one is enough. See [Task not started on time](../06-tasks/126-task-not-started-on-time.md). Tasks with an open incident do not count. |
 | **Workdays not closed** | Yesterday some working days were left open: people clocked in and never clocked out. |
 | **Rising cost** | The daily cost is running above last month's. |
 | **Missing rates** | Part of this month's hours has no rate: the estimated cost falls short. |
 | **Many exits** | This month there are many leavers relative to the active headcount. |
 | **Low availability** | One day this week has fewer than a third of the people available. |
+| **Workdays over 9 h** | In orange: people with a configured workday of more than 9 hours, with their names. Check that their schedule is the real one. |
+| **No weekly rest** | In orange: people with all 7 days of the week planned. Check that their schedule is the real one. |
+| **Data protection notice not signed** | In red: people who have not signed the data protection information sheet, and how many have not been sent it. See [Data protection information sheet](../12-regulatory-compliance/137-data-protection-information-sheet.md). |
+| **Customers and contracts** | A customer's tasks not done, fewer hours for a customer, a contract over forecast, a contract ending and expenses awaiting approval. See [The customer in the analyses](../17-customer-portfolio/123-the-customer-in-the-analyses.md). |
 | **Access email not delivered** | Someone's app access email has not arrived: it bounced, was marked as spam or never went out. It says who. See [App access and email change](../02-employees/116-app-access-and-email-change.md). |
 
 ---
@@ -132,3 +137,4 @@ Owners and administrators of the company.
 | [Availability board](../04-calendar-and-schedules/98-availability-board.md) | The full availability, month by month, with the breakdown of who is missing |
 | [Weekly task calendar](../06-tasks/111-weekly-task-calendar.md) | The week's tasks, day by day and hour by hour |
 | [Multi-branch global view](../08-branches-and-organisation/62-multi-branch-global-view.md) | Where each overview lives |
+| [Email alerts](../09-notifications/133-email-alerts.md) | The morning summary and the immediate alerts |

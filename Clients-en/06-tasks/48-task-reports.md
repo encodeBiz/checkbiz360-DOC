@@ -34,7 +34,9 @@ The task report is generated from the **Reports** section of the back office and
 
 ### What it contains
 
-One row per task, with these columns: Company, Site, Title, Status, Priority, Start, End, **Time spent (h)**, **Paused (h)**, **No. of pauses**, **Time spent excluding pauses (h)**, Team, Rating and No. of evidence items.
+One row per task, with these columns: Company, Site, Title, Status, Priority, Start, End, **Time spent (h)**, **Paused (h)**, **No. of pauses**, **Time spent excluding pauses (h)**, Team, **Completed by**, Rating and No. of evidence items. If any task in the report has a customer, the **Customer** column is added after **Site** (see [The customer on the task](../17-customer-portfolio/119-the-customer-on-the-task.md)).
+
+**Completed by** says who closed the task; if it was closed from the panel, it carries *(from administration)*, and the start and end are the times entered when closing it. See [closing it from administration](./127-who-finishes-the-task-and-closing-from-administration.md).
 
 The time columns are worth reading carefully:
 
@@ -46,6 +48,12 @@ The time columns are worth reading carefully:
 | **Time spent excluding pauses (h)** | Time spent minus time paused. It deducts the pauses someone recorded, not the interruptions nobody marked. |
 
 A task that has not yet been started leaves the pause columns empty. If a task is paused when the report is generated, the open pause counts up to that moment.
+
+### Incidents
+
+If any task in the period had an [incident](./125-task-incident.md), the **Tasks** sheet gains the **Incident** column: *Open* (in red) or *Resolved · Replanned*, *Cancelled* or *Solved*.
+
+The file also always includes the **Incidents** sheet, with one row per incident, open or resolved: Site, Customer, Task, Task status, Reported, Reported by, Note, File, Incident, Resolution, Resolved, Resolved by and Resolution note. If there were none in the period, the sheet says so.
 
 ### Material for each task
 

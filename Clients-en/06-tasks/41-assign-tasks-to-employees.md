@@ -58,10 +58,10 @@ Inside the task detail, the employee can consult:
 - The priority assigned (critical, high, medium or low).
 - The deadline date and time, and the expected start date if one was given.
 - The work site, if the task has its own, with the **View in Maps** link.
-- The evidence already uploaded and the task notes.
+- The attached documents, the evidence already uploaded and the task notes.
 - The time spent and the total of pauses, and the task history (from version 1.4.0 of the app).
 
-The employee can start the task, pause and resume it, add progress notes, upload evidence and, when they finish, mark it as completed.
+The employee can start the task, pause and resume it, tick the boxes in the description, add progress notes, upload evidence, [report an incident](./125-task-incident.md) if they cannot do it and, when they finish, mark it as completed.
 
 ---
 
@@ -70,6 +70,8 @@ The employee can start the task, pause and resume it, add progress notes, upload
 The moment the assignment is saved, CheckBiz360 automatically sends a push notification to the employee's device. No additional action is needed from the manager.
 
 The notification includes the task title and the deadline, so that the employee has the essential information without needing to open the app.
+
+If many tasks are assigned to the same person at once, they receive **a single notification** with the summary (*You have 84 new tasks from 3 to 30 November*), which opens their list with those days when tapped. See [Grouped notifications](./47-task-notifications.md#grouped-notifications-many-tasks-one-notification).
 
 If the employee has push notifications disabled on their device, the task will still appear in their list inside the app, but they will not receive the on-screen alert.
 

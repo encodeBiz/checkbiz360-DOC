@@ -22,6 +22,8 @@ The system continuously analyses each employee's records looking for the followi
 
 **Patterns of excessive regularity.** Human behaviour has inherent variability. If all the parameters of an employee's clock records (time, coordinates, workday length) are too constant over a prolonged period, the system identifies that regularity as statistically anomalous.
 
+**Workday of unusual length for its shift.** When the exit is clocked, the workday is compared with the shift the person had planned for that entry. It is flagged as a **suspicious record** if it lasts less than half the shift or more than two hours over it. If there was no planned schedule, the general margins are used: under 3 hours or over 10. That way, a 2-hour task completed or a short extra shift does not show up as suspicious, and an 8-hour workday closed after 3 does. The rule applies to clock records from 11 November 2026; earlier ones keep their flag.
+
 > **Important:** None of these patterns is, on its own, proof of any irregularity. There are legitimate situations that can produce similar behaviour: employees who always work from the same fixed workstation, devices with imprecise GPS that always report the same coordinates, people with very stable routines. The anomaly indicator is the start of an investigation, not its conclusion.
 
 ## What the manager should do when an employee is flagged

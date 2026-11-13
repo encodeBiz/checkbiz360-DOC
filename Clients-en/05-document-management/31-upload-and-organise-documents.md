@@ -55,6 +55,7 @@ In addition to the type, each document has a scope that determines who it is add
 - **Employee**: a personal document, such as a payslip or a contract.
 - **Branch**: addressed to all the staff at one site, such as an opening protocol.
 - **Organisation**: addressed to the whole workforce, such as a company policy.
+- **Customer**: a document belonging to a customer in the portfolio (their record, a quote). The customer's contracts are uploaded from their record, under **Contracts**. See [Customer documents](../17-customer-portfolio/120-customer-documents.md).
 
 The scope also determines the read receipt mode available: from a specific employee, from the employees of one branch or from the whole organisation.
 
@@ -95,3 +96,4 @@ The document panel filters let you search by type, by scope, by employee and by 
 - [Document notifications](34-document-notifications.md)
 - [Document access permissions](37-document-access-permissions.md)
 - [Export documents](38-export-documents.md)
+- [Customer documents](../17-customer-portfolio/120-customer-documents.md)

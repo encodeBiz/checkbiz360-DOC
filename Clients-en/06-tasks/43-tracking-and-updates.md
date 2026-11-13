@@ -18,6 +18,10 @@ The buttons only appear on tasks assigned to the employee. A supervisor who sees
 
 Starting requires an **open workday** (having clocked in) and, if the task has its own work site, being within its margin. See [Relationship with time tracking](./39-what-is-the-tasks-module.md#relationship-with-time-tracking) and [Own work site](./40-create-a-task.md#own-work-site).
 
+### Ticking the boxes in the description
+
+If the description has a list of tick boxes, the employee ticks them in the task detail as they make progress. Each tick goes into the history and the manager sees it in the panel. See [The boxes are ticked from the app](./40-create-a-task.md#the-boxes-are-ticked-from-the-app).
+
 ### Marking a task as completed
 
 Once the activity has finished, the employee presses **Complete**. If the task has the evidence requirement enabled —it is by default— the system does not allow it to be closed without at least one photo or video attached, and returns the error `task/evidence_required`.
@@ -73,7 +77,9 @@ Each note is classified with a type, which makes the nature of the communication
 | **Specification** | Setting out precisely how the work should be done |
 | **Operational note** | Reporting progress or the day-to-day of execution |
 | **Clarification** | Resolving a question raised about the task |
-| **Incident note** | Recording a problem encountered during execution |
+| **Incident note** | Only in old notes: they are no longer created |
+
+If something **prevents the task from being done** —nobody opens the door, material is missing—, do not leave a note: use **Report incident** (in the app, it is in the three-dot menu). It notifies management at once and the task stops counting as late. See [Task incident](./125-task-incident.md).
 
 Notes are useful for:
 
@@ -91,8 +97,10 @@ The manager can also add comments from the back office, which the employee will 
 The **History** section of the task detail tells its complete story, in order: created, assigned, started, paused and resumed, completed, validated or rejected, cancelled, and status changes made by hand. Each line states:
 
 - Date and time.
-- Who did it and in what role. Automatic actions appear as **System**; if a back office user has no name recorded, they appear as **Panel user**.
+- Who did it and in what role. Automatic actions appear as **System**. What an owner or an administrator does from the panel appears as **By {name} · Administration**; a task completed from the panel also says so, with the times entered (see [closing it from administration](./127-who-finishes-the-task-and-closing-from-administration.md)). If whoever acts has no name recorded, they appear as **Panel user**.
 - The reason, in validations, rejections and the latest cancellation.
+
+The assignments are also noted (*Assigned to …*, *Assignment removed: …*), each box ticked or unticked in the description, and the incidents (*Incident reported*, *Incident resolved: …*).
 
 Attempts to start or resume a task **outside its work site** are also noted ("Start rejected: outside the work site"), which help to understand why an employee could not begin.
 
@@ -113,7 +121,7 @@ From the back office tasks panel, the manager or supervisor can:
 - Identify tasks that have been *in progress* for too long with no movement.
 - Detect those that are *at risk* or *overdue* through the time-compliance indicator.
 
-> **Note:** the system raises alerts on its own in two situations: when a task with an expected start time has not begun 15 minutes later, and when the deadline is approaching or has passed. A task being *in progress* for a long time with no news does not trigger any automatic alert: that is detected by reviewing the list.
+> **Note:** the system raises alerts on its own in two situations: when a task with an expected start time has not begun 5 minutes later ([Task not started on time](./126-task-not-started-on-time.md)), and when the deadline is approaching or has passed. A task being *in progress* for a long time with no news does not trigger any automatic alert: that is detected by reviewing the list.
 
 ---
 
@@ -137,3 +145,4 @@ For a detailed description of all the notification types, see the article [Task 
 | [Task reports](./48-task-reports.md) | Tracking metrics and export |
 | [Assign tasks to employees](./41-assign-tasks-to-employees.md) | How to assign and reassign tasks |
 | [Weekly task calendar](./111-weekly-task-calendar.md) | The week at a glance, day by day and hour by hour, with the gaps and overlaps |
+| [Task incident](./125-task-incident.md) | Warning that the task cannot be done and resolving it |

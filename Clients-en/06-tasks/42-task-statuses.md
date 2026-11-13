@@ -25,7 +25,7 @@ While it is *in progress*, the task can be **paused** once or several times. The
 | **Draft** | The task has been created but not yet put into circulation. It serves to prepare it before sending it to the team. | Whoever creates it, from the back office |
 | **Assigned** | The task has been sent to those responsible, who have received the notification, but nobody has started yet. | Whoever creates it, or the system on assignment |
 | **In progress** | An assigned employee has started the task and is working on it. | Employee from the app |
-| **Completed** | The employee has marked the task as finished and it is awaiting review. | Employee from the app |
+| **Completed** | The employee has marked the task as finished and it is awaiting review. | Employee from the app, or management from the panel |
 | **Validated** | The manager has reviewed the work and accepted it as correct. This is the satisfactory closure. | Manager, or owner or supervisor with validation permission |
 | **Rejected** | The manager has reviewed the completed task and returned it with a mandatory reason. | Manager, or owner or supervisor with validation permission |
 | **Cancelled** | The task is annulled because it no longer applies. It requires a reason and does not count as non-compliance. | Manager or owner from the back office |
@@ -65,6 +65,8 @@ The employee opens the task in the app and presses start. They need an open work
 
 The employee presses finish in the app. If the task has the evidence requirement enabled, the system does not allow it to be closed without at least one photo or video attached, and returns the error `task/evidence_required`. If the task was paused, the pause is closed at that moment.
 
+With several people assigned, when it closes depends on **Who considers the task finished?**: the first person, all of them or one responsible person. And if nobody started it from the app, management can complete it from the panel by stating the start and close times. Both are explained in [Who finishes the task and closing it from administration](./127-who-finishes-the-task-and-closing-from-administration.md).
+
 ### From completed to validated
 
 The manager reviews the work from the back office and accepts it. The task is closed and the employee rating is enabled.
@@ -89,6 +91,12 @@ On reopening:
 - Time compliance goes back to *Not started*. Review the deadline if it has already passed.
 - The pause counters go back to zero.
 - The history keeps everything that happened before reopening.
+
+---
+
+## Task with an incident
+
+If someone reports an [incident](./125-task-incident.md) because they cannot do the task, the status **does not change**: the record and the row in the list are shown in red until management resolves it. Meanwhile, the task does not count among the overdue or late tasks on **Home** and in the alerts.
 
 ---
 
@@ -144,3 +152,5 @@ Each task shows two colour labels: one for the status and one for time complianc
 | [Priorities and deadlines](./44-priorities-and-deadlines.md) | Configuring deadlines and alerts |
 | [Task validation](./45-task-validation.md) | Validation flow and permissions |
 | [Task notifications](./47-task-notifications.md) | Automatic alerts on status change |
+| [Task incident](./125-task-incident.md) | Reporting that it cannot be done and resolving it |
+| [Who finishes the task and closing it from administration](./127-who-finishes-the-task-and-closing-from-administration.md) | One, all or one responsible person; completing with times from the panel |

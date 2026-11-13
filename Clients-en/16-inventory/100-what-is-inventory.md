@@ -43,7 +43,7 @@ Every screen works the same way for both: you search for the item and the platfo
 
 ## How to subscribe
 
-Inventory is activated from **Subscriptions** as an add-on to your plan. It includes a **15-day trial**. Until it is subscribed, the section explains what it is and how to activate it, and the task report is generated as always, with no material columns.
+Inventory is activated from **Subscriptions** as an add-on to your plan. It costs **€29 + VAT a month up to 50 employees and €0.75 + VAT per employee from the 51st**, and includes a **15-day trial**. Until it is subscribed, the section explains what it is and how to activate it, and the task report is generated as always, with no material columns.
 
 ---
 

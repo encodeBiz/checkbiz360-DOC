@@ -40,7 +40,7 @@ Both are interpreted in the **operational time zone of the task's branch**. If t
 
 ## Late-start warning
 
-This is the automatic warning that is configured task by task. If the task has an **expected start date** and the **Notify if not started on time** option is enabled, the system sends a notification when **15 minutes** have passed since that time without the task having been started.
+This is the automatic warning that is configured task by task. If the task has an **expected start date** and the **Notify if not started on time** option is enabled, the system warns when **5 minutes** have passed since that time without the task having been started. See [Task not started on time](./126-task-not-started-on-time.md).
 
 The dispatch is recorded in the task's activity, so the manager can check whether the warning actually went out.
 
@@ -65,6 +65,7 @@ The consequences are:
 
 - The task appears marked as overdue in the back office list and in the employee's app.
 - The overrun is recorded and is reflected in the task report.
+- If the task has an open [incident](./125-task-incident.md), it does not count among the overdue tasks on **Home** or in the email alerts until it is resolved.
 - The employee can still complete it after it has expired. On closing it, the indicator will move to *completed late*, not *completed on time*.
 
 > **Important:** an overdue task does not disappear or close itself. The record that it passed the deadline remains in the history even if it is later completed and validated.

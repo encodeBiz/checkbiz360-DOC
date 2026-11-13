@@ -63,7 +63,7 @@ Their scope is decided **on each task**, not on their profile. Every task includ
 
 ### Worker (employee)
 
-Receives the assigned tasks, consults their description and evidence, starts the work, pauses and resumes it when they have to interrupt it, adds progress notes, uploads evidence and marks the task as completed. They cannot create or assign tasks to other employees.
+Receives the assigned tasks, consults their description and evidence, starts the work, pauses and resumes it when they have to interrupt it, ticks the boxes in the description, adds progress notes, uploads evidence, reports an [incident](./125-task-incident.md) if something prevents them from doing it and marks the task as completed. They cannot create or assign tasks to other employees.
 
 ---
 

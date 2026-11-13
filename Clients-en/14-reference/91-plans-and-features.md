@@ -10,12 +10,14 @@ CheckBiz360 is offered in two plans:
 
 | Plan | Price | Who it is for |
 |---|---|---|
-| **Bronze** | **€5 per employee per month** | Companies that need to comply with working-time recording and manage their day-to-day operations. Includes the base modules; Inventory and Clock-in point are subscribed separately. |
+| **Bronze** | **€2 + VAT per employee per month** | Companies that need to comply with working-time recording and manage their day-to-day operations. Includes the base modules; Inventory and Clock-in point are subscribed separately. |
 | **Enterprise** | **Bespoke pricing** | Large organisations (indicatively, from 100 employees) or those needing integrations with their own systems and priority support. |
 
 The Bronze plan's price is **per employee and month**: it is billed according to the employees registered, with no fixed entry fee and no implementation cost. All the employees on the workforce count, including inactive ones or those on leave, because they are still part of it; records **pending** completion and deleted employees do not count. The Enterprise plan is agreed with the sales team depending on volume and the integrations required.
 
-> **2026 rate:** the Bronze plan can be subscribed at **€2 per employee per month** up to and including **31 December 2026**. From 01/01/2027 the standard rate goes back to €5 and applies only to new sign-ups: anyone who subscribed earlier keeps theirs, and any future price review will be announced well in advance.
+> **2026 rate:** the price of **€2 + VAT per employee per month** applies to anyone subscribing up to and including **31 December 2026**. From 01/01/2027 the standard rate for new sign-ups will be €5 + VAT: anyone who subscribed earlier keeps theirs, and any future price review will be announced well in advance.
+
+> **VAT:** from 11 November 2026, all CheckBiz360 prices —plan, add-ons and storage— are **price plus VAT**. Companies based in mainland Spain and the Balearic Islands are charged **21%**, and the invoice breaks it down: base, VAT and total. If your company is in the Canary Islands, Ceuta, Melilla or outside Spain, write to **hola@encodebiz.com** to confirm how you will be invoiced.
 
 > **Trial period:** the first subscription includes a **15-day trial**. The trial does not apply to subsequent subscriptions by the same organisation. Activating it requires a payment method, but adding one does not generate a charge and neither does the trial: if you cancel before it ends, nothing is charged.
 
@@ -99,6 +101,11 @@ Both plans include the base modules described below. Inventory and Clock-in poin
 
 Subscribed separately from **Subscriptions**, with a 15-day trial.
 
+| | |
+|---|---|
+| Up to 50 employees | **€29 + VAT a month** |
+| From the 51st | **€0.75 + VAT a month** for each employee |
+
 - Items that get used up (consumables) and that are lent out (operables, by unit), in warehouses linked to branches.
 - Material assigned when the task is created; issue and consumption from the app; leftovers settled on validation.
 - Calendar for each unit with a clash warning between tasks.
@@ -114,8 +121,8 @@ Subscribed separately from **Clock-in point**, with a 15-day trial on your first
 
 | | |
 |---|---|
-| Up to 20 active clock-in points | **€19 a month** |
-| From the 21st | **€0.90 a month** for each one |
+| Up to 20 active clock-in points | **€19 + VAT a month** |
+| From the 21st | **€0.90 + VAT a month** for each one |
 
 Only active clock-in points are charged, not the branches you have.
 
@@ -129,7 +136,7 @@ It is explained in [Clock-in point](../03-time-tracking/113-clock-in-point.md).
 
 ### Storage
 
-Every company has **2 GB included** for what it uploads: documents, task photos, signatures, reports and clock-in point photos. Above that, each **full GB** is added to the monthly invoice at **€0.25**. With 2.8 GB you pay nothing; with 3.1 GB you pay for 1 GB.
+Every company has **2 GB included** for what it uploads: documents, task photos, signatures, reports and clock-in point photos. Above that, each **full GB** is added to the monthly invoice at **€0.25 + VAT**. With 2.8 GB you pay nothing; with 3.1 GB you pay for 1 GB.
 
 In **Organisation → Subscriptions** you can see how much each thing takes up and what would be billed this month. Right there is the **Extra storage above 2 GB** box, ticked by default:
 
@@ -165,11 +172,11 @@ The Enterprise plan includes everything in the Bronze plan and adds:
 | Base modules | Included | Included |
 | Inventory | Paid add-on | Paid add-on, unless agreed otherwise |
 | Clock-in point | Paid add-on | Paid add-on, unless agreed otherwise |
-| Storage | 2 GB included; €0.25 per full GB above | 2 GB included, unless agreed otherwise |
+| Storage | 2 GB included; €0.25 + VAT per full GB above | 2 GB included, unless agreed otherwise |
 | Support | Standard, with defined response times | Priority, through priority channels |
 | Webhook integrations | — | Included |
 | ERP/CRM integrations and bespoke development | — | By agreement |
-| Price | €5 per employee per month | Bespoke |
+| Price | €2 + VAT per employee per month | Bespoke |
 
 > **Note:** bespoke integrations are quoted separately and may carry a minimum term for the set-up work. The sales team details this in each case.
 

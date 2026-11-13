@@ -88,7 +88,7 @@ Yes. CheckBiz360 allows schedules and shifts to be configured at branch level, a
 
 ### 13. How many employees can I manage and how much does it cost?
 
-There is no employee limit per plan. The Bronze plan is billed **per employee and month, €5**, with a 2026 rate of €2 for anyone subscribing up to and including 31 December 2026: the cost follows the real size of the headcount, with no fixed entry fee and no implementation cost. For large organisations —indicatively from 100 employees— or those with integration needs, the Enterprise plan is agreed bespoke with the sales team. See [Plans, prices and features](./91-plans-and-features.md) for the detail.
+There is no employee limit per plan. The Bronze plan is billed **per employee and month: €2 + VAT** for anyone subscribing up to and including 31 December 2026: the cost follows the real size of the headcount, with no fixed entry fee and no implementation cost. For large organisations —indicatively from 100 employees— or those with integration needs, the Enterprise plan is agreed bespoke with the sales team. See [Plans, prices and features](./91-plans-and-features.md) for the detail.
 
 ---
 
@@ -147,7 +147,7 @@ All plans include access to this documentation (knowledge base), email support a
 
 ---
 
-> **Warning:** commercial terms may be updated. The reference prices in this documentation are *€5 per employee per month* for the Bronze plan — with a 2026 rate of *€2 per employee per month* for anyone subscribing up to and including 31 December 2026, kept thereafter — and *bespoke* for the Enterprise plan, with a 15-day trial on the first subscription. For a firm quote, contact the sales team at hola@encodebiz.com.
+> **Warning:** commercial terms may be updated. The reference prices in this documentation are *€2 + VAT per employee per month* for the Bronze plan — for anyone subscribing up to and including 31 December 2026, kept thereafter — and *bespoke* for the Enterprise plan. All prices are plus VAT (21%), broken down on the invoice, with a 15-day trial on the first subscription. For a firm quote, contact the sales team at hola@encodebiz.com.
 
 ---
 

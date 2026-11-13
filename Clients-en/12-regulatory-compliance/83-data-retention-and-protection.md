@@ -83,6 +83,8 @@ Before implementing CheckBiz360, the company has an obligation to inform its emp
 
 This information can be incorporated into the employment contract, into a specific information clause, into the company welcome document or into an internal communication signed by the employee.
 
+CheckBiz360 makes it easier: it prepares the **data protection information sheet** with your company's details, sends it to each person to sign from the app and keeps the proof for you. You can also use your company's own sheet. See [Data protection information sheet](./137-data-protection-information-sheet.md).
+
 > **Warning:** The company is the controller. CheckBiz360 acts as processor, processing the data on the company's behalf according to its instructions and in line with the data processing agreement both parties sign when contracting the service. If the Spanish Data Protection Agency (AEPD) opens an investigation relating to this data, it will address the company as controller.
 
 ---
@@ -99,3 +101,4 @@ This information can be incorporated into the employment contract, into a specif
 | [How CheckBiz360 complies with RDL 8/2019](./82-how-checkbiz360-complies-with-rdl-8-2019.md) | Technical compliance mechanisms |
 | [Export to Excel and CSV](../11-reports-and-exports/78-export-to-excel-and-csv.md) | GDPR considerations when exporting employee data |
 | [Preparing for a labour inspection](./84-preparing-for-a-labour-inspection.md) | What documents the Labour Inspectorate requests |
+| [Data protection information sheet](./137-data-protection-information-sheet.md) | Sending it, having it signed from the app and keeping the proof |
