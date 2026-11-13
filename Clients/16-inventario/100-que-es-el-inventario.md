@@ -43,7 +43,7 @@ En todas las pantallas se trabaja igual con los dos: se busca el artículo y la 
 
 ## Cómo se contrata
 
-El inventario se activa desde **Suscripciones** como complemento del plan. Incluye un **periodo de prueba de 15 días**. Mientras no esté contratado, la sección muestra en qué consiste y cómo activarlo, y el informe de tareas se genera igual que siempre, sin columnas de material.
+El inventario se activa desde **Suscripciones** como complemento del plan. Cuesta **29 € + IVA al mes hasta 50 empleados y 0,75 € + IVA por empleado desde el 51**, e incluye un **periodo de prueba de 15 días**. Mientras no esté contratado, la sección muestra en qué consiste y cómo activarlo, y el informe de tareas se genera igual que siempre, sin columnas de material.
 
 ---
 

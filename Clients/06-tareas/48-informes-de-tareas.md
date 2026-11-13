@@ -34,7 +34,9 @@ El informe de tareas se genera desde la sección **Informes** del backoffice y s
 
 ### Qué contiene
 
-Una fila por tarea, con estas columnas: Empresa, Centro, Título, Estado, Prioridad, Inicio, Fin, **Tiempo invertido (h)**, **En pausa (h)**, **Nº pausas**, **Tiempo invertido sin pausas (h)**, Equipo, Valoración y Nº evidencias.
+Una fila por tarea, con estas columnas: Empresa, Centro, Título, Estado, Prioridad, Inicio, Fin, **Tiempo invertido (h)**, **En pausa (h)**, **Nº pausas**, **Tiempo invertido sin pausas (h)**, Equipo, **Completada por**, Valoración y Nº evidencias. Si alguna tarea del informe tiene cliente, se añade la columna **Cliente** detrás de **Centro** (ver [El cliente en la tarea](../17-cartera-de-clientes/119-el-cliente-en-la-tarea.md)).
+
+**Completada por** dice quién cerró la tarea; si se cerró desde el panel, lleva *(desde administración)*, y el inicio y el fin son las horas que se indicaron al cerrarla. Ver [cerrarla desde administración](./127-quien-termina-la-tarea-y-cierre-desde-administracion.md).
 
 Conviene leer bien las columnas de tiempo:
 
@@ -46,6 +48,12 @@ Conviene leer bien las columnas de tiempo:
 | **Tiempo invertido sin pausas (h)** | El tiempo invertido menos el tiempo en pausa. Descuenta las pausas que alguien registró, no las interrupciones que nadie marcó. |
 
 Una tarea que todavía no se ha iniciado deja las columnas de pausa vacías. Si una tarea está en pausa al generar el informe, la pausa abierta cuenta hasta ese momento.
+
+### Incidencias
+
+Si alguna tarea del periodo tuvo una [incidencia](./125-incidencia-en-la-tarea.md), la hoja **Tareas** gana la columna **Incidencia**: *Abierta* (en rojo) o *Resuelta · Replanificada*, *Cancelada* o *Resuelta*.
+
+El fichero trae además siempre la hoja **Incidencias**, con una fila por incidencia, abierta o resuelta: Centro, Cliente, Tarea, Estado de la tarea, Marcada, Marcada por, Nota, Archivo, Incidencia, Resolución, Resuelta, Resuelta por y Nota de resolución. Si en el periodo no hubo ninguna, la hoja lo dice.
 
 ### Material de cada tarea
 

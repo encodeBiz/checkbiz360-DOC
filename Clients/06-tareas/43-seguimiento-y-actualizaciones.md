@@ -18,6 +18,10 @@ Los botones solo aparecen en las tareas que el empleado tiene asignadas. Un supe
 
 Para iniciar hace falta tener la **jornada abierta** (haber fichado la entrada) y, si la tarea tiene lugar de trabajo propio, estar dentro de su margen. Ver [Relación con el control horario](./39-que-es-el-modulo-de-tareas.md#relación-con-el-control-horario) y [Lugar de trabajo propio](./40-crear-una-tarea.md#lugar-de-trabajo-propio).
 
+### Marcar las casillas de la descripción
+
+Si la descripción lleva una lista de casillas, el empleado las marca en el detalle de la tarea a medida que avanza. Cada marca queda en el historial y la ve el responsable en el panel. Ver [Las casillas se marcan desde la app](./40-crear-una-tarea.md#las-casillas-se-marcan-desde-la-app).
+
 ### Marcar una tarea como completada
 
 Una vez finalizada la actividad, el empleado pulsa **Completar**. Si la tarea tiene activada la exigencia de evidencia —lo está por defecto—, el sistema no permite cerrarla sin al menos una foto o vídeo adjuntos, y devuelve el error `task/evidence_required`.
@@ -73,7 +77,9 @@ Cada nota se clasifica con un tipo, que permite distinguir de un vistazo la natu
 | **Especificación** | Precisar cómo debe hacerse el trabajo |
 | **Nota operativa** | Informar del avance o del día a día de la ejecución |
 | **Aclaración** | Resolver una duda planteada sobre la tarea |
-| **Nota de incidencia** | Dejar constancia de un problema encontrado durante la ejecución |
+| **Nota de incidencia** | Solo en notas antiguas: ya no se crean |
+
+Si algo **impide hacer la tarea** —no abren la puerta, falta material—, no deje una nota: use **Marcar incidencia** (en la app, **Reportar incidencia** en el menú de tres puntos). Avisa al momento a la dirección y la tarea deja de contar como retrasada. Ver [Incidencia en la tarea](./125-incidencia-en-la-tarea.md).
 
 Las notas son útiles para:
 
@@ -91,8 +97,10 @@ El responsable también puede añadir comentarios desde el backoffice, que el em
 La sección **Historial** del detalle de la tarea cuenta su recorrido completo, en orden: creada, asignada, iniciada, pausada y reanudada, completada, validada o rechazada, cancelada, y los cambios de estado hechos a mano. Cada línea indica:
 
 - Fecha y hora.
-- Quién lo hizo y con qué rol. Las acciones automáticas aparecen como **Sistema**; si una persona del backoffice no tiene nombre registrado, aparece como **Usuario del panel**.
+- Quién lo hizo y con qué rol. Las acciones automáticas aparecen como **Sistema**. Lo que hace un propietario o un administrador desde el panel aparece como **Por {nombre} · Administración**; una tarea completada desde el panel lo dice además con las horas indicadas (ver [cerrarla desde administración](./127-quien-termina-la-tarea-y-cierre-desde-administracion.md)). Si quien actúa no tiene nombre registrado, aparece como **Usuario del panel**.
 - El motivo, en las validaciones, los rechazos y la última cancelación.
+
+También quedan anotadas las asignaciones (*Asignada a …*, *Asignación retirada: …*), cada casilla marcada o desmarcada de la descripción, y las incidencias (*Incidencia marcada*, *Incidencia resuelta: …*).
 
 También quedan anotados los intentos de iniciar o reanudar una tarea **fuera de su lugar de trabajo** («Inicio rechazado: fuera del lugar de trabajo»), que ayudan a entender por qué un empleado no pudo empezar.
 
@@ -113,7 +121,7 @@ Desde el panel de tareas del backoffice, el manager o supervisor puede:
 - Identificar tareas que llevan demasiado tiempo *en progreso* sin avance.
 - Detectar las que están *en riesgo* o *vencidas* por el indicador de cumplimiento temporal.
 
-> **Nota:** el sistema avisa por su cuenta en dos situaciones: cuando una tarea con hora prevista de inicio no ha arrancado 15 minutos después, y cuando se acerca o se supera la fecha límite. Que una tarea lleve mucho tiempo *en progreso* sin novedades no dispara ningún aviso automático: eso se detecta revisando el listado.
+> **Nota:** el sistema avisa por su cuenta en dos situaciones: cuando una tarea con hora prevista de inicio no ha arrancado 5 minutos después ([Tarea sin empezar a su hora](./126-tarea-sin-empezar-a-su-hora.md)), y cuando se acerca o se supera la fecha límite. Que una tarea lleve mucho tiempo *en progreso* sin novedades no dispara ningún aviso automático: eso se detecta revisando el listado.
 
 ---
 
@@ -137,3 +145,4 @@ Para una descripción detallada de todos los tipos de notificación, consulte el
 | [Informes de tareas](./48-informes-de-tareas.md) | Métricas de seguimiento y exportación |
 | [Asignar tareas a empleados](./41-asignar-tareas-a-empleados.md) | Cómo asignar y reasignar tareas |
 | [Calendario semanal de tareas](./111-calendario-semanal-de-tareas.md) | La semana de un vistazo, día a día y hora a hora, con los huecos y los solapes |
+| [Incidencia en la tarea](./125-incidencia-en-la-tarea.md) | Avisar de que la tarea no se puede hacer y resolverlo |

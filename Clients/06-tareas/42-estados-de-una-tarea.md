@@ -25,7 +25,7 @@ Mientras está *en progreso*, la tarea puede quedar **en pausa** una o varias ve
 | **Borrador** | La tarea está creada pero aún no se ha puesto en circulación. Sirve para prepararla antes de enviarla al equipo. | Quien la crea, desde el backoffice |
 | **Asignada** | La tarea está enviada a sus responsables, que han recibido la notificación, pero nadie ha empezado todavía. | Quien la crea, o el sistema al asignar |
 | **En progreso** | Un empleado asignado ha iniciado la tarea y está trabajando en ella. | Empleado desde la app |
-| **Completada** | El empleado ha marcado la tarea como terminada y queda pendiente de revisión. | Empleado desde la app |
+| **Completada** | El empleado ha marcado la tarea como terminada y queda pendiente de revisión. | Empleado desde la app, o la dirección desde el panel |
 | **Validada** | El responsable ha revisado el trabajo y lo ha aceptado como correcto. Es el cierre satisfactorio. | Manager, u owner o supervisor con permiso de validación |
 | **Rechazada** | El responsable ha revisado la tarea completada y la ha devuelto con un motivo obligatorio. | Manager, u owner o supervisor con permiso de validación |
 | **Cancelada** | La tarea se anula porque ya no procede. Requiere motivo y no computa como incumplimiento. | Manager u owner desde el backoffice |
@@ -65,6 +65,8 @@ El empleado abre la tarea en la app y pulsa iniciar. Necesita tener la jornada a
 
 El empleado pulsa finalizar en la app. Si la tarea tiene activada la exigencia de evidencia, el sistema no permite cerrarla sin al menos una foto o vídeo adjuntos, y devuelve el error `task/evidence_required`. Si la tarea estaba en pausa, la pausa se cierra en ese momento.
 
+Con varias personas asignadas, cuándo se cierra depende de **¿Quién da la tarea por terminada?**: la primera, todas o una responsable. Y si nadie la inició desde la app, la dirección puede completarla desde el panel indicando la hora de inicio y de cierre. Las dos cosas se explican en [Quién termina la tarea y cerrarla desde administración](./127-quien-termina-la-tarea-y-cierre-desde-administracion.md).
+
 ### De completada a validada
 
 El responsable revisa el trabajo desde el backoffice y lo acepta. La tarea queda cerrada y se habilita la valoración del empleado.
@@ -89,6 +91,12 @@ Al reabrir:
 - El cumplimiento temporal vuelve a *Sin iniciar*. Revise la fecha límite si ya ha pasado.
 - Los contadores de pausa vuelven a cero.
 - El historial conserva todo lo ocurrido antes de reabrir.
+
+---
+
+## Tarea con incidencia
+
+Si alguien marca una [incidencia](./125-incidencia-en-la-tarea.md) porque no puede hacer la tarea, el estado **no cambia**: la ficha y la fila del listado se ven en rojo hasta que la dirección la resuelve. Mientras tanto, la tarea no cuenta entre las vencidas ni las retrasadas de **Inicio** y de las alertas.
 
 ---
 
@@ -144,3 +152,5 @@ Cada tarea muestra dos etiquetas de color: una para el estado y otra para el cum
 | [Prioridades y fechas límite](./44-prioridades-y-fechas-limite.md) | Configuración de plazos y alertas |
 | [Validación de tareas](./45-validacion-de-tareas.md) | Flujo de validación y permisos |
 | [Notificaciones de tareas](./47-notificaciones-de-tareas.md) | Avisos automáticos por cambio de estado |
+| [Incidencia en la tarea](./125-incidencia-en-la-tarea.md) | Marcar que no se puede hacer y resolverlo |
+| [Quién termina la tarea y cerrarla desde administración](./127-quien-termina-la-tarea-y-cierre-desde-administracion.md) | Una, todas o una responsable; completar con horas desde el panel |

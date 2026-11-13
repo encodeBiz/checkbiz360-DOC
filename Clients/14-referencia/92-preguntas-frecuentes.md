@@ -88,7 +88,7 @@ Sí. CheckBiz360 permite configurar horarios y turnos a nivel de sucursal, y tam
 
 ### 13. ¿Cuántos empleados puedo gestionar y cuánto cuesta?
 
-No hay un límite de empleados por plan. El plan Bronce se factura **por empleado y mes, 5 €**, con una tarifa 2026 de 2 € para quien contrate hasta el 31 de diciembre de 2026 incluido: el coste acompaña al tamaño real de la plantilla, sin cuota fija de entrada ni coste de implantación. Para organizaciones grandes —orientativamente a partir de 100 empleados— o con necesidades de integración, el plan Empresarial se acuerda a medida con el equipo comercial. Consulte [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md) para el detalle.
+No hay un límite de empleados por plan. El plan Bronce se factura **por empleado y mes: 2 € + IVA** para quien contrate hasta el 31 de diciembre de 2026 incluido: el coste acompaña al tamaño real de la plantilla, sin cuota fija de entrada ni coste de implantación. Para organizaciones grandes —orientativamente a partir de 100 empleados— o con necesidades de integración, el plan Empresarial se acuerda a medida con el equipo comercial. Consulte [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md) para el detalle.
 
 ---
 
@@ -147,7 +147,7 @@ Todos los planes incluyen acceso a este centro de ayuda (base de conocimiento), 
 
 ---
 
-> **Aviso:** las condiciones comerciales pueden actualizarse. Los precios de referencia de este centro de ayuda son *5 €/empleado al mes* para el plan Bronce —con una tarifa 2026 de *2 €/empleado al mes* para quien contrate hasta el 31 de diciembre de 2026 incluido, que se conserva después— y *a medida* para el plan Empresarial, con 15 días de prueba en la primera suscripción. Para una oferta cerrada, contacte con el equipo de ventas en hola@encodebiz.com.
+> **Aviso:** las condiciones comerciales pueden actualizarse. Los precios de referencia de este centro de ayuda son *2 € + IVA por empleado al mes* para el plan Bronce —para quien contrate hasta el 31 de diciembre de 2026 incluido, que se conserva después— y *a medida* para el plan Empresarial. Todos los precios son más IVA (21 %), desglosado en la factura, con 15 días de prueba en la primera suscripción. Para una oferta cerrada, contacte con el equipo de ventas en hola@encodebiz.com.
 
 ---
 

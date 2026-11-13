@@ -1,5 +1,7 @@
 # Alertas para responsables
 
+> **Alertas por correo:** el resumen de la mañana y los avisos que esperan una decisión llegan por correo al propietario y a los administradores de la empresa, no a managers ni supervisores. Se configuran en **Herramientas → Alertas por correo**. Ver [Alertas por correo](133-alertas-por-correo.md).
+
 Las alertas para responsables son notificaciones de carácter operativo que el sistema envía a los roles Manager y Supervisor cuando se producen eventos que requieren atención o acción por parte del equipo de gestión. A diferencia de las notificaciones dirigidas a los empleados, estas alertas están diseñadas para detectar irregularidades, garantizar el cumplimiento de los procesos y permitir una respuesta rápida ante situaciones que podrían afectar a la operación. Este artículo describe los tipos de alerta disponibles, cómo configurarlos y cómo ajustar los umbrales de activación.
 
 ## Tipos de alerta para responsables
@@ -27,6 +29,8 @@ El motor de análisis de CheckBiz360 evalúa cada fichaje en contexto y puede ma
 - Coordenadas GPS inconsistentes con el movimiento físico posible en el tiempo transcurrido.
 - Patrones de fichaje que coinciden con comportamientos conocidos de evasión del control.
 - Fichaje desde un dispositivo diferente al habitual sin autorización previa.
+
+Además, una jornada se marca como sospechosa cuando su duración no cuadra con el turno planificado de esa entrada: si dura **menos de la mitad** del turno o **más de 2 horas por encima**. Así un refuerzo de 2 horas cumplido, o una tarea corta de quien trabaja con horario por tareas, no sale como sospechoso, y una jornada de 8 horas cerrada a las 3 sí. Si la persona no tiene turno planificado ese día, se marca la jornada de menos de 3 horas o de más de 10. Esta regla se aplica a los fichajes desde el 11 de noviembre de 2026; los anteriores conservan su marca.
 
 Cuando se genera esta alerta, el responsable recibe la notificación con el detalle del fichaje sospechoso y puede decidir validarlo, modificarlo o escalarlo para investigación.
 
@@ -88,4 +92,5 @@ Las alertas revisadas se archivan automáticamente y quedan disponibles en el hi
 - [Tipos de notificación](63-tipos-de-notificacion.md)
 - [Configurar preferencias de notificación](65-configurar-preferencias-de-notificacion.md)
 - [Historial de notificaciones](67-historico-de-notificaciones.md)
+- [Alertas por correo](133-alertas-por-correo.md)
 - [Vista global multi-sucursal](../08-sucursales-y-entidad/62-vista-global-multi-sucursal.md)

@@ -100,6 +100,10 @@ Una laguna en el registro es un día laborable en el que un empleado debería ha
 
 Si ha realizado correcciones sobre registros de empleados, asegúrese de que todas tienen un motivo documentado. Un informe de cumplimiento con correcciones sin motivo registrado puede generar preguntas del inspector sobre la integridad del sistema.
 
+### Tener la prueba de haber informado a la plantilla
+
+La columna **Hoja informativa** de la lista de empleados dice quién ha firmado la hoja de protección de datos y cuándo; la ficha de cada documento guarda el acta. Ver [Hoja informativa de protección de datos](./137-hoja-informativa-de-proteccion-de-datos.md).
+
 ### Tener localizada la información básica de la entidad
 
 Prepare con antelación:

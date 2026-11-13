@@ -40,7 +40,7 @@ Ambas se interpretan en la **zona horaria operativa de la sucursal** de la tarea
 
 ## Aviso de inicio tardío
 
-Es el aviso automático que sí se configura tarea a tarea. Si la tarea tiene **fecha prevista de inicio** y está activada la opción **Notificar si no inicia a tiempo**, el sistema envía una notificación cuando han pasado **15 minutos** de esa hora sin que la tarea se haya iniciado.
+Es el aviso automático que sí se configura tarea a tarea. Si la tarea tiene **fecha prevista de inicio** y está activada la opción **Notificar si no inicia a tiempo**, el sistema avisa cuando han pasado **5 minutos** de esa hora sin que la tarea se haya iniciado. Ver [Tarea sin empezar a su hora](./126-tarea-sin-empezar-a-su-hora.md).
 
 El envío queda registrado en la actividad de la tarea, de modo que el responsable puede comprobar si el aviso llegó a producirse.
 
@@ -65,6 +65,7 @@ Las consecuencias son:
 
 - La tarea aparece marcada como vencida en el listado del backoffice y en la app del empleado.
 - El vencimiento queda registrado y se refleja en el informe de tareas.
+- Si la tarea tiene una [incidencia](./125-incidencia-en-la-tarea.md) abierta, no cuenta entre las vencidas de **Inicio** ni de las alertas por correo hasta que se resuelva.
 - El empleado puede seguir completándola después de vencer. Al cerrarla, el indicador pasará a *completada tarde*, no a *completada a tiempo*.
 
 > **Importante:** una tarea vencida no desaparece ni se cierra sola. El registro de que superó el plazo permanece en el histórico aunque después se complete y se valide.

@@ -16,6 +16,8 @@ Con el módulo documental usted puede:
 - Controlar qué roles pueden ver cada documento.
 - Exigir **acuse de recibo** y comprobar quién lo ha dado y quién no.
 - Archivar un documento cuando deja de estar vigente, sin perderlo.
+- Eliminar un documento que ya no necesita para liberar espacio, conservando el registro de quién lo recibió y quién lo eliminó ([Eliminar documentos](135-eliminar-documentos.md)).
+- Enviar la hoja informativa de protección de datos para que cada persona la firme desde la app ([Hoja informativa](../12-cumplimiento-normativo/137-hoja-informativa-de-proteccion-de-datos.md)).
 
 ## Tipos de documentos que se pueden gestionar
 

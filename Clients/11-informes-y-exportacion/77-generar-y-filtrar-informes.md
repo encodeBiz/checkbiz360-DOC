@@ -36,7 +36,7 @@ Puede filtrar por un empleado concreto o incluir a todos los empleados del ámbi
 
 ### Sucursal
 
-Si su entidad tiene más de una sucursal, puede seleccionar una sucursal concreta o incluir todas. Los owners y managers con acceso multicentro ven todas las sucursales; los managers con acceso restringido solo ven las suyas.
+El informe de jornada y el de tareas pueden sacarse de **una, varias o todas las sucursales** a la vez. En el campo **Sucursal**, escriba para buscar y añada las que quiera; si lo deja vacío (*Todos*), el informe incluye todas. El buscador funciona igual con 5 sucursales que con 150. Los owners y managers con acceso multicentro ven todas las sucursales; los managers con acceso restringido solo ven las suyas.
 
 ### Tipo de evento
 

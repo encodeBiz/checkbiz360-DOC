@@ -20,6 +20,8 @@ Existen dos situaciones principales en las que un registro entra en estado `pend
 
 **Corrección de gestor:** Cuando un responsable propone corregir un fichaje existente del empleado (por ejemplo, ajusta la hora de entrada o salida), el cambio no se aplica hasta que el empleado lo acepta. Mientras tanto, el fichaje queda pendiente de validación. La hora propuesta no puede ser futura: el formulario no lo permite y el servidor lo rechaza con `checklog_update/future_not_allowed`.
 
+**Corrección de una jornada incompleta entera:** si falta la salida de una jornada, sobre todo si es partida, se corrigen todos sus fichajes de una vez desde la incidencia, con un solo motivo, y la persona acepta o rechaza la jornada entera. Ver [Corregir una jornada incompleta de una vez](134-corregir-una-jornada-incompleta.md).
+
 ---
 
 ## Cómo el empleado valida o rechaza un fichaje pendiente
@@ -93,3 +95,4 @@ Los usuarios con rol **empleado** pueden validar o rechazar fichajes pendientes 
 - [Trazabilidad e historial de cambios](21-trazabilidad-historial-de-cambios.md)
 - [Estados y códigos de error](22-estados-y-codigos-de-error.md)
 - [Cómo funciona el fichaje](13-como-funciona-el-fichaje.md)
+- [Corregir una jornada incompleta de una vez](134-corregir-una-jornada-incompleta.md)

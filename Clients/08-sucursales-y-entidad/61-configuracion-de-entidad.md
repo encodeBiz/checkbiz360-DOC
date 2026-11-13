@@ -80,7 +80,7 @@ Si su organización necesita 2FA generalizado, actívelo empleado a empleado en 
 
 Desde **Suscripciones** el Owner consulta el plan contratado y su estado, y desde **Facturas** el historial. Los métodos de pago se gestionan en **Configurar Facturación**.
 
-La facturación del plan Bronce es **por empleado y mes**: no hay un cupo de empleados incluidos que se pueda agotar. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
+La facturación del plan Bronce es **por empleado y mes**: no hay un cupo de empleados incluidos que se pueda agotar. Todos los precios son **más IVA**: desde el 11 de noviembre de 2026 la factura suma el 21 % y lo desglosa (base, IVA y total). Para que la factura salga completa, mantenga al día la razón social, el NIF/CIF y la dirección en **Datos de la Empresa**. Consulte [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md).
 
 ### Almacenamiento
 
@@ -132,6 +132,20 @@ La regla es sencilla: lo que afecta a la empresa como conjunto se configura en l
 > **Nota de rol:** la configuración de entidad, y en particular la suscripción, corresponde al **Owner**. Para delegar la gestión del día a día —sucursales, empleados, tareas y documentos— use el rol **Manager**.
 
 ---
+
+## Eliminar la empresa: se solicita
+
+La empresa no se elimina desde el panel: se pide, y el equipo de CheckBiz360 se pone en contacto con usted para confirmarlo antes de borrar nada. Así nadie pierde la cuenta, la plantilla y el registro de jornada por un clic.
+
+1. En **Entidad → Datos de la Empresa**, pulse **Solicitar eliminación de la empresa**, abajo.
+2. Escriba el **Motivo de la solicitud**. Es obligatorio.
+3. Envíe. El panel confirma: *Solicitud enviada. Te contactaremos para confirmarla.*
+
+Desde ese momento, todas las pantallas del panel muestran arriba un aviso en rojo con la fecha de la solicitud, y el botón pasa a **Eliminación solicitada**. Mientras tanto, la empresa sigue funcionando con normalidad. Si cambia de opinión, escriba a **hola@encodebiz.com**.
+
+Solo el **propietario** puede solicitarlo.
+
+> **Aviso:** antes de pedirla, descargue lo que deba conservar, en especial el registro de jornada, que la ley obliga a guardar cuatro años. Ver [Informe de cumplimiento normativo](../11-informes-y-exportacion/79-informe-de-cumplimiento-normativo.md).
 
 ## Firma electrónica
 

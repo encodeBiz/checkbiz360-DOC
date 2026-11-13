@@ -63,12 +63,12 @@ Nada del fichaje va por correo. La casilla viene desmarcada y se marca persona a
 
 Cuando su empresa llega al 90 % del almacenamiento incluido en su plan, el propietario recibe un correo en la dirección de facturación. Se manda una sola vez. Vuelve a mandarse solo si el uso baja del 80 % y después sube otra vez. Ver [Planes, precios y funcionalidades](../14-referencia/91-planes-y-funcionalidades.md#almacenamiento).
 
-## Alertas operativas por correo
+## Alertas por correo
+
+El propietario y los administradores reciben cada mañana un resumen con las alertas de la portada y lo que espera su decisión (solicitudes, incidencias, documentos sin firmar), y al momento lo que no puede esperar. Se elige qué avisos llegan y a qué hora en **Herramientas → Alertas por correo**. Se explica en [Alertas por correo](./133-alertas-por-correo.md).
 
 > **Estado: Pendiente de desarrollo**
-> Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
-
-El envío por correo de las alertas de la portada a los responsables, y el respaldo automático por correo cuando una notificación push no llega al dispositivo, están planificados para una versión futura.
+> El respaldo automático por correo cuando una notificación push no llega al dispositivo está planificado para una versión futura.
 
 ---
 
@@ -92,3 +92,4 @@ Si un empleado o responsable no recibe un correo esperado del sistema, siga esto
 - [Notificaciones push en la app](64-notificaciones-push-en-la-app.md)
 - [Configurar preferencias de notificación](65-configurar-preferencias-de-notificacion.md)
 - [Historial de notificaciones](67-historico-de-notificaciones.md)
+- [Alertas por correo](133-alertas-por-correo.md)

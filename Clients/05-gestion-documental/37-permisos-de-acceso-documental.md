@@ -1,5 +1,7 @@
 # Permisos de acceso documental
 
+> **Quién ve cada documento:** el documento personal de una persona solo lo ven ella y, desde el panel, el propietario y los administradores; desde la app nadie ve el de otra persona, propietario incluido. Y hay un nivel **Administración** para lo que solo deben abrir propietario y administradores. Ver [Quién ve cada documento](136-quien-ve-cada-documento.md), que prevalece sobre las tablas de este artículo.
+
 El módulo documental de CheckBiz360 aplica un modelo de permisos basado en roles que determina qué acciones puede realizar cada usuario sobre los documentos. Comprender esta estructura es fundamental para configurar correctamente el acceso, proteger la documentación sensible y garantizar que cada persona de la organización ve únicamente lo que le corresponde.
 
 ## Roles y permisos generales
@@ -12,7 +14,7 @@ CheckBiz360 define cuatro roles principales con distintos niveles de acceso al m
 | Ver documentos de otros empleados | No | Solo su equipo (si tiene permiso) | Sí (su entidad) | Sí (toda la entidad) |
 | Subir documentos | No | Según delegación | Sí | Sí |
 | Editar documentos | No | Según delegación | Sí | Sí |
-| Eliminar documentos | No | No | Sí | Sí |
+| Eliminar documentos | No | No | No (puede archivar) | Sí |
 | Solicitar firma | No | No | Sí | Sí |
 | Acusar recibo | Sí (los propios) | Sí (los propios) | No aplica | No aplica |
 | Ver documentos privados | No | Según delegación | Sí | Sí |
@@ -64,14 +66,9 @@ Para configurar la delegación de permisos:
 4. En la sección de permisos del supervisor, active las opciones documentales correspondientes.
 5. Guarde los cambios.
 
-## Permisos de eliminación
+## Archivar y eliminar
 
-La eliminación de documentos es una acción irreversible que solo pueden realizar los usuarios con rol Manager u Owner. Antes de eliminar un documento, verifique:
-
-- Si el documento tiene firma registrada, la eliminación borrará también el registro de trazabilidad de firma.
-- Si el documento forma parte de un expediente que debe conservarse por obligación legal, no lo elimine aunque haya vencido su utilidad operativa inmediata.
-
-Se recomienda marcar los documentos obsoletos como privados en lugar de eliminarlos, especialmente en documentos con firma o con relevancia laboral, para conservar el historial sin exponer el documento al empleado.
+Archivar quita el documento de la vista y conserva el fichero. **Eliminar** borra el fichero, el documento firmado y el acta de la firma, y libera el espacio; queda el registro de quién lo recibió, quién lo eliminó y por qué. Eliminar solo pueden hacerlo el **propietario** y los **administradores**, desde el panel. Ver [Eliminar documentos y liberar espacio](135-eliminar-documentos.md).
 
 ## Artículos relacionados
 
@@ -80,3 +77,6 @@ Se recomienda marcar los documentos obsoletos como privados en lugar de eliminar
 - [Acuse de recibo](35-firma-electronica.md)
 - [Exportar documentos](38-exportar-documentos.md)
 - [Subir y organizar documentos](31-subir-y-organizar-documentos.md)
+- [Quién ve cada documento](136-quien-ve-cada-documento.md)
+- [Eliminar documentos y liberar espacio](135-eliminar-documentos.md)
+- [Documentos del cliente](../17-cartera-de-clientes/120-documentos-del-cliente.md)

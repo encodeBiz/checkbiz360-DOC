@@ -40,6 +40,16 @@ Inactivar y eliminar son operaciones distintas con consecuencias muy diferentes:
 
 > **Aviso:** CheckBiz360 no permite eliminar sucursales que tengan fichajes, jornadas o documentos asociados. Si necesita dar de baja definitivamente una sucursal con datos históricos, la operación correcta es inactivarla y solicitar al equipo de soporte la desvinculación definitiva si fuera necesaria para cumplimiento de normativa de protección de datos.
 
+### Eliminar una sucursal con tareas sin terminar
+
+Si la sucursal tiene tareas en borrador, asignadas o en curso, el panel no la borra sin más: abre **Tiene tareas sin terminar** y pide elegir qué hacer con ellas:
+
+- **Pasarlas a borrador y moverlas a:** otra sucursal, que se elige en **Destino**. Las tareas quedan allí en borrador, para revisarlas y volver a ponerlas en circulación. Si no hay otra sucursal, la opción es **Pasarlas a borrador** sin moverlas.
+- **Cancelarlas**: se cancelan y se avisa a las personas asignadas.
+- **No borrar**: la sucursal se queda como está.
+
+Así ninguna tarea queda colgando de un centro que ya no existe ni sigue enviando avisos.
+
 En la práctica, la inmensa mayoría de los cierres de sucursal —ya sean temporales o definitivos— deben gestionarse mediante la inactivación, no mediante la eliminación.
 
 ## Cómo cambiar el estado de una sucursal

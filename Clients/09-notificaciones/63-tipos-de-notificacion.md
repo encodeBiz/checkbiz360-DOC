@@ -62,7 +62,7 @@ Las notificaciones administrativas informan sobre procesos que requieren interve
 | Tipo | Descripción | Destinatarios |
 |---|---|---|
 | Jornada manual pendiente de aprobación | Un empleado ha solicitado el registro manual de una jornada que requiere validación | Manager, Supervisor |
-| Solicitud de vacaciones o permiso | No se envía aviso: la solicitud aparece en **Contacto → Solicitudes**, con el número de pendientes en la pestaña | Owner, administradores |
+| Solicitud de vacaciones o permiso | Sin aviso en el panel: la solicitud aparece en **Contacto → Solicitudes**, con el número de pendientes en la pestaña. Por correo, en el resumen de la mañana, y al momento si empieza en menos de dos días ([Alertas por correo](133-alertas-por-correo.md)) | Owner, administradores |
 | Vacaciones o permiso aprobados / rechazados | Avisa a la persona de la decisión y la lleva a **Mi calendario** | Worker |
 | Empleado nuevo activado | Un nuevo empleado ha completado el proceso de activación de su cuenta | Manager, Owner |
 | Acceso que no ha llegado | Alerta de la portada del panel cuando el correo de acceso de alguien rebotó, se marcó como spam o no salió | Owner, administradores |

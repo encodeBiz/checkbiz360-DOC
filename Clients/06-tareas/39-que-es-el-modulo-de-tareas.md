@@ -63,7 +63,7 @@ Su alcance se decide **en cada tarea**, no en su perfil. Toda tarea incluye dos 
 
 ### Worker (empleado)
 
-Recibe las tareas asignadas, consulta su descripción y sus evidencias, inicia el trabajo, lo pausa y lo reanuda cuando tiene que interrumpirlo, añade notas de progreso, sube evidencias y marca la tarea como completada. No puede crear ni asignar tareas a otros empleados.
+Recibe las tareas asignadas, consulta su descripción y sus evidencias, inicia el trabajo, lo pausa y lo reanuda cuando tiene que interrumpirlo, marca las casillas de la descripción, añade notas de progreso, sube evidencias, reporta una [incidencia](./125-incidencia-en-la-tarea.md) si algo le impide hacerla y marca la tarea como completada. No puede crear ni asignar tareas a otros empleados.
 
 ---
 

@@ -58,10 +58,10 @@ Dentro del detalle de la tarea, el empleado puede consultar:
 - La prioridad asignada (crítica, alta, media o baja).
 - La fecha y hora límite, y la fecha prevista de inicio si se indicó.
 - El lugar de trabajo, si la tarea tiene uno propio, con el enlace **Ver en Maps**.
-- Las evidencias ya subidas y las notas de la tarea.
+- Los documentos adjuntos, las evidencias ya subidas y las notas de la tarea.
 - El tiempo invertido y el total de pausas, y el historial de la tarea (desde la versión 1.4.0 de la app).
 
-El empleado puede iniciar la tarea, pausarla y reanudarla, añadir notas de progreso, subir evidencias y, cuando finalice, marcarla como completada.
+El empleado puede iniciar la tarea, pausarla y reanudarla, marcar las casillas de la descripción, añadir notas de progreso, subir evidencias, [reportar una incidencia](./125-incidencia-en-la-tarea.md) si no puede hacerla y, cuando finalice, marcarla como completada.
 
 ---
 
@@ -70,6 +70,8 @@ El empleado puede iniciar la tarea, pausarla y reanudarla, añadir notas de prog
 En el momento en que se guarda la asignación, CheckBiz360 envía automáticamente una notificación push al dispositivo del empleado. No es necesaria ninguna acción adicional por parte del responsable.
 
 La notificación incluye el título de la tarea y la fecha límite, de modo que el empleado tenga la información esencial sin necesidad de abrir la app.
+
+Si a la misma persona se le asignan muchas tareas de una vez, recibe **un solo aviso** con el resumen (*Tienes 84 tareas nuevas del 3 al 30 de noviembre*), que al tocarlo abre su lista con esos días. Ver [Avisos agrupados](./47-notificaciones-de-tareas.md#avisos-agrupados-muchas-tareas-un-solo-aviso).
 
 Si el empleado tiene las notificaciones push desactivadas en su dispositivo, la tarea seguirá apareciendo en su lista dentro de la app, pero no recibirá el aviso en pantalla.
 

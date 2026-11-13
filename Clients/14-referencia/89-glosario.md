@@ -16,7 +16,7 @@ Confirmación explícita de que un empleado ha accedido a un documento que lo re
 Concepto que **no aplica** en la versión actual: el fichaje guarda siempre la hora real y no se redondea. Lo que decide si el tiempo trabajado fuera de la franja oficial se computa es la modalidad de *jornada estricta o flexible* del calendario.
 
 ### Almacenamiento
-Espacio que ocupa lo que sube su empresa: documentos, fotos de tareas, firmas, informes y fotos del punto de fichaje. Hay 2 GB incluidos; por encima, cada GB completo se factura a 0,25 € al mes si la ampliación está activada. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md#almacenamiento).
+Espacio que ocupa lo que sube su empresa: documentos, fotos de tareas, firmas, informes y fotos del punto de fichaje. Hay 2 GB incluidos; por encima, cada GB completo se factura a 0,25 € + IVA al mes si la ampliación está activada. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md#almacenamiento).
 
 ### Asistente de IA (Merlin)
 Componente de inteligencia artificial que interpreta los datos operativos y los expone como un relato accionable en el panel operativo, en el detalle de sucursal y en el detalle de empleado. Narra y prioriza sobre las cifras que ya muestra la pantalla: no recalcula ni genera datos propios, de forma que su lectura no puede contradecir a los paneles. También narra la guía inicial del backoffice.
@@ -183,7 +183,7 @@ Copia guardada de un horario semanal que se aplica después a otra sucursal, a u
 Pantalla del backoffice que consolida la actividad del periodo en tres vistas: la comparativa entre sucursales, el detalle por empleado y el análisis del periodo. Es el punto de entrada a la inteligencia operativa y donde aparece el relato del asistente de IA.
 
 ### Plan de suscripción
-Modalidad de contratación de CheckBiz360. Hay dos: **Bronce**, 5 €/empleado al mes (tarifa 2026 de 2 € contratando hasta el 31 de diciembre de 2026 incluido), y **Empresarial**, con precio a medida, que añade soporte preferente e integraciones. Ambos dan acceso a todos los módulos de la plataforma. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md).
+Modalidad de contratación de CheckBiz360. Hay dos: **Bronce**, 2 € + IVA por empleado al mes (tarifa 2026, contratando hasta el 31 de diciembre de 2026 incluido), y **Empresarial**, con precio a medida, que añade soporte preferente e integraciones. Ambos dan acceso a todos los módulos de la plataforma. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md).
 
 ### Punto de fichaje
 Dispositivo fijo en un centro, tablet o móvil, donde cada persona ficha con su tarjeta QR o su código de 6 cifras y el dispositivo hace una foto. Es un complemento de pago. En la app se llama *modo quiosco*. Véase [Punto de fichaje](../03-control-horario/113-punto-de-fichaje.md).

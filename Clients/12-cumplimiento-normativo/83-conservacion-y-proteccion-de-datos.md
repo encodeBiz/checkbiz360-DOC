@@ -83,6 +83,8 @@ Antes de implantar CheckBiz360, la empresa tiene la obligación de informar a su
 
 Esta información puede incorporarse en el contrato de trabajo, en una cláusula informativa específica, en el documento de bienvenida a la empresa o en una comunicación interna firmada por el empleado.
 
+CheckBiz360 se lo facilita: prepara la **hoja informativa de protección de datos** con los datos de su empresa, la envía a cada persona para que la firme desde la app y le guarda la prueba. También puede usar la hoja propia de su empresa. Ver [Hoja informativa de protección de datos](./137-hoja-informativa-de-proteccion-de-datos.md).
+
 > **Aviso:** La empresa es el responsable del tratamiento. CheckBiz360 actúa como encargado, procesando los datos en nombre de la empresa según las instrucciones de esta y conforme al contrato de encargo de tratamiento que ambas partes suscriben al contratar el servicio. Si la Agencia Española de Protección de Datos (AEPD) inicia una investigación relacionada con estos datos, se dirigirá a la empresa como responsable.
 
 ---
@@ -99,3 +101,4 @@ Esta información puede incorporarse en el contrato de trabajo, en una cláusula
 | [Cómo CheckBiz360 cumple el RDL 8/2019](./82-como-checkbiz360-cumple-el-rdl-8-2019.md) | Mecanismos técnicos de cumplimiento |
 | [Exportar a Excel y CSV](../11-informes-y-exportacion/78-exportar-a-excel-y-csv.md) | Consideraciones RGPD al exportar datos de empleados |
 | [Preparar una inspección de trabajo](./84-preparar-una-inspeccion-de-trabajo.md) | Qué documentos solicita la Inspección de Trabajo |
+| [Hoja informativa de protección de datos](./137-hoja-informativa-de-proteccion-de-datos.md) | Enviarla, que la firmen desde la app y guardar la prueba |

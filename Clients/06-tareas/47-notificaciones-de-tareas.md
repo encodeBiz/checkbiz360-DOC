@@ -30,6 +30,14 @@ Las notificaciones de tareas se distribuyen por dos canales:
 
 ---
 
+### Avisos agrupados: muchas tareas, un solo aviso
+
+Cuando a una persona le llegan muchas tareas de golpe —al cargar un cuadrante, al planificar el mes—, no recibe un aviso por tarea. Las tareas **nuevas**, **cambiadas** y **retiradas** se juntan y le llega **un solo aviso** cuando dejan de entrar cambios, por ejemplo: *Tienes 84 tareas nuevas del 3 al 30 de noviembre, 2 cambiadas*. Al tocarlo, la app abre su lista de tareas con esos días.
+
+Una tarea suelta llega como siempre, con su título, como mucho un par de minutos más tarde. Si a la persona le retiran o le cancelan una tarea, el aviso lo dice: *Ya no tienes la tarea … : se ha retirado o cancelado.* Volver a confirmar un cuadrante sin cambios no envía nada.
+
+---
+
 ### Tarea validada
 
 **Destinatario:** Empleado cuya tarea ha sido validada.
@@ -70,13 +78,23 @@ Las notificaciones de tareas se distribuyen por dos canales:
 
 ### Aviso de inicio tardío
 
-**Destinatario:** las personas implicadas en la tarea.
+**Destinatario:** las personas asignadas, con un aviso en la app, y los propietarios y administradores, por correo.
 
-**Cuándo se envía:** cuando han pasado **15 minutos** de la fecha prevista de inicio sin que la tarea se haya iniciado.
+**Cuándo se envía:** cuando han pasado **5 minutos** de la fecha prevista de inicio sin que la tarea se haya iniciado. Las tareas que se quedan sin empezar a la vez van en un solo correo. Se explica entero en [Tarea sin empezar a su hora](./126-tarea-sin-empezar-a-su-hora.md).
 
 **Requisitos:** la tarea debe tener **fecha prevista de inicio** y la opción **Notificar si no inicia a tiempo** activada. Sin fecha prevista de inicio, la opción no tiene efecto.
 
 Es el único aviso que se configura tarea a tarea, y se activa al crearla o editarla. El envío queda registrado en la actividad de la tarea, de modo que el responsable puede comprobar si llegó a producirse.
+
+---
+
+### Incidencia en la tarea
+
+**Destinatario:** los responsables de la sucursal y los supervisores, con un aviso en la app; los propietarios y administradores, por correo y con una alerta roja en **Inicio**.
+
+**Cuándo se envía:** al momento, cuando alguien marca que no puede hacer la tarea.
+
+**Contenido:** quién la marcó, la tarea, la sucursal y la nota. Se explica en [Incidencia en la tarea](./125-incidencia-en-la-tarea.md).
 
 ---
 
@@ -120,3 +138,5 @@ Si el empleado ha desactivado los permisos de notificaciones del dispositivo, la
 | [Prioridades y fechas límite](./44-prioridades-y-fechas-limite.md) | Alertas de vencimiento y configuración |
 | [Validación de tareas](./45-validacion-de-tareas.md) | Notificación al validar o rechazar |
 | [Qué es el módulo de tareas](./39-que-es-el-modulo-de-tareas.md) | Visión general del módulo |
+| [Tarea sin empezar a su hora](./126-tarea-sin-empezar-a-su-hora.md) | El aviso a los 5 minutos y cómo apagar el correo |
+| [Incidencia en la tarea](./125-incidencia-en-la-tarea.md) | El aviso al momento cuando una tarea no se puede hacer |

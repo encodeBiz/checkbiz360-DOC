@@ -69,9 +69,18 @@ Al abrir un centro aparecen dos bloques:
 
 Quién cumple, quién no deja registro y a quién le está afectando su centro.
 
+Cada persona con evidencia suficiente recibe una lectura: *Cumple y registra*, *Cumple, pero no registra*, *Registra bien, trabaja menos*, *Trabaja de más*, *Necesita atención* o *Depende del centro*. **«Registra bien, trabaja menos»** solo se pone con un déficit claro: quien cierra bien sus jornadas y ficha algo menos de lo planificado, pero no más de un 10 % menos, cuenta como *Cumple y registra*.
+
+La lista **Quién sostiene mejor la operación** dice por qué está vacía cuando lo está:
+
+- *Aún no hay nadie con evidencia suficiente para destacarlo*: faltan datos, no es un cero.
+- *En este periodo nadie cumple a la vez el registro y las horas planificadas*: hay evidencia, pero nadie cierra bien sus jornadas y llega a la vez a sus horas. Lo que hay que mirar está en **Dónde hay que actuar**.
+
 ### Análisis
 
 Los patrones que no son de un centro ni de una persona en concreto: dónde y cuándo falla el fichaje, y el cruce entre ambos ejes. Se lee de menos a más señalable: primero lo que es del proceso y la configuración, y solo al final las personas.
+
+La tarjeta **Cumplimiento de ubicación** cuenta también los **inicios de tarea** con lugar de trabajo propio, medidos contra el margen de cada tarea, y no solo los fichajes medidos contra el centro. Así sale en el análisis la plantilla que trabaja en casa del cliente. Debajo del resumen dice cuántas marcas son inicios de tarea (y cuántas fuera) y cuántas son fichajes. Del mismo modo, en **Quién no consigue fichar**, cada inicio de tarea es un intento y uno rechazado por estar fuera del lugar cuenta como fallido.
 
 ---
 

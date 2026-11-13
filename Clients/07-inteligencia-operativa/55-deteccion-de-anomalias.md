@@ -22,6 +22,8 @@ El sistema analiza de forma continua los registros de cada empleado en busca de 
 
 **Patrones de regularidad excesiva.** El comportamiento humano tiene variabilidad inherente. Si todos los parámetros del fichaje de un empleado (hora, coordenadas, duración de la jornada) son demasiado constantes durante un periodo prolongado, el sistema identifica esa regularidad como estadísticamente anómala.
 
+**Jornada de duración rara para su turno.** Al fichar la salida, la jornada se compara con el turno que la persona tenía planificado para esa entrada. Se marca como **registro sospechoso** si dura menos de la mitad del turno o más de dos horas por encima. Si no había horario planificado, se usan los márgenes generales: menos de 3 horas o más de 10. Así, una tarea de 2 horas cumplida o un refuerzo corto no salen como sospechosos, y una jornada de 8 horas cerrada a las 3 sí. La regla se aplica a los fichajes desde el 11 de noviembre de 2026; los anteriores conservan su marca.
+
 > **Importante:** Ninguno de estos patrones es, por sí solo, prueba de ninguna irregularidad. Existen situaciones legítimas que pueden producir comportamientos similares: empleados que trabajan siempre desde el mismo puesto fijo, dispositivos con GPS poco preciso que reportan siempre las mismas coordenadas, personas con rutinas muy estables. El indicador de anomalía es el inicio de una investigación, no su conclusión.
 
 ## Qué debe hacer el responsable cuando aparece un empleado marcado

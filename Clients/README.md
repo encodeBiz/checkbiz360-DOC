@@ -2,7 +2,7 @@
 
 Bienvenido al centro de ayuda de CheckBiz360, la plataforma de control de asistencia digital de Encodebiz. Este centro de ayuda reúne la documentación completa dirigida al cliente final: propietarios de cuenta, responsables de recursos humanos, managers de área y supervisores de equipo.
 
-Los artículos están organizados en 16 secciones temáticas. Cada sección cubre un módulo o área funcional de la plataforma y contiene artículos independientes que pueden consultarse de forma individual o como lectura secuencial.
+Los artículos están organizados en 17 secciones temáticas. Cada sección cubre un módulo o área funcional de la plataforma y contiene artículos independientes que pueden consultarse de forma individual o como lectura secuencial.
 
 ---
 
@@ -90,8 +90,9 @@ Cómo funciona el sistema de fichaje: validaciones, tipos de registro, geocercas
 | Solicitud de jornada manual (Modo A y Modo B) | **Disponible** | Requiere aprobación del responsable. |
 | Revisión y validación de fichajes por responsable | **Disponible** | Flujo de aprobación, rechazo y resolución; una corrección rechazada deja el fichaje como estaba. |
 | Trazabilidad e historial de cambios inmutable | **Disponible** | Registro de solicitudes y modificaciones con auditoría. |
-| Detección de fichaje sospechoso | **Disponible** | Indicador automático basado en patrones anómalos. |
+| Detección de fichaje sospechoso | **Disponible** | Según la duración del turno planificado; sin horario, menos de 3 h o más de 10 h. |
 | Punto de fichaje: dispositivo del centro con QR o código y foto | **Disponible** | Complemento de pago. Se contrata y gestiona en el panel; el dispositivo usa la app CheckBiz360. |
+| Corregir una jornada incompleta de una vez | **Disponible** | Desde la incidencia, todos los turnos y un solo motivo; la persona acepta o rechaza la jornada entera desde la app. |
 
 | Artículo | Descripción |
 |---|---|
@@ -106,6 +107,7 @@ Cómo funciona el sistema de fichaje: validaciones, tipos de registro, geocercas
 | [Trazabilidad e historial de cambios](03-control-horario/21-trazabilidad-historial-de-cambios.md) | requestUpdates, inmutabilidad y uso en auditorías |
 | [Estados y códigos de error](03-control-horario/22-estados-y-codigos-de-error.md) | Tablas de estados y códigos de error con causas y soluciones |
 | [Punto de fichaje](03-control-horario/113-punto-de-fichaje.md) | Fichar desde una tablet del centro con QR o código y una foto, sin biometría |
+| [Corregir una jornada incompleta de una vez](03-control-horario/134-corregir-una-jornada-incompleta.md) | Corregir la jornada partida entera con un solo aviso a la persona |
 
 ---
 
@@ -161,6 +163,8 @@ Subida, organización, acuse de recibo y control de acceso a los documentos labo
 | Confirmación firmada desde el móvil | **Disponible** | Acta de firma descargable y PDF firmado para documentos PDF de un solo empleado. |
 | Historial automático de versiones | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Descarga masiva de documentos (ZIP) | **Pendiente de desarrollo** | Planificada para una versión futura. |
+| Eliminar documentos y liberar espacio | **Disponible** | Solo propietario y administradores; uno o varios; queda el registro de quién lo recibió y quién lo eliminó. |
+| Nivel de visibilidad «Administración» | **Disponible** | Solo propietario y administradores, desde el panel; en la app no aparece a nadie. |
 
 | Artículo | Descripción |
 |---|---|
@@ -173,6 +177,8 @@ Subida, organización, acuse de recibo y control de acceso a los documentos labo
 | [Historial de versiones](05-gestion-documental/36-historial-de-versiones.md) | Flujo manual disponible en V1; historial automático en roadmap |
 | [Permisos de acceso documental](05-gestion-documental/37-permisos-de-acceso-documental.md) | Tabla de permisos por rol: subir, ver, confirmar, archivar |
 | [Exportar documentos](05-gestion-documental/38-exportar-documentos.md) | Descarga individual en V1; descarga masiva en roadmap |
+| [Eliminar documentos y liberar espacio](05-gestion-documental/135-eliminar-documentos.md) | Archivar o eliminar, avisos y lo que queda del documento |
+| [Quién ve cada documento](05-gestion-documental/136-quien-ve-cada-documento.md) | Administración, documentos personales y diferencia entre panel y app |
 
 ---
 
@@ -186,26 +192,30 @@ Creación, asignación, seguimiento y valoración de tareas operativas.
 | Lugar de trabajo propio por tarea | **Disponible** | Dirección y margen propios; iniciar exige estar allí, desde la app. |
 | Duplicar una tarea | **Disponible** | Copia el encargo, sin asignar y en borrador; pide de nuevo las fechas. |
 | Pausar y reanudar tareas | **Disponible** | Desde el backoffice y desde la app 1.4.0; el tiempo en pausa sale en el informe. |
-| Historial de la tarea | **Disponible** | Quién la creó, inició, pausó, completó, validó o canceló, con fecha y rol. |
-| Descripción con formato (listas, checklists, enlaces) | **Disponible** | Editor con barra de formato y vista previa. |
+| Historial de la tarea | **Disponible** | Quién la creó, inició, pausó, completó, validó o canceló; casillas marcadas, incidencias y «Administración» cuando actúa el panel. |
+| Descripción con formato (listas, checklists, enlaces) | **Disponible** | Las casillas se marcan desde la app y cada marca queda en el historial. |
 | Evidencias de foto y vídeo | **Disponible** | Foto (JPG, PNG, WEBP) hasta 5 MB; vídeo hasta 25 MB desde la app. |
 | Estados de tarea: borrador, asignada, en progreso, completada, validada, rechazada, cancelada | **Disponible** | Siete estados con trazabilidad completa. |
 | Cuatro prioridades: baja, media, alta y crítica | **Disponible** | Con código de color en el listado. |
 | Indicador de cumplimiento temporal | **Disponible** | A tiempo, en riesgo, vencida, completada a tiempo o tarde. |
-| Fecha prevista de inicio y aviso de inicio tardío | **Disponible** | Notificación a los 15 minutos, configurable por tarea. |
+| Fecha prevista de inicio y aviso de inicio tardío | **Disponible** | A los 5 minutos: aviso en la app a la persona y correo a propietario y administrador; en Inicio desde una sola tarea. |
 | Validación y valoración de tareas por el responsable | **Disponible** | Delegables al supervisor por tarea; rechazo con motivo obligatorio. |
-| Notificaciones push de tareas | **Disponible** | Asignación, validación, rechazo, inicio tardío y vencimiento. |
+| Notificaciones push de tareas | **Disponible** | Asignación, validación, rechazo, inicio tardío, vencimiento e incidencia; muchas tareas de golpe llegan en un solo aviso. |
 | Informe de tareas exportable | **Disponible** | Excel (XLSX), filtrable por sucursal, estado y periodo de vencimiento, con tiempo invertido y en pausa; con el inventario contratado, también el material de cada tarea. |
-| Adjuntos de tipo documento (PDF, Word, Excel) | **Pendiente de desarrollo** | Hoy las evidencias admiten foto y vídeo. |
+| Adjuntos de tipo documento (PDF, Word, Excel) | **Disponible parcialmente** | Documentos adjuntos en PDF y fotos, separados de las evidencias y copiados al duplicar; Word y Excel no. |
 | Estado "vencida" automático al superar la fecha límite | **Pendiente de desarrollo** | Hoy el vencimiento se refleja en el cumplimiento temporal. |
 | Configurar la antelación de los avisos de vencimiento | **Pendiente de desarrollo** | Los avisos se emiten; su antelación no es configurable. |
 | Métricas agregadas de tareas (completitud, tiempo medio) | **Pendiente de desarrollo** | Calculables hoy a partir del informe en Excel. |
 | Calendario semanal de tareas | **Disponible** | Pestaña junto a la lista: la semana por día y hora, con los huecos, los solapes y lo que vence; mismos filtros que la lista. |
+| Incidencia en la tarea | **Disponible** | Nota obligatoria y foto o PDF; correo, alerta roja en Inicio y aviso a responsables; se resuelve desde el panel; sale en el informe. |
+| Quién da la tarea por terminada | **Disponible** | Basta con una, todas o una persona responsable. |
+| Completar desde administración | **Disponible** | Pide inicio y cierre si nadie la empezó; queda «desde administración» en la ficha y el informe. |
+| Borrar una sucursal con tareas abiertas | **Disponible** | Pide pasarlas a borrador en otra sucursal, cancelarlas o no borrar. |
 
 | Artículo | Descripción |
 |---|---|
 | [Qué es el módulo de tareas](06-tareas/39-que-es-el-modulo-de-tareas.md) | Para qué sirve y diferencia con el control de asistencia |
-| [Crear una tarea](06-tareas/40-crear-una-tarea.md) | Campos, lugar de trabajo propio, duplicar una tarea y adjuntos de foto/vídeo |
+| [Crear una tarea](06-tareas/40-crear-una-tarea.md) | Campos, lugar de trabajo propio, duplicar, documentos adjuntos y evidencias, casillas |
 | [Asignar tareas a empleados](06-tareas/41-asignar-tareas-a-empleados.md) | Asignación individual y múltiple, reasignación, notificación |
 | [Estados de una tarea](06-tareas/42-estados-de-una-tarea.md) | Ciclo de vida, reabrir una tarea, tarea en pausa e indicador de cumplimiento temporal |
 | [Seguimiento y actualizaciones](06-tareas/43-seguimiento-y-actualizaciones.md) | Iniciar, pausar y reanudar, notas e historial de la tarea |
@@ -215,6 +225,9 @@ Creación, asignación, seguimiento y valoración de tareas operativas.
 | [Notificaciones de tareas](06-tareas/47-notificaciones-de-tareas.md) | Eventos notificados en V1; recordatorios en roadmap |
 | [Informes de tareas](06-tareas/48-informes-de-tareas.md) | Métricas en el backoffice e informe en Excel, con sus columnas de tiempo |
 | [Calendario semanal de tareas](06-tareas/111-calendario-semanal-de-tareas.md) | La semana de un vistazo: qué hay cada día, a qué hora, en qué estado y qué vence |
+| [Incidencia en la tarea](06-tareas/125-incidencia-en-la-tarea.md) | Avisar de que una tarea no se puede hacer, a quién llega y cómo se resuelve |
+| [Tarea sin empezar a su hora](06-tareas/126-tarea-sin-empezar-a-su-hora.md) | El aviso a los 5 minutos por la app, por correo y en Inicio, y cómo apagarlo |
+| [Quién termina la tarea y cerrarla desde administración](06-tareas/127-quien-termina-la-tarea-y-cierre-desde-administracion.md) | Una, todas o una responsable; completar con horas desde el panel |
 
 ---
 
@@ -238,6 +251,7 @@ Análisis de patrones de comportamiento, índices de rendimiento, costes y detec
 | Alertas de sobrecoste configurables | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Exportación de datos de paneles (CSV/PDF) | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Portada «Inicio»: el hoy por centro, alertas, últimas semanas, disponibilidad de la semana, plantilla en el tiempo y costes estimados | **Disponible** | Lo primero que se ve al entrar; se actualiza sola y enseña solo lo que requiere atención. |
+| Cumplimiento de ubicación con la valla de las tareas | **Disponible** | Los inicios de tarea cuentan contra el margen de cada tarea, junto a los fichajes. |
 
 | Artículo | Descripción |
 |---|---|
@@ -263,9 +277,10 @@ Creación y configuración de sucursales, asignación de empleados y vista globa
 | Configuración avanzada de sucursal (geocerca, pausas, tolerancia) | **Disponible** | Todos los parámetros operativos configurables. |
 | Asignar empleados a sucursales con responsabilidades | **Disponible** | Multi-sucursal con calendario efectivo por asignación. |
 | Configuración de entidad (datos fiscales, zona horaria) | **Disponible** | Propagación de cambios a sucursales dependientes. |
-| Almacenamiento por empresa | **Disponible** | 2 GB incluidos; por encima, 0,25 € por GB completo si la ampliación está activada. Se consulta en Entidad → Suscripciones. |
+| Almacenamiento por empresa | **Disponible** | 2 GB incluidos; por encima, 0,25 € + IVA por GB completo si la ampliación está activada. Se consulta en Entidad → Suscripciones. |
 | Colaboradores del backoffice (propietario y administrador) | **Disponible** | Invitación, cambio de rol y retirada; nunca se queda la entidad sin propietario activo. |
 | Vista global multi-sucursal | **Disponible** | La portada enseña el hoy por centro y las alertas; el panel de Operación compara los centros por periodo. |
+| Solicitar la eliminación de la empresa | **Disponible** | Desde Entidad, con motivo obligatorio; el equipo la confirma antes de borrar nada. |
 
 | Artículo | Descripción |
 |---|---|
@@ -292,6 +307,7 @@ Tipos de notificación generados automáticamente por el sistema para empleados 
 | Preferencias de notificación configurables por usuario | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Historial persistente de notificaciones | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Alertas operativas por correo a los responsables | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Alertas por correo a propietario y administradores | **Disponible** | Resumen de la mañana (6:00–10:00), avisos al momento y pendientes de decisión; se eligen en Herramientas. Nada entre las 22:00 y las 6:00. |
 
 | Artículo | Descripción |
 |---|---|
@@ -301,6 +317,7 @@ Tipos de notificación generados automáticamente por el sistema para empleados 
 | [Alertas para responsables](09-notificaciones/66-alertas-para-responsables.md) | Empleado que no fichó, fichaje sospechoso, jornada manual pendiente |
 | [Histórico de notificaciones](09-notificaciones/67-historico-de-notificaciones.md) | Centro de notificaciones en V1; historial persistente en roadmap |
 | [Notificaciones por email](09-notificaciones/68-notificaciones-por-email.md) | Bienvenida y estado del acceso, avisos de trabajo por correo, aviso de almacenamiento; alertas operativas en roadmap |
+| [Alertas por correo](09-notificaciones/133-alertas-por-correo.md) | Qué llega, cuándo y cómo elegirlo |
 
 ---
 
@@ -346,6 +363,7 @@ Generación, filtrado y exportación de informes de asistencia, costes y cumplim
 | Informe de cumplimiento RDL 8/2019 para inspecciones | **Disponible** | Generación desde el backoffice. |
 | Exportación de los paneles de inteligencia operativa | **Pendiente de desarrollo** | Costes, anomalías y comparativas se consultan en pantalla. |
 | Informes automáticos periódicos enviados por email | **Pendiente de desarrollo** | Planificado para una versión futura. |
+| Informes de una, varias o todas las sucursales | **Disponible** | Jornada y tareas, con buscador de sucursales. |
 
 | Artículo | Descripción |
 |---|---|
@@ -366,6 +384,7 @@ Registro de jornada obligatorio en España, protección de datos y preparación 
 | Registro de jornada conforme al RDL 8/2019 | **Disponible** | Timestamp inmutable con trazabilidad completa. |
 | Informe de inspección de trabajo | **Disponible** | Generación desde el backoffice con todos los datos requeridos. |
 | Conservación de datos conforme a LOPD/RGPD | **Disponible** | Base legal, períodos de retención y derechos de los empleados. |
+| Hoja informativa de protección de datos firmada desde la app | **Disponible** | Hoja de CheckBiz360 o la propia de la empresa; estado en la lista de empleados y alerta si falta. |
 
 | Artículo | Descripción |
 |---|---|
@@ -373,6 +392,7 @@ Registro de jornada obligatorio en España, protección de datos y preparación 
 | [Cómo CheckBiz360 cumple el RDL 8/2019](12-cumplimiento-normativo/82-como-checkbiz360-cumple-el-rdl-8-2019.md) | Mecanismos técnicos: timestamp, inmutabilidad, trazabilidad |
 | [Conservación y protección de datos](12-cumplimiento-normativo/83-conservacion-y-proteccion-de-datos.md) | LOPD/RGPD: base legal, retención y derechos de los empleados |
 | [Preparar una inspección de trabajo](12-cumplimiento-normativo/84-preparar-una-inspeccion-de-trabajo.md) | Qué documentación pedir, qué informe presentar y recomendaciones previas |
+| [Hoja informativa de protección de datos](12-cumplimiento-normativo/137-hoja-informativa-de-proteccion-de-datos.md) | Enviarla, que la firmen desde la app y guardar la prueba |
 
 ---
 
@@ -410,6 +430,7 @@ Glosario, códigos de error, planes y preguntas frecuentes.
 | Tabla completa de códigos de error | **Disponible** | Todos los códigos del diccionario, por módulo, con causa y solución. |
 | Planes y precios (Bronce y Empresarial) | **Disponible** | Precio, periodo de prueba, módulos incluidos, complementos, almacenamiento y roadmap. |
 | Preguntas frecuentes de evaluación | **Disponible** | 20 preguntas y respuestas para clientes que evalúan la plataforma. |
+| Precios más IVA | **Disponible** | Desde el 11-nov-2026 todo es precio + IVA (21 %), desglosado en la factura. |
 
 | Artículo | Descripción |
 |---|---|
@@ -478,6 +499,33 @@ Complemento de pago: el material atado a la tarea, a la persona, al sitio y a la
 
 ---
 
+### 17. Cartera de clientes
+
+La cartera de clientes ata cada tarea a su cliente: su ficha, sus documentos, sus contratos con su margen, los gastos y un parte listo para enviarle. Va incluida en CheckBiz360 y está en el menú «Clientes».
+
+| Funcionalidad | Estado | Comentario |
+|---|---|---|
+| Ficha de cliente, sucursales que lo atienden y buscador | **Disponible** | Empresa o persona, con dirección, contactos, notas de campo y de gestión; búsqueda por nombre, NIF o referencia. |
+| Cliente en la tarea y su dirección como lugar de trabajo | **Disponible** | Con su margen en metros; el nombre del cliente solo llega a la plantilla con autorización. |
+| Datos complementarios en la app | **Disponible** | Notas de campo, contactos visibles y documentos para trabajadores, en la propia tarea. |
+| Documentos del cliente y nivel «Administración» | **Disponible** | Contratos y presupuestos solo para propietario y administradores, desde el panel; nunca desde la app. |
+| Contratos con importe, horas y rentabilidad | **Disponible** | Varios por cliente; lectura del PDF con IA anonimizada; margen, previsión y tareas del contrato. |
+| Gastos del contrato y de la tarea | **Disponible** | Ticket desde la app, aprobación con base sin IVA, justificante archivado y «Gastos sin contrato». |
+| Análisis del cliente, parte en PDF/Excel, bloque de Inicio y alertas | **Disponible** | La rentabilidad requiere la tarifa horaria de cada persona. |
+| Portal del cliente | **Pendiente de desarrollo** | Sin fecha. |
+
+| Artículo | Descripción |
+|---|---|
+| [Qué es la cartera de clientes](17-cartera-de-clientes/117-que-es-la-cartera-de-clientes.md) | Qué resuelve, quién ve qué y cómo ponerla en marcha |
+| [Dar de alta clientes](17-cartera-de-clientes/118-dar-de-alta-clientes.md) | Ficha, dirección, sucursales, contactos y buscador |
+| [El cliente en la tarea](17-cartera-de-clientes/119-el-cliente-en-la-tarea.md) | Cliente y contrato en la tarea, su dirección como lugar de trabajo y qué ve la plantilla |
+| [Documentos del cliente](17-cartera-de-clientes/120-documentos-del-cliente.md) | Fichas, presupuestos y contratos, y el nivel Administración |
+| [Contratos y rentabilidad](17-cartera-de-clientes/121-contratos-y-rentabilidad.md) | Importe, horas, lectura del PDF con IA, margen y previsión |
+| [Gastos del contrato y de la tarea](17-cartera-de-clientes/122-gastos-del-contrato-y-de-la-tarea.md) | Lo que se paga fuera, con ticket y aprobación |
+| [El cliente en los análisis](17-cartera-de-clientes/123-el-cliente-en-los-analisis.md) | Pestaña Análisis, parte del cliente, Inicio y alertas |
+
+---
+
 ## Estructura de archivos
 
 ```
@@ -485,20 +533,21 @@ DOCS/Clients/
 ├── README.md                          (este índice)
 ├── 01-primeros-pasos/                 (5 artículos)
 ├── 02-empleados/                      (10 artículos)
-├── 03-control-horario/                (11 artículos)
+├── 03-control-horario/                (12 artículos)
 ├── 04-calendario-y-horarios/          (11 artículos)
-├── 05-gestion-documental/             (9 artículos)
-├── 06-tareas/                         (11 artículos)
+├── 05-gestion-documental/             (11 artículos)
+├── 06-tareas/                         (14 artículos)
 ├── 07-inteligencia-operativa/         (9 artículos)
 ├── 08-sucursales-y-entidad/           (6 artículos)
-├── 09-notificaciones/                 (6 artículos)
+├── 09-notificaciones/                 (7 artículos)
 ├── 10-app-movil/                      (7 artículos)
 ├── 11-informes-y-exportacion/         (5 artículos)
-├── 12-cumplimiento-normativo/         (4 artículos)
+├── 12-cumplimiento-normativo/         (5 artículos)
 ├── 13-soporte-e-incidencias/          (4 artículos)
 ├── 14-referencia/                     (4 artículos)
 ├── 15-integraciones/                  (6 artículos)
-└── 16-inventario/                     (8 artículos)
+├── 16-inventario/                     (8 artículos)
+└── 17-cartera-de-clientes/            (7 artículos)
 ```
 
-**Total: 116 artículos**
+**Total: 131 artículos**

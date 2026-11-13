@@ -31,7 +31,7 @@ Este estado es temporal. Aparece cuando se crea una jornada manual o cuando un r
 
 ### Estado `incomplete_workday`
 
-Indica que el empleado registró su entrada pero no su salida. La jornada queda abierta. Este estado puede resolverse registrando el checkout correspondiente (manual o desde la app) o mediante la creación de un checkout manual por parte del responsable.
+Indica que el empleado registró su entrada pero no su salida. La jornada queda abierta. Este estado puede resolverse registrando el checkout correspondiente (manual o desde la app) o mediante la creación de un checkout manual por parte del responsable. Desde la incidencia que se abre, el responsable puede corregir la jornada entera de una vez: ver [Corregir una jornada incompleta de una vez](134-corregir-una-jornada-incompleta.md).
 
 ---
 

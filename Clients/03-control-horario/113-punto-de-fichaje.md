@@ -39,8 +39,8 @@ El punto de fichaje es un complemento de pago, como el inventario. Está en el m
 
 | | |
 |---|---|
-| Precio | **19 € al mes**, que cubren hasta **20 puntos de fichaje activos** |
-| Desde el 21 | **0,90 € al mes** por cada punto de fichaje activo |
+| Precio | **19 € + IVA al mes**, que cubren hasta **20 puntos de fichaje activos** |
+| Desde el 21 | **0,90 € + IVA al mes** por cada punto de fichaje activo |
 | Prueba | **15 días** en la primera contratación |
 | Factura | Aparte de su plan |
 

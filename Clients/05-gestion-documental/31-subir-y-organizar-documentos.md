@@ -55,6 +55,7 @@ Además del tipo, cada documento tiene un ámbito que determina a quién va diri
 - **Empleado**: un documento personal, como una nómina o un contrato.
 - **Sucursal**: dirigido a todo el personal de un centro, como un protocolo de apertura.
 - **Entidad**: dirigido a toda la plantilla, como una política de empresa.
+- **Cliente**: un papel de un cliente de la cartera (su ficha, un presupuesto). Los contratos del cliente se suben desde su ficha, en **Contratos**. Ver [Documentos del cliente](../17-cartera-de-clientes/120-documentos-del-cliente.md).
 
 El ámbito determina también el modo de acuse de recibo disponible: de un empleado concreto, de los empleados de una sucursal o de toda la entidad.
 
@@ -95,3 +96,4 @@ Los filtros del panel de documentos le permiten buscar por tipo, por ámbito, po
 - [Notificaciones de documentos](34-notificaciones-de-documentos.md)
 - [Permisos de acceso documental](37-permisos-de-acceso-documental.md)
 - [Exportar documentos](38-exportar-documentos.md)
+- [Documentos del cliente](../17-cartera-de-clientes/120-documentos-del-cliente.md)

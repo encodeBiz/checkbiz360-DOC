@@ -17,12 +17,15 @@ Este artículo describe todos los campos disponibles al crear una tarea y explic
 ### Campos opcionales
 
 - **Descripción** — Explicación detallada de lo que hay que hacer. Admite formato: títulos, listas, **listas de tareas con casillas**, citas, negrita, cursiva y enlaces. No tiene límite de extensión.
+- **Cliente** — Para quién es la tarea, entre los clientes asignados a la sucursal. Sale solo si la sucursal tiene clientes. Con cliente, la tarea puede usar su dirección como lugar de trabajo y lleva a la plantilla sus indicaciones y contactos. Ver [El cliente en la tarea](../17-cartera-de-clientes/119-el-cliente-en-la-tarea.md).
+- **Contrato** — De qué contrato del cliente es la tarea, o **Sin contrato**. Sale cuando el cliente tiene contratos. Ver [Contratos y rentabilidad](../17-cartera-de-clientes/121-contratos-y-rentabilidad.md).
 - **Lugar de trabajo** — Dirección donde se hace el trabajo cuando no es la propia sucursal, con su **margen** en metros. Ver [Lugar de trabajo propio](#lugar-de-trabajo-propio).
 - **Fecha prevista de inicio** — Hora a la que se espera que el empleado empiece. No bloquea nada por sí sola: su utilidad es activar el aviso de inicio tardío.
-- **Notificar si no inicia a tiempo** — Si se activa y la tarea tiene fecha prevista de inicio, el sistema envía una notificación automática cuando han pasado **15 minutos** de esa hora sin que la tarea se haya iniciado. Sin fecha prevista de inicio, la opción no tiene efecto.
+- **Notificar si no inicia a tiempo** — Si se activa y la tarea tiene fecha prevista de inicio, el sistema avisa cuando han pasado **5 minutos** de esa hora sin que la tarea se haya iniciado: a las personas asignadas en la app y a propietarios y administradores por correo. Sin fecha prevista de inicio, la opción no tiene efecto. Ver [Tarea sin empezar a su hora](./126-tarea-sin-empezar-a-su-hora.md).
 - **Estado** — Estado con el que nace la tarea. Lo habitual es *Borrador* (no visible aún para el equipo) o *Asignada* (ya enviada). Los estados *Validada*, *Rechazada* y *Cancelada* no pueden seleccionarse manualmente en la creación: son el resultado del ciclo de vida de la tarea.
 - **Prioridad** — Baja, media, alta o **crítica**. Afecta al orden en que aparece la tarea en la app del empleado.
 - **Empleados asignados** — Persona o personas responsables de completarla. Puede buscarse y seleccionarse a varios.
+- **¿Quién da la tarea por terminada?** — *Basta con una persona* (por defecto), *Todas las personas* o *Una persona responsable*. Ver [Quién termina la tarea y cerrarla desde administración](./127-quien-termina-la-tarea-y-cierre-desde-administracion.md).
 
 ### Opciones de configuración de la tarea
 
@@ -30,7 +33,7 @@ Tres opciones controlan cómo se cierra y se revisa la tarea:
 
 | Opción | Por defecto | Qué hace |
 |---|---|---|
-| **Requerir evidencia al completar** | Activada | El empleado no puede marcar la tarea como completada sin adjuntar al menos una foto o vídeo. Si lo intenta, recibe el error `task/evidence_required` |
+| **Requerir evidencia al completar** | Desactivada | Si la activa, el empleado no puede marcar la tarea como completada sin adjuntar al menos una foto o vídeo. Si lo intenta, recibe el error `task/evidence_required` |
 | **Permitir validación por supervisor** | Activada | Un supervisor de la sucursal puede validar o rechazar la tarea, sin necesidad de un manager |
 | **Permitir valoración por supervisor** | Activada | Un supervisor puede puntuar el trabajo del empleado al cerrar la tarea |
 
@@ -43,11 +46,11 @@ Tres opciones controlan cómo se cierra y se revisa la tarea:
 3. Escriba el **título**.
 4. Redacte la **descripción**. Use la barra de formato para añadir listas de comprobación, títulos o enlaces si la tarea tiene varios pasos.
 5. Busque y seleccione la **sucursal**. Bajo el campo aparece la zona horaria con la que se enviarán las fechas.
-6. Si el trabajo se hace en otra dirección, rellene **Lugar de trabajo (opcional)** y revise el **margen**.
+6. Si la tarea es para un cliente, elíjalo en **Cliente** y, si sale, su **Contrato**. Con **Usar la dirección del cliente como lugar de trabajo**, revise el **Margen**. Si el trabajo se hace en otra dirección, rellene **Lugar de trabajo (opcional)** y revise el **margen**.
 7. Si procede, indique la **fecha prevista de inicio** y active **Notificar si no inicia a tiempo**.
 8. Establezca la **fecha límite** (fecha y hora).
 9. Elija **estado** y **prioridad**.
-10. Busque y seleccione a los **empleados asignados**.
+10. Busque y seleccione a los **empleados asignados** y, si son varios, elija **¿Quién da la tarea por terminada?**.
 11. Revise las tres opciones de configuración (evidencia, validación y valoración por supervisor).
 12. Pulse **Guardar**. Los empleados asignados reciben una notificación push automática.
 
@@ -72,7 +75,17 @@ Un ejemplo de descripción con lista de comprobación:
 **Importante:** avisar al supervisor si falta efectivo.
 ```
 
-> **Nota:** las casillas de la descripción son parte del texto de la tarea, no un estado guardado. Sirven como guion de trabajo para el empleado; el avance real de la tarea se refleja con los cambios de estado, las notas y las evidencias.
+### Las casillas se marcan desde la app
+
+Las personas asignadas marcan y desmarcan las casillas de la lista desde el detalle de la tarea en la app, a medida que avanzan. Así usted ve en el panel qué pasos están hechos sin preguntar.
+
+- **La lista es una por tarea.** Si hay varias personas asignadas, lo que marca una lo ven las demás.
+- **Cada marca queda en el historial**: *Casilla marcada: «Contar caja»* o *Casilla desmarcada: …*, con quién y cuándo.
+- **Desde la app solo se marcan casillas**: el resto del texto lo cambia quien gestiona la tarea, con **Editar**.
+- **Con la tarea cerrada** (completada, validada o cancelada) la lista ya no se puede cambiar desde la app: es el registro de lo que se entregó.
+- **Si dos personas marcan a la vez**, la app avisa de que la lista había cambiado y enseña la de ahora para volver a marcar.
+- **Marcar casillas no envía avisos.**
+- **Al duplicar la tarea**, la copia nace con todas las casillas sin marcar.
 
 ---
 
@@ -87,6 +100,8 @@ Cuando el trabajo se hace en otra dirección —el domicilio de un cliente, una 
 1. En el formulario de la tarea, escriba la dirección en **Lugar de trabajo (opcional)** y **elíjala de la lista** de sugerencias.
 2. Revise el **margen**: es el radio, en metros, dentro del cual se considera que el empleado está en el lugar. Por defecto toma el de la sucursal y puede ampliarse; un garaje subterráneo o una nave necesitan más margen que un portal.
 3. Guarde la tarea.
+
+Si la tarea es para un cliente con dirección, puede usar **Usar la dirección del cliente como lugar de trabajo** y ajustar su **Margen** debajo; se explica en [El cliente en la tarea](../17-cartera-de-clientes/119-el-cliente-en-la-tarea.md).
 
 Si la dirección no es lo bastante precisa para situar el punto —por ejemplo, falta el número del portal—, la tarea no se guarda y se indica el error `task/worksite_imprecise`. Complete la dirección y vuelva a elegirla.
 
@@ -107,7 +122,7 @@ En el backoffice, el bloque **Lugar de trabajo** del detalle de la tarea muestra
 
 Cuando un encargo se repite, no hace falta volver a rellenar el formulario. Una tarea se duplica con la acción **Duplicar**, disponible en el listado de tareas y en la ficha de la tarea.
 
-La copia se crea en la **misma sucursal** y hereda el encargo: descripción, prioridad, opciones de configuración y lugar de trabajo. **No hereda** su ejecución: ni empleados asignados, ni evidencias, notas, valoraciones o historial.
+La copia se crea en la **misma sucursal** y hereda el encargo: descripción (con las casillas sin marcar), prioridad, opciones de configuración, lugar de trabajo y documentos adjuntos. **No hereda** su ejecución: ni empleados asignados, ni evidencias, notas, valoraciones o historial.
 
 ### Pasos
 
@@ -122,21 +137,32 @@ Puede duplicar quien puede crear tareas en esa sucursal. La sucursal tiene que e
 
 ---
 
-## Evidencias y adjuntos
+## Documentos adjuntos y evidencias
 
-Las evidencias no se adjuntan al crear la tarea: se suben durante su ejecución, desde la app del empleado o desde el detalle de la tarea en el backoffice.
+Una tarea guarda dos tipos de archivo, y en la ficha (panel y app) van en bloques separados:
 
-- Desde el **backoffice** se adjuntan fotos en formato JPG, PNG o WEBP, con un máximo de **5 MB** por archivo.
-- Desde la **app del empleado** se admiten además vídeos, con un máximo de **25 MB** por archivo.
+| | **Documentos adjuntos** | **Evidencias** |
+|---|---|---|
+| Para qué | Lo que necesita quien hace la tarea: un expediente, unas instrucciones, un plano | La prueba de que la tarea se hizo |
+| Quién los sube, lo habitual | La dirección, al preparar la tarea | La persona, al hacer el trabajo |
+| Cuentan para **Requerir evidencia al completar** | No | Sí |
+| Al duplicar la tarea | Se copian con ella | No se copian |
+| Se pueden quitar | Sí, con **Quitar de esta tarea** | No |
 
-Los límites son los valores por defecto de la plataforma y pueden ajustarse por configuración.
+### Adjuntar desde el panel
 
-### Adjuntos de tipo documento
+1. En la ficha de la tarea, en **Recursos**, pulse **Adjuntar**.
+2. Deje sin marcar **Es evidencia del trabajo hecho** para subir un documento adjunto: admite PDF (hasta 20 MB) y fotos JPG, PNG o WEBP (hasta 5 MB).
+3. Márquela solo si el archivo prueba el trabajo hecho: entonces elija a qué **Empleado** corresponde; como evidencia se admiten fotos.
+4. Si quiere, escriba una **Descripción** y confirme.
 
-> **Estado: Pendiente de desarrollo**
-> Esta funcionalidad forma parte del roadmap y no está disponible todavía en la versión actual.
+### Desde la app
 
-Adjuntar documentos en formato PDF, Word o Excel a una tarea está planificado para una versión futura. Cuando esté disponible, permitirá incluir protocolos, formularios y hojas de datos directamente en el detalle de la tarea.
+- Al **crear o editar** una tarea desde la app, **Adjuntar documento** añade PDF o fotos, que se suben al guardar.
+- En el detalle de la tarea, la tarjeta **Archivos y gastos** tiene **Añadir → Archivo** para subir una foto o un PDF que acompaña a la tarea.
+- Las evidencias se suben como siempre: foto o vídeo (hasta **25 MB**) desde la cámara o la galería.
+
+Adjuntar documentos de Word o Excel no está disponible: conviértalos a PDF.
 
 ---
 
@@ -159,5 +185,8 @@ Si necesita que cada empleado la complete de forma independiente, cree una tarea
 | [Prioridades y fechas límite](./44-prioridades-y-fechas-limite.md) | Cómo gestionar la urgencia y los plazos |
 | [Estados de una tarea](./42-estados-de-una-tarea.md) | Ciclo de vida de una tarea |
 | [Seguimiento y actualizaciones](./43-seguimiento-y-actualizaciones.md) | Iniciar, pausar y reanudar una tarea |
+| [El cliente en la tarea](../17-cartera-de-clientes/119-el-cliente-en-la-tarea.md) | Elegir cliente y contrato, y qué ve la plantilla del cliente |
 | [Geocercas y radio de fichaje](../03-control-horario/16-geocercas-radio-de-fichaje.md) | La comprobación de ubicación al fichar |
 | [Notificaciones de tareas](./47-notificaciones-de-tareas.md) | Qué notificaciones reciben los empleados |
+| [Quién termina la tarea y cerrarla desde administración](./127-quien-termina-la-tarea-y-cierre-desde-administracion.md) | Una, todas o una responsable; completar con horas desde el panel |
+| [Tarea sin empezar a su hora](./126-tarea-sin-empezar-a-su-hora.md) | El aviso a los 5 minutos |

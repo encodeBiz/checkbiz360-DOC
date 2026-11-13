@@ -10,12 +10,14 @@ CheckBiz360 se ofrece en dos planes:
 
 | Plan | Precio | Para quién |
 |---|---|---|
-| **Bronce** | **5 €/empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Incluye los módulos base; Inventario y Punto de fichaje se contratan aparte. |
+| **Bronce** | **2 € + IVA por empleado al mes** | Empresas que necesitan cumplir con el registro horario y gestionar su operativa diaria. Incluye los módulos base; Inventario y Punto de fichaje se contratan aparte. |
 | **Empresarial** | **Precio a medida** | Organizaciones grandes (orientativamente, a partir de 100 empleados) o que necesitan integraciones con sus propios sistemas y soporte preferente. |
 
 El precio del plan Bronce es **por empleado y mes**: se factura según los empleados dados de alta, sin cuota fija de entrada ni coste de implantación. Cuentan todos los empleados de la plantilla, también los inactivos o de baja, porque siguen formando parte de ella; no cuentan las fichas **pendientes** de completar ni los empleados eliminados. El plan Empresarial se acuerda con el equipo comercial en función del volumen y de las integraciones necesarias.
 
-> **Tarifa 2026:** el plan Bronce puede contratarse por **2 €/empleado al mes** hasta el **31 de diciembre de 2026 incluido**. Desde el 01/01/2027 la tarifa general vuelve a ser de 5 € y se aplica solo a las altas nuevas: quien haya contratado antes conserva la suya, y cualquier revisión futura de precios se comunicará con amplia antelación.
+> **Tarifa 2026:** el precio de **2 € + IVA por empleado al mes** se aplica a quien contrate hasta el **31 de diciembre de 2026 incluido**. Desde el 01/01/2027 la tarifa general de las altas nuevas será de 5 € + IVA: quien haya contratado antes conserva la suya, y cualquier revisión futura de precios se comunicará con amplia antelación.
+
+> **IVA:** desde el 11 de noviembre de 2026, todos los precios de CheckBiz360 —plan, complementos y almacenamiento— son **precio más IVA**. A las empresas con sede en España peninsular y Baleares se les suma el **21 %**, y la factura lo desglosa: base, IVA y total. Si su empresa está en Canarias, Ceuta, Melilla o fuera de España, escriba a **hola@encodebiz.com** para confirmar cómo se le factura.
 
 > **Periodo de prueba:** la primera suscripción incluye **15 días de prueba**. La prueba no se aplica en suscripciones posteriores de la misma entidad. Para activarla hace falta un método de pago, pero añadirlo no genera cargo y la prueba tampoco: si cancela antes de que termine, no se le cobra nada.
 
@@ -99,6 +101,11 @@ Ambos planes incluyen los módulos base descritos a continuación. Inventario y 
 
 Se contrata aparte desde **Suscripciones**, con 15 días de prueba.
 
+| | |
+|---|---|
+| Hasta 50 empleados | **29 € + IVA al mes** |
+| Desde el 51 | **0,75 € + IVA al mes** por cada empleado |
+
 - Artículos que se gastan (consumibles) y que se prestan (operables, por ejemplares), en almacenes ligados a sucursales.
 - Material asignado al crear la tarea; salida y consumo desde la app; cuadre del sobrante al validar.
 - Calendario de cada ejemplar con aviso de choque entre tareas.
@@ -114,8 +121,8 @@ Se contrata aparte desde **Punto de fichaje**, con 15 días de prueba en la prim
 
 | | |
 |---|---|
-| Hasta 20 puntos de fichaje activos | **19 € al mes** |
-| Desde el 21 | **0,90 € al mes** por cada uno |
+| Hasta 20 puntos de fichaje activos | **19 € + IVA al mes** |
+| Desde el 21 | **0,90 € + IVA al mes** por cada uno |
 
 Solo se cobran los puntos de fichaje activos, no las sucursales que tenga.
 
@@ -129,7 +136,7 @@ Se explica en [Punto de fichaje](../03-control-horario/113-punto-de-fichaje.md).
 
 ### Almacenamiento
 
-Todas las empresas tienen **2 GB incluidos** para lo que suben: documentos, fotos de tareas, firmas, informes y fotos del punto de fichaje. Por encima, cada **GB completo** se añade a la factura mensual a **0,25 €**. Con 2,8 GB no se paga nada; con 3,1 GB se paga 1 GB.
+Todas las empresas tienen **2 GB incluidos** para lo que suben: documentos, fotos de tareas, firmas, informes y fotos del punto de fichaje. Por encima, cada **GB completo** se añade a la factura mensual a **0,25 € + IVA**. Con 2,8 GB no se paga nada; con 3,1 GB se paga 1 GB.
 
 En **Entidad → Suscripciones** se ve cuánto ocupa cada cosa y cuánto se facturaría este mes. Ahí mismo está la casilla **Ampliar almacenamiento por encima de 2 GB**, marcada de serie:
 
@@ -165,11 +172,11 @@ El plan Empresarial incluye todo lo del plan Bronce y añade:
 | Módulos base | Incluidos | Incluidos |
 | Inventario | Complemento de pago | Complemento de pago, salvo acuerdo |
 | Punto de fichaje | Complemento de pago | Complemento de pago, salvo acuerdo |
-| Almacenamiento | 2 GB incluidos; 0,25 € por GB completo de más | 2 GB incluidos, salvo acuerdo |
+| Almacenamiento | 2 GB incluidos; 0,25 € + IVA por GB completo de más | 2 GB incluidos, salvo acuerdo |
 | Soporte | Estándar, con tiempos de respuesta definidos | Preferente, por canales prioritarios |
 | Integraciones por webhook | — | Incluidas |
 | Integraciones con ERP/CRM y desarrollos a medida | — | Bajo acuerdo |
-| Precio | 5 €/empleado al mes | A medida |
+| Precio | 2 € + IVA por empleado al mes | A medida |
 
 > **Nota:** las integraciones a medida se presupuestan aparte y pueden llevar asociada una permanencia por el trabajo de puesta en marcha. El equipo comercial lo detalla en cada caso.
 
