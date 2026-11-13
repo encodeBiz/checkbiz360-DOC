@@ -306,7 +306,6 @@ Tipos de notificación generados automáticamente por el sistema para empleados 
 | Avisos de tareas y horario semanal por correo, para quien no usa la app | **Disponible** | Casilla por persona en Horarios y festivos; nada del fichaje. |
 | Preferencias de notificación configurables por usuario | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Historial persistente de notificaciones | **Pendiente de desarrollo** | Planificado para una versión futura. |
-| Alertas operativas por correo a los responsables | **Pendiente de desarrollo** | Planificado para una versión futura. |
 | Alertas por correo a propietario y administradores | **Disponible** | Resumen de la mañana (6:00–10:00), avisos al momento y pendientes de decisión; se eligen en Herramientas. Nada entre las 22:00 y las 6:00. |
 
 | Artículo | Descripción |
