@@ -55,6 +55,7 @@ Além do tipo, cada documento tem um âmbito que determina a quem se dirige:
 - **Funcionário**: um documento pessoal, como um recibo de vencimento ou um contrato.
 - **Sucursal**: dirigido a todo o pessoal de um local, como um protocolo de abertura.
 - **Entidade**: dirigido a todo o quadro de pessoal, como uma política de empresa.
+- **Cliente**: um papel de um cliente da carteira (a sua ficha, um orçamento). Os contratos do cliente carregam-se a partir da sua ficha, em **Contratos**. Ver [Documentos do cliente](../17-carteira-de-clientes/120-documentos-do-cliente.md).
 
 O âmbito determina também o modo de confirmação de leitura disponível: de um funcionário concreto, dos funcionários de uma sucursal ou de toda a entidade.
 
@@ -95,3 +96,4 @@ Os filtros do painel de documentos permitem-lhe pesquisar por tipo, por âmbito,
 - [Notificações de documentos](34-notificacoes-de-documentos.md)
 - [Permissões de acesso documental](37-permissoes-de-acesso-documental.md)
 - [Exportar documentos](38-exportar-documentos.md)
+- [Documentos do cliente](../17-carteira-de-clientes/120-documentos-do-cliente.md)

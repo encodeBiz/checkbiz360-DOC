@@ -10,12 +10,14 @@ O CheckBiz360 é oferecido em dois planos:
 
 | Plano | Preço | Para quem |
 |---|---|---|
-| **Bronze** | **5 €/funcionário por mês** | Empresas que precisam de cumprir o registo de horários e gerir a sua operação diária. Inclui os módulos base; o Inventário e o Ponto de registo contratam-se à parte. |
+| **Bronze** | **2 € + IVA por funcionário por mês** | Empresas que precisam de cumprir o registo de horários e gerir a sua operação diária. Inclui os módulos base; o Inventário e o Ponto de registo contratam-se à parte. |
 | **Empresarial** | **Preço à medida** | Organizações grandes (indicativamente, a partir de 100 funcionários) ou que precisam de integrações com os seus próprios sistemas e de apoio preferencial. |
 
 O preço do plano Bronze é **por funcionário e mês**: é faturado consoante os funcionários registados, sem quota fixa de entrada nem custo de implementação. Contam todos os funcionários do quadro de pessoal, também os inativos ou de baixa, porque continuam a fazer parte dele; não contam as fichas **pendentes** de completar nem os funcionários eliminados. O plano Empresarial é acordado com a equipa comercial em função do volume e das integrações necessárias.
 
-> **Tarifa 2026:** o plano Bronze pode ser subscrito por **2 €/funcionário por mês** até **31 de dezembro de 2026 inclusive**. A partir de 01/01/2027 a tarifa geral volta a ser de 5 € e aplica-se apenas a novas adesões: quem subscreveu antes mantém a sua, e qualquer revisão futura de preços será comunicada com bastante antecedência.
+> **Tarifa 2026:** o preço de **2 € + IVA por funcionário por mês** aplica-se a quem subscrever até **31 de dezembro de 2026 inclusive**. A partir de 01/01/2027 a tarifa geral das novas adesões será de 5 € + IVA: quem subscreveu antes mantém a sua, e qualquer revisão futura de preços será comunicada com bastante antecedência.
+
+> **IVA:** desde 11 de novembro de 2026, todos os preços do CheckBiz360 —plano, complementos e armazenamento— são **preço mais IVA**. Às empresas com sede em Espanha peninsular e nas Baleares soma-se **21 %**, e a fatura discrimina-o: base, IVA e total. Se a sua empresa estiver nas Canárias, em Ceuta, em Melilla ou fora de Espanha, escreva para **hola@encodebiz.com** para confirmar como é faturada.
 
 > **Período experimental:** a primeira subscrição inclui **15 dias de experiência**. A experiência não se aplica a subscrições posteriores da mesma entidade. Para a ativar é preciso um método de pagamento, mas adicioná-lo não gera cobrança e a experiência também não: se cancelar antes de terminar, não lhe é cobrado nada.
 
@@ -99,6 +101,11 @@ Ambos os planos incluem os módulos base descritos em seguida. O Inventário e o
 
 Contrata-se à parte em **Subscrições**, com 15 dias de experiência.
 
+| | |
+|---|---|
+| Até 50 funcionários | **29 € + IVA por mês** |
+| A partir do 51.º | **0,75 € + IVA por mês** por cada funcionário |
+
 - Artigos que se gastam (consumíveis) e que se emprestam (operáveis, por exemplares), em armazéns ligados a sucursais.
 - Material atribuído ao criar a tarefa; saída e consumo na aplicação; acerto do excedente ao validar.
 - Calendário de cada exemplar com aviso de coincidência entre tarefas.
@@ -114,8 +121,8 @@ Contrata-se à parte em **Ponto de registo**, com 15 dias de experiência na pri
 
 | | |
 |---|---|
-| Até 20 pontos de registo ativos | **19 € por mês** |
-| A partir do 21.º | **0,90 € por mês** por cada um |
+| Até 20 pontos de registo ativos | **19 € + IVA por mês** |
+| A partir do 21.º | **0,90 € + IVA por mês** por cada um |
 
 Só se cobram os pontos de registo ativos, não as sucursais que tiver.
 
@@ -129,7 +136,7 @@ Explica-se em [Ponto de registo](../03-controlo-de-horarios/113-ponto-de-registo
 
 ### Armazenamento
 
-Todas as empresas têm **2 GB incluídos** para o que carregam: documentos, fotos de tarefas, assinaturas, relatórios e fotos do ponto de registo. Acima disso, cada **GB completo** é adicionado à fatura mensal a **0,25 €**. Com 2,8 GB não se paga nada; com 3,1 GB paga-se 1 GB.
+Todas as empresas têm **2 GB incluídos** para o que carregam: documentos, fotos de tarefas, assinaturas, relatórios e fotos do ponto de registo. Acima disso, cada **GB completo** é adicionado à fatura mensal a **0,25 € + IVA**. Com 2,8 GB não se paga nada; com 3,1 GB paga-se 1 GB.
 
 Em **Entidade → Subscrições** vê-se quanto ocupa cada coisa e quanto seria faturado este mês. Aí mesmo está a caixa **Ampliar armazenamento acima de 2 GB**, marcada por omissão:
 
@@ -165,11 +172,11 @@ O plano Empresarial inclui tudo o do plano Bronze e acrescenta:
 | Módulos base | Incluídos | Incluídos |
 | Inventário | Complemento pago | Complemento pago, salvo acordo |
 | Ponto de registo | Complemento pago | Complemento pago, salvo acordo |
-| Armazenamento | 2 GB incluídos; 0,25 € por GB completo a mais | 2 GB incluídos, salvo acordo |
+| Armazenamento | 2 GB incluídos; 0,25 € + IVA por GB completo a mais | 2 GB incluídos, salvo acordo |
 | Apoio | Padrão, com tempos de resposta definidos | Preferencial, por canais prioritários |
 | Integrações por webhook | — | Incluídas |
 | Integrações com ERP/CRM e desenvolvimentos à medida | — | Sob acordo |
-| Preço | 5 €/funcionário por mês | À medida |
+| Preço | 2 € + IVA por funcionário por mês | À medida |
 
 > **Nota:** as integrações à medida são orçamentadas à parte e podem ter associado um período de fidelização pelo trabalho de arranque. A equipa comercial detalha-o em cada caso.
 

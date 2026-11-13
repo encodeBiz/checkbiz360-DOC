@@ -12,7 +12,7 @@ Ao entrar no painel, a primeira coisa que vê é a operação de hoje: quantas p
 - **Se a semana vai pior do que as anteriores**, com os mesmos números semana a semana.
 - **O que requer atenção**, numa lista curta que desaparece quando não há nada.
 
-Tudo sai dos registos de ponto, das tarefas e dos horários que já tem no CheckBiz360: não há nada a configurar nem a manter.
+Tudo sai dos registos de ponto, das tarefas e dos horários que já tem no CheckBiz360: não há nada a configurar nem a manter. O mesmo chega-lhe todas as manhãs por e-mail se for proprietário ou administrador: ver [Alertas por e-mail](../09-notificacoes/133-alertas-por-email.md).
 
 ---
 
@@ -22,16 +22,21 @@ Mesmo em cima, se houver algo a ver, uma lista de alertas com um **Ver** que lev
 
 | Alerta | O que aconteceu |
 |---|---|
-| **Ninguém no local** | Havia pessoas previstas num centro e ninguém registou a entrada. |
+| **Incidência numa tarefa** | Alguém marcou que não consegue fazer uma tarefa. Aparece em primeiro lugar, a vermelho, com o título e a nota, e desaparece quando é resolvida. Ver [Incidência na tarefa](../06-tarefas/125-incidencia-na-tarefa.md). |
+| **Ninguém no local** | Havia pessoas previstas num centro e ninguém teve jornada hoje. Se a equipa já registou e terminou a sua jornada, não dispara. |
 | **Poucos registos hoje** | De quem já devia estar, registaram menos do que o esperado. |
 | **Muitos atrasos** | Uma parte alta de quem registou hoje chegou tarde. |
 | **Poucos registos** | Na semana passada registou-se uma parte pequena das jornadas previstas. |
-| **Tarefas vencidas** / **Tarefas por iniciar** | Há tarefas vencidas por fechar, ou que não começaram à hora. |
+| **Tarefas vencidas** / **Tarefas por iniciar** | Há tarefas vencidas por fechar, ou que levam 5 minutos por começar desde a sua hora prevista. Basta uma só. Ver [Tarefa por iniciar à hora prevista](../06-tarefas/126-tarefa-por-iniciar-a-hora-prevista.md). As tarefas com uma incidência aberta não contam. |
 | **Jornadas por fechar** | Ontem ficaram jornadas abertas: pessoas que registaram a entrada e não a saída. |
 | **Custo a subir** | O custo diário está acima do do mês passado. |
 | **Faltam tarifas** | Uma parte das horas do mês não tem tarifa: o custo estimado fica curto. |
 | **Muitas saídas** | Este mês há muitas saídas em proporção à equipa ativa. |
 | **Disponibilidade baixa** | Um dia desta semana tem menos de um terço das pessoas disponíveis. |
+| **Jornadas de mais de 9 h** | A laranja: pessoas com uma jornada configurada de mais de 9 horas, com os seus nomes. Verifique se o seu horário é o real. |
+| **Sem descanso semanal** | A laranja: pessoas com os 7 dias da semana planeados. Verifique se o seu horário é o real. |
+| **Folha informativa por assinar** | A vermelho: pessoas que não assinaram a folha informativa de proteção de dados, e quantas estão por enviar. Ver [Folha informativa de proteção de dados](../12-conformidade-legal/137-folha-informativa-de-protecao-de-dados.md). |
+| **Clientes e contratos** | Tarefas de um cliente por fazer, menos horas para um cliente, contrato acima do previsto, contrato que termina e despesas por aprovar. Ver [O cliente nas análises](../17-carteira-de-clientes/123-o-cliente-nas-analises.md). |
 | **Acesso que não chegou** | A alguém não chegou o e-mail de acesso à aplicação: foi devolvido, marcado como spam ou não saiu. Diz a quem. Ver [Acesso à aplicação e alteração de e-mail](../02-funcionarios/116-acesso-a-aplicacao-e-alteracao-de-email.md). |
 
 ---
@@ -132,3 +137,4 @@ Proprietários e administradores da empresa.
 | [Quadro de disponibilidade](../04-calendario-e-horarios/98-quadro-de-disponibilidade.md) | A disponibilidade inteira, mês a mês, com o detalhe de quem falta |
 | [Calendário semanal de tarefas](../06-tarefas/111-calendario-semanal-de-tarefas.md) | As tarefas da semana, dia a dia e hora a hora |
 | [Vista global multi-sucursal](../08-sucursais-e-entidade/62-vista-global-multi-sucursal.md) | Onde está cada vista de conjunto |
+| [Alertas por e-mail](../09-notificacoes/133-alertas-por-email.md) | O resumo de cada manhã e os avisos imediatos |

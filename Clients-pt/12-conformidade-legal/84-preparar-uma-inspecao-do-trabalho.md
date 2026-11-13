@@ -100,6 +100,10 @@ Uma lacuna no registo é um dia útil em que um funcionário deveria ter trabalh
 
 Se efetuou correções sobre registos de funcionários, certifique-se de que todas têm um motivo documentado. Um relatório de conformidade com correções sem motivo registado pode suscitar perguntas do inspetor sobre a integridade do sistema.
 
+### Ter a prova de ter informado a equipa
+
+A coluna **Folha informativa** da lista de funcionários indica quem assinou a folha de proteção de dados e quando; a ficha de cada documento guarda a ata. Ver [Folha informativa de proteção de dados](./137-folha-informativa-de-protecao-de-dados.md).
+
 ### Ter localizada a informação básica da entidade
 
 Prepare com antecedência:

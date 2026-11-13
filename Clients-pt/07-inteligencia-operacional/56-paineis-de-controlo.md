@@ -69,9 +69,18 @@ Ao abrir um local surgem dois blocos:
 
 Quem cumpre, quem não deixa registo e a quem o seu local está a afetar.
 
+Cada pessoa com evidência suficiente recebe uma leitura: *Cumpre e regista*, *Cumpre, mas não regista*, *Regista bem, trabalha menos*, *Trabalha a mais*, *Precisa de atenção* ou *Depende do centro*. **«Regista bem, trabalha menos»** só é atribuída com um défice claro: quem fecha bem as suas jornadas e regista um pouco menos do que o planeado, mas não mais de 10 % menos, conta como *Cumpre e regista*.
+
+A lista **Quem sustenta melhor a operação** diz porque está vazia quando o está:
+
+- *Ainda não há ninguém com evidência suficiente para destacar*: faltam dados, não é um zero.
+- *Neste período ninguém cumpre ao mesmo tempo o registo e as horas planeadas*: há evidência, mas ninguém fecha bem as suas jornadas e chega ao mesmo tempo às suas horas. O que é preciso ver está em **Onde é preciso agir**.
+
 ### Análise
 
 Os padrões que não são de um local nem de uma pessoa em concreto: onde e quando o registo falha, e o cruzamento entre ambos os eixos. Lê-se do menos para o mais assinalável: primeiro o que é do processo e da configuração, e só no fim as pessoas.
+
+O cartão **Cumprimento de localização** conta também os **inícios de tarefa** com local de trabalho próprio, medidos face à margem de cada tarefa, e não apenas os registos medidos face ao centro. Assim aparece na análise a equipa que trabalha em casa do cliente. Por baixo do resumo indica quantas marcações são inícios de tarefa (e quantas fora) e quantas são registos. Do mesmo modo, em **Quem não consegue marcar**, cada início de tarefa é uma tentativa e um recusado por estar fora do local conta como falhado.
 
 ---
 

@@ -40,6 +40,16 @@ Desativar e eliminar são operações distintas com consequências muito diferen
 
 > **Aviso:** o CheckBiz360 não permite eliminar sucursais que tenham registos, jornadas ou documentos associados. Se precisar de encerrar definitivamente uma sucursal com dados históricos, a operação correta é desativá-la e solicitar à equipa de apoio a desassociação definitiva, caso seja necessária para cumprimento da regulamentação de proteção de dados.
 
+### Eliminar uma sucursal com tarefas por terminar
+
+Se a sucursal tiver tarefas em rascunho, atribuídas ou em curso, o painel não a apaga sem mais: abre **Tem tarefas por terminar** e pede para escolher o que fazer com elas:
+
+- **Passá-las a rascunho e movê-las para:** outra sucursal, que se escolhe em **Destino**. As tarefas ficam lá em rascunho, para as rever e voltar a pôr em circulação. Se não houver outra sucursal, a opção é **Passá-las a rascunho** sem as mover.
+- **Cancelá-las**: são canceladas e as pessoas atribuídas são avisadas.
+- **Não eliminar**: a sucursal fica como está.
+
+Assim nenhuma tarefa fica pendurada num local que já não existe nem continua a enviar avisos.
+
 Na prática, a grande maioria dos encerramentos de sucursal —temporários ou definitivos— deve ser gerida através da desativação, e não da eliminação.
 
 ## Como alterar o estado de uma sucursal

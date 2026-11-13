@@ -24,7 +24,7 @@ O sistema gera notificações perante os seguintes tipos de eventos:
 | Jornada manual pendente de aprovação | Um funcionário enviou um pedido de jornada que exige validação |
 | Confirmação de leitura registada | Um funcionário confirmou a leitura de um documento atribuído |
 | Tarefa concluída | Um funcionário marcou uma tarefa como terminada |
-| Tarefa por iniciar a tempo | Passaram 15 minutos da hora prevista de início sem que a tarefa arrancasse |
+| Tarefa por iniciar a tempo | Passaram 5 minutos da hora prevista de início sem que a tarefa arrancasse |
 
 ---
 

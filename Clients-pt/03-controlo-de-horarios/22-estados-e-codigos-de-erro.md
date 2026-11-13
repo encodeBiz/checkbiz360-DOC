@@ -31,7 +31,7 @@ Este estado é temporário. Surge quando se cria uma jornada manual ou quando um
 
 ### Estado `incomplete_workday`
 
-Indica que o funcionário registou a sua entrada mas não a sua saída. A jornada fica em aberto. Este estado pode ser resolvido registando a saída correspondente (manualmente ou a partir da aplicação) ou através da criação de uma saída manual por parte do responsável.
+Indica que o funcionário registou a sua entrada mas não a sua saída. A jornada fica em aberto. Este estado pode ser resolvido registando a saída correspondente (manualmente ou a partir da aplicação) ou através da criação de uma saída manual por parte do responsável. A partir da incidência que se abre, o responsável pode corrigir a jornada inteira de uma só vez: ver [Corrigir uma jornada incompleta de uma só vez](134-corrigir-uma-jornada-incompleta.md).
 
 ---
 

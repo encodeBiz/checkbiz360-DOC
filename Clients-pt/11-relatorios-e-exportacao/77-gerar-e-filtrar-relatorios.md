@@ -36,7 +36,7 @@ Pode filtrar por um funcionário concreto ou incluir todos os funcionários do �
 
 ### Sucursal
 
-Se a sua entidade tiver mais do que uma sucursal, pode selecionar uma sucursal concreta ou incluir todas. Os owners e managers com acesso multilocal veem todas as sucursais; os managers com acesso restrito só veem as suas.
+O relatório de jornada e o de tarefas podem ser gerados de **uma, várias ou todas as sucursais** ao mesmo tempo. No campo **Sucursal**, escreva para pesquisar e acrescente as que quiser; se o deixar vazio (*Todos*), o relatório inclui todas. A pesquisa funciona igual com 5 sucursais ou com 150. Os owners e managers com acesso multilocal veem todas as sucursais; os managers com acesso restrito só veem as suas.
 
 ### Tipo de evento
 

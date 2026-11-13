@@ -43,7 +43,7 @@ Em todos os ecrãs trabalha-se da mesma forma com os dois: procura-se o artigo e
 
 ## Como se contrata
 
-O inventário ativa-se em **Subscrições** como complemento do plano. Inclui um **período de experiência de 15 dias**. Enquanto não estiver contratado, a secção mostra em que consiste e como ativá-lo, e o relatório de tarefas gera-se como sempre, sem colunas de material.
+O inventário ativa-se em **Subscrições** como complemento do plano. Custa **29 € + IVA por mês até 50 funcionários e 0,75 € + IVA por funcionário a partir do 51.º**, e inclui um **período de experiência de 15 dias**. Enquanto não estiver contratado, a secção mostra em que consiste e como ativá-lo, e o relatório de tarefas gera-se como sempre, sem colunas de material.
 
 ---
 

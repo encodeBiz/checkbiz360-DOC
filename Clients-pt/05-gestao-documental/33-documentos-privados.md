@@ -76,3 +76,4 @@ Se carregar um documento como privado, trabalhar nele internamente e posteriorme
 - [Notificações de documentos](34-notificacoes-de-documentos.md)
 - [Permissões de acesso documental](37-permissoes-de-acesso-documental.md)
 - [Confirmação de leitura](35-assinatura-eletronica.md)
+- [Quem vê cada documento](136-quem-ve-cada-documento.md)

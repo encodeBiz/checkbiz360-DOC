@@ -18,6 +18,10 @@ Os botões só aparecem nas tarefas atribuídas ao funcionário. Um supervisor q
 
 Para iniciar é preciso ter a **jornada aberta** (ter registado a entrada) e, se a tarefa tiver local de trabalho próprio, estar dentro da sua margem. Ver [Relação com o controlo de horários](./39-o-que-e-o-modulo-de-tarefas.md#relação-com-o-controlo-de-horários) e [Local de trabalho próprio](./40-criar-uma-tarefa.md#local-de-trabalho-próprio).
 
+### Marcar as caixas da descrição
+
+Se a descrição tiver uma lista de caixas, o funcionário marca-as no detalhe da tarefa à medida que avança. Cada marca fica no histórico e o responsável vê-a no painel. Ver [As caixas marcam-se a partir da aplicação](./40-criar-uma-tarefa.md#as-caixas-marcam-se-a-partir-da-aplicação).
+
 ### Marcar uma tarefa como concluída
 
 Terminada a atividade, o funcionário prime **Concluir**. Se a tarefa tiver ativada a exigência de evidência —está por omissão—, o sistema não permite fechá-la sem pelo menos uma foto ou vídeo anexados, e devolve o erro `task/evidence_required`.
@@ -73,7 +77,9 @@ Cada nota é classificada com um tipo, o que permite distinguir num relance a na
 | **Especificação** | Precisar como o trabalho deve ser feito |
 | **Nota operacional** | Informar do avanço ou do dia a dia da execução |
 | **Esclarecimento** | Resolver uma dúvida colocada sobre a tarefa |
-| **Nota de incidência** | Deixar constância de um problema encontrado durante a execução |
+| **Nota de incidência** | Só em notas antigas: já não se criam |
+
+Se algo **impedir de fazer a tarefa** —não abrem a porta, falta material—, não deixe uma nota: use **Marcar incidência** (na aplicação, «Reportar incidencia» no menu de três pontos). Avisa de imediato a direção e a tarefa deixa de contar como atrasada. Ver [Incidência na tarefa](./125-incidencia-na-tarefa.md).
 
 As notas são úteis para:
 
@@ -91,8 +97,10 @@ O responsável também pode acrescentar comentários a partir do backoffice, que
 A secção **Histórico** do detalhe da tarefa conta o seu percurso completo, por ordem: criada, atribuída, iniciada, pausada e retomada, concluída, validada ou recusada, cancelada, e as mudanças de estado feitas à mão. Cada linha indica:
 
 - Data e hora.
-- Quem o fez e com que perfil. As ações automáticas aparecem como **Sistema**; se uma pessoa do backoffice não tiver nome registado, aparece como **Utilizador do painel**.
+- Quem o fez e com que perfil. As ações automáticas aparecem como **Sistema**. O que um proprietário ou um administrador faz a partir do painel aparece como **Por {nome} · Administração**; uma tarefa concluída a partir do painel indica-o também, com as horas indicadas (ver [fechá-la a partir da administração](./127-quem-termina-a-tarefa-e-fecho-a-partir-da-administracao.md)). Se quem atua não tiver nome registado, aparece como **Utilizador do painel**.
 - O motivo, nas validações, nas recusas e no último cancelamento.
+
+Também ficam anotadas as atribuições (*Atribuída a …*, *Atribuição retirada: …*), cada caixa marcada ou desmarcada da descrição, e as incidências (*Incidência marcada*, *Incidência resolvida: …*).
 
 Também ficam anotadas as tentativas de iniciar ou retomar uma tarefa **fora do seu local de trabalho** («Início recusado: fora do local de trabalho»), que ajudam a perceber porque é que um funcionário não conseguiu começar.
 
@@ -113,7 +121,7 @@ A partir do painel de tarefas do backoffice, o manager ou supervisor pode:
 - Identificar tarefas que estão há demasiado tempo *em curso* sem avanço.
 - Detetar as que estão *em risco* ou *vencidas* através do indicador de cumprimento temporal.
 
-> **Nota:** o sistema avisa por sua iniciativa em duas situações: quando uma tarefa com hora prevista de início não arrancou 15 minutos depois, e quando se aproxima ou se ultrapassa o prazo. Que uma tarefa esteja há muito tempo *em curso* sem novidades não dispara qualquer aviso automático: isso deteta-se revendo a lista.
+> **Nota:** o sistema avisa por sua iniciativa em duas situações: quando uma tarefa com hora prevista de início não arrancou 5 minutos depois ([Tarefa por iniciar à hora prevista](./126-tarefa-por-iniciar-a-hora-prevista.md)), e quando se aproxima ou se ultrapassa o prazo. Que uma tarefa esteja há muito tempo *em curso* sem novidades não dispara qualquer aviso automático: isso deteta-se revendo a lista.
 
 ---
 
@@ -137,3 +145,4 @@ Para uma descrição detalhada de todos os tipos de notificação, consulte o ar
 | [Relatórios de tarefas](./48-relatorios-de-tarefas.md) | Métricas de acompanhamento e exportação |
 | [Atribuir tarefas a funcionários](./41-atribuir-tarefas-a-funcionarios.md) | Como atribuir e reatribuir tarefas |
 | [Calendário semanal de tarefas](./111-calendario-semanal-de-tarefas.md) | A semana num relance, dia a dia e hora a hora, com os buracos e as sobreposições |
+| [Incidência na tarefa](./125-incidencia-na-tarefa.md) | Avisar de que a tarefa não pode ser feita e resolvê-lo |

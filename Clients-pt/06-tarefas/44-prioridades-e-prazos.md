@@ -40,7 +40,7 @@ Ambas são interpretadas no **fuso horário operacional da sucursal** da tarefa.
 
 ## Aviso de início tardio
 
-É o aviso automático que se configura tarefa a tarefa. Se a tarefa tiver **data prevista de início** e estiver ativada a opção **Notificar se não iniciar a tempo**, o sistema envia uma notificação quando tiverem passado **15 minutos** dessa hora sem que a tarefa tenha sido iniciada.
+É o aviso automático que se configura tarefa a tarefa. Se a tarefa tiver **data prevista de início** e estiver ativada a opção **Notificar se não iniciar a tempo**, o sistema avisa quando tiverem passado **5 minutos** dessa hora sem que a tarefa tenha sido iniciada. Ver [Tarefa por iniciar à hora prevista](./126-tarefa-por-iniciar-a-hora-prevista.md).
 
 O envio fica registado na atividade da tarefa, de modo que o responsável pode verificar se o aviso chegou a ocorrer.
 
@@ -65,6 +65,7 @@ As consequências são:
 
 - A tarefa aparece marcada como vencida na listagem do backoffice e na aplicação do funcionário.
 - O vencimento fica registado e reflete-se no relatório de tarefas.
+- Se a tarefa tiver uma [incidência](./125-incidencia-na-tarefa.md) aberta, não conta entre as vencidas de **Início** nem dos alertas por e-mail até ser resolvida.
 - O funcionário pode continuar a concluí-la depois de vencer. Ao fechá-la, o indicador passará a *concluída tarde*, não a *concluída a tempo*.
 
 > **Importante:** uma tarefa vencida não desaparece nem se fecha sozinha. O registo de que ultrapassou o prazo permanece no histórico ainda que depois seja concluída e validada.

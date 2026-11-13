@@ -22,6 +22,8 @@ O sistema analisa de forma contínua os registos de cada funcionário à procura
 
 **Padrões de regularidade excessiva.** O comportamento humano tem variabilidade inerente. Se todos os parâmetros do registo de um funcionário (hora, coordenadas, duração da jornada) forem demasiado constantes durante um período prolongado, o sistema identifica essa regularidade como estatisticamente anómala.
 
+**Jornada de duração estranha para o seu turno.** Ao registar a saída, a jornada é comparada com o turno que a pessoa tinha planeado para essa entrada. É marcada como **registo suspeito** se durar menos de metade do turno ou mais de duas horas acima dele. Se não havia horário planeado, usam-se as margens gerais: menos de 3 horas ou mais de 10. Assim, uma tarefa de 2 horas cumprida ou um reforço curto não aparecem como suspeitos, e uma jornada de 8 horas fechada às 3 aparece. A regra aplica-se aos registos a partir de 11 de novembro de 2026; os anteriores conservam a sua marca.
+
 > **Importante:** nenhum destes padrões é, por si só, prova de qualquer irregularidade. Existem situações legítimas que podem produzir comportamentos semelhantes: funcionários que trabalham sempre a partir do mesmo posto fixo, dispositivos com GPS pouco preciso que reportam sempre as mesmas coordenadas, pessoas com rotinas muito estáveis. O indicador de anomalia é o início de uma investigação, não a sua conclusão.
 
 ## O que deve fazer o responsável quando surge um funcionário assinalado

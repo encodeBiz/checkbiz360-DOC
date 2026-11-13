@@ -13,7 +13,7 @@ Bloco da ficha do funcionário que diz se o correio de boas-vindas chegou e se a
 Conceito que **não se aplica** na versão atual: o registo guarda sempre a hora real e não é arredondado. O que decide se o tempo trabalhado fora da faixa oficial é contabilizado é a modalidade de *jornada estrita ou flexível* do calendário.
 
 ### Armazenamento
-Espaço ocupado pelo que a sua empresa carrega: documentos, fotos de tarefas, assinaturas, relatórios e fotos do ponto de registo. Há 2 GB incluídos; acima disso, cada GB completo é faturado a 0,25 € por mês se a ampliação estiver ativada. Veja [Planos, preços e funcionalidades](./91-planos-e-funcionalidades.md#armazenamento).
+Espaço ocupado pelo que a sua empresa carrega: documentos, fotos de tarefas, assinaturas, relatórios e fotos do ponto de registo. Há 2 GB incluídos; acima disso, cada GB completo é faturado a 0,25 € + IVA por mês se a ampliação estiver ativada. Veja [Planos, preços e funcionalidades](./91-planos-e-funcionalidades.md#armazenamento).
 
 ### Assistente de IA (Merlin)
 Componente de inteligência artificial que interpreta os dados operacionais e os expõe como um relato acionável no painel operacional, no detalhe de sucursal e no detalhe de funcionário. Narra e prioriza sobre os números que o ecrã já mostra: não recalcula nem gera dados próprios, de forma que a sua leitura não pode contradizer os painéis. Também narra o guia inicial do backoffice.
@@ -179,7 +179,7 @@ Estado de uma ficha de funcionário à qual falta algum dado para poder trabalha
 Nível de acesso e permissões de um utilizador dentro do CheckBiz360. Os perfis disponíveis são: Owner, Manager, Supervisor e Worker. Cada perfil tem um conjunto definido de ações que pode realizar no backoffice e na aplicação móvel.
 
 ### Plano de subscrição
-Modalidade de contratação do CheckBiz360. Há duas: **Bronze**, 5 €/funcionário por mês (tarifa 2026 de 2 € subscrevendo até 31 de dezembro de 2026 inclusive), e **Empresarial**, com preço à medida, que acrescenta apoio preferencial e integrações. Ambas dão acesso a todos os módulos da plataforma. Veja [Planos, preços e funcionalidades](./91-planos-e-funcionalidades.md).
+Modalidade de contratação do CheckBiz360. Há duas: **Bronze**, 2 € + IVA por funcionário por mês (tarifa 2026, subscrevendo até 31 de dezembro de 2026 inclusive), e **Empresarial**, com preço à medida, que acrescenta apoio preferencial e integrações. Ambas dão acesso a todos os módulos da plataforma. Veja [Planos, preços e funcionalidades](./91-planos-e-funcionalidades.md).
 
 ### Ponto de registo
 Dispositivo fixo num local, tablet ou telemóvel, onde cada pessoa regista o ponto com o seu cartão QR ou o seu código de 6 dígitos e o dispositivo tira uma foto. É um complemento pago. Na aplicação chama-se *modo quiosque*. Veja [Ponto de registo](../03-controlo-de-horarios/113-ponto-de-registo.md).

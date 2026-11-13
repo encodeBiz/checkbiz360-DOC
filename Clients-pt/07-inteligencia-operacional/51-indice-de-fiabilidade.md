@@ -22,6 +22,8 @@ O índice de fiabilidade constrói-se a partir da análise acumulada de vários 
 
 **Desvios de horário.** O sistema não olha apenas para se o funcionário chega tarde ou sai mais cedo, mas para a magnitude desses desvios ao longo do tempo. Desvios pequenos e esporádicos têm um impacto menor do que desvios grandes e recorrentes.
 
+**Constância.** É a parte das entradas que ficam a 15 minutos ou menos da hora planeada. Mede-se face ao planeado para cada jornada: quem tem turnos diferentes cada dia ou trabalha por tarefas não aparece como irregular por mudar de hora, mas apenas se se afastar do que tinha previsto.
+
 ## Como se apresenta
 
 A fiabilidade não é publicada como uma nota sobre 100 nem como um ranking. Mostra-se com a sua **variação face ao período anterior** —que costuma dizer mais do que o valor absoluto— e com o seu **estado de maturidade**:

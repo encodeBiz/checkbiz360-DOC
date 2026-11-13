@@ -63,7 +63,7 @@ O seu âmbito decide-se **em cada tarefa**, e não no seu perfil. Toda a tarefa 
 
 ### Worker (funcionário)
 
-Recebe as tarefas atribuídas, consulta a sua descrição e as suas evidências, inicia o trabalho, pausa-o e retoma-o quando tem de o interromper, adiciona notas de progresso, carrega evidências e marca a tarefa como concluída. Não pode criar nem atribuir tarefas a outros funcionários.
+Recebe as tarefas atribuídas, consulta a sua descrição e as suas evidências, inicia o trabalho, pausa-o e retoma-o quando tem de o interromper, marca as caixas da descrição, adiciona notas de progresso, carrega evidências, reporta uma [incidência](./125-incidencia-na-tarefa.md) se algo o impedir de a fazer e marca a tarefa como concluída. Não pode criar nem atribuir tarefas a outros funcionários.
 
 ---
 

@@ -20,6 +20,8 @@ Existem duas situações principais em que um registo entra no estado `pending-e
 
 **Correção do gestor:** quando um responsável propõe corrigir um registo existente do funcionário (por exemplo, ajusta a hora de entrada ou de saída), a alteração não é aplicada até que o funcionário a aceite. Entretanto, o registo fica pendente de validação. A hora proposta não pode ser futura: o formulário não o permite e o servidor recusa-a com `checklog_update/future_not_allowed`.
 
+**Correção de uma jornada incompleta inteira:** se faltar a saída de uma jornada, sobretudo se for repartida, todos os seus registos corrigem-se de uma só vez a partir da incidência, com um único motivo, e a pessoa aceita ou recusa a jornada inteira. Ver [Corrigir uma jornada incompleta de uma só vez](134-corrigir-uma-jornada-incompleta.md).
+
 ---
 
 ## Como o funcionário valida ou recusa um registo pendente
@@ -93,3 +95,4 @@ Os utilizadores com perfil **funcionário** podem validar ou recusar registos pe
 - [Rastreabilidade e histórico de alterações](21-rastreabilidade-e-historico-de-alteracoes.md)
 - [Estados e códigos de erro](22-estados-e-codigos-de-erro.md)
 - [Como funciona o registo de ponto](13-como-funciona-o-registo-de-ponto.md)
+- [Corrigir uma jornada incompleta de uma só vez](134-corrigir-uma-jornada-incompleta.md)

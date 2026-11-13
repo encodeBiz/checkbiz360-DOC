@@ -34,7 +34,9 @@ O relatório de tarefas é gerado a partir da secção **Relatórios** do backof
 
 ### O que contém
 
-Uma linha por tarefa, com estas colunas: Empresa, Local, Título, Estado, Prioridade, Início, Fim, **Tempo investido (h)**, **Em pausa (h)**, **N.º de pausas**, **Tempo investido sem pausas (h)**, Equipa, Avaliação e N.º de evidências.
+Uma linha por tarefa, com estas colunas: Empresa, Local, Título, Estado, Prioridade, Início, Fim, **Tempo investido (h)**, **Em pausa (h)**, **N.º de pausas**, **Tempo investido sem pausas (h)**, Equipa, **Concluída por**, Avaliação e N.º de evidências. Se alguma tarefa do relatório tiver cliente, acrescenta-se a coluna **Cliente** a seguir a **Local** (ver [O cliente na tarefa](../17-carteira-de-clientes/119-o-cliente-na-tarefa.md)).
+
+**Concluída por** indica quem fechou a tarefa; se foi fechada a partir do painel, leva *(a partir da administração)*, e o início e o fim são as horas que foram indicadas ao fechá-la. Ver [fechá-la a partir da administração](./127-quem-termina-a-tarefa-e-fecho-a-partir-da-administracao.md).
 
 Convém ler bem as colunas de tempo:
 
@@ -46,6 +48,12 @@ Convém ler bem as colunas de tempo:
 | **Tempo investido sem pausas (h)** | O tempo investido menos o tempo em pausa. Desconta as pausas que alguém registou, não as interrupções que ninguém marcou. |
 
 Uma tarefa que ainda não foi iniciada deixa as colunas de pausa vazias. Se uma tarefa estiver em pausa ao gerar o relatório, a pausa aberta conta até esse momento.
+
+### Incidências
+
+Se alguma tarefa do período teve uma [incidência](./125-incidencia-na-tarefa.md), a folha **Tarefas** ganha a coluna **Incidência**: *Aberta* (a vermelho) ou *Resolvida · Replaneada*, *Cancelada* ou *Resolvida*.
+
+O ficheiro traz além disso sempre a folha **Incidências**, com uma linha por incidência, aberta ou resolvida: Local, Cliente, Tarefa, Estado da tarefa, Marcada, Marcada por, Nota, Ficheiro, Incidência, Resolução, Resolvida, Resolvida por e Nota de resolução. Se no período não houve nenhuma, a folha indica-o.
 
 ### Material de cada tarefa
 

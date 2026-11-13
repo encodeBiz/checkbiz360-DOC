@@ -58,10 +58,10 @@ Dentro do detalhe da tarefa, o funcionário pode consultar:
 - A prioridade atribuída (crítica, alta, média ou baixa).
 - A data e hora limite, e a data prevista de início, se tiver sido indicada.
 - O local de trabalho, se a tarefa tiver um próprio, com a ligação **Ver no Maps**.
-- As evidências já carregadas e as notas da tarefa.
+- Os documentos anexos, as evidências já carregadas e as notas da tarefa.
 - O tempo investido e o total de pausas, e o histórico da tarefa (a partir da versão 1.4.0 da aplicação).
 
-O funcionário pode iniciar a tarefa, pausá-la e retomá-la, acrescentar notas de progresso, carregar evidências e, quando terminar, marcá-la como concluída.
+O funcionário pode iniciar a tarefa, pausá-la e retomá-la, marcar as caixas da descrição, acrescentar notas de progresso, carregar evidências, [reportar uma incidência](./125-incidencia-na-tarefa.md) se não a puder fazer e, quando terminar, marcá-la como concluída.
 
 ---
 
@@ -70,6 +70,8 @@ O funcionário pode iniciar a tarefa, pausá-la e retomá-la, acrescentar notas 
 No momento em que a atribuição é guardada, o CheckBiz360 envia automaticamente uma notificação push para o dispositivo do funcionário. Não é necessária qualquer ação adicional por parte do responsável.
 
 A notificação inclui o título da tarefa e o prazo, de modo que o funcionário tenha a informação essencial sem necessidade de abrir a aplicação.
+
+Se forem atribuídas muitas tarefas de uma só vez à mesma pessoa, ela recebe **um único aviso** com o resumo («Tienes 84 tareas nuevas del 3 al 30 de noviembre»), que ao ser tocado abre a sua lista com esses dias. Ver [Avisos agrupados](./47-notificacoes-de-tarefas.md#avisos-agrupados-muitas-tarefas-um-só-aviso).
 
 Se o funcionário tiver as notificações push desativadas no seu dispositivo, a tarefa continuará a aparecer na sua lista dentro da aplicação, mas não receberá o aviso no ecrã.
 

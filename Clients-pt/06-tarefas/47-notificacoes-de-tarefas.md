@@ -30,6 +30,14 @@ As notificações de tarefas distribuem-se por dois canais:
 
 ---
 
+### Avisos agrupados: muitas tarefas, um só aviso
+
+Quando chegam a uma pessoa muitas tarefas de uma vez —ao carregar uma escala, ao planear o mês—, não recebe um aviso por tarefa. As tarefas **novas**, **alteradas** e **retiradas** juntam-se e chega-lhe **um só aviso** quando deixam de entrar alterações, por exemplo: «Tienes 84 tareas nuevas del 3 al 30 de noviembre, 2 cambiadas». Ao tocá-lo, a aplicação abre a sua lista de tarefas com esses dias.
+
+Uma tarefa solta chega como sempre, com o seu título, no máximo um par de minutos mais tarde. Se retirarem ou cancelarem uma tarefa à pessoa, o aviso di-lo: «Ya no tienes la tarea … : se ha retirado o cancelado.» Voltar a confirmar uma escala sem alterações não envia nada.
+
+---
+
 ### Tarefa validada
 
 **Destinatário:** funcionário cuja tarefa foi validada.
@@ -70,13 +78,23 @@ As notificações de tarefas distribuem-se por dois canais:
 
 ### Aviso de início tardio
 
-**Destinatário:** as pessoas envolvidas na tarefa.
+**Destinatário:** as pessoas atribuídas, com um aviso na aplicação, e os proprietários e administradores, por e-mail.
 
-**Quando é enviado:** quando tiverem passado **15 minutos** da data prevista de início sem que a tarefa tenha sido iniciada.
+**Quando é enviado:** quando tiverem passado **5 minutos** da data prevista de início sem que a tarefa tenha sido iniciada. As tarefas que ficam por começar ao mesmo tempo seguem num só e-mail. Explica-se por inteiro em [Tarefa por iniciar à hora prevista](./126-tarefa-por-iniciar-a-hora-prevista.md).
 
 **Requisitos:** a tarefa deve ter **data prevista de início** e a opção **Notificar se não iniciar a tempo** ativada. Sem data prevista de início, a opção não tem efeito.
 
 É o único aviso que se configura tarefa a tarefa, e ativa-se ao criá-la ou editá-la. O envio fica registado na atividade da tarefa, de modo que o responsável pode verificar se chegou a ocorrer.
+
+---
+
+### Incidência na tarefa
+
+**Destinatário:** os responsáveis da sucursal e os supervisores, com um aviso na aplicação; os proprietários e administradores, por e-mail e com um alerta vermelho em **Início**.
+
+**Quando é enviado:** de imediato, quando alguém marca que não consegue fazer a tarefa.
+
+**Conteúdo:** quem a marcou, a tarefa, a sucursal e a nota. Explica-se em [Incidência na tarefa](./125-incidencia-na-tarefa.md).
 
 ---
 
@@ -120,3 +138,5 @@ Se o funcionário tiver desativado as permissões de notificações do dispositi
 | [Prioridades e prazos](./44-prioridades-e-prazos.md) | Alertas de vencimento e configuração |
 | [Validação de tarefas](./45-validacao-de-tarefas.md) | Notificação ao validar ou recusar |
 | [O que é o módulo de tarefas](./39-o-que-e-o-modulo-de-tarefas.md) | Visão geral do módulo |
+| [Tarefa por iniciar à hora prevista](./126-tarefa-por-iniciar-a-hora-prevista.md) | O aviso aos 5 minutos e como desligar o e-mail |
+| [Incidência na tarefa](./125-incidencia-na-tarefa.md) | O aviso imediato quando uma tarefa não pode ser feita |

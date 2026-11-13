@@ -25,7 +25,7 @@ Enquanto está *em curso*, a tarefa pode ficar **em pausa** uma ou várias vezes
 | **Rascunho** | A tarefa está criada mas ainda não foi posta em circulação. Serve para a preparar antes de a enviar à equipa. | Quem a cria, a partir do backoffice |
 | **Atribuída** | A tarefa foi enviada aos seus responsáveis, que receberam a notificação, mas ninguém começou ainda. | Quem a cria, ou o sistema ao atribuir |
 | **Em curso** | Um funcionário atribuído iniciou a tarefa e está a trabalhar nela. | Funcionário a partir da aplicação |
-| **Concluída** | O funcionário marcou a tarefa como terminada e fica pendente de revisão. | Funcionário a partir da aplicação |
+| **Concluída** | O funcionário marcou a tarefa como terminada e fica pendente de revisão. | Funcionário a partir da aplicação, ou a direção a partir do painel |
 | **Validada** | O responsável reviu o trabalho e aceitou-o como correto. É o encerramento satisfatório. | Manager, ou owner ou supervisor com permissão de validação |
 | **Recusada** | O responsável reviu a tarefa concluída e devolveu-a com um motivo obrigatório. | Manager, ou owner ou supervisor com permissão de validação |
 | **Cancelada** | A tarefa é anulada porque já não se aplica. Exige motivo e não conta como incumprimento. | Manager ou owner a partir do backoffice |
@@ -65,6 +65,8 @@ O funcionário abre a tarefa na aplicação e prime iniciar. Precisa de ter a jo
 
 O funcionário prime finalizar na aplicação. Se a tarefa tiver ativada a exigência de evidência, o sistema não permite fechá-la sem pelo menos uma foto ou vídeo anexados, e devolve o erro `task/evidence_required`. Se a tarefa estava em pausa, a pausa é fechada nesse momento.
 
+Com várias pessoas atribuídas, o momento em que se fecha depende de **Quem dá a tarefa por terminada?**: a primeira, todas ou uma responsável. E se ninguém a iniciou a partir da aplicação, a direção pode concluí-la a partir do painel indicando a hora de início e de fecho. As duas coisas explicam-se em [Quem termina a tarefa e fechá-la a partir da administração](./127-quem-termina-a-tarefa-e-fecho-a-partir-da-administracao.md).
+
 ### De concluída a validada
 
 O responsável revê o trabalho a partir do backoffice e aceita-o. A tarefa fica encerrada e é ativada a avaliação do funcionário.
@@ -89,6 +91,12 @@ Ao reabrir:
 - O cumprimento temporal volta a *Por iniciar*. Reveja o prazo se já tiver passado.
 - Os contadores de pausa voltam a zero.
 - O histórico conserva tudo o que aconteceu antes de reabrir.
+
+---
+
+## Tarefa com incidência
+
+Se alguém marcar uma [incidência](./125-incidencia-na-tarefa.md) porque não consegue fazer a tarefa, o estado **não muda**: a ficha e a linha da lista aparecem a vermelho até que a direção a resolva. Entretanto, a tarefa não conta entre as vencidas nem as atrasadas de **Início** e dos alertas.
 
 ---
 
@@ -144,3 +152,5 @@ Cada tarefa mostra duas etiquetas de cor: uma para o estado e outra para o cumpr
 | [Prioridades e prazos](./44-prioridades-e-prazos.md) | Configuração de prazos e alertas |
 | [Validação de tarefas](./45-validacao-de-tarefas.md) | Fluxo de validação e permissões |
 | [Notificações de tarefas](./47-notificacoes-de-tarefas.md) | Avisos automáticos por mudança de estado |
+| [Incidência na tarefa](./125-incidencia-na-tarefa.md) | Marcar que não se pode fazer e resolvê-lo |
+| [Quem termina a tarefa e fechá-la a partir da administração](./127-quem-termina-a-tarefa-e-fecho-a-partir-da-administracao.md) | Uma, todas ou uma responsável; concluir com horas a partir do painel |

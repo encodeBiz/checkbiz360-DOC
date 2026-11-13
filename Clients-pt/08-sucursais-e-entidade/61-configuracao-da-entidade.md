@@ -80,7 +80,7 @@ Se a sua organização precisar de 2FA generalizada, ative-a funcionário a func
 
 A partir de **Subscrições** o Owner consulta o plano contratado e o seu estado, e a partir de **Faturas** o histórico. Os métodos de pagamento são geridos em **Configurar Faturação**.
 
-A faturação do plano Bronze é **por funcionário e mês**: não há uma quota de funcionários incluídos que se possa esgotar. Consulte [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md).
+A faturação do plano Bronze é **por funcionário e mês**: não há uma quota de funcionários incluídos que se possa esgotar. Todos os preços são **mais IVA**: desde 11 de novembro de 2026 a fatura soma os 21 % e discrimina-os (base, IVA e total). Para que a fatura saia completa, mantenha atualizados a denominação social, o NIF e a morada em **Dados da empresa**. Consulte [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md).
 
 ### Armazenamento
 
@@ -130,6 +130,22 @@ A regra é simples: o que afeta a empresa como um todo configura-se na entidade;
 ---
 
 > **Nota de perfil:** a configuração da entidade, e em particular a subscrição, compete ao **Owner**. Para delegar a gestão do dia a dia —sucursais, funcionários, tarefas e documentos— use o perfil **Manager**.
+
+---
+
+## Eliminar a empresa: pede-se
+
+A empresa não é eliminada a partir do painel: pede-se, e a equipa do CheckBiz360 entra em contacto consigo para o confirmar antes de apagar nada. Assim ninguém perde a conta, a equipa e o registo de jornada por um clique.
+
+1. Em **Entidade → Dados da empresa**, prima **Solicitar a eliminação da empresa**, em baixo.
+2. Escreva o **Motivo do pedido**. É obrigatório.
+3. Envie. O painel confirma: *Pedido enviado. Entraremos em contacto para o confirmar.*
+
+A partir desse momento, todos os ecrãs do painel mostram em cima um aviso a vermelho com a data do pedido, e o botão passa a **Eliminação solicitada**. Entretanto, a empresa continua a funcionar normalmente. Se mudar de ideias, escreva para **hola@encodebiz.com**.
+
+Só o **proprietário** o pode pedir.
+
+> **Aviso:** antes de o pedir, descarregue o que deva conservar, em especial o registo de jornada, que a lei obriga a guardar durante quatro anos. Ver [Relatório de conformidade legal](../11-relatorios-e-exportacao/79-relatorio-de-conformidade-legal.md).
 
 ---
 

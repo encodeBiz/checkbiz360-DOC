@@ -16,6 +16,8 @@ Com o módulo documental pode:
 - Controlar que perfis podem ver cada documento.
 - Exigir **confirmação de leitura** e verificar quem a deu e quem não.
 - Arquivar um documento quando deixa de estar em vigor, sem o perder.
+- Eliminar um documento de que já não precisa para libertar espaço, conservando o registo de quem o recebeu e de quem o eliminou ([Eliminar documentos](135-eliminar-documentos.md)).
+- Enviar a folha informativa de proteção de dados para que cada pessoa a assine na aplicação ([Folha informativa](../12-conformidade-legal/137-folha-informativa-de-protecao-de-dados.md)).
 
 ## Tipos de documentos que se podem gerir
 

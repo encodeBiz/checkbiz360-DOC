@@ -1,5 +1,7 @@
 # Alertas para responsáveis
 
+> **Alertas por e-mail:** o resumo da manhã e os avisos que esperam uma decisão chegam por e-mail ao proprietário e aos administradores da empresa, não a managers nem supervisores. Configuram-se em **Ferramentas → Alertas por e-mail**. Ver [Alertas por e-mail](133-alertas-por-email.md).
+
 Os alertas para responsáveis são notificações de carácter operacional que o sistema envia aos perfis Manager e Supervisor quando ocorrem eventos que exigem atenção ou ação por parte da equipa de gestão. Ao contrário das notificações dirigidas aos funcionários, estes alertas foram concebidos para detetar irregularidades, garantir o cumprimento dos processos e permitir uma resposta rápida perante situações que possam afetar a operação. Este artigo descreve os tipos de alerta disponíveis, como configurá-los e como ajustar os limiares de ativação.
 
 ## Tipos de alerta para responsáveis
@@ -27,6 +29,8 @@ O motor de análise do CheckBiz360 avalia cada registo em contexto e pode marcá
 - Coordenadas GPS inconsistentes com o movimento físico possível no tempo decorrido.
 - Padrões de registo que coincidem com comportamentos conhecidos de evasão ao controlo.
 - Registo a partir de um dispositivo diferente do habitual sem autorização prévia.
+
+Além disso, uma jornada é marcada como suspeita quando a sua duração não bate certo com o turno planeado dessa entrada: se durar **menos de metade** do turno ou **mais de 2 horas acima** dele. Assim, um reforço de 2 horas cumprido, ou uma tarefa curta de quem trabalha com horário por tarefas, não aparece como suspeito, e uma jornada de 8 horas fechada às 3 aparece. Se a pessoa não tiver turno planeado nesse dia, marca-se a jornada de menos de 3 horas ou de mais de 10. Esta regra aplica-se aos registos a partir de 11 de novembro de 2026; os anteriores conservam a sua marca.
 
 Quando este alerta é gerado, o responsável recebe a notificação com o detalhe do registo suspeito e pode decidir validá-lo, modificá-lo ou escaloná-lo para investigação.
 
@@ -88,4 +92,5 @@ Os alertas revistos são arquivados automaticamente e ficam disponíveis no hist
 - [Tipos de notificação](63-tipos-de-notificacao.md)
 - [Configurar preferências de notificação](65-configurar-preferencias-de-notificacao.md)
 - [Histórico de notificações](67-historico-de-notificacoes.md)
+- [Alertas por e-mail](133-alertas-por-email.md)
 - [Vista global multi-sucursal](../08-sucursais-e-entidade/62-vista-global-multi-sucursal.md)

@@ -39,8 +39,8 @@ O ponto de registo é um complemento pago, como o inventário. Está no menu lat
 
 | | |
 |---|---|
-| Preço | **19 € por mês**, que cobrem até **20 pontos de registo ativos** |
-| A partir do 21.º | **0,90 € por mês** por cada ponto de registo ativo |
+| Preço | **19 € + IVA por mês**, que cobrem até **20 pontos de registo ativos** |
+| A partir do 21.º | **0,90 € + IVA por mês** por cada ponto de registo ativo |
 | Teste | **15 dias** na primeira contratação |
 | Fatura | À parte do seu plano |
 

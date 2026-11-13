@@ -70,7 +70,7 @@ O relatório de tarefas reúne as tarefas do período com o seu estado e o seu c
 
 - As tarefas cujo **prazo** cai dentro do período selecionado, com o seu estado e o seu cumprimento temporal.
 - O tempo de cada tarefa: tempo investido, tempo em pausa, número de pausas e tempo investido sem pausas. Explicam-se em [Relatórios de tarefas](../06-tarefas/48-relatorios-de-tarefas.md#o-que-contém).
-- Filtros por sucursal e por estado da tarefa.
+- Filtros por uma, várias ou todas as sucursais e por estado da tarefa.
 - Os dados necessários para calcular na folha de cálculo o que for preciso: concluídas face a atribuídas, vencidas, recusadas.
 
 - Com o [inventário](../16-inventario/100-o-que-e-o-inventario.md) contratado: o material consumido por tarefa, o seu custo e o que ficou por acertar, mais uma folha de detalhe por artigo. Ver [Relatórios de tarefas](../06-tarefas/48-relatorios-de-tarefas.md#material-de-cada-tarefa).

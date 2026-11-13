@@ -63,12 +63,12 @@ Nada do registo de ponto vai por correio. A caixa vem desmarcada e marca-se pess
 
 Quando a sua empresa chega aos 90 % do armazenamento incluído no seu plano, o proprietário recebe um correio no endereço de faturação. Envia-se uma única vez. Só volta a ser enviado se o uso descer abaixo dos 80 % e depois voltar a subir. Ver [Planos, preços e funcionalidades](../14-referencia/91-planos-e-funcionalidades.md#armazenamento).
 
-## Alertas operacionais por correio
+## Alertas por e-mail
+
+O proprietário e os administradores recebem todas as manhãs um resumo com os alertas da página inicial e o que espera a sua decisão (pedidos, incidências, documentos por assinar), e de imediato o que não pode esperar. Escolhe-se que avisos chegam e a que hora em **Ferramentas → Alertas por e-mail**. Explica-se em [Alertas por e-mail](./133-alertas-por-email.md).
 
 > **Estado: Planeada**
-> Esta funcionalidade faz parte do roadmap e ainda não está disponível na versão atual.
-
-O envio por correio dos alertas da página inicial aos responsáveis, e o recurso automático por correio quando uma notificação push não chega ao dispositivo, estão planeados para uma versão futura.
+> O recurso automático por correio quando uma notificação push não chega ao dispositivo está planeado para uma versão futura.
 
 ---
 
@@ -92,3 +92,4 @@ Se um funcionário ou responsável não receber um correio esperado do sistema, 
 - [Notificações push na aplicação](64-notificacoes-push-na-aplicacao.md)
 - [Configurar preferências de notificação](65-configurar-preferencias-de-notificacao.md)
 - [Histórico de notificações](67-historico-de-notificacoes.md)
+- [Alertas por e-mail](133-alertas-por-email.md)

@@ -1,5 +1,7 @@
 # Permissões de acesso documental
 
+> **Quem vê cada documento:** o documento pessoal de uma pessoa só o veem ela e, a partir do painel, o proprietário e os administradores; a partir da aplicação ninguém vê o de outra pessoa, proprietário incluído. E há um nível **Administração** para o que só o proprietário e os administradores devem abrir. Ver [Quem vê cada documento](136-quem-ve-cada-documento.md), que prevalece sobre as tabelas deste artigo.
+
 O módulo documental do CheckBiz360 aplica um modelo de permissões baseado em perfis que determina que ações cada utilizador pode realizar sobre os documentos. Compreender esta estrutura é fundamental para configurar corretamente o acesso, proteger a documentação sensível e garantir que cada pessoa da organização vê apenas o que lhe diz respeito.
 
 ## Perfis e permissões gerais
@@ -12,7 +14,7 @@ O CheckBiz360 define quatro perfis principais com diferentes níveis de acesso a
 | Ver documentos de outros funcionários | Não | Só a sua equipa (se tiver permissão) | Sim (a sua entidade) | Sim (toda a entidade) |
 | Carregar documentos | Não | Consoante delegação | Sim | Sim |
 | Editar documentos | Não | Consoante delegação | Sim | Sim |
-| Eliminar documentos | Não | Não | Sim | Sim |
+| Eliminar documentos | Não | Não | Não (pode arquivar) | Sim |
 | Solicitar assinatura | Não | Não | Sim | Sim |
 | Confirmar leitura | Sim (os próprios) | Sim (os próprios) | Não aplicável | Não aplicável |
 | Ver documentos privados | Não | Consoante delegação | Sim | Sim |
@@ -64,14 +66,9 @@ Para configurar a delegação de permissões:
 4. Na secção de permissões do supervisor, ative as opções documentais correspondentes.
 5. Guarde as alterações.
 
-## Permissões de eliminação
+## Arquivar e eliminar
 
-A eliminação de documentos é uma ação irreversível que apenas os utilizadores com perfil Manager ou Owner podem realizar. Antes de eliminar um documento, verifique:
-
-- Se o documento tiver assinatura registada, a eliminação apagará também o registo de rastreabilidade da assinatura.
-- Se o documento fizer parte de um processo que deve ser conservado por obrigação legal, não o elimine ainda que a sua utilidade operacional imediata tenha terminado.
-
-Recomenda-se marcar os documentos obsoletos como privados em vez de os eliminar, sobretudo em documentos com assinatura ou com relevância laboral, para conservar o histórico sem expor o documento ao funcionário.
+Arquivar retira o documento da vista e conserva o ficheiro. **Eliminar** apaga o ficheiro, o documento assinado e a ata da assinatura, e liberta o espaço; fica o registo de quem o recebeu, de quem o eliminou e porquê. Só podem eliminar o **proprietário** e os **administradores**, a partir do painel. Ver [Eliminar documentos e libertar espaço](135-eliminar-documentos.md).
 
 ## Artigos relacionados
 
@@ -80,3 +77,6 @@ Recomenda-se marcar os documentos obsoletos como privados em vez de os eliminar,
 - [Confirmação de leitura](35-assinatura-eletronica.md)
 - [Exportar documentos](38-exportar-documentos.md)
 - [Carregar e organizar documentos](31-carregar-e-organizar-documentos.md)
+- [Quem vê cada documento](136-quem-ve-cada-documento.md)
+- [Eliminar documentos e libertar espaço](135-eliminar-documentos.md)
+- [Documentos do cliente](../17-carteira-de-clientes/120-documentos-do-cliente.md)
