@@ -1702,6 +1702,8 @@ Diseño: [07_iva-altas-nuevas.md](../ingenieria/billing-v2/07_iva-altas-nuevas.m
   Departamento de Arendel ya va sumado.
 - **Aviso a cada cliente antes de su próxima factura** (Jose lo envía o da el OK al texto). Antes,
   mirar cómo figura el precio en la web y en las condiciones aceptadas («2 € + IVA» o «2 €»).
+  **HECHO (Jose, 11-nov): «ya todos están avisados por privado».** La migración de las
+  suscripciones entra en el mismo pase, sin esperar.
 - Opcional: quitar del código la distinción nuevo/de antes, que deja de tener sentido.
 
 Código (`billing` y `shared`): `433e5fd` (IVA 21 % con tipo fijo de Stripe), `4dab648` (precio
@@ -2381,9 +2383,9 @@ Visto con Cuidama (staging). Lo que entra en el pase:
 - **Gastos sin contrato** (`customers`):
   - `GET /:customerId/expenses/without-contract`, para el bloque «Gastos sin contrato» de la ficha.
   - `PATCH /expenses/:id/contract`, para asignar, cambiar o quitar el contrato. Queda en `contract_events` como `expense_assigned` / `expense_unassigned`.
-  - Un gasto nuevo toma el contrato de su tarea o, si la tarea no tiene, el único vigente ese día.
+  - Un gasto nuevo toma el contrato de su tarea o, si la tarea no tiene, el único vigente ese día. **Cambiado en §67:** si la tarea no tiene contrato, el gasto tampoco.
   - El proxy del panel tiene que dejar pasar las dos rutas: `b90ada6d`. Sin eso, el bloque sale vacío.
-- **El contrato recoge lo que cubre** (`application/linkCustomerContracts.ts`):
+- **El contrato recoge lo que cubre** (`application/linkCustomerContracts.ts`) — **REVERTIDO el 2026-11-11 en §67**: la API ya no lo hace y el gasto sigue al contrato de su tarea. Lo de abajo queda como historia:
   - Al crear un contrato, cambiar su vigencia o reabrirlo, entran las tareas con cliente y sin contrato, y sus gastos, que ahora cubre. Solo si es el único vigente en esa fecha.
   - Queda en `contract_events` como `tasks_linked`.
   - Script `link-task-contracts --entity <id> [--customer <id>] [--apply]`, que simula por defecto.
@@ -2401,7 +2403,120 @@ Visto con Cuidama (staging). Lo que entra en el pase:
 | 55.1 | `tasks`, `customers`, `documents` | Con el resto del pase; sin migración (`contract_events.type` es texto). `shared` cambia (`clientChannel`) |
 | 55.2 | Panel | `develop` del panel con las ramas de la cartera (§50) |
 | 55.3 | Decidir con Jose | Medir en prod con `reattribute-panel-activity --all`, SOLO simulación, cuántas entradas firmó la ficha en lugar de la cuenta. En staging: 4013 movidas, 132 sin tocar. Aplicar solo con su OK |
-| 55.4 | Verificar | Editar una tarea del cuadrante con cliente guarda. Un gasto de la app sin contrato sale en la ficha y se asigna. Cambiar las fechas de un contrato recoge las tareas del cliente. El historial de una acción del panel dice «Administración» |
+| 55.4 | Verificar | Editar una tarea del cuadrante con cliente guarda. Un gasto de la app sin contrato sale en la ficha y se asigna. ~~Cambiar las fechas de un contrato recoge las tareas del cliente~~ (ya no, §67). El historial de una acción del panel dice «Administración» |
+
+## 56. Purga de empleado desde el backoffice, por orden de la empresa — EN PROD el 2026-11-09 (hotfix #274, merge `7335a6e`); EN STAGING (`ff6b04a`)
+
+Pedida por Jose el 2026-11-09 (orden real pendiente: Centro Formación Ayudarte, persona JUAN RODRIGUEZ MORENO). Lo que entra en el pase:
+
+- **Balance y purga** (`services/backoffice/src/application/maintenance/purgaEmpleado.ts`):
+  - `GET/POST /employees/:employeeId/purga`, con permiso `employees:purge` (root y admin).
+  - El POST exige la orden adjunta (PNG, JPG o PDF, hasta ~5 MB) y el nombre tecleado. La orden se guarda en `system/evidencias/purga-empleados/…` con su SHA-256, y la copia en `system/respaldos/r30/purga-empleados/…` (30 días).
+  - Frenos: la cuenta es `@encodebiz.com`, o la persona es `owner` de la empresa.
+  - Se conserva el registro de jornada (`checklogs_raw`, `rentman_time_registration`). Se anonimiza `item_movements_raw` (`employee_id` a NULL). Lo demás con `employee_id` se borra.
+  - `app.ts`: el límite del JSON sube a 8 MB solo en las rutas que acaban en `/purga`.
+- **Aviso a los propietarios** (`purgaEmpleadoCorreo.ts`): a los `owner` de la empresa, nunca a la persona, con copia a quien la lanzó. Plantilla `EMPLOYEE_PURGED` (fuente `packages/shared/src/checkbiz/employees/purgeEmail.ts`), en el idioma de la empresa o en inglés.
+- **Panel del backoffice** (`apps/backoffice-web`): la fila de Trabajadores abre el detalle, y de ahí cuelga «Purgar persona».
+
+| # | Paso | Cómo |
+|---|---|---|
+| 56.1 | `backoffice` y `billing` en staging | Despliegue a mano de los dos (`billing` lleva el script de plantillas). `shared` cambia (`EmailType.EMPLOYEE_PURGED`, `purgeEmail`) |
+| 56.2 | Plantilla en staging | HECHO el 2026-11-09 (~10:55 UTC) en `dev-encodebiz`: `EMPLOYEE_PURGED_es` y `EMPLOYEE_PURGED_en` creadas con la forma del script (generadas desde `shared` local, porque `billing` de staging aún no tenía el código). Leídas después con la consulta del `EmailService` (`type` + `locale`): las dos OK. Cuando se despliegue `billing`, `email-templates.js` debe decir «al día» |
+| 56.3 | Texto del correo | Jose lo revisa antes de que salga a un cliente real |
+| 56.4 | Verificar en staging | HECHO en parte el 2026-11-09: Jose purgó desde el backoffice la ficha «EncodeBiz» (`QAfzn26Ohxd8KtfMZJj2`, Cuidama) a las 11:09 UTC. Respuesta 200, lo borrado coincide con el balance y el aviso `EMPLOYEE_PURGED` (es) llegó con estado `sent` a `hola@encodebiz.com`. Falta ver en pantalla los dos frenos de Marta Ledesma Arroyo (`5T8DZKMfHOP2qwDtC7GO`) |
+| 56.4b | Registro de purgas | Mantenimiento → «Purgas de empleado» (permiso `employees:purge`): lista de `backoffice_audit` (`action = 'empleado.purgado'`), detalle con el acta y el aviso, y descarga de la orden por `GET /maintenance/purgas/:id/orden` (queda en la auditoría). En staging `347053f`: probada con la purga 329 (acta, fichero y aviso encontrados) |
+| 56.5 | Prod | HECHO el 2026-11-09, ~11:55 UTC, como hotfix: PR #274 (solo los 7 commits de la purga, cherry-pick sobre main) fusionado con `[skip ci]`; el checkout de prod ya estaba en `e98bff3`, que lo contiene. `up -d --build --no-deps backoffice billing` (los dos `healthy`), `nginx -t` OK antes y después, `restart nginx` sin ningún `emerg`; el borde da los mismos códigos que antes y `/maintenance/purgas` da 401. `email-templates`: simulación con 2 nuevas (solo `EMPLOYEE_PURGED_es/en`) y 18 al día; `--apply` las creó y una segunda pasada dio 20 al día. Prueba de humo en solo lectura: registro de purgas vacío y plantillas encontradas. Sin migración |
+| 56.5b | Incidente ajeno | 11:46:47–11:47:58 UTC: el nginx de prod no arrancaba por la regex sin comillas del hotfix #273 (`nginx.conf:241`); unos 70 s de caída. Arreglado por la otra sesión en `d30396e`. No es de esta feature |
+| 56.7 | Orden real pendiente | Centro Formación Ayudarte: purgar a JUAN RODRIGUEZ MORENO. Jose la lanza desde el backoffice con el correo del propietario adjunto |
+| 56.6 | Sin inventariar | `checkbiz_employee_patterns`, `checkbiz_employee_planifiers`, `pattern_history` (campo no verificado); ficheros sin la persona en la ruta |
+
+## 57. La empresa se solicita eliminar, no se borra — EN PROD el 2026-11-09 (API #273/#275, panel #155); `deleteEntity` aplazada; EN STAGING el 2026-11-09 (develop → staging `269c873`, `e929097`, `a883cf0`; `entities` y `backoffice` reconstruidos; `deleteEntity` a 410 en `dev-encodebiz`)
+
+Orden de Jose: la eliminación de la empresa es un formulario de solicitud formal y la API deja
+de borrar. La propietaria la pide desde el panel; la empresa queda con
+`entities/{id}.deletionRequest.status = "pending"`; el panel enseña un aviso rojo fijo arriba y
+centrado en todas las pantallas; el backoffice la enseña en Dirección (alerta grande con acceso a
+la ficha) y en la ficha del cliente; llega un correo a `hola@encodebiz.com`. Soporte la ejecuta
+con la purga de empresas. Decisión del 09-nov: `entities` entra en prod **solo con esa ruta**
+(nginx publica `/api/v1/entities/{id}/deletion-request`); el alta y la edición siguen en Firebase.
+
+| # | Paso | Cómo | Estado |
+|---|---|---|---|
+| 57.1 | API | PR encodebiz-api **#273** (`hotfix/solicitud-eliminar-entidad`, título con `[skip ci]`): `entities` + compose + nginx + backoffice. Tras fusionar, en `/opt/encodebiz-api`: `git pull --ff-only origin main`, `up -d --build --no-deps entities backoffice`, `nginx -t` dentro del contenedor y `restart nginx`. Sondear `POST https://api.checkbiz360.com/api/v1/entities/x/deletion-request` → 401 | HECHO 11:46 UTC (`369a14a`). La regex de nginx iba sin comillas y **nginx no arrancó: prod caída de 11:46:50 a ~11:48:50 UTC**. Corregida en el servidor y en `main` con #275 (`e98bff3`); `/health` 200, ruta nueva 401, resto de `entities` 404 |
+| 57.2 | Vercel | Production: `NEXT_BACKEND_URI_ENTITY_DELETION_REQUEST=https://api.checkbiz360.com/api/v1/entities`. Sin respaldo en `…_CREATE_ENTITY` a propósito (apunta a la Cloud Function `createEntity`) | HECHO 09-nov |
+| 57.3 | Panel | PR encodebiz-front-saas **#155** a `main`, después de 57.1 y 57.2 | HECHO: `fe86597`, Vercel Ready 11:51 UTC. Sin probar con sesión real |
+| 57.4 | Functions | PR encodeBiz-SAAS **#13**; después del panel: `firebase deploy --only functions:apiV100-firebaseEntryHttp-entity-deleteEntity --project encodebiz-services` → responde 410 `entity/delete_discontinued` | APLAZADO por Jose el 09-nov («por el momento no me preocupa»): la función sigue borrando si se la llama directamente |
+| 57.5 | Verificado en staging | 400 sin motivo, 403 a quien no es propietaria, 201 la primera, 200 sin duplicar la segunda, un correo `sent`; marca en `QA qa-20261106-6lhf-ajena` (`0ogrL6kGKJ0humn4BusH`), que se queda como caso de prueba. Sin ver en pantalla: el aviso del panel y las alertas del backoffice | EN PARTE |
+| 57.6 | Fuera de alcance | Acuse de recibo al cliente (texto por aprobar), anular una solicitud, y que la purga de empresas limpie la marca o la lea | ABIERTO |
+
+## 58. Merlin: relato de centro y de persona, en blanco y falso en «Por tareas» (09-nov)
+
+**En staging:** develop `48d81c4` y `19fd412`, staging `93efb32` y `8d1a095`. Servicios `merlin` y `analytics`; `analytics` porque cambia `fetchPatternSeries` de `shared`.
+
+- **Relatos en blanco.** Con un tope de 2000 tokens, gpt-5-mini lo gastaba entero en razonar y el titular y el resumen salían vacíos, guardados como `completed` durante 7 días. El tope sube a 6000, como el panel. Lo que no tiene titular o resumen (`isUsableResult`) se guarda como `error` y se reintenta. El renderer ya no parsea una respuesta `incomplete` y deja en `reason` el motivo y el consumo.
+- **«Por tareas».** Antes cada ciclo se contaba como jornada («1,5 h/día»). Ahora el relato usa la jornada real, que es la suma de ciclos por persona y día, frente a lo planificado.
+  - Sin tareas críticas o sin valoraciones, la señal no entra en el prompt. Antes salían «0 % en críticas» y «1,0★».
+  - Con base `plan` se quitan el perfil guardado, calculado con el reloj, y sus cambios.
+  - El servidor calcula el cuadrante de la persona, y el titular ya no lo contradice.
+- **`shared`.** `fetchPatternSeries` de persona sin sucursal mezclaba el patrón global con el de cada sucursal: salían 83 «días» en 30. Ahora filtra `branch_id IS NULL`.
+- `promptVersion` pasa a v3 en centro y persona: la caché vieja deja de servirse sola.
+- **Al pasar a prod:** desplegar `merlin` y `analytics`. No hay migración. No hace falta borrar `ai-analizer`, porque la versión v3 cambia la clave de caché.
+- **Queda abierto, pendiente de decisión:**
+  - el clasificador de `firebase_sdk` sigue guardando un `profileType` medido con el reloj;
+  - la regla `costTrend === "down"` ⇒ AT-RISK;
+  - el prompt de centro pide «diagnose root causes», y el modelo afirma causas que no están en los datos.
+
+## 57. La purga borra también la jornada, con la conformidad de la dirección; Trabajadores con búsqueda — EN PROD el 2026-11-09 (hotfix #276, merge `4a0de8b`); EN STAGING (`a047dc2`)
+
+Decisión de Jose (2026-11-09): conservar la jornada a medias dejaba los fichajes pero la persona desaparecía del informe de jornada (`employee_daily_reports` se borraba). Ahora se borra **todo**. Antes se pide por correo la conformidad de la dirección, como **paso manual**: el sistema no manda nada, y en el diálogo se marca que ya está.
+
+- **Purga**: borra `checklogs_raw`, `rentman_time_registration` y `employee_daily_reports`, y en Firestore `entities/{e}/checklogs` de la persona, con barrido final. Sin conformidad responde `409 conformidad`. El acta guarda `conformidadDireccion`.
+- **Aviso** `EMPLOYEE_PURGED`: nueva sección «El registro de jornada» con `{{checklogsCount}}`.
+- **Trabajadores**: búsqueda por nombre o correo y «Cargar más» (25), paginada en el servidor sobre `dim_employees`.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 57.1 | Staging | HECHO 09-nov: `backoffice` y `billing` reconstruidos; `email-templates --apply --replace`, que solo cambió `EMPLOYEE_PURGED_es/en` (18 al día). Purga de QA «normal-bh7q» (`0P6wpcVC…/x7Pr391q…`): sin conformidad rechazada; con ella, 2+2 fichajes, 1 resumen y la ficha a 0, residuo vacío |
+| 57.2 | Prod | HECHO el 09-nov (~12:10 UTC): #276 fusionado con `[skip ci]`, sin workflow; checkout limpio de `e98bff3` a `4a0de8b`; `up -d --build --no-deps backoffice billing` (healthy); `nginx -t` OK, `restart nginx` sin ningún `emerg`; el borde da los códigos de siempre |
+| 57.3 | Plantilla en prod | HECHO: en la simulación solo salían distintas `EMPLOYEE_PURGED_es/en` (18 al día); `--apply --replace` las sobrescribió; la segunda pasada dio 20 al día |
+| 57.4 | Orden real | PENDIENTE (Jose, desde el backoffice): Ayudarte `OPnlEi3n…`, Juan Rodríguez Moreno `bF0AesKSvYBuuD5pBysj` (fired). Balance en solo lectura: sin frenos ni fichajes; 26 filas de Postgres, 1 fichero y la cuenta. Aviso a los 2 propietarios. Antes, la conformidad de la dirección por correo |
+
+## 59. Heurística y Merlin coherentes: clasificador único, reglas con base, tendencia con fecha — EJECUTADO el 2026-11-11 (registro §68); EN STAGING el 2026-11-09
+
+**Ramas:** develop `d7f7998` (clasificador), `2f0cf2f` (tendencia), `7570829` (`lastCycleAt`), `d413664` (reglas) y `b51848e` (prompts de Merlin: solo lo observado, glosario único, sin cuadrante en el titular, caché `v4`/`panel-v4`, tope de 10000 tokens). Staging `24ab508` y `211e34a`. Detalle en TDR-006 (revisión 09-nov), TDR-007 («Base de cada medida»), TDR-009 nuevo (clasificador único) y ADR-006 revisado. DOCS va sin commitear.
+
+**Qué cambia:**
+- **Clasificador único.** Vive en `packages/shared` (`profileClassifier.ts`). Los clasificadores de analytics y firebase_sdk pasan a ser alias de ese.
+  - El trigger de fichaje acumula en el patrón la desviación de cada ciclo frente a su plan (`planWindow`, `planTiming`, `timingBasis`) y clasifica con esa base.
+  - `costTrend` deja de clasificar.
+  - Lo que no tiene dato vale null, no 0.
+- **Reglas heurísticas:**
+  - Se leen de `checkbiz_heuristic_indicators_v2`; hasta ahora se leía la colección sin `_v2`, que es la equivocada. Si no hay documentos, se usan umbrales por defecto (`defaultIndicators.ts`).
+  - Las reglas de persona pasan a vivir en el código (`engineRules.ts`) y `engine_rules` de Firestore deja de leerse.
+  - La madurez es la misma que la del panel (ADR-005).
+- **Tendencia:**
+  - Cada lectura pide un solo nivel.
+  - Un cambio de perfil solo cuenta si se mantiene 5 días con registro y con la misma base.
+  - La fiabilidad se mide sobre `dataQuality`.
+  - `efficiencyIndex` sale del conjunto.
+  - La foto diaria se fecha con el día local del último ciclo (`lastCycleAt`).
+- **Migración 063:** columnas `timing_basis`, `data_quality`, `data_maturity` y `updated_at` en `pattern_snapshots`. Es la base de los modelos propios.
+
+**Pase a prod, en este orden:**
+1. Migración `063_pattern_snapshots_base_de_medida.sql`, a mano y antes que nada (el INSERT de la foto nombra las columnas nuevas).
+2. Contenedores `analytics` y `merlin`.
+3. Funciones (`desplegar.mjs --project encodebiz-services --solo …`, con el OK de Jose): `onChecklogWrite`, `onTaskPattern`, `onBranchPatternSync`, `onEmpPatternSync`, `onBranchPattern` y `onEmpPattern`. Antes hay que `empaquetar`.
+4. **Recalcular los patrones guardados.** Sin recálculo, siguen con el perfil del reloj hasta acumular 10 ciclos con plan. En staging se hizo con `siembra-saludstart/16-recalcular-perfiles.js`; para prod hay que generalizarlo por entidad, simulando primero.
+
+**Hecho en staging:** migración aplicada (4899 fotos), contenedores y funciones desplegados, y 67 patrones de SaludStart recalculados. Antes había 50 personas «maverick»; ahora hay 31 «anchor», 27 «neutral», 5 «ghost» y 2 «at-risk». Las dos oficinas salen «elite».
+
+**Abierto, pendiente de decisión:**
+- `trabaja_de_menos` sale en 28 de 29 personas: en «Por tareas», acabar antes una tarea no es trabajar de menos.
+- Umbrales discutibles: «cobertura del plan baja» por debajo del 75 %, y el aviso de equilibrio de carga por debajo del 90 %.
+- La tarjeta heurística del front solo pinta los indicadores de coste.
+- «elite» se da con un 10 % de tareas tarde.
+- La tasa de tareas a tiempo es una EMA de unas 13 tareas: propuesta de añadir recuentos.
+- `promotionScore` y `skillLevel` siguen midiendo con el reloj.
 
 ## 60. «Nadie ha fichado» con todo el centro ya fuera — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-10 (develop `98fca80`, staging `d67c161`; `analytics` y `assistant` reconstruidos)
 
@@ -2424,6 +2539,24 @@ Visto con Cuidama (staging). Lo que entra en el pase:
 | 60.2 | Hotfix | Worktree desde `origin/main`, cherry-pick de `945af58` (solo `analytics`: `OperationalDay.ts`, el test y el script de verificación), PR a `main` con `[skip ci]`; después, `up -d --build --no-deps analytics` y `restart nginx`. Sin migración ni `shared` |
 | 60.3 | Verificar en prod | Pasada la hora de salida, un centro con todas sus jornadas cerradas no sale en `/panel/alerts`. Un centro sin ningún fichaje pasada la hora de entrada sigue saliendo |
 | 60.4 | Verificado en staging | HECHO el 2026-11-10, ~12:52 UTC. Oficina Barcelona da `alert: "none"`, con 11 terminadas, 1 en otro centro y nadie dentro. `/panel/alerts` de SaludStart ya no lleva `no_presence`, y `ver_alertas` del conector tampoco |
+
+## 61. Backoffice: el almacenamiento de cada cliente — EN PROD el 2026-11-10 (hotfix #277, merge `d04c312`); EN STAGING el 2026-11-10 (develop `d0f5659`, staging `e17b138`; `backoffice` reconstruido)
+
+- **Qué cambia.** La lista de Clientes lleva la columna «Almacenamiento»: lo que ocupa la
+  empresa (MB o GB) frente a los 2 GB incluidos, los GB y euros de más, y «sin ampliación» si
+  tiene `storageExtra` desmarcado. Se ordena por ella. La ficha lo enseña en Resumen y, en
+  Facturación, desglosado por módulo (documentos, tareas, firma, informes, punto de fichaje),
+  con lo que provoca la ampliación activada o no. Si billing no lo devuelve, aviso «sin medir».
+- **De dónde sale.** Lista: una consulta `collectionGroup("storage_shards")` desde `backoffice`
+  (`application/clientes/almacenamiento.ts`); sin índice nuevo. Ficha: el `/internal/.../ficha`
+  de `billing`, que ya mandaba `byModule`. Solo cambia `backoffice`: sin migración ni `shared`.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 61.1 | Orden de Jose | HECHO el 2026-11-10: «súbelo como hot fix» |
+| 61.2 | Desplegar | HECHO: PR #277 con `[skip ci]`, `git pull` de `main`, `up -d --build --no-deps backoffice` y `restart nginx` |
+| 61.3 | Verificar en prod | HECHO (contenedor): 11 empresas con contador, la mayor con 64 MB; ninguna pasa de 2 GB. Falta mirarlo en el navegador |
+| 61.4 | Verificado en staging | HECHO el 2026-11-10: 43 empresas con contador; billing devuelve `byModule` (`3xcfwyMj6ixsFyDbPera`: 8,5 MB, documentos 4,4 MB y tareas 3,9 MB) |
 
 ## 62. «Trabaja menos» solo con un déficit claro, y la lista de destacados vacía dice por qué — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `03a9022`, staging `f9e50b4`; `analytics` reconstruido; panel en `develop` `fb7873da` y `a9fa7bcb`)
 
@@ -2451,6 +2584,78 @@ la operación» decía que faltaba evidencia, que era falso.
 | 62.3 | Panel | Con el siguiente PR del panel a `main` |
 | 62.4 | Verificar en prod | Antes y después, `profileCounts` de una empresa con jornadas bien cerradas: lo que baja de `underworked` pasa a `reliable`, y nada más se mueve |
 | 62.5 | Verificado en staging | HECHO el 2026-11-11 con `buildPanelOverview` dentro del contenedor: de `{underworked: 27, insufficient: 2}` a `{underworked: 14, reliable: 13, insufficient: 2}`, mismas desviaciones antes y después (todo el cambio es del criterio). `overall.profile` de `underworked` a `reliable` (−9,2 %); `topPerformers` de 0 a 5; eje de horas del perfil de 27 a 14 `trabaja_de_menos` |
+
+## 63. Incidencia en la tarea: marcar, avisar y resolver (TDR-009) — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `4021ba4`, `8f6d0f2` y `e50f56b`; staging `c547091`, `4b18dc5`, `0782fdb` y `4c5b0ff`; 064 aplicada en `encodebiz_staging`; `tasks analytics assistant reports` reconstruidos)
+
+Diseño aprobado por Jose el 2026-11-11:
+[tasks-service/tdr/TDR-009](../ingenieria/tasks-service/tdr/TDR-009-incidencia-en-la-tarea.md).
+Quien no puede hacer una tarea por algo ajeno la marca (nota obligatoria, foto o archivo
+opcional); sale correo inmediato a owner y admin, alerta roja arriba del todo en el panel y push
+a responsables de la sucursal y supervisores. Mientras está abierta, la tarea no cuenta como
+vencida, retrasada ni como tarea del cliente sin hacer.
+
+- API: rama `feat/incidencia-tarea` (`c897d2f` y `252a445`, nombre de la cuenta). Toca `shared`
+  (`Task.incident`, tipos de historial, `hasIncident` en el listado, textos de `alertEmail` y del
+  push, `reportPendingAlert` con `task_incident`, el aviso de retraso de inicio salta las tareas con
+  incidencia abierta). Rutas nuevas en `tasks`: `POST /:taskId/incident` (multipart) y
+  `POST /:taskId/incident/resolution`; `GET /?hasIncident=true` sin índice compuesto (lee solo
+  `incident.status == "open"`, índice de un campo).
+- Migración **`064_incidencia_en_la_tarea.sql`**: cuatro columnas `incident_*` en `tasks_raw` e
+  índice parcial de las abiertas. **Antes** de desplegar `analytics`: `/panel/alerts` y la jornada
+  operativa las leen y sin ellas dan 500. `tasks` la tolera ausente. Sin backfill: ninguna tarea
+  anterior tiene incidencia.
+- Sin índices de Firestore. Sin variables nuevas. Plantilla de correo: la del aviso inmediato
+  (`ALERTS_IMMEDIATE`) de siempre; la regla nueva solo pone título, texto y botón «Ver la tarea»
+  desde `alertEmail.ts`, no hay que subir plantillas.
+- `firebase_sdk`: el filtro del aviso de retraso de inicio (`findPendingStartNotifications`) va en
+  `taskStartNotificationWorker`. **En dev desplegada el 2026-11-11 11:24 UTC** desde staging
+  `4b18dc5` (`desplegar.mjs --project dev-encodebiz --solo taskStartNotificationWorker`; ACTIVE).
+  En prod PENDIENTE, no bloqueante: `npm run empaquetar -w services/firebase_sdk` y
+  `node scripts/desplegar.mjs --project encodebiz-services --solo taskStartNotificationWorker`.
+- App y panel: en develop (app `checkbiz360` `bf4078a` → `730494d`; panel `414c71a2` → `d0db5247`),
+  sin prueba de extremo a extremo contra staging desde la app (botón en el header, modal, rojo en
+  ficha y listado, chip «Con incidencia», quitar `incident_note` del desplegable). Van detrás de la API.
+- Panel, retoques del 2026-11-11 tras probarlo Jose (develop, todos en `d0db5247`):
+  - Chip rojo en la cabecera gris de «Gestión de tareas» con el número de tareas con incidencia
+    abierta de toda la empresa (`a03beb33`, `8c87771d`). Solo sale si hay alguna.
+  - El chip es el **único** filtro de incidencias: el desplegable «Incidencia» se quitó
+    (`eb7dc92a`). Pulsarlo lleva a «Lista» y filtra; su X lo quita; tocar cualquier otro filtro
+    también lo quita (`d0db5247`).
+  - Resolver: «Reprogramada» y «Reasignada» son una opción, «Replanificada» (`b89da9a2`, ver abajo).
+  - Sin probar en pantalla por Claude; Jose lo está probando en local (`start:dev` contra staging).
+- Comprobado en staging el 2026-11-11 (EncodeBiz S.L, tarea «Prueba de geo», cuenta propietaria):
+  nota vacía → 400 `incident_note_required`; marcar con PNG → 201, archivo en
+  `media/entities/{e}/checkinbiz/tasks/{t}/incidencia-…`; segunda vez → 409 con la abierta;
+  `hasIncident=true` la lista; espejo `open` con nota; `alert_sent` + correo en cola a
+  jose@encodebiz.com; `/panel/alerts` con `task_incident` la primera; resolver `cancelled` → 400
+  `incident_cancel_via_status`; `solved` → 200; otra vez → 409 `incident_not_open`; filtro vacío,
+  alerta del panel desaparece, historial con `incident_reported` e `incident_resolved`. No probado
+  en vivo: cancelar la tarea con la incidencia abierta (cubierto por código, no por prueba real).
+
+| # | Paso | Cómo |
+|---|---|---|
+| 63.1 | Orden de Jose | Con el próximo pase |
+| 63.2 | 064 | A mano por SSH en `encodebiz_analytics`, mirando el resultado: `docker compose exec -T postgres psql -U encodebiz -d encodebiz_analytics < migrations/064_incidencia_en_la_tarea.sql`, y `\d tasks_raw` |
+| 63.3 | API | `tasks analytics assistant reports` (y los que usen `shared` si el pase va entero); `restart nginx` |
+| 63.4 | App y panel | Detrás de la API, con su PR. Panel: merge develop → `main` (Vercel). App: versión nueva en tiendas (ninguna publicada tiene aún la incidencia). Una build intermedia de develop sin `replanned` no se rompe: enseña «Incidencia resuelta» sin el cómo (comprobado en `bf4078a`) |
+| 63.5 | Verificar en prod | Marcar en una tarea de prueba de EncodeBiz con foto: 201, llega el correo a owner/admin, alerta roja en Inicio; resolver: desaparece. Sacar el informe de tareas del día: la tarea con «Incidencia» en «Tareas» y su fila en la hoja «Incidencias» |
+| 63.6 | Si algo falla | Revertir los tres servicios; la 064 solo añade columnas, se queda |
+
+- **2026-11-11, «Replanificada».** Reprogramar y reasignar la incidencia son una sola resolución,
+  `replanned` (fechas, personas o las dos). API develop `e50f56b`, staging `0782fdb`, `tasks`
+  reconstruido en dev; panel develop `b89da9a2`; app develop `730494d`. Sin migración. Va con el
+  resto de la §63: API, panel y app tienen que salir juntos (la app vieja no conoce `replanned`).
+- **2026-11-11, la incidencia en el informe de tareas** (lo pidió Jose: «debe quedar y salir en el
+  reporte de tareas»). Servicio `reports`, rama `feat/informe-tareas-incidencia` (`e6f7c9e`);
+  develop `a3ea222`, staging `4c5b0ff`; `reports` reconstruido en dev. Se lee del historial espejado
+  (`task_events_raw`, migración 050, ya en prod), no de `tasks_raw`: así salen también las
+  resueltas y varias en una misma tarea. En el Excel: columna «Incidencia» en «Tareas» (Abierta /
+  Resuelta · cómo; solo si alguna tarea del periodo la tuvo) y hoja nueva **«Incidencias»**, que
+  sale siempre, con una fila por incidencia (centro, cliente, tarea, cuándo, quién, nota, archivo,
+  estado, resolución, quién y cuándo resolvió, nota de resolución). Sin migración ni variables.
+  Comprobado en dev con los datos reales (sin subir el fichero): Netaclara, 3 incidencias, una
+  cancelada, una resuelta y otra abierta, con su nota y quién. Una que se marcó desde la prueba de
+  la API sale sin «Marcada por»: el historial no guardó el nombre de esa cuenta.
 
 ## 64. Inventario: Pedidos, equipos fuera del almacén, traspaso entre tareas y cancelar un pedido — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-11 (último: develop `2135c0e` mergeado, staging `119295d`; `inventory` reconstruido; panel en `develop` `8696f1ad`)
 
@@ -2599,6 +2804,66 @@ solo correo con las dos tareas de prueba de Cuidama.
 | 66.5 | Verificado en staging | HECHO el 2026-11-11 en Cuidama (`3xcfwyMj6ixsFyDbPera`, único destinatario `hola@encodebiz.com`). Con dos tareas de prueba del mismo centro salió **un solo correo** con las dos y sus horas de Madrid. Con una tarea de inicio a las 17:39:34 UTC, el aviso salió a las **17:45:17** (5 min 43 s). Tareas de prueba borradas después. Tests: `analytics` 125, `tasks` 19, `assistant` 167 |
 | 66.6 | Alertas por correo: grupo propio | Jose, 2026-11-11: «estos avisos nuevos deben ir en la configuración de avisos». La tarea sin empezar va en un grupo nuevo, `operation` («Al momento, en la operación»): no es resumen ni espera decisión. La frase de arriba del modal lo nombra, y «Gastos por aprobar» (de §52), que salía sin etiqueta, tiene ya la suya en los cinco idiomas. API develop `ab5bfd7`, staging `ad1c39d` (`analytics` reconstruido); panel develop `c675ff3f` (el tipo `AlertEmailGroup` admite `operation`). **Panel y API van juntos**: un panel viejo con la API nueva pinta el grupo sin título |
 
+## 67. Contrato y tarea: las tareas del contrato con ida y vuelta, «Sin contrato» de verdad y el contrato ya no se lleva tareas solo — EJECUTADO el 2026-11-11 (registro §68); antes PENDIENTE en prod; EN STAGING el 2026-11-11 (develop `25f2b92`, `ea70fb6`, `b8d65c3`; staging `54af828`, `f525903`, `9acd4ed`; `customers` reconstruido en cada uno; panel en `develop` `56b3146e` y `8f7ca749`)
+
+Pedido por Jose el 2026-11-11, probando la ficha del contrato:
+- «El listado de tareas me dice tarea 1 y eso debe ser bidireccional: debo poder regresar a una
+  tarea desde el contrato, ojo paginado y orden desc».
+- «Cuando el cliente tiene un solo contrato las tareas se vinculan solas, eso está mal: debe
+  salirme el desplegable para poder dejarlo en sin contrato».
+- «Los gastos de tareas de un cliente sin contrato siguen entrando en el único contrato».
+- Al saber que crear un contrato se llevaba las tareas sin contrato del cliente: «eso es grave».
+  Eligió quitarlo (opción 1), no marcar la tarea.
+
+Lo que entra:
+- **`GET /contracts/:id/tasks?entityId&limit=5&cursor`** → `{items, nextCursor, count}`
+  (`customers`).
+  - Lee del espejo `tasks_raw` con el índice `idx_tasks_raw_entity_contract` de la 053, ya en §50.1.
+  - Ordena de la más reciente a la más antigua por `COALESCE(scheduled_start_at, created_at)` y
+    luego por id. El cursor guarda la fecha tal como la da Postgres, con microsegundos.
+  - Sin dinero: lo ve quien ve el contrato (`canViewCustomers` y que llegue a su cliente).
+  - Ficheros: `domain/contractTasksPage.ts`, `PostgresContractTasks.page` y su test.
+- **El gasto de una tarea sigue al contrato de la tarea** (`expense.router.ts`,
+  `linkCustomerContracts.ts`). Si la tarea no tiene contrato, el gasto tampoco y sale en «Gastos
+  sin contrato». Antes iba al único contrato vigente del cliente ese día (§55). Solo un gasto sin
+  tarea busca aún el vigente.
+- **Crear un contrato, cambiar su vigencia o reabrirlo ya no enlaza nada** (`contract.router.ts`).
+  - Fuera `linkAfterContractChange`: las tareas con cliente y sin contrato que caían en él, y sus
+    gastos, entraban solas. Una tarea dejada «Sin contrato» a propósito acababa dentro, y la API
+    no distingue eso de «su contrato aún no existía».
+  - Ahora una tarea solo cambia de contrato cuando se elige en ella.
+  - El script `link-task-contracts` sigue, para un arreglo pedido a mano.
+  - **Revierte la viñeta «El contrato recoge lo que cubre» de §55.**
+- Sin migración, sin variables y sin cambios en `shared`.
+
+Panel (`develop`; va con la cartera, §50.7):
+- `56b3146e`:
+  - Apartado «Tareas (n)» de la ficha del contrato: estado, fecha y personas de cada tarea, de 5 en
+    5 con «Cargar más». El nombre lleva a la tarea.
+  - En la ficha de la tarea, el contrato es un enlace a la ficha del cliente con ese contrato
+    abierto (`?contract=`).
+  - **El proxy deja pasar `/contracts/{id}/tasks`** (`serverBackendProxy.ts`). Sin eso, el
+    apartado da «No se han podido cargar las tareas».
+- `8f7ca749`: en el formulario de la tarea, el desplegable de contrato sale en cuanto el cliente
+  tiene alguno.
+  - Al crear, el único vigente viene propuesto una vez.
+  - «Sin contrato» manda `contractId: null`, que la API ya respetaba (`resolveTaskContract`).
+- Lo mismo del día en la ficha del contrato, sin dependencia del back:
+  - `c4add60b`: diseño «Card Contratos CheckBiz360».
+  - `9c6df608`, `256d96b3`, `cd4d18a1` y `8c277e76`: margen y avisos.
+
+**Lo que no cambia:** las tareas que no pasan por el formulario siguen tomando al crearse el único
+contrato vigente del cliente (`resolveTaskContract` sin `contractId`): importación, Rentman, la app
+y el asistente. No es retroactivo, solo al crear. Si Jose lo quiere fuera, es otra sección.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 67.0 | Nada que reparar en prod | Ni `linkAfterContractChange` ni la regla del gasto al único vigente llegaron a `main` (comprobado el 2026-11-11 en `origin/main`): §55 sigue pendiente, así que en prod no se enlazó nada. En staging, si se quiere revisar: `SELECT contract_id, created_at, new_value FROM contract_events WHERE type = 'tasks_linked' ORDER BY created_at DESC` |
+| 67.1 | API | `customers` (`up -d --build --no-deps customers` y `restart nginx`) con el resto de §50.3. Requiere la 053 de §50.1 |
+| 67.2 | Panel, **después** de la API | Con la cartera (§50.7). Un panel nuevo con la API vieja: «Tareas» da error de carga; el resto funciona |
+| 67.3 | Verificar en prod | (a) Con sesión, `GET /api/v1/customers/contracts/<id>/tasks?entityId=…&limit=2` da 2 tareas y `nextCursor`; con ese cursor, las siguientes sin repetir. (b) Tarea nueva de un cliente con un solo contrato dejada en «Sin contrato»: guarda `contractId` vacío y su gasto sale en «Gastos sin contrato». (c) Crear un contrato a ese cliente: la tarea sigue sin contrato y no aparece `tasks_linked` en `contract_events` |
+| 67.4 | Verificado en staging | Solo sondas: `customers` sano tras cada despliegue, `/health` 200 y la ruta nueva da 401 sin sesión. Tests de `customers`: 116. **Sin prueba con sesión todavía** |
+
 ## 68. Registro del pase — 2026-11-11, de 21:40 a 22:00 UTC (orden de Jose: «ahora es ahora»; «evitar fumigar a emails pendientes a los clientes»)
 
 Ejecutado por Claude (sesión encodebiz-api-78) con la orden de Jose a las 22:40 CET, con gente
@@ -2686,3 +2951,124 @@ se enviaba con el mismo SMTP que en producción y las demos y pruebas mandaban s
 |---|---|---|
 | 70.1 | Prod | Va con el siguiente pase (toca `shared`). **En producción NO se pone `EMAIL_SEND_ONLY_TO`**: sin la variable el código no cambia nada. Comprobar que no está en `.env.production` ni en `.env.encodebiz-services` |
 | 70.2 | Prueba directa a otra dirección en dev | Añadirla a `EMAIL_SEND_ONLY_TO` en `.env.staging`, `up -d --no-deps <servicio>` (un `restart` no relee el `env_file`), y quitarla al acabar |
+
+## 71. Cifrado de documentos en Storage (TDR-001, ADR-003) — EN PROD el 2026-11-15 (hotfix #281, merge `f16c599`; llave `prod2026a`; 174 ficheros cifrados, 0 en claro; copia de la llave en el disco de Jose hecha; falta 71.8); EN STAGING el 2026-11-13 (develop `17ec930` y `2d0492c`, staging `bc4e372` y `d7c2448`; `documents customers merlin` reconstruidos; llave `dev2026a`; cifrado de escritura activo)
+
+Jose, 13-nov: «ya podemos comenzar con lo de la encriptación en staging». Hecho en el orden de TDR-001 §11:
+la rama se puso al día con develop (43 commits; tests `shared` 209, `documents` 95, `customers` 116,
+`merlin` 163, todos en verde), fichero de la llave creado vacío antes de desplegar, despliegue sin llave
+(«writes plain»), llave generada en el VPS (no ha salido de él) con `DOCUMENTS_PUBLIC_BASE_URL`, y
+`DOCUMENTS_ENCRYPT_WRITES=true`.
+
+Probado en staging el 13-nov:
+- QA de firma, hoja informativa y cartera de clientes con la llave puesta y con el cifrado activo:
+  - fallan solo HOJ-02-01, HOJ-05-04, CLI-18-01 y CLI-18-02, que **ya fallaban igual en la QA del
+    9-nov** (antes del cifrado; están sin investigar y no son de esto);
+  - FIR-04-04 esperaba la URL de Google y se adaptó a la URL propia: 30/30 en firma, comprobando que lo
+    descargado es byte a byte el PDF firmado.
+- En el bucket de dev, lo nuevo empieza por `CBZE`, incluido el PDF firmado por dentro; lo de antes de
+  activar sigue en `%PDF`.
+- Script sobre una empresa de QA (`yVvidIkkMhxm1EUtKhmc`), 13 ficheros:
+  - simular, `--apply`, `--reverse --apply` y `--apply`, sin un error;
+  - en cada paso se abrieron los 11 documentos por `DocumentStorageService` y coincidieron con su huella.
+- Vuelta atrás: con `DOCUMENTS_ENCRYPT_WRITES=false` lo cifrado se sigue abriendo (19 de 19). Se dejó en
+  `true`.
+- **Sin probar** (TDR §9): abrir desde el panel y desde la app, «Leer el PDF» de un contrato (merlin) y el
+  justificante de gasto desde un ticket de tarea. Lo prueba Jose a mano.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 71.1 | Lo que queda en staging | Las pruebas a mano de arriba. Si algo falla: `DOCUMENTS_ENCRYPT_WRITES=false` y `up -d --no-deps documents` |
+| 71.2 | Antes de prod: la Cloud Function vieja | `documentsHandler` sigue en prod y escribe y descarga en claro. Confirmar en Vercel que `NEXT_BACKEND_URI_CHECKINBIZ_DOWNLOAD_DOCUMENTS` y `…_DOCUMENTS_HANDLER` apuntan al contenedor y apagarla (`--project encodebiz-services`, con OK de Jose) |
+| 71.3 | Antes de prod: el fichero de la llave | `touch /opt/encodebiz-api/secrets/documents-kek.json` (root 600) **antes** de fusionar en `main`: sin el fichero `documents` no se crea |
+| 71.4 | Prod sin llave | Desplegar `documents customers merlin`; el log dice «key not loaded, writes plain» |
+| 71.5 | La llave de prod y su copia | Generarla en el servidor (`openssl rand -base64 32`, `kekId` p. ej. `prod2026a`) y **guardar una copia fuera del servidor antes de cifrar nada** (gestor de contraseñas de Jose): perderla es perder los documentos. `DOCUMENTS_PUBLIC_BASE_URL=https://api.checkbiz360.com`; recrear `documents` → «lectura preparada»; probar una descarga |
+| 71.6 | Cifrar lo nuevo | `DOCUMENTS_ENCRYPT_WRITES=true`, `up -d --no-deps documents`, reiniciar nginx; subir y abrir un documento de Encodebiz |
+| 71.7 | Cifrar lo que ya existe | Primero `encrypt-existing.js --all --inventory` (solo lee metadatos: qué queda en claro por empresa y cuánto pesa) para fijar el orden. Luego empresa por empresa, empezando por Encodebiz: simular, `--apply`, abrir un documento viejo. Nunca `--all --apply` de primeras. Al acabar, el inventario tiene que dar 0 en claro. En staging (14-nov): 1.084 objetos de 98 empresas, 1.050 en claro (26,8 MB); simulación `--all` sin errores |
+
+**Validación a mano del 15-nov en staging (Cuidama, documento `e8a6448c…` de Jose Manuel, una imagen):**
+subida cifrada (`CBZE`), abierta desde la app y desde el panel (265.289 bytes servidos; 265.391 en el
+bucket, los 102 de diferencia son la cabecera) y acuse firmado con biometría registrado y visible en el
+panel. Faltan: firma de un PDF, un documento antiguo, «Leer el PDF» y el justificante desde un ticket.
+
+**Sube por hotfix (Jose, 15-nov: «esto hay que desplegarlo en hotfix»):** solo el cifrado sobre `main`,
+no el resto de `staging`. Cherry-pick de `8c41b40` y `60e0dd7` sobre `main` `6626a8d`: entran sin
+conflictos; tsc en verde y tests `shared` 204, `documents` 95, `customers` 116, `merlin` 163 sobre esa
+base. Falta `beaf5ed` (`--inventory`) si se quiere el inventario de 71.7. Worktree
+`.claude/worktrees/hotfix-cifrado`, sin empujar hasta que Jose dé por validado staging. Los pasos 71.2 a
+71.7 no cambian; donde dicen «fusionar en `main`» es el merge del PR del hotfix, con `[skip ci]`.
+
+**Pase del 15-nov, paso a paso:**
+- **71.2 comprobado, función sin apagar.** `vercel env pull` de producción: `…_DOCUMENTS_HANDLER` =
+  `https://api.checkbiz360.com/api/v1`; `…_DOWNLOAD_DOCUMENTS` sale vacía (puede ser variable sensible, que
+  Vercel no devuelve: no concluye). Por tráfico sí concluye: en el nginx de prod, las descargas del panel
+  (`node`) entran por el contenedor (13-nov), y `documentsHandler` no recibe una sola petición desde el
+  06-nov 14:25 UTC (registro de Cloud Run, 14 días). Apagarla queda pendiente del OK de Jose.
+- **71.3 HECHO ~10:16 UTC:** `secrets/documents-kek.json` creado vacío, root 600, como en staging.
+- **Código:** rama `hotfix/cifrado-documentos`, PR #281 (los dos commits más `bfcb6ca`, `--inventory`).
+  En staging, `merlin` y `customers` leen un fichero cifrado a través de `documents` (huella exacta).
+
+- **71.2 HECHO ~10:21 UTC (Jose: «apágala, es una puerta de entrada abierta»):** a `documentsHandler` se
+  le quitó `allUsers` de `roles/run.invoker` (Cloud Run, `us-central1`). Tardó unos minutos en aplicarse;
+  responde 403. **No está borrada** y sigue en el código del SaaS: un despliegue de funciones le
+  devolvería el acceso público. Cruce de tráfico: el panel la usó hasta el 06-nov 14:25 UTC y desde el
+  07-nov descarga por el contenedor. Volver atrás: `gcloud run services add-iam-policy-binding
+  apiv100-firebaseentryhttp-checkinbiz-documentshandler --region us-central1 --member=allUsers
+  --role=roles/run.invoker --project encodebiz-services`.
+- **71.4 HECHO ~10:23 UTC:** PR #281 fusionado (`f16c599`, `[skip ci]`, sin workflow), `git pull --ff-only`,
+  `build` y `up -d --no-deps documents customers merlin` (healthy), `restart nginx`. Log: «key not loaded,
+  writes plain». `merlin` y `customers` llegan a la ruta interna de `documents` (404 `documents/not_found`
+  a una ruta que no existe).
+- **71.5 HECHO ~10:25 UTC:** llave `prod2026a` generada en el servidor (32 bytes, root 600; no se ha
+  impreso ni ha salido de él). `DOCUMENTS_PUBLIC_BASE_URL=https://api.checkbiz360.com`; `.env` anterior en
+  `.env.production.antes-cifrado-20261115`. Log: «key loaded (current prod2026a), writes plain».
+  **Copia de la llave:** Jose decidió hacerla al final, con todos los secretos, en su disco extraíble
+  (PENDIENTE). Entretanto se adelantó la copia nocturna del servidor (`hacerCopia()` de `salud`):
+  `servidor/2026/11/15/prod-20261115T102718Z.tar.cms`, 5,3 MB, 83 tablas; archiva `secrets/` entera, no se
+  abrió para comprobar que la llave está dentro. Solo se abre con la clave privada del portátil de Jose.
+- **71.6 HECHO ~10:28 UTC:** `DOCUMENTS_ENCRYPT_WRITES=true`, `up -d --no-deps documents`, nginx. Log:
+  «writes encrypted». Sin probar aún una subida nueva desde el panel de prod.
+- **71.7 HECHO ~10:30–10:40 UTC**, empresa por empresa (simular, huella del contenido antes, `--apply`,
+  huella después, abrir todos los documentos con `DocumentStorageService`): Encodebiz 19, Tapissat de
+  Carrosseries 1, Neteges Bisbal 6, Centro de Formación Ayudarte 148. **174 de 174, 0 errores; inventario
+  final 0 en claro.** La huella del contenido de cada empresa es idéntica antes y después. Jose abrió
+  desde la app un firmado antiguo de Encodebiz (61.792 bytes, los del PDF en claro). Visto, de antes y sin
+  tocar: en Ayudarte el documento archivado `61fd8c46-…` apunta a un fichero que no existe en el bucket.
+- **Copia en el disco de Jose, HECHA ~10:50 UTC:** `/Volumes/Externo-1/encodebiz-servidor-prod-20261115/`
+  (`servidor-ficheros.tar.gz`, 256 ficheros: `secrets/` con la llave, `.env.production`, certificados,
+  nginx, compose y configuración del sistema; `postgres-encodebiz_analytics.dump`; `LEEME.txt`). La llave
+  del disco es idéntica a la del servidor (misma huella). **Sin cifrar, por decisión de Jose** (el disco
+  tampoco lo está). No lleva la clave privada de las copias nocturnas ni los ficheros de Storage.
+- **Queda en claro fuera del bucket principal:** `encodebiz-services-copias-ficheros` guarda versiones de
+  los ficheros de antes de cifrar hasta 90 días (§42). Decisión pendiente de Jose.
+
+**71.8 — SIGUIENTE FASE, orden de Jose el 15-nov («esto es importante»):** cifrar las evidencias de firma
+(`signatures/evidence/…`) y las actas (`checkbiz/reports/entities/…/actas/…`), que esta versión deja en
+claro por diseño. No entra en esta subida. Detalle en TDR-001, «Siguiente fase».
+
+**La copia de seguridad nocturna** (§42) guarda `secrets/`, así que también la llave, cifrada con el
+certificado de copias. No sustituye a la copia en el gestor: para abrir esa copia hace falta la clave
+privada del portátil de Jose.
+
+## 72. «Hoy» en el backoffice: el día en curso de la plataforma — EN PROD el 2026-11-14 (hotfix #280, merge `6626a8d`; orden de Jose: «bájalo a prod por hotfix»); EN STAGING el 2026-11-14 (develop `e8f9dcb` y `a9af59d`, staging `a19d9c7` y `2216901`; `analytics backoffice` reconstruidos)
+
+Jose, 14-nov: no podía decidir un despliegue sin saber cómo va el día (uso por hora, cuántos fichados, qué
+se espera según turnos, tareas e histórico). Diseño en `DOCS/ingenieria/panel-de-direccion/hoy.md`.
+
+- **Migración 065**: `operational_now`, `operational_now_runs`, `operational_plan_hourly`, `activity_hourly`
+  y tres índices sobre tablas vivas (`checklogs_raw (timestamp)`, `tasks_raw (started_at)`, `(completed_at)`).
+- **`analytics`**: dos tareas del planificador cada 5 min: «foto de ahora» (`buildOperationalDay` solo de las
+  empresas que se mueven, tope 80) y «actividad por hora» (3 h; a los :48, 50 h). Script
+  `backfill-activity-hourly.js --days 35 [--apply]`.
+- **`backoffice`**: `/hoy`, `/hoy/empresas` (paginado), `/hoy/empresas/:id` y la página `/hoy` (menú «Hoy»).
+  «Lo que queda del día»: lo planificado como área, lo previsto como línea discontinua.
+
+| # | Paso | Cómo |
+|---|---|---|
+| 72.1 | Staging | HECHO el 2026-11-14 ~11:05 UTC: 065 a mano en `encodebiz_staging`, `up -d --build --no-deps analytics backoffice`, nginx, relleno 35 días (1.437 filas). Primera pasada: 80 empresas en 2,5 s (245 activas, 239 internas). Las líneas, a las 11:35 (`backoffice`) |
+| 72.2 | Prod: código | HECHO el 2026-11-14: PR #280 (cherry-pick de `63065b3` y `93345d1` sobre `main` `3e59884`; tests analytics 132, backoffice 22, tsc y build de la web en verde sobre `main`), merge `6626a8d` con `[skip ci]`, sin workflow. `git pull --ff-only` |
+| 72.3 | Prod: migración | HECHO el 2026-11-14 ~11:15 UTC en `encodebiz_analytics`: las tablas con sus índices propios (8 sentencias, sin error); después, uno a uno, `CREATE INDEX CONCURRENTLY` de `idx_checklogs_raw_ts`, `idx_tasks_raw_started`, `idx_tasks_raw_completed_at`, los tres `indisvalid = t`. Tamaño entonces: `checklogs_raw` 4.006 filas (10 MB), `tasks_raw` 562 |
+| 72.4 | Prod: servicios | HECHO: `up -d --build --no-deps analytics backoffice` (healthy), `restart nginx`; `/health` 200, `/api/v1/backoffice/hoy` 401 sin sesión, `/backoffice/hoy` 200 |
+| 72.5 | Prod: relleno | HECHO: simulación (2.320 fichajes en 35 días) y `--apply`, 875 filas |
+| 72.6 | Prod: verificado | HECHO a las 11:22 UTC: «foto de ahora: 5 empresas en 246 ms», 0 fallos. Lecturas dentro del contenedor: 37 previstos, 3 dentro, 25 debían estar sin fichaje, 14 centros donde no ha fichado nadie (sábado); 4 días de referencia; 1 interna fuera |
+| 72.7 | PENDIENTE | Que el worker se salte las internas (en dev son 239 de 245); «Cindy15-09QA» pasa por externa (la regla de `esInterna` pide separador antes de «qa», afecta también a Dirección). `dim_entities` solo trae empresas con actividad en 30 días: una empresa dormida con plantilla prevista no sale en «Hoy» |
