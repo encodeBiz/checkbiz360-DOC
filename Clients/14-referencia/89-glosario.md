@@ -189,7 +189,7 @@ Pantalla del backoffice que consolida la actividad del periodo en tres vistas: l
 Modalidad de contratación de CheckBiz360. Hay dos: **Bronce**, 2 € + IVA por empleado al mes (tarifa 2026, contratando hasta el 31 de diciembre de 2026 incluido), y **Empresarial**, con precio a medida, que añade soporte preferente e integraciones. Ambos dan acceso a todos los módulos de la plataforma. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md).
 
 ### Puesto predeterminado
-De los puestos que una persona tiene en una sucursal, el que se aplica cuando en la tarea o el turno no se elige otro. Es el de **Ocupación actual** de su ficha; los demás están en **También puede hacer de**, cada uno con su precio por hora. Véase [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md).
+De los puestos que una persona tiene en una sucursal, el que se aplica cuando en la tarea o el turno no se elige otro. Es el primero de la lista **Puestos en esta sucursal** de su ficha, marcado *Predeterminado*; cada puesto lleva su precio por hora. Véase [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md).
 
 ### Punto de fichaje
 Dispositivo fijo en un centro, tablet o móvil, donde cada persona ficha con su tarjeta QR o su código de 6 cifras y el dispositivo hace una foto. Es un complemento de pago. En la app se llama *modo quiosco*. Véase [Punto de fichaje](../03-control-horario/113-punto-de-fichaje.md).

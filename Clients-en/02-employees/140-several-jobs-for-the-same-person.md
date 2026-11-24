@@ -16,11 +16,11 @@ Now a person can have **several jobs at the same branch**, each with its own hou
 
 ## Where it is configured
 
-On the person's record, in the branch block (the same one that holds their responsibility, their **Current occupation** and their **Hourly wage**):
+On the person's record, in the branch block, next to their responsibility. All their jobs at that site are in a single list, **Jobs in this branch**, each with its **Job** and its **Hourly rate**:
 
 1. Open **Employees**, go into the person's record and open the relevant branch.
-2. Their usual job stays in **Current occupation** with its **Hourly wage**: that is the default, and the *Default: {job}* label says so.
-3. Under **Can also work as**, press **Add job** and enter the **Job** (from your company's job catalogue or a new one) and its **Hourly rate**.
+2. The first job in the list is the **default**, marked with the *Default* label. If the person has only one, that is it.
+3. Press **Add job** and enter the **Job** (from your company's job catalogue or a new one) and its **Hourly rate**. Choosing a job from the catalogue fills in its usual rate. The calculator icon converts a monthly or weekly salary into an hourly rate.
 4. Repeat for each job. **Remove job** takes it off the list.
 5. Save.
 
@@ -65,7 +65,7 @@ No rates. If you want, the job each task goes with may appear in its detail in a
 
 ## Common problems
 
-**I cannot see "Can also work as".** Open the branch inside the person's record: it is below the hourly wage. If you cannot see rates, your account is a manager's.
+**I cannot see the list of jobs.** Open the branch inside the person's record, below the responsibility. If you cannot see rates, your account is a manager's.
 
 **The "As" selector does not appear on the task.** That person has a single job at that branch. Add the second one on their record.
 

@@ -18,8 +18,8 @@ La asignación a sucursal es el vínculo que une a un empleado con una sucursal.
 4. Pulse **Añadir responsabilidad**.
 5. Seleccione la sucursal en el desplegable **Sucursal**. El listado muestra únicamente las sucursales activas de su entidad.
 6. Asigne el rol que tendrá el empleado en esa sucursal: **Worker**, **Supervisor** o **Manager**.
-7. Indique su **Ocupación actual** (del catálogo de puestos de su empresa o una nueva) y su **Salario por hora**. Es el precio con el que se valoran sus horas en los informes, las estadísticas y los contratos de clientes; solo lo ven el propietario y los administradores.
-8. Si hace más de un trabajo en ese centro, en **También puede hacer de** añada los demás puestos con su precio. El de **Ocupación actual** queda como predeterminado. Ver [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md).
+7. En **Puestos en esta sucursal**, indique su **Ocupación** (del catálogo de puestos de su empresa o una nueva) y su **Precio por hora**. Es el precio con el que se valoran sus horas en los informes, las estadísticas y los contratos de clientes; solo lo ven el propietario y los administradores.
+8. Si hace más de un trabajo en ese centro, pulse **Añadir puesto** por cada uno. El primero de la lista queda como predeterminado. Ver [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md).
 9. Si procede, seleccione el calendario efectivo que se aplicará a este empleado en esa sucursal.
 10. Pulse **Guardar**. La asignación se aplica de inmediato.
 

@@ -18,8 +18,8 @@ The branch assignment is the link joining an employee with a branch. When the em
 4. Press **Add responsibility**.
 5. Select the branch from the **Branch** dropdown. The list shows only the active branches of your organisation.
 6. Assign the role the employee will hold at that branch: **Worker**, **Supervisor** or **Manager**.
-7. Enter their **Current occupation** (from your company's job catalogue or a new one) and their **Hourly wage**. This is the rate their hours are valued at in reports, statistics and customer contracts; only the owner and administrators see it.
-8. If they do more than one kind of work at that site, under **Can also work as** add the other jobs with their rate. The one in **Current occupation** is the default. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md).
+7. Under **Jobs in this branch**, enter their **Job** (from your company's job catalogue or a new one) and their **Hourly rate**. This is the rate their hours are valued at in reports, statistics and customer contracts; only the owner and administrators see it.
+8. If they do more than one kind of work at that site, press **Add job** for each one. The first in the list is the default. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md).
 9. Where appropriate, select the effective calendar that will apply to this employee at that branch.
 10. Press **Save**. The assignment applies immediately.
 

@@ -16,11 +16,11 @@ Agora uma pessoa pode ter **vários postos na mesma sucursal**, cada um com o se
 
 ## Onde se configura
 
-Na ficha da pessoa, bloco da sucursal (o mesmo onde estão a sua responsabilidade, a sua **Ocupação atual** e o seu **Salário por hora**):
+Na ficha da pessoa, bloco da sucursal, junto à sua responsabilidade. Todos os seus postos nesse local estão numa só lista, **Postos nesta sucursal**, cada um com a sua **Ocupação** e o seu **Preço por hora**:
 
 1. Abra **Funcionários**, entre na ficha da pessoa e abra a sucursal correspondente.
-2. O seu posto de sempre continua em **Ocupação atual** com o seu **Salário por hora**: esse é o predefinido, e assim o marca a etiqueta *Predefinido*.
-3. Em **Também pode fazer de**, prima **Adicionar posto** e indique a **Ocupação** (do catálogo de postos da sua empresa ou uma nova) e o seu **Preço por hora**.
+2. O primeiro posto da lista é o **predefinido**, e assim o marca a etiqueta *Predefinido*. Se a pessoa tiver um só, é esse.
+3. Prima **Adicionar posto** e indique a **Ocupação** (do catálogo de postos da sua empresa ou uma nova) e o seu **Preço por hora**. Ao escolher uma ocupação do catálogo, o seu preço habitual entra sozinho. O ícone da calculadora converte um salário mensal ou semanal em preço por hora.
 4. Repita com cada posto. **Remover posto** retira-o da lista.
 5. Guarde.
 
@@ -65,7 +65,7 @@ Nada de preços. Se quiser, o posto com que vai cada tarefa poderá aparecer no 
 
 ## Problemas frequentes
 
-**Não vejo «Também pode fazer de».** Abra a sucursal dentro da ficha da pessoa: está por baixo do salário por hora. Se não vê preços, a sua conta é de gestor.
+**Não vejo a lista de postos.** Abra a sucursal dentro da ficha da pessoa, por baixo da responsabilidade. Se não vê preços, a sua conta é de gestor.
 
 **Não me aparece o seletor «Como» na tarefa.** Essa pessoa tem um só posto nessa sucursal. Acrescente-lhe o segundo na sua ficha.
 

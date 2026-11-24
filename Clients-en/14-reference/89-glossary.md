@@ -55,7 +55,7 @@ Mechanism by which employees or branches automatically adopt the configuration d
 ## D
 
 ### Default job
-Of the jobs a person has at a branch, the one that applies when no other is chosen on the task or the shift. It is the one in **Current occupation** on their record; the others are under **Can also work as**, each with its hourly rate. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md).
+Of the jobs a person has at a branch, the one that applies when no other is chosen on the task or the shift. It is the first in the **Jobs in this branch** list on their record, marked *Default*; each job carries its own hourly rate. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md).
 
 ### Dependency
 Indicator measuring how much of a site's operation rests on a few people. It is read directly —*half the operation depends on 1 person*, *depends on 2 people*, *healthy distribution*— and is complemented by the cover-by-position view.

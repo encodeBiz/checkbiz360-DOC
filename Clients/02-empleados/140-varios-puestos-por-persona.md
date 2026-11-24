@@ -16,15 +16,15 @@ Ahora una persona puede tener **varios puestos en la misma sucursal**, cada uno 
 
 ## Dónde se configura
 
-En la ficha de la persona, bloque de la sucursal (el mismo donde están su responsabilidad, su **Ocupación actual** y su **Salario por hora**):
+En la ficha de la persona, bloque de la sucursal, junto a su responsabilidad. Todos sus puestos en ese centro están en una sola lista, **Puestos en esta sucursal**, cada uno con su **Ocupación** y su **Precio por hora**:
 
 1. Abra **Empleados**, entre en la ficha de la persona y abra la sucursal correspondiente.
-2. Su puesto de siempre sigue en **Ocupación actual** con su **Salario por hora**: ese es el predeterminado, y así lo marca la etiqueta *Predeterminado*.
-3. En **También puede hacer de**, pulse **Añadir puesto** y ponga la **Ocupación** (del catálogo de puestos de su empresa o una nueva) y su **Precio por hora**.
+2. El primer puesto de la lista es el **predeterminado**, y así lo marca la etiqueta *Predeterminado*. Si la persona tiene uno solo, es ese.
+3. Pulse **Añadir puesto** y ponga la **Ocupación** (del catálogo de puestos de su empresa o una nueva) y su **Precio por hora**. Al elegir una ocupación del catálogo, su precio habitual entra solo. El icono de la calculadora convierte un salario mensual o semanal en precio por hora.
 4. Repita con cada puesto. **Quitar puesto** lo retira de la lista.
 5. Guarde.
 
-Para que otro puesto pase a ser el habitual, pulse **Hacer predeterminado** en su fila: los dos intercambian el sitio y el predeterminado antiguo pasa a la lista de adicionales. Un puesto no puede estar dos veces en la misma sucursal ni repetir el predeterminado.
+Para que otro puesto pase a ser el habitual, pulse **Hacer predeterminado** en su fila: sube a la primera posición. Un puesto no puede estar dos veces en la misma sucursal, y el último de la lista no se puede quitar: toda vinculación tiene al menos un puesto.
 
 Los puestos son **por sucursal**: la misma persona puede tener en cada centro los suyos.
 
@@ -65,7 +65,7 @@ Nada de precios. Si quiere, el puesto con el que va cada tarea puede aparecer en
 
 ## Problemas frecuentes
 
-**No veo «También puede hacer de».** Abra la sucursal dentro de la ficha de la persona: está debajo del salario por hora. Si no ve precios, su cuenta es de gestor.
+**No veo la lista de puestos.** Abra la sucursal dentro de la ficha de la persona, debajo de la responsabilidad. Si ve las ocupaciones pero no los precios, su cuenta es de gestor.
 
 **No me sale el selector «Como» en la tarea.** Esa persona tiene un solo puesto en esa sucursal. Añádale el segundo en su ficha.
 
