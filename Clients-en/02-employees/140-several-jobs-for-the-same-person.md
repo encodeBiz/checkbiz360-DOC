@@ -20,7 +20,7 @@ On the person's record, in the branch block, next to their responsibility. All t
 
 1. Open **Employees**, go into the person's record and open the relevant branch.
 2. The first job in the list is the **default**, marked with the *Default* label. If the person has only one, that is it.
-3. Press **Add job** and enter the **Job** (from your company's job catalogue or a new one) and its **Hourly rate**. Choosing a job from the catalogue fills in its usual rate. The calculator icon converts a monthly or weekly salary into an hourly rate.
+3. Press **Add job** and enter the **Job** (from your company's job catalogue or a new one) and its **Hourly rate**. Choosing a job from the catalogue fills in its usual rate. The calculator icon converts a monthly or weekly salary into an hourly rate. If the drop-down holds a misspelt job, the cross next to it **deletes it from your company's catalogue**; records that already use it do not change.
 4. Repeat for each job. **Remove job** takes it off the list.
 5. Save.
 

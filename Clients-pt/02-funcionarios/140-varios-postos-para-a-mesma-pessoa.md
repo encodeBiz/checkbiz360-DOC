@@ -20,7 +20,7 @@ Na ficha da pessoa, bloco da sucursal, junto à sua responsabilidade. Todos os s
 
 1. Abra **Funcionários**, entre na ficha da pessoa e abra a sucursal correspondente.
 2. O primeiro posto da lista é o **predefinido**, e assim o marca a etiqueta *Predefinido*. Se a pessoa tiver um só, é esse.
-3. Prima **Adicionar posto** e indique a **Ocupação** (do catálogo de postos da sua empresa ou uma nova) e o seu **Preço por hora**. Ao escolher uma ocupação do catálogo, o seu preço habitual entra sozinho. O ícone da calculadora converte um salário mensal ou semanal em preço por hora.
+3. Prima **Adicionar posto** e indique a **Ocupação** (do catálogo de postos da sua empresa ou uma nova) e o seu **Preço por hora**. Ao escolher uma ocupação do catálogo, o seu preço habitual entra sozinho. O ícone da calculadora converte um salário mensal ou semanal em preço por hora. Se na lista pendente houver uma ocupação mal escrita, a cruz ao lado **apaga-a do catálogo** da sua empresa; as fichas que já a tinham não mudam.
 4. Repita com cada posto. **Remover posto** retira-o da lista.
 5. Guarde.
 
