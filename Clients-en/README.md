@@ -58,6 +58,8 @@ Creating, configuring and securing employees on the platform, and their roles.
 | Biometric verification and trusted devices | **Available** | Configurable per employee from the app. |
 | Employees assigned to several organisations | **Available** | Organisation picker at sign-in. |
 | Adding branches and staff from Excel | **Available** | One template with two sheets; you review what will be created before confirming; the app welcome goes out at the end, when you decide. |
+| Several jobs per person and branch, with a default | **Available** | Each job with its hourly rate; chosen when assigning the task or loading the shift; the clock record stores the one that applied. |
+| Supplement catalogue (fixed, per hour, percentage) | **Available** | Driving, public holiday, night work, etc., defined once and chosen per person on the task or the shift; itemised in reports, contracts and costs. |
 | App access status, resending access and changing the email | **Available** | The record says whether the access email was delivered or bounced and whether the person already uses the app; the home page warns you about the one that has not arrived. |
 | Exporting the employee directory | **Planned** | The list is viewed and filtered on screen, with no downloadable file. |
 
@@ -73,6 +75,8 @@ Creating, configuring and securing employees on the platform, and their roles.
 | [Teams](02-employees/99-teams.md) | Create teams, apply them to a branch and save a branch as a team |
 | [Add branches and staff from Excel](02-employees/110-add-branches-and-staff-from-excel.md) | Sites and people in one go, reviewed before anything is created, with the welcome sent separately |
 | [App access and email change](02-employees/116-app-access-and-email-change.md) | Knowing whether the access arrived, resending it, changing the email and sending the clock-in point card |
+| [Several jobs for the same person](02-employees/140-several-jobs-for-the-same-person.md) | Jobs with their rate at the same branch, the default and where each one is chosen |
+| [Supplements](02-employees/141-supplements.md) | Driving, public holiday, night work: the three types, the catalogue and where they are chosen |
 
 ---
 
@@ -165,6 +169,8 @@ Uploading, organising, acknowledging and controlling access to employment docume
 | Bulk document download (ZIP) | **Planned** | Planned for a future version. |
 | Delete documents and free up space | **Available** | Owner and administrators only; one or several; the record of who received it and who deleted it remains. |
 | "Administration" visibility level | **Available** | Owner and administrators only, from the panel; in the app it appears to nobody. |
+| Reading of the employment contract: occupation, working hours and hourly rate | **Available** | When a person's contract is uploaded, occupation, category, working hours, agreement and salary are read with their quote; the hourly rate is proposed and applied to the record with one click. Owner and administrators only. |
+| Collective agreement catalogue | **Available** | The agreements for your activity and your provinces, with the year of their tables; reference yours with the link to the gazette or its PDF. |
 
 | Article | Description |
 |---|---|
@@ -179,6 +185,8 @@ Uploading, organising, acknowledging and controlling access to employment docume
 | [Export documents](05-document-management/38-export-documents.md) | Individual download in V1; bulk download on the roadmap |
 | [Delete documents and free up space](05-document-management/135-delete-documents.md) | Archive or delete, warnings and what remains of the document |
 | [Who sees each document](05-document-management/136-who-sees-each-document.md) | Administration, personal documents and the difference between panel and app |
+| [What the employment contract says](05-document-management/138-what-the-employment-contract-says.md) | Occupation, working hours, agreement and hourly rate read from the contract, with their quote, and how to apply them to the record |
+| [Collective agreements](05-document-management/139-collective-agreements.md) | Your company's list of agreements, the year of their tables and how to reference yours |
 
 ---
 
@@ -188,7 +196,7 @@ Creating, assigning, tracking and rating operational tasks.
 
 | Feature | Status | Comment |
 |---|---|---|
-| Create and assign tasks to employees | **Available** | Individual and bulk assignment with push notification; editing the task assigns and withdraws employees. |
+| Create and assign tasks to employees | **Available** | Individual and bulk assignment with push notification; editing the task assigns and withdraws employees; per person, which job they go with and which supplements they are paid. |
 | Own work site per task | **Available** | Its own address and margin; starting requires being there, from the app. |
 | Duplicate a task | **Available** | Copies the job, unassigned and as a draft; asks for the dates again. |
 | Pause and resume tasks | **Available** | From the back office and from app 1.4.0; time paused appears in the report. |
@@ -201,7 +209,7 @@ Creating, assigning, tracking and rating operational tasks.
 | Expected start date and late-start warning | **Available** | After 5 minutes: app notification to the person and email to owner and administrator; on Home from a single task. |
 | Task validation and rating by the manager | **Available** | Delegable to the supervisor per task; rejection requires a reason. |
 | Task push notifications | **Available** | Assignment, validation, rejection, late start, overdue and incident; many tasks at once arrive in a single notification. |
-| Exportable task report | **Available** | Excel (XLSX), filterable by branch, status and due period, with time spent and time paused; with inventory subscribed, also each task's material. |
+| Exportable task report | **Available** | Excel (XLSX), filterable by branch, status and due period; one row per task and person with hours, job, rate, supplements and cost, a total per task and the By person and Supplements sheets; with inventory subscribed, also each task's material. |
 | Document-type attachments (PDF, Word, Excel) | **Partially available** | Attached documents in PDF and photos, separate from evidence and copied when duplicating; not Word or Excel. |
 | Automatic "overdue" status once the deadline passes | **Planned** | Today the deadline is reflected in the time-compliance indicator. |
 | Configuring how far in advance due warnings are sent | **Planned** | The warnings are issued; their lead time is not configurable. |
@@ -223,7 +231,7 @@ Creating, assigning, tracking and rating operational tasks.
 | [Task validation](06-tasks/45-task-validation.md) | Validation flow, acceptance and rejection with a reason |
 | [Employee rating](06-tasks/46-employee-rating.md) | Rating scale and its impact on the efficiency index |
 | [Task notifications](06-tasks/47-task-notifications.md) | Events notified in V1; reminders on the roadmap |
-| [Task reports](06-tasks/48-task-reports.md) | Metrics in the back office and the Excel report, with its time columns |
+| [Task reports](06-tasks/48-task-reports.md) | Metrics in the back office and the Excel report: one row per task and person, time and cost columns, By person and Supplements sheets |
 | [Weekly task calendar](06-tasks/111-weekly-task-calendar.md) | The week at a glance: what there is each day, at what time, in what status and what is due |
 | [Task incident](06-tasks/125-task-incident.md) | Warning that a task cannot be done, who it reaches and how it is resolved |
 | [Task not started on time](06-tasks/126-task-not-started-on-time.md) | The warning after 5 minutes through the app, by email and on Home, and how to turn it off |
@@ -242,7 +250,7 @@ Analysis of behaviour patterns, performance indices, costs and anomaly detection
 | Site effect | **Available** | Compares each person with themselves across different sites. |
 | Dependency (concentration of the operation) | **Available** | How much of the operation rests on a few people, with cover by position. |
 | Data maturity states | **Available** | Gathering data / partial evidence / not enough data. |
-| Operational efficiency and cost index | **Available** | Actual cost against the consolidated history; requires a configured rate. |
+| Operational efficiency and cost index | **Available** | Actual cost against the consolidated history; requires a configured rate. Supplements are added and stated separately. |
 | Operational assessment of the employee | **Available** | Automatic diagnosis of the pattern, with a promotion-candidate signal. |
 | Anomaly detection (suspicious clock-ins) | **Available** | Surfaces in the dashboard's Analysis tab. |
 | AI assistant narrative on the dashboard | **Available** | Narrates and prioritises the figures already on screen. |
@@ -276,7 +284,7 @@ Creating and configuring branches, assigning employees and the multi-branch glob
 | Create and manage branches | **Available** | Creation, editing, geocoding and deactivation. |
 | Advanced branch configuration (geofence, breaks, tolerance) | **Available** | All operational parameters configurable. |
 | Assign employees to branches with responsibilities | **Available** | Multi-branch with an effective calendar per assignment. |
-| Organisation configuration (tax details, time zone) | **Available** | Changes propagated to dependent branches. |
+| Organisation configuration (tax details, time zone, currency) | **Available** | Changes propagated to dependent branches. The company's currency formats amounts and is declared in reports. |
 | Storage per company | **Available** | 2 GB included; above that, €0.25 + VAT per full GB if extra storage is turned on. Shown in Organisation → Subscriptions. |
 | Back office collaborators (owner and administrator) | **Available** | Invitation, role change and removal; the organisation is never left without an active owner. |
 | Multi-branch global view | **Available** | The home page shows today by site and the alerts; the Operations panel compares sites by period. |
@@ -288,7 +296,7 @@ Creating and configuring branches, assigning employees and the multi-branch glob
 | [Advanced branch configuration](08-branches-and-organisation/58-advanced-branch-settings.md) | Advanced parameters: geofence, breaks, tolerance, timestamp adjustment |
 | [Branch statuses](08-branches-and-organisation/59-branch-statuses.md) | Active/inactive, impact on clock-ins and history |
 | [Assign employees to branches](08-branches-and-organisation/60-assign-employees-to-branches.md) | Multi-branch, responsibilities and the effective calendar |
-| [Organisation configuration](08-branches-and-organisation/61-organisation-settings.md) | Tax details, workspace, collaborators, global time zone and propagation of changes |
+| [Organisation configuration](08-branches-and-organisation/61-organisation-settings.md) | Tax details, currency, workspace, collaborators, global time zone and propagation of changes |
 | [Multi-branch global view](08-branches-and-organisation/62-multi-branch-global-view.md) | Where each overview lives: today's home page by site, the Operations panel and availability |
 
 ---
@@ -510,7 +518,7 @@ The customer portfolio ties each task to its customer: their record, their docum
 | Customer documents and "Administration" level | **Available** | Contracts and quotes for owner and administrators only, from the panel; never from the app. |
 | Contracts with amount, hours and profitability | **Available** | Several per customer; PDF reading with anonymised AI; margin, forecast and the contract's tasks. |
 | Contract and task expenses | **Available** | Receipt from the app, approval with net amount excl. VAT, receipt filed and "Expenses without a contract". |
-| Customer analysis, PDF/Excel report, Home block and alerts | **Available** | Profitability requires each person's hourly rate. |
+| Customer analysis, PDF/Excel report, Home block and alerts | **Available** | Profitability requires each person's hourly rate; it values each task at the job it was done under and adds the supplements. |
 | Customer portal | **Planned** | No date. |
 
 | Article | Description |
@@ -531,10 +539,10 @@ The customer portfolio ties each task to its customer: their record, their docum
 DOCS/Clients-en/
 ├── README.md                           (this index)
 ├── 01-getting-started/                 (5 articles)
-├── 02-employees/                       (10 articles)
+├── 02-employees/                       (12 articles)
 ├── 03-time-tracking/                   (12 articles)
 ├── 04-calendar-and-schedules/          (11 articles)
-├── 05-document-management/             (11 articles)
+├── 05-document-management/             (13 articles)
 ├── 06-tasks/                           (14 articles)
 ├── 07-operational-intelligence/        (9 articles)
 ├── 08-branches-and-organisation/       (6 articles)
@@ -549,4 +557,4 @@ DOCS/Clients-en/
 └── 17-customer-portfolio/              (7 articles)
 ```
 
-**Total: 131 articles**
+**Total: 135 articles**

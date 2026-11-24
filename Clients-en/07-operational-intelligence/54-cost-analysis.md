@@ -19,6 +19,8 @@ To configure it:
 
 The value should reflect the **real cost to the company**, not the gross salary: include the proportional share of employer social security contributions if you want a realistic total cost.
 
+If a person does more than one kind of work at the site, they can have **several jobs** with their rate, and each task or shift says which one they go with: that day's cost is calculated at that rate. What they are paid on top for a particular piece of work (driving, public holiday, night work) is recorded as **supplements** and added to the cost as a line of its own, so that the branch's cost, the cost per hour and the financial deviation include it and state it separately. A person's cost per hour is therefore the **effective** one: that of the jobs they held and what they were paid on top. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md) and [Supplements](../02-employees/141-supplements.md).
+
 > **Important:** without a configured rate there is no possible cost analysis. It is the most frequent cause of the financial indicators appearing empty or strange. The **data status** block of the Operations dashboard indicates this configuration coverage: consult it before accepting —or dismissing— any cost figure.
 
 ## What the system calculates

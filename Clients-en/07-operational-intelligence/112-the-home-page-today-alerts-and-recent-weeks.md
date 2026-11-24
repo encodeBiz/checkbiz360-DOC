@@ -70,7 +70,7 @@ The same picture, week by week, for the last two months:
 - **Coverage**: of the planned working days, how many had a clock-in.
 - **Lateness**: what share of those who clocked in arrived late.
 - **Tasks on time**: what share of the week's tasks was done on time.
-- **Cost per week**: hours at their rate, plus materials.
+- **Cost per week**: hours at their rate, plus supplements and materials.
 
 Each figure carries the difference from the previous week, with the table by site below. The current week appears as *incomplete week*. Weeks before the home page started keeping the day-to-day record are marked *Rebuilt with the current calendar*: good for orientation, not for arguing about a payslip. At the start, until there are closed weeks, the block says so.
 

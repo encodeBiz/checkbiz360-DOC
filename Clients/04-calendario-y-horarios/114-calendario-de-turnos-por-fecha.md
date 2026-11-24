@@ -61,6 +61,17 @@ Si a alguien no le ha cargado nada en la semana que está viendo, el panel lo av
 
 Los días que ya pasaron no se cambian. El día de hoy sí.
 
+### El puesto y los complementos del turno
+
+En el editor de cada turno, **Más opciones** abre dos campos que normalmente se dejan vacíos:
+
+- **Puesto**: con qué puesto va la persona ese turno, si tiene más de uno en la sucursal. Vacío, va con su predeterminado. Ver [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md).
+- **Complementos**: lo que cobra aparte ese turno (festivo, nocturnidad, conducción…), del catálogo de su empresa. Ver [Complementos](../02-empleados/141-complementos.md).
+
+Cuando hay algo puesto, el botón lo dice: *Más opciones (con puesto o complementos)*. Al fichar contra ese turno, el fichaje guarda el puesto y los complementos, y de ahí salen el coste y los informes. **Copiar a la semana siguiente** los copia con el turno. Es la forma de que el festivo del domingo o la noche del sábado se cobren como dice el convenio sin tocar la ficha de nadie.
+
+Los mismos dos campos están en los turnos de la **semana tipo** ([Horarios base y turnos](23-horarios-base-y-turnos.md)): allí valen todas las semanas.
+
 ### Copiar la semana
 
 **Copiar a la semana siguiente** copia los turnos de la semana que está viendo a la siguiente, persona a persona. Lo que ya hubiera esos días se sustituye. Es la forma rápida de montar un mes que se parece semana a semana, y después retocar lo que cambie.

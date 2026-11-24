@@ -70,6 +70,7 @@ O relatório de tarefas reúne as tarefas do período com o seu estado e o seu c
 
 - As tarefas cujo **prazo** cai dentro do período selecionado, com o seu estado e o seu cumprimento temporal.
 - O tempo de cada tarefa: tempo investido, tempo em pausa, número de pausas e tempo investido sem pausas. Explicam-se em [Relatórios de tarefas](../06-tarefas/48-relatorios-de-tarefas.md#o-que-contém).
+- **Uma linha por tarefa e pessoa**, com as suas horas, o seu posto, o seu preço por hora, os seus complementos e o seu custo, e uma linha de total por tarefa; mais as folhas **Por pessoa** (resumo do período) e **Complementos** (o rasto de cada um). Os valores vão sem símbolo: a moeda da empresa indica-se no cabeçalho.
 - Filtros por uma, várias ou todas as sucursais e por estado da tarefa.
 - Os dados necessários para calcular na folha de cálculo o que for preciso: concluídas face a atribuídas, vencidas, recusadas.
 

@@ -34,7 +34,29 @@ The task report is generated from the **Reports** section of the back office and
 
 ### What it contains
 
-One row per task, with these columns: Company, Site, Title, Status, Priority, Start, End, **Time spent (h)**, **Paused (h)**, **No. of pauses**, **Time spent excluding pauses (h)**, Team, **Completed by**, Rating and No. of evidence items. If any task in the report has a customer, the **Customer** column is added after **Site** (see [The customer on the task](../17-customer-portfolio/119-the-customer-on-the-task.md)).
+The **Tasks** sheet has **one row per task and assigned person**, grouped by task. A task with three people takes up three rows, and the task's columns (Company, Site, Customer if there is one, Title, Status, Priority, Start, End, the times, Completed by, Rating and No. of evidence items) are repeated on each one, so that when you filter by a person you can still see which task each row belonged to. Each task closes with a **Total {task}** row and the report with a **Period total** row. The **−** sign in Excel's left margin collapses a task's people and leaves only its total.
+
+It is the format designed for an accountant to work with: one row per person and task lets you add up, filter and build pivot tables by person, by job, by customer or by supplement without undoing anything by hand.
+
+The person columns:
+
+| Column | What it is |
+|---|---|
+| **Person** | Who was assigned. |
+| **Job** | Which job they worked under on that task: the one chosen when assigning it or, if none was chosen, their default. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md). |
+| **Person's hours** | Their hours on the task. |
+| **Source of the hours** | *Clock records*, if the person clocked in on the task; *Task clock*, if there were no clock records and the hours come from when it was started and finished, minus pauses. If a workday was left without a clock-out, it says so: *Clock records · 1 without clock-out*. |
+| **Hourly rate** | The rate of the job they worked under, as it stood on the day of the clock record. |
+| **Job cost** | Hours times hourly rate. |
+| **Supplements** | The ones they were paid on that task, with their value in brackets. See [Supplements](../02-employees/141-supplements.md). |
+| **Supplements (amount)** | What they add up to. |
+| **Person cost** | Job cost plus supplements. |
+
+The **Total** row of each task adds up the hours and the cost of its people, the supplements, the material if you have inventory and the task's **gross cost**.
+
+If any task in the report has a customer, the **Customer** column is added after **Site** (see [The customer on the task](../17-customer-portfolio/119-the-customer-on-the-task.md)).
+
+The money columns are seen by whoever can generate the report: the owner and administrators. Amounts **carry no currency symbol**: your company's currency is stated once in the header of each sheet (*Currency: EUR*) and is set in [Organisation configuration](../08-branches-and-organisation/61-organisation-settings.md#company-details). A person with no rate on their job leaves the cost empty, not at zero.
 
 **Completed by** says who closed the task; if it was closed from the panel, it carries *(from administration)*, and the start and end are the times entered when closing it. See [closing it from administration](./127-who-finishes-the-task-and-closing-from-administration.md).
 
@@ -48,6 +70,13 @@ The time columns are worth reading carefully:
 | **Time spent excluding pauses (h)** | Time spent minus time paused. It deducts the pauses someone recorded, not the interruptions nobody marked. |
 
 A task that has not yet been started leaves the pause columns empty. If a task is paused when the report is generated, the open pause counts up to that moment.
+
+### The "By person" and "Supplements" sheets
+
+The file comes with two more sheets, drawn from the same rows:
+
+- **By person**: the summary of the period, one row per person: how many tasks, hours, under which jobs, job cost, supplements (amount), total cost and, under **Supplements in the period**, which supplements they were paid and how many times. It is the sheet for preparing payroll or checking against your payroll provider.
+- **Supplements**: the trail. One line per supplement paid, with the task, the site, the customer, the person, their job, the supplement, its type and its value, the hours, the hourly rate, the **amount** and the **source**: the clock-in it comes from or, if the task had no clock records, the task assignment. At the foot, how each type is calculated. If none was paid in the period, the sheet says so.
 
 ### Incidents
 
@@ -65,7 +94,7 @@ The tasks sheet gains three columns at the end:
 |---|---|
 | **Material** | What was consumed on the task: each item with its quantity, and equipment by its unit. |
 | **Unsettled** | What went out and nobody has declared or returned. This is what to check before validating. |
-| **Material cost (€)** | What was consumed times its unit cost. Empty if no item has a cost on its record. |
+| **Material cost** | What was consumed times its unit cost. Empty if no item has a cost on its record. It goes in the task's **Total** row. |
 
 And the file has one more sheet, **Material**, with one row per task and item or unit: the warehouse it came from, quantities reserved, issued, consumed, returned and unsettled, cost, and for equipment its reservation slot and its usage. This is the sheet to filter or build pivot tables on.
 
@@ -96,6 +125,8 @@ The aggregate metrics calculated by the platform —completion rate, average res
 
 | Article | Description |
 |---|---|
+| [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md) | Where the Job column and its hourly rate come from |
+| [Supplements](../02-employees/141-supplements.md) | What they are, the three types and where they are chosen |
 | [Employee rating](./46-employee-rating.md) | How performance scores are generated |
 | [Priorities and deadlines](./44-priorities-and-deadlines.md) | Deadline configuration that affects tracking |
 | [Task statuses](./42-task-statuses.md) | Meaning of the statuses and of time compliance |

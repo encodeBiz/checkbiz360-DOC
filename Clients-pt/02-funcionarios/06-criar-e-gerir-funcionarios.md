@@ -54,7 +54,7 @@ Três opções ativam-se ou desativam-se por funcionário:
 - **Calendário do funcionário** — Horário próprio e exceções, quando diferem dos da sua sucursal. Se não for configurado, o funcionário herda o calendário da sucursal.
 - **Dados adicionais** — Campos livres em formato chave/valor para informação própria da sua organização (número de funcionário, convenção coletiva, centro de custo…).
 
-Ao associar o funcionário a uma sucursal definem-se ainda a sua **responsabilidade** nesse local, a sua **função** e a sua **tarifa horária**, sendo esta última a que alimenta a análise de custos.
+Ao associar o funcionário a uma sucursal definem-se ainda a sua **responsabilidade** nesse local, o seu **posto** e o seu **salário por hora**, que é o que alimenta a análise de custos, os relatórios e a rentabilidade dos contratos. Se a pessoa faz mais de um trabalho nesse local, pode ter **vários postos**, cada um com o seu preço, e um predefinido. Ver [Vários postos para a mesma pessoa](140-varios-postos-para-a-mesma-pessoa.md).
 
 ---
 
@@ -125,3 +125,5 @@ Se começa com uma equipa de trinta ou quarenta pessoas, não é preciso criá-l
 - [Exportar a lista de funcionários](12-exportar-lista-de-funcionarios.md)
 - [Equipas](99-equipas.md)
 - [Acesso à aplicação e alteração de e-mail](116-acesso-a-aplicacao-e-alteracao-de-email.md)
+- [Vários postos para a mesma pessoa](140-varios-postos-para-a-mesma-pessoa.md)
+- [Complementos](141-complementos.md)

@@ -61,6 +61,17 @@ Se não tiver carregado nada a alguém na semana que está a ver, o painel avisa
 
 Os dias que já passaram não se alteram. O dia de hoje sim.
 
+### O posto e os complementos do turno
+
+No editor de cada turno, **Mais opções** abre dois campos que normalmente se deixam vazios:
+
+- **Posto**: com que posto vai a pessoa nesse turno, se tiver mais de um na sucursal. Vazio, vai com o seu predefinido. Ver [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md).
+- **Complementos**: o que recebe à parte nesse turno (feriado, trabalho noturno, condução…), do catálogo da sua empresa. Ver [Complementos](../02-funcionarios/141-complementos.md).
+
+Quando há algo preenchido, o botão indica-o: *Mais opções (com posto ou complementos)*. Ao registar contra esse turno, o registo guarda o posto e os complementos, e daí saem o custo e os relatórios. **Copiar para a semana seguinte** copia-os com o turno. É a forma de o feriado de domingo ou a noite de sábado se pagarem como diz a convenção sem mexer na ficha de ninguém.
+
+Os mesmos dois campos estão nos turnos da **semana tipo** ([Horários base e turnos](23-horarios-base-e-turnos.md)): aí valem para todas as semanas.
+
 ### Copiar a semana
 
 **Copiar para a semana seguinte** copia os turnos da semana que está a ver para a seguinte, pessoa a pessoa. O que já houver nesses dias é substituído. É a forma rápida de montar um mês em que as semanas se parecem, e depois retocar o que mudar.

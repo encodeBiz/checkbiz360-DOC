@@ -42,7 +42,12 @@ Quando ocorre uma nova contratação, o processo para registar o contrato no Che
 2. Aceda ao módulo documental e crie um documento novo com o tipo **Contrato**.
 3. Atribua-o ao funcionário e indique no título o tipo de contrato e a data de início, por exemplo: `Contrato sem termo - 01/05/2026`.
 4. Se precisar de constância de que o funcionário o recebeu, ative a **confirmação de leitura** antes de publicar.
-5. Publique o documento.
+5. Se souber por que convenção vai a pessoa, escolha-a em **Convenção coletiva (opcional)**; se não, procura-se no catálogo.
+6. Publique o documento.
+
+### O contrato lê-se sozinho
+
+Ao publicar um contrato de trabalho de uma pessoa, o CheckBiz360 lê-o e propõe-lhe na ficha do documento o seu **ofício**, o seu **horário**, a sua **convenção** e o seu **preço por hora**, cada dado com a frase do contrato de onde sai. Nada muda na ficha da pessoa até que prima **Aplicar à ficha**. Ver [O que diz o contrato de trabalho](138-o-que-diz-o-contrato-de-trabalho.md) e [Convenções coletivas](139-convencoes-coletivas.md).
 
 ### Renovações e alterações
 
@@ -68,6 +73,8 @@ O CheckBiz360 mantém o arquivo documental ativo enquanto a entidade tiver a con
 
 - [O que é o módulo documental](30-o-que-e-o-modulo-documental.md)
 - [Carregar e organizar documentos](31-carregar-e-organizar-documentos.md)
+- [O que diz o contrato de trabalho](138-o-que-diz-o-contrato-de-trabalho.md)
+- [Convenções coletivas](139-convencoes-coletivas.md)
 - [Documentos privados](33-documentos-privados.md)
 - [Notificações de documentos](34-notificacoes-de-documentos.md)
 - [Confirmação de leitura](35-assinatura-eletronica.md)

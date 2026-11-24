@@ -24,7 +24,7 @@ This article describes all the fields available when creating a task and explain
 - **Notify if not started on time** — If enabled and the task has an expected start date, the system warns when **5 minutes** have passed since that time without the task having been started: the assigned people in the app, and owners and administrators by email. Without an expected start date, the option has no effect. See [Task not started on time](./126-task-not-started-on-time.md).
 - **Status** — Status the task is born with. The usual options are *Draft* (not yet visible to the team) or *Assigned* (already sent). The *Validated*, *Rejected* and *Cancelled* statuses cannot be selected manually at creation: they are the result of the task's life cycle.
 - **Priority** — Low, medium, high or **critical**. It affects the order in which the task appears in the employee's app.
-- **Assigned employees** — The person or people responsible for completing it. Several can be searched for and selected.
+- **Assigned employees** — The person or people responsible for completing it. Several can be searched for and selected. In each person's row, if they have more than one job at the branch, **As** chooses which one they go with; and if the company has supplements, **Supplement** adds the ones they are paid on that task. See [Assign tasks to employees](./41-assign-tasks-to-employees.md#which-job-and-which-supplements).
 - **Who considers the task finished?** — *One person is enough* (the default), *All people* or *One responsible person*. See [Who finishes the task and closing it from administration](./127-who-finishes-the-task-and-closing-from-administration.md).
 
 ### Task configuration options
@@ -50,7 +50,7 @@ Three options control how the task is closed and reviewed:
 7. Where appropriate, state the **expected start date** and enable **Notify if not started on time**.
 8. Set the **deadline** (date and time).
 9. Choose **status** and **priority**.
-10. Search for and select the **assigned employees** and, if there are several, choose **Who considers the task finished?**.
+10. Search for and select the **assigned employees** and, if there are several, choose **Who considers the task finished?**. Where relevant, in each person's row choose their job (**As**) and their supplements (**Supplement**).
 11. Review the three configuration options (evidence, validation and rating by supervisor).
 12. Press **Save**. The assigned employees receive an automatic push notification.
 

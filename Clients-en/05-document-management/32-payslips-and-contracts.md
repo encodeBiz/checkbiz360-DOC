@@ -42,7 +42,12 @@ When there is a new hire, the process for registering the contract in CheckBiz36
 2. Go to the document module and create a new document with the **Contract** type.
 3. Assign it to the employee and state the contract type and start date in the title, for example: `Permanent contract - 01/05/2026`.
 4. If you need evidence that the employee has received it, enable the **read receipt** before publishing.
-5. Publish the document.
+5. If you know which agreement the person is under, choose it in **Collective agreement (optional)**; if not, it is looked up in the catalogue.
+6. Publish the document.
+
+### The contract reads itself
+
+When you publish a person's employment contract, CheckBiz360 reads it and proposes, in the document's record, their **occupation**, their **working hours**, their **collective agreement** and their **hourly rate**, each item with the sentence of the contract it is taken from. Nothing changes in the person's record until you press **Apply to profile**. See [What the employment contract says](138-what-the-employment-contract-says.md) and [Collective agreements](139-collective-agreements.md).
 
 ### Renewals and amendments
 
@@ -68,6 +73,8 @@ CheckBiz360 keeps the document archive active for as long as the organisation's 
 
 - [What the document module is](30-what-is-the-document-module.md)
 - [Upload and organise documents](31-upload-and-organise-documents.md)
+- [What the employment contract says](138-what-the-employment-contract-says.md)
+- [Collective agreements](139-collective-agreements.md)
 - [Private documents](33-private-documents.md)
 - [Document notifications](34-document-notifications.md)
 - [Read receipt](35-electronic-signature.md)

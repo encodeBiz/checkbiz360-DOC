@@ -67,13 +67,13 @@ Cada contrato é um cartão com o seu nome, o seu período (*De … a …* ou *I
 |---|---|
 | **Montante** | O preço do contrato, sem IVA. |
 | **Horas planeadas / feitas / previstas** | *Planeadas*: as que somam as suas tarefas, do início previsto ao vencimento, por cada pessoa atribuída. *Feitas*: as trabalhadas, segundo os registos das suas tarefas ou, se não os houver, quando foram iniciadas e terminadas. *Previstas*: as **Horas estimadas** do contrato (se não as indicou, só aparecem as duas primeiras). A vermelho se as feitas ultrapassarem as previstas. |
-| **Custo bruto** | As horas feitas pela tarifa de cada pessoa (sem encargos sociais), mais o material consumido nas suas tarefas se tiver inventário, mais as despesas aprovadas do contrato. A vermelho se já ultrapassar o montante. |
+| **Custo bruto** | As horas feitas pela tarifa de cada pessoa (sem encargos sociais) com o posto com que trabalhou de cada vez, mais os **complementos** que recebeu nessas tarefas, mais o material consumido nas suas tarefas se tiver inventário, mais as despesas aprovadas do contrato. A vermelho se já ultrapassar o montante. É o mesmo número que dá o [relatório de tarefas](../06-tarefas/48-relatorios-de-tarefas.md#o-que-contém) para essas tarefas. |
 | **Margem** | O que sobra do montante depois do custo, em euros e em percentagem. |
 
 Por baixo:
 
 - **Tarefas (n)**: cada tarefa do contrato com o seu estado, a sua data e as suas pessoas, da mais recente para a mais antiga, de 5 em 5 com **Carregar mais**. O nome da tarefa leva à sua ficha; a partir da ficha da tarefa, o contrato traz de volta aqui.
-- O custo do material e que parte das horas tem tarifa, se não a tiverem todas.
+- O custo do material, os complementos e que parte das horas tem tarifa, se não a tiverem todas.
 - **Despesas por aprovar** e **Despesas externas**. Ver [Despesas do contrato e da tarefa](./122-despesas-do-contrato-e-da-tarefa.md).
 - **Previsão** (ver mais abaixo).
 
@@ -136,3 +136,5 @@ As tarefas de um contrato fechado continuam a ser suas e podem ser editadas. O q
 | [Documentos do cliente](./120-documentos-do-cliente.md) | O PDF do contrato e quem o vê |
 | [O cliente nas análises](./123-o-cliente-nas-analises.md) | A rentabilidade do cliente mês a mês e os alertas de contrato |
 | [Criar e gerir funcionários](../02-funcionarios/06-criar-e-gerir-funcionarios.md) | Onde se indica a tarifa horária |
+| [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md) | Com que preço se valoriza cada tarefa |
+| [Complementos](../02-funcionarios/141-complementos.md) | O que se recebe à parte e entra no custo |

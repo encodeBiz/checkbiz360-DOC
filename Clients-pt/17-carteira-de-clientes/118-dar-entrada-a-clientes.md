@@ -10,7 +10,7 @@ Encontra-se em **Clientes**, no menu lateral.
 
 - **Um só sítio para os dados do cliente**, em vez de e-mails e folhas soltas.
 - **Chegar preparado.** As indicações de campo (chaves, campainha, horário) viajam com cada tarefa do cliente.
-- **Escolher bem ao criar uma tarefa.** Em cada sucursal só aparecem os clientes que ela atende.
+- **Escolher bem ao criar uma tarefa.** Em cada sucursal só aparecem os clientes que ela atende, mais os disponíveis em todas.
 - **Encontrá-lo em segundos**, por nome, NIF ou o seu código no seu programa de faturação.
 
 ---
@@ -21,7 +21,7 @@ Encontra-se em **Clientes**, no menu lateral.
 2. Escolha o **Tipo**: *Empresa* ou *Pessoa*.
 3. Escreva o **Nome**. É a única coisa obrigatória, juntamente com a sucursal.
 4. Se quiser, acrescente o **NIF** e a **Referência**: o seu código no seu programa de faturação, para cruzar os dados sem dúvidas.
-5. Em **Sucursais** (ou como a sua empresa chamar aos seus centros), escolha pelo menos uma: as que atendem este cliente. Ao criar uma tarefa nelas, será possível escolher este cliente.
+5. Em **Sucursais** (ou como a sua empresa chamar aos seus centros), escolha pelo menos uma: as que atendem este cliente. Ao criar uma tarefa nelas, será possível escolher este cliente. Se o atendem a partir de qualquer lado, marque em vez disso **Disponível em todas as sucursais** (ver mais abaixo).
 6. Em **Morada**, escreva a morada do cliente e **escolha-a da lista** de sugestões. É a sua casa ou a sua sede, e é a que depois pode ser usada como local de trabalho das suas tarefas.
 7. Decida se marca **Mostrar o nome do cliente à equipa** (ver mais abaixo).
 8. Acrescente as **Pessoas de contacto**: nome, cargo ou relação, telefone e e-mail. Marque **Visível para quem vai trabalhar** só nas que a equipa deva ver.
@@ -51,7 +51,7 @@ Ao marcar um contacto como **Visível para quem vai trabalhar**, o formulário r
 A lista mostra cada cliente com o seu tipo, as suas sucursais, quantos contactos tem e o seu estado. Para encontrar um:
 
 - **Procurar por nome, NIF ou referência**: a partir de três letras.
-- **Sucursal**: só os clientes que um centro atende.
+- **Sucursal**: só os clientes que um centro atende. Os disponíveis em todas aparecem com qualquer sucursal, com a marca *Todas as sucursais*.
 - **Estado**: por omissão veem-se os *Ativos*; também pode ver os *Arquivados* ou *Ativos e arquivados*.
 
 A partir de cada linha, **Ver ficha**, **Editar** ou **Arquivar**.
@@ -70,6 +70,17 @@ A partir do cabeçalho, **Editar** altera os dados e **Relatório do cliente** d
 ### Mudar as sucursais que o atendem
 
 No número de sucursais da ficha, prima **Editar**, escolha as sucursais e guarde. Um manager só pode atribuir o cliente a sucursais em que tem comando.
+
+### Um cliente disponível em todas as sucursais
+
+Há clientes que não são de uma sucursal concreta: a equipa que os atende muda, ou as tarefas criam-se a partir de uma sucursal diferente da que consta na sua ficha. Para esses, em vez de escolher sucursais, marque **Disponível em todas as sucursais**, ao criar o cliente ou em **Ações → Editar**. Poderá ser escolhido nas tarefas de qualquer sucursal, também das que criar depois, e a lista mostra-o com a marca *Todas as sucursais*.
+
+Duas coisas mudam com essa marca:
+
+- **Só o proprietário e os administradores** podem ver e editar a sua ficha. Um manager não o gere, embora o possa escolher nas suas tarefas.
+- Os seus **documentos marcados para a equipa podem ser abertos por toda a equipa da empresa**, não só por quem tiver uma tarefa sua. O que não deva ser visto, marque como **Administração**. O formulário lembra-o ao marcar a caixa. Ver [Documentos do cliente](./120-documentos-do-cliente.md).
+
+Para voltar a sucursais concretas, desmarque a caixa e escolha as sucursais.
 
 ---
 
@@ -92,7 +103,7 @@ Quando deixa de trabalhar com um cliente, **arquive-o** a partir da lista, com o
 
 **Não me deixa guardar a morada.** É preciso escolhê-la da lista de sugestões que aparece ao escrever; uma morada escrita à mão sem a escolher não serve. Se não quiser indicar morada, deixe o campo vazio.
 
-**Ao criar uma tarefa não me aparece o cliente.** O cliente tem de estar atribuído à sucursal da tarefa e estar *Ativo*. Reveja as suas sucursais na ficha.
+**Ao criar uma tarefa não me aparece o cliente.** O cliente tem de estar atribuído à sucursal da tarefa e estar *Ativo*. Reveja as suas sucursais na ficha. Se cria as tarefas a partir de uma sucursal diferente da que atende o cliente (uma sucursal de coordenação, por exemplo), marque-o **Disponível em todas as sucursais**.
 
 **A equipa vê o nome do cliente embora eu não tenha marcado a caixa.** Veja o título da tarefa: vê-se sempre.
 

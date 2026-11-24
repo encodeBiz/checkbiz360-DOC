@@ -18,8 +18,10 @@ A atribuição a uma sucursal é o vínculo que une um funcionário a uma sucurs
 4. Prima **Adicionar responsabilidade**.
 5. Selecione a sucursal na lista **Sucursal**. A listagem mostra apenas as sucursais ativas da sua entidade.
 6. Atribua o perfil que o funcionário terá nessa sucursal: **Worker**, **Supervisor** ou **Manager**.
-7. Se for o caso, selecione o calendário efetivo que se aplicará a este funcionário nessa sucursal.
-8. Prima **Guardar**. A atribuição aplica-se de imediato.
+7. Indique a sua **Ocupação atual** (do catálogo de postos da sua empresa ou uma nova) e o seu **Salário por hora**. É o preço com que se valorizam as suas horas nos relatórios, nas estatísticas e nos contratos de clientes; só o veem o proprietário e os administradores.
+8. Se fizer mais de um trabalho nesse local, em **Também pode fazer de** acrescente os outros postos com o seu preço. O de **Ocupação atual** fica como predefinido. Ver [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md).
+9. Se for o caso, selecione o calendário efetivo que se aplicará a este funcionário nessa sucursal.
+10. Prima **Guardar**. A atribuição aplica-se de imediato.
 
 ### A partir da gestão da sucursal
 
@@ -87,6 +89,7 @@ Para desassociar um funcionário de uma sucursal:
 
 - [Criar e gerir sucursais](57-criar-e-gerir-sucursais.md)
 - [Equipas](../02-funcionarios/99-equipas.md)
+- [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md)
 - [Estados de uma sucursal](59-estados-de-uma-sucursal.md)
 - [Configuração da entidade](61-configuracao-da-entidade.md)
 - [Vista global multi-sucursal](62-vista-global-multi-sucursal.md)

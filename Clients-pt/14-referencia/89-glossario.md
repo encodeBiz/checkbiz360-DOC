@@ -37,6 +37,9 @@ Identificador alfanumérico que o sistema devolve quando uma operação não pod
 ### Colaborador (tipo de relação)
 Pessoa externa que trabalha para a empresa sem pertencer ao quadro de pessoal: um trabalhador independente, um freelancer ou um prestador de serviços. Indica-se na ficha do funcionário, por oposição a *Pessoal*. Os colaboradores não aparecem no relatório de registo de jornada. Não deve ser confundido com os *colaboradores* da entidade, que são os utilizadores com acesso ao backoffice.
 
+### Complemento
+O que uma pessoa recebe além do preço do seu posto por uma tarefa ou um turno concreto: condução, feriado, trabalho noturno. Define-se uma vez no catálogo da empresa (**Funcionários → Complementos**), de tipo fixo, por hora ou percentagem, e escolhe-se ao atribuir a tarefa ou carregar o turno. O registo guarda-o e o relatório de tarefas discrimina-o. Veja [Complementos](../02-funcionarios/141-complementos.md).
+
 ### Confirmação de leitura
 Confirmação explícita de que um funcionário acedeu a um documento que a exige. Fica registada com a data e a versão concreta do documento que foi lida, de modo que uma versão posterior não herda a confirmação da anterior. Não é uma assinatura eletrónica: a assinatura com validade eIDAS está no roadmap.
 
@@ -186,6 +189,9 @@ Dispositivo fixo num local, tablet ou telemóvel, onde cada pessoa regista o pon
 
 ### Pontuação de promoção
 Índice único que combinaria fiabilidade, eficiência e avaliações num só valor comparável entre funcionários. **Não existe na versão atual**: o que existe é a *avaliação operacional do funcionário*, um diagnóstico do seu padrão que inclui o sinal de candidato a promoção. Veja [Avaliação operacional do funcionário](../07-inteligencia-operacional/53-pontuacao-de-promocao.md).
+
+### Posto predefinido
+Dos postos que uma pessoa tem numa sucursal, o que se aplica quando na tarefa ou no turno não se escolhe outro. É o de **Ocupação atual** da sua ficha; os outros estão em **Também pode fazer de**, cada um com o seu preço por hora. Veja [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md).
 
 ---
 

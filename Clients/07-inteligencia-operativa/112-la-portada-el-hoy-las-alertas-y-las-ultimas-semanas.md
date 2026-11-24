@@ -70,7 +70,7 @@ El mismo cuadro, semana a semana, para los últimos dos meses:
 - **Cobertura**: de las jornadas previstas, cuántas tuvieron fichaje.
 - **Retraso**: qué parte de quienes ficharon llegó tarde.
 - **Tareas a tiempo**: qué parte de las tareas de la semana se hizo a su hora.
-- **Coste por semana**: horas por tarifa, más material.
+- **Coste por semana**: horas por tarifa, más complementos y material.
 
 Cada cifra lleva la diferencia con la semana anterior, y debajo la tabla por centro. La semana en curso aparece como *semana incompleta*. Las semanas anteriores a que la portada empezara a guardar el día a día se marcan *Reconstruido con el calendario actual*: valen para orientarse, no para discutir una nómina. Al principio, hasta que no haya semanas cerradas, el bloque lo dice.
 

@@ -10,7 +10,7 @@ You will find it under **Customers**, in the side menu.
 
 - **One place for the customer's details**, instead of emails and loose spreadsheets.
 - **Arriving prepared.** Field instructions (keys, doorbell, opening hours) travel with each of the customer's tasks.
-- **Choosing correctly when creating a task.** In each branch, only the customers it serves are shown.
+- **Choosing correctly when creating a task.** In each branch, only the customers it serves are shown, plus those available in all branches.
 - **Finding them in seconds**, by name, tax ID or their code in your invoicing software.
 
 ---
@@ -21,7 +21,7 @@ You will find it under **Customers**, in the side menu.
 2. Choose the **Type**: *Company* or *Person*.
 3. Enter the **Name**. It is the only required field, together with the branch.
 4. If you wish, add the **Tax ID** and the **Reference**: their code in your invoicing software, to cross-check the data without doubt.
-5. In **Branches** (or whatever your company calls its sites), choose at least one: those that serve this customer. When a task is created in them, this customer can be chosen.
+5. In **Branches** (or whatever your company calls its sites), choose at least one: those that serve this customer. When a task is created in them, this customer can be chosen. If the customer is served from anywhere, tick **Available in all branches** instead (see below).
 6. In **Address**, type the customer's address and **pick it from the list** of suggestions. It is their home or their head office, and it is the one that can later be used as the work site of their tasks.
 7. Decide whether to tick **Show the customer's name to staff** (see below).
 8. Add the **Contact people**: name, role or relationship, phone and email. Tick **Visible to field staff** only on those your staff should see.
@@ -51,7 +51,7 @@ When you mark a contact as **Visible to field staff**, the form reminds you that
 The list shows each customer with their type, branches, how many contacts they have and their status. To find one:
 
 - **Search by name, tax ID or reference**: from three letters.
-- **Branch**: only the customers a site serves.
+- **Branch**: only the customers a site serves. Those available in all branches appear with any branch, with the *All branches* tag.
 - **Status**: *Active* ones are shown by default; you can also see *Archived* or *Active and archived*.
 
 From each row, **View**, **Edit** or **Archive**.
@@ -70,6 +70,17 @@ From the header, **Edit** changes the details and **Customer report** downloads 
 ### Change the branches that serve the customer
 
 On the branches figure of the record, press **Edit**, choose the branches and save. A manager can only assign the customer to branches they are in charge of.
+
+### A customer available in all branches
+
+Some customers do not belong to one branch: the team serving them changes, or tasks are created from a branch other than the one on their record. For those, instead of choosing branches, tick **Available in all branches**, when creating the customer or in **Actions → Edit**. They can be picked in the tasks of any branch, including the ones you create later, and the list shows them with the *All branches* tag.
+
+Two things change with that tick:
+
+- **Only the owner and administrators** can view and edit the record. A manager does not manage the customer, although they can pick them in their tasks.
+- Their **documents marked for staff can be opened by the whole staff of the company**, not only by those with one of their tasks. Mark as **Administration** anything that should not be seen. The form reminds you when you tick the box. See [Customer documents](./120-customer-documents.md).
+
+To go back to specific branches, untick the box and choose the branches.
 
 ---
 
@@ -92,7 +103,7 @@ When you stop working with a customer, **archive them** from the list, with the 
 
 **It will not let me save the address.** You have to pick it from the list of suggestions that appears as you type; an address typed by hand without picking it is not valid. If you do not want to enter an address, leave the field empty.
 
-**The customer does not appear when I create a task.** The customer has to be assigned to the task's branch and be *Active*. Check their branches in the record.
+**The customer does not appear when I create a task.** The customer has to be assigned to the task's branch and be *Active*. Check their branches in the record. If you create tasks from a branch other than the one serving the customer (a coordination branch, for example), tick **Available in all branches**.
 
 **Staff see the customer's name even though I did not tick the box.** Look at the task title: it is always visible.
 

@@ -54,6 +54,9 @@ Mechanism by which employees or branches automatically adopt the configuration d
 
 ## D
 
+### Default job
+Of the jobs a person has at a branch, the one that applies when no other is chosen on the task or the shift. It is the one in **Current occupation** on their record; the others are under **Can also work as**, each with its hourly rate. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md).
+
 ### Dependency
 Indicator measuring how much of a site's operation rests on a few people. It is read directly —*half the operation depends on 1 person*, *depends on 2 people*, *healthy distribution*— and is complemented by the cover-by-position view.
 
@@ -181,6 +184,9 @@ CheckBiz360's contracting mode. There are two: **Bronze**, €2 + VAT per employ
 
 ### Supervisor
 Intermediate role between Manager and Worker. The Supervisor can review the clock records and tasks of the employees on their direct team if the Manager has granted them that capability, but has no access to the branch's global configuration or to cost or anomaly reports.
+
+### Supplement
+What a person is paid on top of their job's rate for a particular task or shift: driving, public holiday, night work. It is defined once in the company's catalogue (**Employees → Supplements**), as fixed, per hour or percentage, and chosen when assigning the task or loading the shift. The clock record stores it and the task report itemises it. See [Supplements](../02-employees/141-supplements.md).
 
 ---
 

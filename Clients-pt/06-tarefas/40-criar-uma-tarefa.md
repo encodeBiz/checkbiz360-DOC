@@ -24,7 +24,7 @@ Este artigo descreve todos os campos disponíveis ao criar uma tarefa e explica 
 - **Notificar se não iniciar a tempo** — Se for ativada e a tarefa tiver data prevista de início, o sistema avisa quando tiverem passado **5 minutos** dessa hora sem que a tarefa tenha sido iniciada: as pessoas atribuídas na aplicação e os proprietários e administradores por e-mail. Sem data prevista de início, a opção não tem efeito. Ver [Tarefa por iniciar à hora prevista](./126-tarefa-por-iniciar-a-hora-prevista.md).
 - **Estado** — Estado com que a tarefa nasce. O habitual é *Rascunho* (ainda não visível para a equipa) ou *Atribuída* (já enviada). Os estados *Validada*, *Recusada* e *Cancelada* não podem ser selecionados manualmente na criação: são o resultado do ciclo de vida da tarefa.
 - **Prioridade** — Baixa, média, alta ou **crítica**. Afeta a ordem pela qual a tarefa aparece na aplicação do funcionário.
-- **Funcionários atribuídos** — Pessoa ou pessoas responsáveis por a concluir. Podem pesquisar-se e selecionar-se vários.
+- **Funcionários atribuídos** — Pessoa ou pessoas responsáveis por a concluir. Podem pesquisar-se e selecionar-se vários. Na linha de cada pessoa, se tiver mais de um posto na sucursal, **Como** escolhe com qual vai; e se a empresa tiver complementos, **Complemento** acrescenta os que recebe nessa tarefa. Ver [Atribuir tarefas a funcionários](./41-atribuir-tarefas-a-funcionarios.md#com-que-posto-e-que-complementos).
 - **Quem dá a tarefa por terminada?** — *Basta uma pessoa* (por omissão), *Todas as pessoas* ou *Uma pessoa responsável*. Ver [Quem termina a tarefa e fechá-la a partir da administração](./127-quem-termina-a-tarefa-e-fecho-a-partir-da-administracao.md).
 
 ### Opções de configuração da tarefa
@@ -50,7 +50,7 @@ Três opções controlam como a tarefa é fechada e revista:
 7. Se for o caso, indique a **data prevista de início** e ative **Notificar se não iniciar a tempo**.
 8. Estabeleça o **prazo** (data e hora).
 9. Escolha **estado** e **prioridade**.
-10. Procure e selecione os **funcionários atribuídos** e, se forem vários, escolha **Quem dá a tarefa por terminada?**.
+10. Procure e selecione os **funcionários atribuídos** e, se forem vários, escolha **Quem dá a tarefa por terminada?**. Se for o caso, na linha de cada pessoa escolha o seu posto (**Como**) e os seus complementos (**Complemento**).
 11. Reveja as três opções de configuração (evidência, validação e avaliação por supervisor).
 12. Prima **Guardar**. Os funcionários atribuídos recebem uma notificação push automática.
 

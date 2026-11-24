@@ -50,6 +50,9 @@ Indicador que acompaña a cada tarea y refleja su situación frente a la fecha l
 ### Colaborador (tipo de relación)
 Persona externa que trabaja para la empresa sin pertenecer a la plantilla: un autónomo, un freelance o un proveedor. Se indica en la ficha del empleado frente a *Plantilla*. Los colaboradores no aparecen en el informe de registro de jornada. No debe confundirse con los *colaboradores* de la entidad, que son los usuarios con acceso al backoffice.
 
+### Complemento
+Lo que una persona cobra además del precio de su puesto por una tarea o un turno concreto: conducción, festivo, nocturnidad. Se define una vez en el catálogo de la empresa (**Empleados → Complementos**), de tipo fijo, por hora o porcentaje, y se elige al asignar la tarea o cargar el turno. El fichaje lo guarda y el informe de tareas lo desglosa. Véase [Complementos](../02-empleados/141-complementos.md).
+
 ### Código de error
 Identificador alfanumérico que el sistema devuelve cuando una operación no puede completarse. Los códigos de error siguen el formato `modulo/tipo_de_error` (por ejemplo, `checklog/out_of_radius`). Permiten identificar la causa exacta de un fallo sin necesidad de interpretar mensajes de texto. Véase el artículo [Códigos de error completos](./90-codigos-de-error-completos.md).
 
@@ -184,6 +187,9 @@ Pantalla del backoffice que consolida la actividad del periodo en tres vistas: l
 
 ### Plan de suscripción
 Modalidad de contratación de CheckBiz360. Hay dos: **Bronce**, 2 € + IVA por empleado al mes (tarifa 2026, contratando hasta el 31 de diciembre de 2026 incluido), y **Empresarial**, con precio a medida, que añade soporte preferente e integraciones. Ambos dan acceso a todos los módulos de la plataforma. Véase [Planes, precios y funcionalidades](./91-planes-y-funcionalidades.md).
+
+### Puesto predeterminado
+De los puestos que una persona tiene en una sucursal, el que se aplica cuando en la tarea o el turno no se elige otro. Es el de **Ocupación actual** de su ficha; los demás están en **También puede hacer de**, cada uno con su precio por hora. Véase [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md).
 
 ### Punto de fichaje
 Dispositivo fijo en un centro, tablet o móvil, donde cada persona ficha con su tarjeta QR o su código de 6 cifras y el dispositivo hace una foto. Es un complemento de pago. En la app se llama *modo quiosco*. Véase [Punto de fichaje](../03-control-horario/113-punto-de-fichaje.md).

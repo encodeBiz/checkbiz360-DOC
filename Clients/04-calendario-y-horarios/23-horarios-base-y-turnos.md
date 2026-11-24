@@ -62,7 +62,7 @@ La configuración de días laborables se realiza desde el backoffice:
 1. Acceda al backoffice con un rol con permisos de edición (owner o manager).
 2. Para el horario de la entidad, abra **Horarios** en el menú lateral y la pestaña **Configuración general**. Para una sucursal o un empleado, abra su ficha: el horario se hereda mientras esté activado **Usar horario base**, y al desactivarlo puede definir un **horario personalizado**.
 3. En el **Horario semanal**, active o desactive cada día. Un día apagado muestra «No hay turnos definidos».
-4. Añada los turnos de los días activos.
+4. Añada los turnos de los días activos. En **Más opciones** de cada turno puede fijar el **Puesto** con el que va la persona (si tiene varios) y los **Complementos** que cobra ese turno, por ejemplo la nocturnidad del turno de noche; vacíos, el turno es el de siempre. Ver [Complementos](../02-empleados/141-complementos.md).
 5. Pulse **Guardar calendario**. Se pide confirmación, y en ese mismo paso puede guardar el horario también como plantilla (ver [Plantillas de horario](#plantillas-de-horario)).
 
 Los cambios en los días laborables tienen efecto inmediato sobre el calendario efectivo de todos los empleados que hereden ese horario.

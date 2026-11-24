@@ -28,6 +28,21 @@ A task always belongs to a branch, so employee selection is made from those who 
 
 ---
 
+## Which job and which supplements
+
+When assigning, each person chosen takes up a row on the form. Two more things can appear in that row, depending on what your company has configured:
+
+- **As**: which job that person goes with on that task. It only appears if they have **more than one job** at that branch; the default is pre-selected. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md).
+- **Supplement**: what they are paid on top for that task (driving, public holiday, night work, etc.), chosen from your company's catalogue. Several can be added, and each one is removed from its tag. It only appears if the company has defined supplements. See [Supplements](../02-employees/141-supplements.md).
+
+Both belong to **the person on that task**, not to the whole task: on a task with three people, only the one who drives may be paid the driving allowance. If nothing is chosen, the person goes with their default job and no supplements, as before.
+
+From the task page, in the **Assigned team** block, the **Job and supplements** action for each person lets you change them afterwards, as long as the task is not completed or validated. When the person clocks in on the task, the clock record stores the job and the supplements that applied: that is where the columns of the [task report](./48-task-reports.md#what-it-contains) and the cost of [contracts](../17-customer-portfolio/121-contracts-and-profitability.md) come from.
+
+Managers and supervisors choose job and supplements by name, without seeing rates or amounts.
+
+---
+
 ## Reassigning tasks
 
 Circumstances change: an employee may be absent, change shift or turn out not to be the right person for a particular task. CheckBiz360 allows a task to be reassigned to another employee at any time, provided it is not in "completed" or "validated" status.
@@ -93,4 +108,6 @@ None of this can be modified or deleted from the back office.
 | [Task statuses](./42-task-statuses.md) | Life cycle and status changes |
 | [Tracking and updates](./43-tracking-and-updates.md) | How the employee updates progress |
 | [Task notifications](./47-task-notifications.md) | Notification types and configuration |
+| [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md) | The "As" selector when assigning |
+| [Supplements](../02-employees/141-supplements.md) | What a person is paid on top on a task |
 | [Roles and responsibility levels](../02-employees/07-roles-and-responsibility-levels.md) | Description of each role on the platform |

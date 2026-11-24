@@ -17,7 +17,7 @@ Uma tarefa com o seu cliente sabe onde se faz, leva a quem vai trabalhar o que p
 
 1. Em **Gerenciamento de tarefas**, prima o botão de nova tarefa.
 2. Escolha primeiro a **sucursal**: os clientes saem dela.
-3. Em **Cliente**, escolha um dos clientes atribuídos a essa sucursal, ou deixe **Sem cliente**. Se a sucursal não tiver clientes, o campo não aparece.
+3. Em **Cliente**, escolha um dos clientes atribuídos a essa sucursal ou disponíveis em todas, ou deixe **Sem cliente**. Se não houver nenhum para essa sucursal, o campo não aparece.
 4. Se o cliente tiver contratos, aparece **Contrato**: escolha de qual é a tarefa ou **Sem contrato** (ver mais abaixo).
 5. Se o cliente tiver morada, aparece marcada **Usar a morada do cliente como local de trabalho**, com a morada por baixo e a sua **Margem** em metros.
 6. Preencha o resto da tarefa como sempre e guarde.
@@ -89,7 +89,7 @@ Para ver o cartão, a equipa tem de ter a aplicação atualizada para a última 
 
 ## Problemas frequentes
 
-**Não aparece o campo Cliente.** A sucursal escolhida não tem clientes atribuídos. Atribua o cliente a essa sucursal a partir da sua ficha.
+**Não aparece o campo Cliente.** A sucursal escolhida não tem clientes atribuídos nem há clientes disponíveis em todas as sucursais. Atribua o cliente a essa sucursal a partir da sua ficha ou, se as tarefas se criam a partir de uma sucursal diferente da que o atende, marque-o **Disponível em todas as sucursais** (ver [Dar entrada a clientes](./118-dar-entrada-a-clientes.md)).
 
 **Não aparece a lista Contrato.** O cliente não tem contratos ativos.
 

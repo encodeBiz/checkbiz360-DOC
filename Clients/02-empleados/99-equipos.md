@@ -11,6 +11,7 @@ Está pensado para empresas que mueven a la misma gente de un proyecto a otro: s
 - **Un equipo es una plantilla.** Cada miembro lleva su responsabilidad (trabajador, supervisor, gerente o propietario), su puesto y su precio por hora, pero no una sucursal.
 - **Aplicarlo a una sucursal** da de alta en ella a cada miembro con esos datos, exactamente igual que si se hubiera hecho a mano.
 - **La sucursal manda sobre la plantilla.** Cambiar un puesto o un precio en el equipo no cambia las sucursales donde ya se aplicó: eso se ajusta en cada sucursal. El precio que usan los costes y los informes es siempre el de la sucursal.
+- **Un puesto por persona.** El equipo lleva el puesto con el que cada persona se da de alta, que queda como su predeterminado en la sucursal. Si allí hace más de un trabajo, los demás puestos se añaden después en su ficha. Ver [Varios puestos para la misma persona](./140-varios-puestos-por-persona.md).
 - **El horario no forma parte del equipo.** Se configura en la sucursal, como siempre.
 - Una misma persona puede estar en **varios equipos**, pero no dos veces en el mismo.
 
@@ -105,3 +106,4 @@ Crear, editar y borrar equipos, aplicarlos y guardar una sucursal como equipo es
 | [Crear y gestionar empleados](./06-crear-y-gestionar-empleados.md) | Alta de empleados y estados, incluido el estado pendiente |
 | [Asignar tareas a empleados](../06-tareas/41-asignar-tareas-a-empleados.md) | Cómo se asignan las tareas a las personas de una sucursal |
 | [Análisis de costes](../07-inteligencia-operativa/54-analisis-de-costes.md) | Por qué el precio que cuenta es el de la sucursal |
+| [Varios puestos para la misma persona](./140-varios-puestos-por-persona.md) | Los puestos adicionales, que el equipo no lleva |

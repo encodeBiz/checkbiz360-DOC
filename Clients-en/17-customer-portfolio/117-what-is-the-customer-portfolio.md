@@ -62,6 +62,8 @@ For profitability to come out (in contracts and in the customer's **Analysis** t
 
 If someone is missing it, their hours are shown but do not count towards the cost, and the platform says so: *Some hours have no rate: the cost falls short*. It is worth checking this before trusting a margin.
 
+If a person does different kinds of work at different rates, they can have [several jobs](../02-employees/140-several-jobs-for-the-same-person.md) and choose which one they go with on each task; and what they are paid on top for a particular task is recorded as [supplements](../02-employees/141-supplements.md). Both go into the contract's cost.
+
 ---
 
 ## Getting started in five steps

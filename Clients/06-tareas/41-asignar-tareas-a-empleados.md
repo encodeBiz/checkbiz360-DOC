@@ -28,6 +28,21 @@ Una tarea pertenece siempre a una sucursal, así que la selección de empleados 
 
 ---
 
+## Con qué puesto y qué complementos
+
+Al asignar, cada persona elegida ocupa una fila del formulario. En esa fila pueden aparecer dos cosas más, según lo que tenga configurado su empresa:
+
+- **Como**: con qué puesto va esa persona a esa tarea. Solo sale si tiene **más de un puesto** en esa sucursal; el predeterminado viene marcado. Ver [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md).
+- **Complemento**: lo que cobra aparte por esa tarea (conducción, festivo, nocturnidad…), elegido del catálogo de su empresa. Se pueden añadir varios, y cada uno se quita desde su etiqueta. Solo sale si la empresa ha definido complementos. Ver [Complementos](../02-empleados/141-complementos.md).
+
+Los dos son **de la persona en esa tarea**, no de la tarea entera: en una tarea de tres, puede cobrar el plus de conducción solo quien conduce. Si no se elige nada, la persona va con su puesto predeterminado y sin complementos, como hasta ahora.
+
+Desde la ficha de la tarea, en el bloque **Equipo asignado**, la acción **Puesto y complementos** de cada persona permite cambiarlos después, mientras la tarea no esté completada ni validada. Cuando la persona ficha en la tarea, el fichaje guarda el puesto y los complementos que tocaban: de ahí salen las columnas del [informe de tareas](./48-informes-de-tareas.md#qué-contiene) y el coste de los [contratos](../17-cartera-de-clientes/121-contratos-y-rentabilidad.md).
+
+Los gestores y supervisores eligen puesto y complementos por su nombre, sin ver precios ni importes.
+
+---
+
 ## Reasignación de tareas
 
 Las circunstancias cambian: un empleado puede ausentarse, cambiar de turno o resultar no ser la persona adecuada para una tarea concreta. CheckBiz360 permite reasignar una tarea a otro empleado en cualquier momento, siempre que no esté en estado "completada" o "validada".
@@ -93,4 +108,6 @@ Nada de esto se puede modificar ni eliminar desde el backoffice.
 | [Estados de una tarea](./42-estados-de-una-tarea.md) | Ciclo de vida y cambios de estado |
 | [Seguimiento y actualizaciones](./43-seguimiento-y-actualizaciones.md) | Cómo el empleado actualiza el progreso |
 | [Notificaciones de tareas](./47-notificaciones-de-tareas.md) | Tipos de notificación y configuración |
+| [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md) | El selector «Como» de la asignación |
+| [Complementos](../02-empleados/141-complementos.md) | Lo que una persona cobra aparte en una tarea |
 | [Roles y niveles de responsabilidad](../02-empleados/07-roles-y-niveles-de-responsabilidad.md) | Descripción de cada rol en la plataforma |

@@ -52,8 +52,8 @@ Retirar um colaborador elimina as suas permissões sobre a entidade e não pode 
 | **NIF / CIF** | — | Identificação fiscal da entidade |
 | **Email de faturação** | — | Endereço para onde chegam as faturas |
 | **Morada** | Sim | Domicílio da empresa, escolhido na pesquisa de moradas. Dela saem as coordenadas e o **fuso horário**. Não há campo de cidade à parte: a morada normalizada já a inclui |
-
-Não existe um campo de «setor de atividade»: a plataforma não classifica a entidade por setor nem ajusta nada em função dele.
+| **Moeda** | — | A moeda em que estão os valores da sua empresa: salários por hora, complementos, contratos, despesas e custos. Escolhida da lista. Decide como se formatam os números no painel e que moeda o relatório de tarefas declara no seu cabeçalho (*Moneda: EUR*). Não converte nada: uma só moeda por empresa. As empresas registadas antes de o campo existir já o têm preenchido: confirme que é a sua |
+| **Atividade** (*A que se dedica a sua empresa*) | — | A que se dedica a empresa, escolhida da lista ou escrita se não estiver (fica *Em revisão* e usa-a desde já). Decide que convenções coletivas a sua empresa vê e que convenção se propõe ao ler um contrato de trabalho. Ver [Convenções coletivas](../05-gestao-documental/139-convencoes-coletivas.md) |
 
 ---
 

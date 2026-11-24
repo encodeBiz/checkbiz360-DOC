@@ -55,6 +55,8 @@ When you choose *Quote / rate*, visibility drops to **Administration** on its ow
 
 From a customer's task, the assigned person sees in the app the customer documents marked for **Worker**, in the **Additional details** card. In the panel, the task's customer card shows those same documents under **Documents**, with the note *The ones staff can see from the task*.
 
+If the customer is marked **Available in all branches**, their documents for staff can be opened by **the whole staff of the company**, whether or not they have one of their tasks: some people serve a customer on a fixed schedule with no tasks. So, for those customers, anything that should not be seen goes under **Administration**. The customer form warns you when you tick the box.
+
 ---
 
 ## Expiry dates
@@ -78,6 +80,8 @@ From the **Documents** list in the record, **Archive** removes the document from
 **The owner cannot see a document from the app.** That is expected if it is under Administration or not ticked for **Worker**: from the app only what is for staff is shown. Open it from the panel.
 
 **Staff cannot see the customer record.** Check that the record is ticked for **Worker** and that the task has that customer.
+
+**Someone with no tasks for that customer has opened their record.** The customer is marked **Available in all branches**: their documents for staff can be opened by the whole staff. If that should not be so, move them to **Administration** or assign specific branches to the customer.
 
 ---
 

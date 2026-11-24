@@ -55,6 +55,8 @@ Ao escolher *Orçamento / tarifa*, a visibilidade desce sozinha para **Administr
 
 A partir da tarefa de um cliente, a pessoa atribuída vê na aplicação os documentos do cliente marcados para **Trabalhador**, no cartão «Datos complementarios». No painel, o cartão do cliente da tarefa mostra esses mesmos documentos em **Documentos**, com a nota *Os que a equipa vê a partir da tarefa*.
 
+Se o cliente estiver marcado **Disponível em todas as sucursais**, os seus documentos para a equipa podem ser abertos por **toda a equipa da empresa**, tenha ou não uma tarefa sua: há quem atenda um cliente com horário fixo e sem tarefas. Por isso, nesses clientes, o que não deva ser visto vai em **Administração**. O formulário do cliente avisa ao marcar a caixa.
+
 ---
 
 ## Validades
@@ -78,6 +80,8 @@ A partir da lista de **Documentos** da ficha, **Arquivar** retira o documento da
 **O proprietário não vê um documento a partir da aplicação.** É o esperado se estiver em Administração ou não estiver marcado para **Trabalhador**: a partir da aplicação só se vê o que é da equipa. Abra-o a partir do painel.
 
 **A equipa não vê a ficha do cliente.** Verifique que a ficha está marcada para **Trabalhador** e que a tarefa tem esse cliente.
+
+**Alguém sem tarefas desse cliente abriu a sua ficha.** O cliente está marcado **Disponível em todas as sucursais**: os seus documentos para a equipa são abertos por toda a equipa. Se não deve ser assim, passe-os a **Administração** ou atribua ao cliente sucursais concretas.
 
 ---
 

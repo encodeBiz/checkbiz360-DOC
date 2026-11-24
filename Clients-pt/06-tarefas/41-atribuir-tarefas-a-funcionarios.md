@@ -28,6 +28,21 @@ Uma tarefa pertence sempre a uma sucursal, pelo que a seleção de funcionários
 
 ---
 
+## Com que posto e que complementos
+
+Ao atribuir, cada pessoa escolhida ocupa uma linha do formulário. Nessa linha podem aparecer mais duas coisas, conforme o que a sua empresa tiver configurado:
+
+- **Como**: com que posto vai essa pessoa a essa tarefa. Só aparece se tiver **mais de um posto** nessa sucursal; o predefinido vem marcado. Ver [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md).
+- **Complemento**: o que recebe à parte por essa tarefa (condução, feriado, trabalho noturno…), escolhido do catálogo da sua empresa. Podem adicionar-se vários, e cada um retira-se a partir da sua etiqueta. Só aparece se a empresa tiver definido complementos. Ver [Complementos](../02-funcionarios/141-complementos.md).
+
+Os dois são **da pessoa nessa tarefa**, não da tarefa inteira: numa tarefa de três, pode receber o subsídio de condução só quem conduz. Se não se escolher nada, a pessoa vai com o seu posto predefinido e sem complementos, como até agora.
+
+A partir da ficha da tarefa, no bloco **Equipa atribuída**, a ação **Posto e complementos** de cada pessoa permite alterá-los depois, enquanto a tarefa não estiver concluída nem validada. Quando a pessoa regista na tarefa, o registo guarda o posto e os complementos que correspondiam: daí saem as colunas do [relatório de tarefas](./48-relatorios-de-tarefas.md#o-que-contém) e o custo dos [contratos](../17-carteira-de-clientes/121-contratos-e-rentabilidade.md).
+
+Os gestores e supervisores escolhem posto e complementos pelo nome, sem ver preços nem valores.
+
+---
+
 ## Reatribuição de tarefas
 
 As circunstâncias mudam: um funcionário pode ausentar-se, mudar de turno ou revelar-se não ser a pessoa adequada para uma tarefa concreta. O CheckBiz360 permite reatribuir uma tarefa a outro funcionário a qualquer momento, desde que não esteja no estado «concluída» ou «validada».
@@ -93,4 +108,6 @@ Nada disto pode ser modificado nem eliminado a partir do backoffice.
 | [Estados de uma tarefa](./42-estados-de-uma-tarefa.md) | Ciclo de vida e mudanças de estado |
 | [Acompanhamento e atualizações](./43-acompanhamento-e-atualizacoes.md) | Como o funcionário atualiza o progresso |
 | [Notificações de tarefas](./47-notificacoes-de-tarefas.md) | Tipos de notificação e configuração |
+| [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md) | O seletor «Como» da atribuição |
+| [Complementos](../02-funcionarios/141-complementos.md) | O que uma pessoa recebe à parte numa tarefa |
 | [Perfis e níveis de responsabilidade](../02-funcionarios/07-perfis-e-niveis-de-responsabilidade.md) | Descrição de cada perfil na plataforma |

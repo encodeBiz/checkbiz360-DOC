@@ -17,7 +17,7 @@ Una tarea con su cliente sabe dónde se hace, lleva a quien va a trabajar lo que
 
 1. En **Gestión de tareas**, pulse el botón de nueva tarea.
 2. Elija primero la **sucursal**: los clientes salen de ella.
-3. En **Cliente**, elija uno de los clientes asignados a esa sucursal, o deje **Sin cliente**. Si la sucursal no tiene clientes, el campo no aparece.
+3. En **Cliente**, elija uno de los clientes asignados a esa sucursal o disponibles en todas, o deje **Sin cliente**. Si no hay ninguno para esa sucursal, el campo no aparece.
 4. Si el cliente tiene contratos, aparece **Contrato**: elija de cuál es la tarea o **Sin contrato** (ver más abajo).
 5. Si el cliente tiene dirección, aparece marcada **Usar la dirección del cliente como lugar de trabajo**, con la dirección debajo y su **Margen** en metros.
 6. Rellene el resto de la tarea como siempre y guarde.
@@ -89,7 +89,7 @@ Para ver la tarjeta, la plantilla tiene que tener la app actualizada a la últim
 
 ## Problemas frecuentes
 
-**No aparece el campo Cliente.** La sucursal elegida no tiene clientes asignados. Asigne el cliente a esa sucursal desde su ficha.
+**No aparece el campo Cliente.** La sucursal elegida no tiene clientes asignados ni hay clientes disponibles en todas las sucursales. Asigne el cliente a esa sucursal desde su ficha o, si las tareas se crean desde una sucursal distinta de la que lo atiende, márquelo **Disponible en todas las sucursales** (ver [Dar de alta clientes](./118-dar-de-alta-clientes.md)).
 
 **No aparece el desplegable Contrato.** El cliente no tiene contratos activos.
 

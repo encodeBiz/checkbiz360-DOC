@@ -11,6 +11,7 @@ It is designed for companies that move the same people from one project to the n
 - **A team is a template.** Each member carries their responsibility (worker, supervisor, manager or owner), their job and their hourly rate, but no branch.
 - **Applying it to a branch** adds each member to that branch with those details, exactly as if it had been done by hand.
 - **The branch prevails over the template.** Changing a job or a rate in the team does not change the branches where it was already applied: that is adjusted in each branch. The rate used by costs and reports is always the branch's.
+- **One job per person.** The team carries the job each person is added with, which becomes their default at the branch. If they do more than one kind of work there, the other jobs are added afterwards on their record. See [Several jobs for the same person](./140-several-jobs-for-the-same-person.md).
 - **Schedules are not part of the team.** They are set in the branch, as always.
 - The same person can be in **several teams**, but not twice in the same one.
 
@@ -105,3 +106,4 @@ Creating, editing and deleting teams, applying them and saving a branch as a tea
 | [Create and manage employees](./06-create-and-manage-employees.md) | Adding employees and their statuses, including Pending |
 | [Assign tasks to employees](../06-tasks/41-assign-tasks-to-employees.md) | How tasks are assigned to the people in a branch |
 | [Cost analysis](../07-operational-intelligence/54-cost-analysis.md) | Why the rate that counts is the branch's |
+| [Several jobs for the same person](./140-several-jobs-for-the-same-person.md) | The additional jobs, which the team does not carry |

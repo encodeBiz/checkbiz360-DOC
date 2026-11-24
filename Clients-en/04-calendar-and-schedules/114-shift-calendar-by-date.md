@@ -61,6 +61,17 @@ If someone has nothing loaded in the week you are viewing, the panel warns you i
 
 Days that are over cannot be changed. Today can.
 
+### Job and supplements for the shift
+
+In the editor of each shift, **More options** opens two fields that are normally left empty:
+
+- **Job**: which job the person goes with on that shift, if they have more than one at the branch. Left empty, they go with their default. See [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md).
+- **Supplements**: what they are paid on top for that shift (public holiday, night work, driving, etc.), from your company's catalogue. See [Supplements](../02-employees/141-supplements.md).
+
+When something is set, the button says so: *More options (with job or supplements)*. When the person clocks in against that shift, the clock record stores the job and the supplements, and the cost and the reports come from there. **Copy to next week** copies them along with the shift. It is the way to have Sunday's public holiday or Saturday night paid as the agreement says, without touching anyone's record.
+
+The same two fields are on the shifts of the **standard week** ([Base schedules and shifts](23-base-schedules-and-shifts.md)): there they apply every week.
+
 ### Copying the week
 
 **Copy to next week** copies the shifts of the week you are viewing to the following one, person by person. Whatever those days already had is replaced. It is the quick way to build a month that looks alike week by week, and then adjust whatever changes.

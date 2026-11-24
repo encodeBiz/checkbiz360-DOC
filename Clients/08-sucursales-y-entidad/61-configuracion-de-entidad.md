@@ -52,8 +52,8 @@ Retirar a un colaborador elimina sus permisos sobre la entidad y no se puede des
 | **NIF / CIF** | — | Identificación fiscal de la entidad |
 | **Email de facturación** | — | Dirección a la que llegan las facturas |
 | **Dirección** | Sí | Domicilio de la empresa, elegido del buscador de direcciones. De ella salen las coordenadas y la **zona horaria**. No hay campo de ciudad aparte: la dirección normalizada ya la incluye |
-
-No existe un campo de "sector de actividad": la plataforma no clasifica la entidad por sector ni ajusta nada en función de él.
+| **Moneda** | — | La moneda en la que están los importes de su empresa: salarios por hora, complementos, contratos, gastos y costes. Elegida de la lista. Decide cómo se formatean las cifras en el panel y qué moneda declara el informe de tareas en su cabecera (*Moneda: EUR*). No convierte nada: una sola moneda por empresa. Las empresas dadas de alta antes de que existiera el campo ya lo tienen relleno: compruebe que es la suya |
+| **Actividad** (*A qué se dedica tu empresa*) | — | A qué se dedica la empresa, elegida de la lista o escrita si no está (queda *En revisión* y la usa desde ya). Decide qué convenios colectivos ve su empresa y qué convenio se propone al leer un contrato de trabajo. Ver [Convenios colectivos](../05-gestion-documental/139-convenios-colectivos.md) |
 
 ---
 

@@ -35,7 +35,7 @@ Si no hay nada: *Nada fuera de lo normal en los últimos 3 meses*.
 
 ### Rentabilidad
 
-Solo para propietario y administradores. El veredicto de los últimos 3 meses —**Rentable**, **No rentable**, *Sin importe de contrato* (se sabe lo que cuesta, no lo que deja) o *Sin trabajo*— y sus cifras: **Ingreso**, **Coste**, **Margen**, **Coste por hora** e **Ingreso por hora**, con un gráfico de ingreso y coste mes a mes. El coste incluye los gastos aprobados. Si hay horas de personas sin tarifa, lo dice: esas horas no cuentan en el coste.
+Solo para propietario y administradores. El veredicto de los últimos 3 meses —**Rentable**, **No rentable**, *Sin importe de contrato* (se sabe lo que cuesta, no lo que deja) o *Sin trabajo*— y sus cifras: **Ingreso**, **Coste**, **Margen**, **Coste por hora** e **Ingreso por hora**, con un gráfico de ingreso y coste mes a mes. El coste incluye los complementos cobrados en las tareas y los gastos aprobados. Si hay horas de personas sin tarifa, lo dice: esas horas no cuentan en el coste.
 
 ### Previsión
 

@@ -70,6 +70,7 @@ The task report gathers the period's tasks with their status and their deadline 
 
 - The tasks whose **deadline** falls within the selected period, with their status and their time compliance.
 - The time for each task: time spent, time paused, number of pauses and time spent excluding pauses. They are explained in [Task reports](../06-tasks/48-task-reports.md#what-it-contains).
+- **One row per task and person**, with their hours, their job, their hourly rate, their supplements and their cost, and a total row per task; plus the **By person** sheet (summary of the period) and the **Supplements** sheet (the trail of each one). Amounts carry no symbol: the company's currency is stated in the header.
 - Filters by one, several or all branches and by task status.
 - The data needed to calculate whatever is required in the spreadsheet: completed versus assigned, overdue, rejected.
 

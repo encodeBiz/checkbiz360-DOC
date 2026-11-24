@@ -58,6 +58,8 @@ Alta, configuración, roles y seguridad de los empleados en la plataforma.
 | Verificación biométrica y dispositivos de confianza | **Disponible** | Configurable por empleado desde la app. |
 | Empleados asignados a múltiples entidades | **Disponible** | Selector de entidad en el inicio de sesión. |
 | Alta de sucursales y plantilla desde Excel | **Disponible** | Una plantilla con dos pestañas; se revisa lo que se va a crear antes de confirmar; la bienvenida a la app se manda al final, cuando usted decida. |
+| Varios puestos por persona y sucursal, con un predeterminado | **Disponible** | Cada puesto con su precio por hora; se elige al asignar la tarea o cargar el turno; el fichaje guarda el que tocaba. |
+| Catálogo de complementos (fijo, por hora, porcentaje) | **Disponible** | Conducción, festivo, nocturnidad… definidos una vez y elegidos por persona en la tarea o el turno; desglosados en informes, contratos y costes. |
 | Estado del acceso a la app, reenviar acceso y cambiar correo | **Disponible** | La ficha dice si el correo de acceso se entregó o rebotó y si la persona ya usa la app; la portada avisa del que no ha llegado. |
 | Exportación del directorio de empleados | **Pendiente de desarrollo** | El listado se consulta y filtra en pantalla, sin fichero descargable. |
 
@@ -73,6 +75,8 @@ Alta, configuración, roles y seguridad de los empleados en la plataforma.
 | [Equipos](02-empleados/99-equipos.md) | Crear equipos, aplicarlos a una sucursal y guardar una sucursal como equipo |
 | [Dar de alta sucursales y plantilla desde Excel](02-empleados/110-dar-de-alta-sucursales-y-plantilla-desde-excel.md) | Centros y personas de una vez, con revisión antes de crear nada y la bienvenida aparte |
 | [Acceso a la app y cambio de correo](02-empleados/116-acceso-a-la-app-y-cambio-de-correo.md) | Saber si le llegó el acceso, reenviarlo, cambiar el correo y enviar la tarjeta del punto de fichaje |
+| [Varios puestos para la misma persona](02-empleados/140-varios-puestos-por-persona.md) | Puestos con su precio en la misma sucursal, el predeterminado y dónde se elige cada uno |
+| [Complementos](02-empleados/141-complementos.md) | Conducción, festivo, nocturnidad: los tres tipos, el catálogo y dónde se eligen |
 
 ---
 
@@ -165,6 +169,8 @@ Subida, organización, acuse de recibo y control de acceso a los documentos labo
 | Descarga masiva de documentos (ZIP) | **Pendiente de desarrollo** | Planificada para una versión futura. |
 | Eliminar documentos y liberar espacio | **Disponible** | Solo propietario y administradores; uno o varios; queda el registro de quién lo recibió y quién lo eliminó. |
 | Nivel de visibilidad «Administración» | **Disponible** | Solo propietario y administradores, desde el panel; en la app no aparece a nadie. |
+| Lectura del contrato de trabajo: oficio, jornada y precio por hora | **Disponible** | Al subir el contrato de una persona se leen oficio, categoría, jornada, convenio y salario con su cita; el precio por hora se propone y se aplica a la ficha con un clic. Solo propietario y administradores. |
+| Catálogo de convenios colectivos | **Disponible** | Los convenios de su actividad y sus provincias, con el año de sus tablas; referenciar el suyo con el enlace al boletín o su PDF. |
 
 | Artículo | Descripción |
 |---|---|
@@ -179,6 +185,8 @@ Subida, organización, acuse de recibo y control de acceso a los documentos labo
 | [Exportar documentos](05-gestion-documental/38-exportar-documentos.md) | Descarga individual en V1; descarga masiva en roadmap |
 | [Eliminar documentos y liberar espacio](05-gestion-documental/135-eliminar-documentos.md) | Archivar o eliminar, avisos y lo que queda del documento |
 | [Quién ve cada documento](05-gestion-documental/136-quien-ve-cada-documento.md) | Administración, documentos personales y diferencia entre panel y app |
+| [Lo que dice el contrato de trabajo](05-gestion-documental/138-lo-que-dice-el-contrato-de-trabajo.md) | Oficio, jornada, convenio y precio por hora leídos del contrato, con su cita, y cómo aplicarlos a la ficha |
+| [Convenios colectivos](05-gestion-documental/139-convenios-colectivos.md) | La lista de convenios de su empresa, el año de sus tablas y cómo referenciar el suyo |
 
 ---
 
@@ -188,7 +196,7 @@ Creación, asignación, seguimiento y valoración de tareas operativas.
 
 | Funcionalidad | Estado | Comentario |
 |---|---|---|
-| Crear y asignar tareas a empleados | **Disponible** | Asignación individual y múltiple con notificación push; editar la tarea asigna y retira empleados. |
+| Crear y asignar tareas a empleados | **Disponible** | Asignación individual y múltiple con notificación push; editar la tarea asigna y retira empleados; por persona, con qué puesto va y qué complementos cobra. |
 | Lugar de trabajo propio por tarea | **Disponible** | Dirección y margen propios; iniciar exige estar allí, desde la app. |
 | Duplicar una tarea | **Disponible** | Copia el encargo, sin asignar y en borrador; pide de nuevo las fechas. |
 | Pausar y reanudar tareas | **Disponible** | Desde el backoffice y desde la app 1.4.0; el tiempo en pausa sale en el informe. |
@@ -201,7 +209,7 @@ Creación, asignación, seguimiento y valoración de tareas operativas.
 | Fecha prevista de inicio y aviso de inicio tardío | **Disponible** | A los 5 minutos: aviso en la app a la persona y correo a propietario y administrador; en Inicio desde una sola tarea. |
 | Validación y valoración de tareas por el responsable | **Disponible** | Delegables al supervisor por tarea; rechazo con motivo obligatorio. |
 | Notificaciones push de tareas | **Disponible** | Asignación, validación, rechazo, inicio tardío, vencimiento e incidencia; muchas tareas de golpe llegan en un solo aviso. |
-| Informe de tareas exportable | **Disponible** | Excel (XLSX), filtrable por sucursal, estado y periodo de vencimiento, con tiempo invertido y en pausa; con el inventario contratado, también el material de cada tarea. |
+| Informe de tareas exportable | **Disponible** | Excel (XLSX), filtrable por sucursal, estado y periodo de vencimiento; una fila por tarea y persona con horas, puesto, precio, complementos y coste, total por tarea y hojas Por persona y Complementos; con el inventario contratado, también el material de cada tarea. |
 | Adjuntos de tipo documento (PDF, Word, Excel) | **Disponible parcialmente** | Documentos adjuntos en PDF y fotos, separados de las evidencias y copiados al duplicar; Word y Excel no. |
 | Estado "vencida" automático al superar la fecha límite | **Pendiente de desarrollo** | Hoy el vencimiento se refleja en el cumplimiento temporal. |
 | Configurar la antelación de los avisos de vencimiento | **Pendiente de desarrollo** | Los avisos se emiten; su antelación no es configurable. |
@@ -223,7 +231,7 @@ Creación, asignación, seguimiento y valoración de tareas operativas.
 | [Validación de tareas](06-tareas/45-validacion-de-tareas.md) | Flujo de validación, aceptación y rechazo con motivo |
 | [Valoración del trabajador](06-tareas/46-valoracion-del-trabajador.md) | Escala de puntuación e impacto en el índice de eficiencia |
 | [Notificaciones de tareas](06-tareas/47-notificaciones-de-tareas.md) | Eventos notificados en V1; recordatorios en roadmap |
-| [Informes de tareas](06-tareas/48-informes-de-tareas.md) | Métricas en el backoffice e informe en Excel, con sus columnas de tiempo |
+| [Informes de tareas](06-tareas/48-informes-de-tareas.md) | Métricas en el backoffice e informe en Excel: una fila por tarea y persona, columnas de tiempo y de coste, hojas Por persona y Complementos |
 | [Calendario semanal de tareas](06-tareas/111-calendario-semanal-de-tareas.md) | La semana de un vistazo: qué hay cada día, a qué hora, en qué estado y qué vence |
 | [Incidencia en la tarea](06-tareas/125-incidencia-en-la-tarea.md) | Avisar de que una tarea no se puede hacer, a quién llega y cómo se resuelve |
 | [Tarea sin empezar a su hora](06-tareas/126-tarea-sin-empezar-a-su-hora.md) | El aviso a los 5 minutos por la app, por correo y en Inicio, y cómo apagarlo |
@@ -242,7 +250,7 @@ Análisis de patrones de comportamiento, índices de rendimiento, costes y detec
 | Efecto del centro | **Disponible** | Compara a cada persona consigo misma en distintos centros. |
 | Dependencia (concentración de la operación) | **Disponible** | Cuánta parte de la operación recae en pocas personas, con relevo por puesto. |
 | Estados de madurez del dato | **Disponible** | Acumulando datos / evidencia parcial / sin datos suficientes. |
-| Índice de eficiencia operativa y coste | **Disponible** | Coste real frente al histórico consolidado; requiere tarifa configurada. |
+| Índice de eficiencia operativa y coste | **Disponible** | Coste real frente al histórico consolidado; requiere tarifa configurada. Los complementos se suman y se dicen aparte. |
 | Evaluación operativa del empleado | **Disponible** | Diagnóstico automático del patrón, con señal de candidato a promoción. |
 | Detección de anomalías (fichajes sospechosos) | **Disponible** | Aflora en la pestaña de Análisis del panel. |
 | Relato del asistente de IA sobre el panel | **Disponible** | Narra y prioriza las cifras que ya muestra la pantalla. |
@@ -276,7 +284,7 @@ Creación y configuración de sucursales, asignación de empleados y vista globa
 | Crear y gestionar sucursales | **Disponible** | Alta, edición, geocodificación y desactivación. |
 | Configuración avanzada de sucursal (geocerca, pausas, tolerancia) | **Disponible** | Todos los parámetros operativos configurables. |
 | Asignar empleados a sucursales con responsabilidades | **Disponible** | Multi-sucursal con calendario efectivo por asignación. |
-| Configuración de entidad (datos fiscales, zona horaria) | **Disponible** | Propagación de cambios a sucursales dependientes. |
+| Configuración de entidad (datos fiscales, zona horaria, moneda) | **Disponible** | Propagación de cambios a sucursales dependientes. La moneda de la empresa formatea los importes y se declara en los informes. |
 | Almacenamiento por empresa | **Disponible** | 2 GB incluidos; por encima, 0,25 € + IVA por GB completo si la ampliación está activada. Se consulta en Entidad → Suscripciones. |
 | Colaboradores del backoffice (propietario y administrador) | **Disponible** | Invitación, cambio de rol y retirada; nunca se queda la entidad sin propietario activo. |
 | Vista global multi-sucursal | **Disponible** | La portada enseña el hoy por centro y las alertas; el panel de Operación compara los centros por periodo. |
@@ -288,7 +296,7 @@ Creación y configuración de sucursales, asignación de empleados y vista globa
 | [Configuración avanzada de sucursal](08-sucursales-y-entidad/58-configuracion-avanzada-de-sucursal.md) | Parámetros avanzados: geocerca, pausas, tolerancia, ajuste de timestamp |
 | [Estados de una sucursal](08-sucursales-y-entidad/59-estados-de-una-sucursal.md) | Activa/inactiva, impacto en fichajes e histórico |
 | [Asignar empleados a sucursales](08-sucursales-y-entidad/60-asignar-empleados-a-sucursales.md) | Multi-sucursal, responsabilidades y calendario efectivo |
-| [Configuración de entidad](08-sucursales-y-entidad/61-configuracion-de-entidad.md) | Datos fiscales, entorno de trabajo, colaboradores, zona horaria global y propagación de cambios |
+| [Configuración de entidad](08-sucursales-y-entidad/61-configuracion-de-entidad.md) | Datos fiscales, moneda, entorno de trabajo, colaboradores, zona horaria global y propagación de cambios |
 | [Vista global multi-sucursal](08-sucursales-y-entidad/62-vista-global-multi-sucursal.md) | Dónde está cada vista de conjunto: la portada de hoy por centros, el panel de Operación y la disponibilidad |
 
 ---
@@ -510,7 +518,7 @@ La cartera de clientes ata cada tarea a su cliente: su ficha, sus documentos, su
 | Documentos del cliente y nivel «Administración» | **Disponible** | Contratos y presupuestos solo para propietario y administradores, desde el panel; nunca desde la app. |
 | Contratos con importe, horas y rentabilidad | **Disponible** | Varios por cliente; lectura del PDF con IA anonimizada; margen, previsión y tareas del contrato. |
 | Gastos del contrato y de la tarea | **Disponible** | Ticket desde la app, aprobación con base sin IVA, justificante archivado y «Gastos sin contrato». |
-| Análisis del cliente, parte en PDF/Excel, bloque de Inicio y alertas | **Disponible** | La rentabilidad requiere la tarifa horaria de cada persona. |
+| Análisis del cliente, parte en PDF/Excel, bloque de Inicio y alertas | **Disponible** | La rentabilidad requiere la tarifa horaria de cada persona; valora cada tarea con el puesto con el que se hizo y suma los complementos. |
 | Portal del cliente | **Pendiente de desarrollo** | Sin fecha. |
 
 | Artículo | Descripción |
@@ -531,10 +539,10 @@ La cartera de clientes ata cada tarea a su cliente: su ficha, sus documentos, su
 DOCS/Clients/
 ├── README.md                          (este índice)
 ├── 01-primeros-pasos/                 (5 artículos)
-├── 02-empleados/                      (10 artículos)
+├── 02-empleados/                      (12 artículos)
 ├── 03-control-horario/                (12 artículos)
 ├── 04-calendario-y-horarios/          (11 artículos)
-├── 05-gestion-documental/             (11 artículos)
+├── 05-gestion-documental/             (13 artículos)
 ├── 06-tareas/                         (14 artículos)
 ├── 07-inteligencia-operativa/         (9 artículos)
 ├── 08-sucursales-y-entidad/           (6 artículos)
@@ -549,4 +557,4 @@ DOCS/Clients/
 └── 17-cartera-de-clientes/            (7 artículos)
 ```
 
-**Total: 131 artículos**
+**Total: 135 artículos**

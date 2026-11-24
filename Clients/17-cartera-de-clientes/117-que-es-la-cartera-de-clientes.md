@@ -62,6 +62,8 @@ Para que la rentabilidad salga (en los contratos y en la pestaña **Análisis** 
 
 Si a alguien le falta, sus horas se ven pero no cuentan en el coste, y la plataforma lo dice: *Hay horas de personas sin tarifa: el coste se queda corto*. Conviene revisarlo antes de fiarse de un margen.
 
+Si una persona hace trabajos distintos con precios distintos, puede tener [varios puestos](../02-empleados/140-varios-puestos-por-persona.md) y elegir con cuál va a cada tarea; y lo que cobra aparte por una tarea concreta se recoge como [complementos](../02-empleados/141-complementos.md). Las dos cosas entran en el coste del contrato.
+
 ---
 
 ## Puesta en marcha en cinco pasos

@@ -35,7 +35,7 @@ If there is nothing: *Nothing out of the ordinary in the last 3 months*.
 
 ### Profitability
 
-Only for the owner and administrators. The verdict for the last 3 months —**Profitable**, **Not profitable**, *No contract amount* (we know what it costs, not what it brings in) or *No work*— and its figures: **Revenue**, **Cost**, **Margin**, **Cost per hour** and **Revenue per hour**, with a chart of revenue and cost month by month. The cost includes approved expenses. If there are hours from people without a rate, it says so: those hours do not count towards the cost.
+Only for the owner and administrators. The verdict for the last 3 months —**Profitable**, **Not profitable**, *No contract amount* (we know what it costs, not what it brings in) or *No work*— and its figures: **Revenue**, **Cost**, **Margin**, **Cost per hour** and **Revenue per hour**, with a chart of revenue and cost month by month. The cost includes the supplements paid on the tasks and approved expenses. If there are hours from people without a rate, it says so: those hours do not count towards the cost.
 
 ### Forecast
 

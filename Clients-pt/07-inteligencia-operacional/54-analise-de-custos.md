@@ -19,6 +19,8 @@ Para a configurar:
 
 O valor deve refletir o **custo real para a empresa**, não o salário bruto: inclua a parte proporcional das contribuições sociais a cargo da empresa se quiser um custo total realista.
 
+Se uma pessoa faz mais de um trabalho no local, pode ter **vários postos** com o seu preço, e cada tarefa ou turno diz com qual vai: o custo desse dia calcula-se com esse preço. O que recebe à parte por um trabalho concreto (condução, feriado, trabalho noturno) recolhe-se como **complementos** e soma-se ao custo como rubrica própria, de modo que o custo da sucursal, o custo por hora e o desvio económico o incluem e o indicam à parte. O custo por hora de uma pessoa é, portanto, o **efetivo**: o dos postos que ocupou e o que recebeu a mais. Ver [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md) e [Complementos](../02-funcionarios/141-complementos.md).
+
 > **Importante:** sem tarifa configurada não há análise de custos possível. É a causa mais frequente de os indicadores económicos aparecerem vazios ou estranhos. O bloco de **estado dos dados** do painel de Operação indica esta cobertura de configuração: consulte-o antes de dar por boa —ou por má— qualquer cifra de custo.
 
 ## O que o sistema calcula

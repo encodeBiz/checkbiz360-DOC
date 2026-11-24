@@ -24,7 +24,7 @@ Este artículo describe todos los campos disponibles al crear una tarea y explic
 - **Notificar si no inicia a tiempo** — Si se activa y la tarea tiene fecha prevista de inicio, el sistema avisa cuando han pasado **5 minutos** de esa hora sin que la tarea se haya iniciado: a las personas asignadas en la app y a propietarios y administradores por correo. Sin fecha prevista de inicio, la opción no tiene efecto. Ver [Tarea sin empezar a su hora](./126-tarea-sin-empezar-a-su-hora.md).
 - **Estado** — Estado con el que nace la tarea. Lo habitual es *Borrador* (no visible aún para el equipo) o *Asignada* (ya enviada). Los estados *Validada*, *Rechazada* y *Cancelada* no pueden seleccionarse manualmente en la creación: son el resultado del ciclo de vida de la tarea.
 - **Prioridad** — Baja, media, alta o **crítica**. Afecta al orden en que aparece la tarea en la app del empleado.
-- **Empleados asignados** — Persona o personas responsables de completarla. Puede buscarse y seleccionarse a varios.
+- **Empleados asignados** — Persona o personas responsables de completarla. Puede buscarse y seleccionarse a varios. En la fila de cada persona, si tiene más de un puesto en la sucursal, **Como** elige con cuál va; y si la empresa tiene complementos, **Complemento** añade los que cobra en esa tarea. Ver [Asignar tareas a empleados](./41-asignar-tareas-a-empleados.md#con-qué-puesto-y-qué-complementos).
 - **¿Quién da la tarea por terminada?** — *Basta con una persona* (por defecto), *Todas las personas* o *Una persona responsable*. Ver [Quién termina la tarea y cerrarla desde administración](./127-quien-termina-la-tarea-y-cierre-desde-administracion.md).
 
 ### Opciones de configuración de la tarea
@@ -50,7 +50,7 @@ Tres opciones controlan cómo se cierra y se revisa la tarea:
 7. Si procede, indique la **fecha prevista de inicio** y active **Notificar si no inicia a tiempo**.
 8. Establezca la **fecha límite** (fecha y hora).
 9. Elija **estado** y **prioridad**.
-10. Busque y seleccione a los **empleados asignados** y, si son varios, elija **¿Quién da la tarea por terminada?**.
+10. Busque y seleccione a los **empleados asignados** y, si son varios, elija **¿Quién da la tarea por terminada?**. Si procede, en la fila de cada persona elija su puesto (**Como**) y sus complementos (**Complemento**).
 11. Revise las tres opciones de configuración (evidencia, validación y valoración por supervisor).
 12. Pulse **Guardar**. Los empleados asignados reciben una notificación push automática.
 

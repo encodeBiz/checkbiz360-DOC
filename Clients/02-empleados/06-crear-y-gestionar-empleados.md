@@ -54,7 +54,7 @@ Tres opciones se activan o desactivan por empleado:
 - **Calendario del empleado** — Horario propio y excepciones, cuando difieren de los de su sucursal. Si no se configura, el empleado hereda el calendario de la sucursal.
 - **Datos adicionales** — Campos libres en formato clave/valor para información propia de su organización (número de empleado, convenio, centro de coste…).
 
-Al vincular al empleado con una sucursal se definen además su **responsabilidad** en ese centro, su **puesto** y su **tarifa horaria**, esta última es la que alimenta el análisis de costes.
+Al vincular al empleado con una sucursal se definen además su **responsabilidad** en ese centro, su **puesto** y su **salario por hora**, que es el que alimenta el análisis de costes, los informes y la rentabilidad de los contratos. Si la persona hace más de un trabajo en ese centro, puede tener **varios puestos**, cada uno con su precio, y uno predeterminado. Ver [Varios puestos para la misma persona](140-varios-puestos-por-persona.md).
 
 ---
 
@@ -125,3 +125,5 @@ Si empieza con una plantilla de treinta o cuarenta personas, no hace falta crear
 - [Exportar el listado de empleados](12-exportar-empleados-csv.md)
 - [Equipos](99-equipos.md)
 - [Acceso a la app y cambio de correo](116-acceso-a-la-app-y-cambio-de-correo.md)
+- [Varios puestos para la misma persona](140-varios-puestos-por-persona.md)
+- [Complementos](141-complementos.md)

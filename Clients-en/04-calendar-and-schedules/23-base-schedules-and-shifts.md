@@ -62,7 +62,7 @@ Configuring working days is done from the back office:
 1. Sign in to the back office with a role that has editing permissions (owner or manager).
 2. For the organisation's schedule, open **Schedules** in the side menu and the **General settings** tab. For a branch or an employee, open their record: the schedule is inherited while **Use base schedule** is enabled, and when you disable it you can define a **Custom schedule**.
 3. In the **Weekly schedule**, switch each day on or off. A day that is switched off shows "No shifts defined".
-4. Add the shifts for the active days.
+4. Add the shifts for the active days. Under **More options** on each shift you can set the **Job** the person goes with (if they have several) and the **Supplements** they are paid for that shift, for example night work on the night shift; left empty, the shift is the usual one. See [Supplements](../02-employees/141-supplements.md).
 5. Press **Save calendar**. You are asked to confirm, and in that same step you can also save the schedule as a template (see [Schedule templates](#schedule-templates)).
 
 Changes to working days take effect immediately on the effective calendar of every employee who inherits that schedule.

@@ -10,7 +10,7 @@ Se encuentra en **Clientes**, en el menú lateral.
 
 - **Un solo sitio para los datos del cliente**, en lugar de correos y hojas sueltas.
 - **Llegar preparado.** Las indicaciones de campo (llaves, timbre, horario) viajan con cada tarea del cliente.
-- **Elegir bien al crear una tarea.** En cada sucursal solo salen los clientes que atiende.
+- **Elegir bien al crear una tarea.** En cada sucursal solo salen los clientes que atiende, más los disponibles en todas.
 - **Encontrarlo en segundos**, por nombre, NIF o su código en su programa de facturación.
 
 ---
@@ -21,7 +21,7 @@ Se encuentra en **Clientes**, en el menú lateral.
 2. Elija el **Tipo**: *Empresa* o *Persona*.
 3. Escriba el **Nombre**. Es lo único obligatorio, junto con la sucursal.
 4. Si quiere, añada el **NIF / CIF** y la **Referencia**: su código en su programa de facturación, para cruzar los datos sin dudas.
-5. En **Sucursales** (o como llame su empresa a sus centros), elija al menos una: las que atienden a este cliente. Al crear una tarea en ellas, se podrá elegir a este cliente.
+5. En **Sucursales** (o como llame su empresa a sus centros), elija al menos una: las que atienden a este cliente. Al crear una tarea en ellas, se podrá elegir a este cliente. Si lo atienden desde cualquier sitio, marque en su lugar **Disponible en todas las sucursales** (ver más abajo).
 6. En **Dirección**, escriba la dirección del cliente y **elíjala de la lista** de sugerencias. Es su domicilio o su sede, y es la que luego puede usarse como lugar de trabajo de sus tareas.
 7. Decida si marca **Mostrar el nombre del cliente a la plantilla** (ver más abajo).
 8. Añada las **Personas de contacto**: nombre, cargo o relación, teléfono y correo. Marque **Lo ve quien va a trabajar** solo en las que la plantilla deba ver.
@@ -51,7 +51,7 @@ Al marcar un contacto como **Lo ve quien va a trabajar**, el formulario recuerda
 La lista enseña cada cliente con su tipo, sus sucursales, cuántos contactos tiene y su estado. Para encontrar uno:
 
 - **Buscar por nombre, NIF o referencia**: a partir de tres letras.
-- **Sucursal**: solo los clientes que atiende un centro.
+- **Sucursal**: solo los clientes que atiende un centro. Los disponibles en todas salen con cualquier sucursal, con la marca *Todas las sucursales*.
 - **Estado**: por defecto se ven los *Activos*; también puede ver los *Archivados* o *Activos y archivados*.
 
 Desde cada fila, **Ver ficha**, **Editar** o **Archivar**.
@@ -70,6 +70,17 @@ Desde la cabecera, **Editar** cambia los datos y **Parte del cliente** descarga 
 ### Cambiar las sucursales que lo atienden
 
 En la cifra de sucursales de la ficha, pulse **Editar**, elija las sucursales y guarde. Un manager solo puede asignar el cliente a sucursales en las que tiene mando.
+
+### Un cliente disponible en todas las sucursales
+
+Hay clientes que no son de una sucursal concreta: el equipo que los atiende cambia, o las tareas se crean desde una sucursal distinta de la que figura en su ficha. Para esos, en lugar de elegir sucursales, marque **Disponible en todas las sucursales**, al crear el cliente o en **Acciones → Editar**. Se podrá elegir en las tareas de cualquier sucursal, también de las que cree después, y la lista lo enseña con la marca *Todas las sucursales*.
+
+Dos cosas cambian con esa marca:
+
+- **Solo el propietario y los administradores** pueden ver y editar su ficha. Un manager no lo gestiona, aunque sí lo elija en sus tareas.
+- Sus **documentos marcados para la plantilla los puede abrir toda la plantilla de la empresa**, no solo quien tenga una tarea suya. Lo que no deba verse, márquelo como **Administración**. El formulario lo recuerda al marcar la casilla. Ver [Documentos del cliente](./120-documentos-del-cliente.md).
+
+Para volver a sucursales concretas, desmarque la casilla y elija las sucursales.
 
 ---
 
@@ -92,7 +103,7 @@ Cuando deja de trabajar con un cliente, **archívelo** desde la lista, con el bo
 
 **No me deja guardar la dirección.** Hay que elegirla de la lista de sugerencias que aparece al escribir; una dirección escrita a mano sin elegirla no vale. Si no quiere poner dirección, deje el campo vacío.
 
-**Al crear una tarea no me sale el cliente.** El cliente tiene que estar asignado a la sucursal de la tarea y estar *Activo*. Revise sus sucursales en la ficha.
+**Al crear una tarea no me sale el cliente.** El cliente tiene que estar asignado a la sucursal de la tarea y estar *Activo*. Revise sus sucursales en la ficha. Si crea las tareas desde una sucursal distinta de la que atiende al cliente (una sucursal de coordinación, por ejemplo), márquelo **Disponible en todas las sucursales**.
 
 **La plantilla ve el nombre del cliente aunque no marqué la casilla.** Mire el título de la tarea: se ve siempre.
 

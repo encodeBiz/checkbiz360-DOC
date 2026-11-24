@@ -54,7 +54,7 @@ Three options are enabled or disabled per employee:
 - **Employee calendar** — Their own schedule and exceptions, when they differ from their branch's. If it is not configured, the employee inherits the branch calendar.
 - **Additional data** — Free key/value fields for information specific to your organisation (employee number, collective agreement, cost centre, etc.).
 
-Linking the employee to a branch also defines their **responsibility** at that site, their **position** and their **hourly rate**, the last of which feeds the cost analysis.
+Linking the employee to a branch also defines their **responsibility** at that site, their **job** and their **hourly wage**, which is what feeds the cost analysis, the reports and contract profitability. If the person does more than one kind of work at that site, they can have **several jobs**, each with its own rate, and one of them as the default. See [Several jobs for the same person](140-several-jobs-for-the-same-person.md).
 
 ---
 
@@ -125,3 +125,5 @@ If you are starting with a staff of thirty or forty people, there is no need to 
 - [Export the employee list](12-export-employee-list.md)
 - [Teams](99-teams.md)
 - [App access and email change](116-app-access-and-email-change.md)
+- [Several jobs for the same person](140-several-jobs-for-the-same-person.md)
+- [Supplements](141-supplements.md)

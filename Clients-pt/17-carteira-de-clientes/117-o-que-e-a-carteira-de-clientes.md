@@ -62,6 +62,8 @@ Para que a rentabilidade apareça (nos contratos e no separador **Análise** do 
 
 Se faltar a alguém, as suas horas veem-se mas não contam no custo, e a plataforma indica-o: *Há horas sem tarifa: o custo fica curto*. Convém revê-lo antes de confiar numa margem.
 
+Se uma pessoa faz trabalhos diferentes com preços diferentes, pode ter [vários postos](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md) e escolher com qual vai a cada tarefa; e o que recebe à parte por uma tarefa concreta recolhe-se como [complementos](../02-funcionarios/141-complementos.md). As duas coisas entram no custo do contrato.
+
 ---
 
 ## Arranque em cinco passos

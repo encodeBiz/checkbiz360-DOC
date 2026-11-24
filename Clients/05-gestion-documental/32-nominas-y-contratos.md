@@ -42,7 +42,12 @@ Cuando se produce una nueva contratación, el proceso para registrar el contrato
 2. Acceda al módulo documental y cree un documento nuevo con el tipo **Contrato**.
 3. Asígnelo al empleado e indique en el título el tipo de contrato y la fecha de inicio, por ejemplo: `Contrato indefinido - 01/05/2026`.
 4. Si necesita constancia de que el empleado lo ha recibido, active el **acuse de recibo** antes de publicar.
-5. Publique el documento.
+5. Si sabe por qué convenio va la persona, elíjalo en **Convenio colectivo (opcional)**; si no, se busca en el catálogo.
+6. Publique el documento.
+
+### El contrato se lee solo
+
+Al publicar un contrato de trabajo de una persona, CheckBiz360 lo lee y le propone en la ficha del documento su **oficio**, su **jornada**, su **convenio** y su **precio por hora**, cada dato con la frase del contrato de la que sale. Nada cambia en la ficha de la persona hasta que usted pulse **Aplicar a la ficha**. Ver [Lo que dice el contrato de trabajo](138-lo-que-dice-el-contrato-de-trabajo.md) y [Convenios colectivos](139-convenios-colectivos.md).
 
 ### Renovaciones y modificaciones
 
@@ -68,6 +73,8 @@ CheckBiz360 mantiene el archivo documental activo mientras la entidad tenga la c
 
 - [Qué es el módulo documental](30-que-es-el-modulo-documental.md)
 - [Subir y organizar documentos](31-subir-y-organizar-documentos.md)
+- [Lo que dice el contrato de trabajo](138-lo-que-dice-el-contrato-de-trabajo.md)
+- [Convenios colectivos](139-convenios-colectivos.md)
 - [Documentos privados](33-documentos-privados.md)
 - [Notificaciones de documentos](34-notificaciones-de-documentos.md)
 - [Acuse de recibo](35-firma-electronica.md)

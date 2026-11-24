@@ -62,7 +62,7 @@ A configuração de dias úteis realiza-se a partir do backoffice:
 1. Aceda ao backoffice com um perfil com permissões de edição (owner ou manager).
 2. Para o horário da entidade, abra **Horários** no menu lateral e o separador **Configurações gerais**. Para uma sucursal ou um funcionário, abra a sua ficha: o horário é herdado enquanto estiver ativado **Usar cronograma base**, e ao desativá-lo pode definir uma **Agenda personalizada**.
 3. Na **Programação semanal**, ative ou desative cada dia. Um dia desligado mostra «Sem turnos definidos».
-4. Adicione os turnos dos dias ativos.
+4. Adicione os turnos dos dias ativos. Em **Mais opções** de cada turno pode fixar o **Posto** com que vai a pessoa (se tiver vários) e os **Complementos** que recebe nesse turno, por exemplo o trabalho noturno do turno da noite; vazios, o turno é o de sempre. Ver [Complementos](../02-funcionarios/141-complementos.md).
 5. Prima **Salvar calendário**. É pedida confirmação, e nesse mesmo passo pode guardar o horário também como modelo (ver [Modelos de horário](#modelos-de-horário)).
 
 As alterações nos dias úteis produzem efeito imediato sobre o calendário efetivo de todos os funcionários que herdem esse horário.

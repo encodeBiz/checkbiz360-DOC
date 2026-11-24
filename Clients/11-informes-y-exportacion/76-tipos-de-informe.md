@@ -70,6 +70,7 @@ El informe de tareas recoge las tareas del periodo con su estado y su cumplimien
 
 - Las tareas cuya **fecha límite** cae dentro del periodo seleccionado, con su estado y su cumplimiento temporal.
 - El tiempo de cada tarea: tiempo invertido, tiempo en pausa, número de pausas y tiempo invertido sin pausas. Se explican en [Informes de tareas](../06-tareas/48-informes-de-tareas.md#qué-contiene).
+- **Una fila por tarea y persona**, con sus horas, su puesto, su precio por hora, sus complementos y su coste, y una fila de total por tarea; más las hojas **Por persona** (resumen del periodo) y **Complementos** (la traza de cada uno). Los importes van sin símbolo: la moneda de la empresa se indica en la cabecera.
 - Filtros por una, varias o todas las sucursales y por estado de la tarea.
 - Los datos necesarios para calcular en la hoja de cálculo lo que se necesite: completadas frente a asignadas, vencidas, rechazadas.
 

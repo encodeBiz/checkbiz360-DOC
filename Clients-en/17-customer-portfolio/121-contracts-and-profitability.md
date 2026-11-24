@@ -67,13 +67,13 @@ Each contract is a card with its name, its period (*From … to …* or *Open-en
 |---|---|
 | **Amount** | The contract price, before VAT. |
 | **Hours planned / done / estimated** | *Planned*: those added up by its tasks, from their planned start to their deadline, for each assigned person. *Done*: those worked, according to its tasks' check-ins or, if there are none, when they were started and finished. *Estimated*: the contract's **Estimated hours** (if you did not set them, only the first two are shown). In red if hours done exceed the estimate. |
-| **Gross cost** | Hours done multiplied by each person's rate (without social security costs), plus the material consumed in its tasks if you have inventory, plus the contract's approved expenses. In red if it already exceeds the amount. |
+| **Gross cost** | Hours done multiplied by each person's rate (without social security costs) under the job they worked each time, plus the **supplements** they were paid on those tasks, plus the material consumed in its tasks if you have inventory, plus the contract's approved expenses. In red if it already exceeds the amount. It is the same figure the [task report](../06-tasks/48-task-reports.md#what-it-contains) gives for those tasks. |
 | **Margin** | What is left of the amount after cost, in euros and as a percentage. |
 
 Below:
 
 - **Tasks (n)**: each task of the contract with its status, date and people, from newest to oldest, 5 at a time with **Load more**. The task name takes you to its page; from the task page, the contract takes you back here.
-- The cost of material and what share of the hours has a rate, if not all of them do.
+- The cost of material, the supplements and what share of the hours has a rate, if not all of them do.
 - **Expenses awaiting approval** and **External expenses**. See [Contract and task expenses](./122-contract-and-task-expenses.md).
 - **Forecast** (see below).
 
@@ -136,3 +136,5 @@ The tasks of a closed contract still belong to it and can be edited. What you ca
 | [Customer documents](./120-customer-documents.md) | The contract PDF and who sees it |
 | [The customer in the analyses](./123-the-customer-in-the-analyses.md) | The customer's profitability month by month and the contract alerts |
 | [Create and manage employees](../02-employees/06-create-and-manage-employees.md) | Where the hourly rate is set |
+| [Several jobs for the same person](../02-employees/140-several-jobs-for-the-same-person.md) | Which rate each task is valued at |
+| [Supplements](../02-employees/141-supplements.md) | What is paid on top and goes into the cost |

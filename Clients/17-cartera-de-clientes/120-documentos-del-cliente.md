@@ -55,6 +55,8 @@ Al elegir *Presupuesto / tarifa*, la visibilidad baja sola a **Administración**
 
 Desde la tarea de un cliente, la persona asignada ve en la app los documentos del cliente marcados para **Trabajador**, en la tarjeta **Datos complementarios**. En el panel, la tarjeta del cliente de la tarea enseña esos mismos documentos bajo **Documentos**, con la nota *Los que ve la plantilla desde la tarea*.
 
+Si el cliente está marcado **Disponible en todas las sucursales**, sus documentos para la plantilla los puede abrir **toda la plantilla de la empresa**, tenga o no una tarea suya: hay quien atiende a un cliente con horario fijo y sin tareas. Por eso, en esos clientes, lo que no deba verse va en **Administración**. El formulario del cliente lo avisa al marcar la casilla.
+
 ---
 
 ## Vencimientos
@@ -78,6 +80,8 @@ Desde la lista de **Documentos** de la ficha, **Archivar** retira el documento d
 **El propietario no ve un documento desde la app.** Es lo esperado si está en Administración o no está marcado para **Trabajador**: desde la app solo se ve lo de la plantilla. Ábralo desde el panel.
 
 **La plantilla no ve la ficha del cliente.** Compruebe que la ficha está marcada para **Trabajador** y que la tarea tiene ese cliente.
+
+**Alguien sin tareas de ese cliente ha abierto su ficha.** El cliente está marcado **Disponible en todas las sucursales**: sus documentos para la plantilla los abre toda la plantilla. Si no debe ser así, páselo a **Administración** o asigne al cliente sucursales concretas.
 
 ---
 

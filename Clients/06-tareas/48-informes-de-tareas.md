@@ -34,7 +34,29 @@ El informe de tareas se genera desde la sección **Informes** del backoffice y s
 
 ### Qué contiene
 
-Una fila por tarea, con estas columnas: Empresa, Centro, Título, Estado, Prioridad, Inicio, Fin, **Tiempo invertido (h)**, **En pausa (h)**, **Nº pausas**, **Tiempo invertido sin pausas (h)**, Equipo, **Completada por**, Valoración y Nº evidencias. Si alguna tarea del informe tiene cliente, se añade la columna **Cliente** detrás de **Centro** (ver [El cliente en la tarea](../17-cartera-de-clientes/119-el-cliente-en-la-tarea.md)).
+La hoja **Tareas** lleva **una fila por tarea y persona asignada**, agrupadas por tarea. Una tarea de tres personas ocupa tres filas, y las columnas de la tarea (Empresa, Centro, Cliente si lo hay, Título, Estado, Prioridad, Inicio, Fin, los tiempos, Completada por, Valoración y Nº evidencias) se repiten en cada una, de modo que al filtrar por una persona se sigue viendo de qué tarea era cada fila. Cada tarea cierra con una fila **Total {tarea}** y el informe, con **Total del periodo**. El signo **−** del margen izquierdo de Excel pliega las personas de una tarea y deja solo su total.
+
+Es el formato pensado para que un contable trabaje con él: una fila por persona y tarea permite sumar, filtrar y hacer tablas dinámicas por persona, por puesto, por cliente o por complemento sin deshacer nada a mano.
+
+Las columnas de la persona:
+
+| Columna | Qué es |
+|---|---|
+| **Persona** | Quién estaba asignado. |
+| **Puesto** | Con qué puesto trabajó en esa tarea: el elegido al asignarla o, si no se eligió, su predeterminado. Ver [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md). |
+| **Horas de la persona** | Sus horas en la tarea. |
+| **Origen de las horas** | *Fichajes*, si la persona fichó en la tarea; *Reloj de la tarea*, si no hubo fichajes y las horas salen de cuándo se inició y se terminó, menos las pausas. Si una jornada quedó sin salida, lo dice: *Fichajes · 1 sin salida*. |
+| **Precio por hora** | El precio del puesto con el que trabajó, tal como estaba el día del fichaje. |
+| **Coste puesto** | Horas por precio por hora. |
+| **Complementos** | Los que cobró en esa tarea, con su valor entre paréntesis. Ver [Complementos](../02-empleados/141-complementos.md). |
+| **Complementos (importe)** | Lo que suman. |
+| **Coste persona** | Coste del puesto más complementos. |
+
+La fila **Total** de cada tarea suma las horas y el coste de su gente, los complementos, el material si tiene inventario y el **coste bruto** de la tarea.
+
+Si alguna tarea del informe tiene cliente, se añade la columna **Cliente** detrás de **Centro** (ver [El cliente en la tarea](../17-cartera-de-clientes/119-el-cliente-en-la-tarea.md)).
+
+Las columnas de dinero las ve quien puede generar el informe: el propietario y los administradores. Los importes **no llevan símbolo de moneda**: la moneda de su empresa se indica una vez en la cabecera de cada hoja (*Moneda: EUR*) y se configura en [Configuración de entidad](../08-sucursales-y-entidad/61-configuracion-de-entidad.md#datos-de-la-empresa). Una persona sin precio en su puesto deja el coste vacío, no a cero.
 
 **Completada por** dice quién cerró la tarea; si se cerró desde el panel, lleva *(desde administración)*, y el inicio y el fin son las horas que se indicaron al cerrarla. Ver [cerrarla desde administración](./127-quien-termina-la-tarea-y-cierre-desde-administracion.md).
 
@@ -48,6 +70,13 @@ Conviene leer bien las columnas de tiempo:
 | **Tiempo invertido sin pausas (h)** | El tiempo invertido menos el tiempo en pausa. Descuenta las pausas que alguien registró, no las interrupciones que nadie marcó. |
 
 Una tarea que todavía no se ha iniciado deja las columnas de pausa vacías. Si una tarea está en pausa al generar el informe, la pausa abierta cuenta hasta ese momento.
+
+### Las hojas «Por persona» y «Complementos»
+
+El fichero trae dos hojas más, que salen de las mismas filas:
+
+- **Por persona**: el resumen del periodo, una fila por persona: cuántas tareas, horas, con qué puestos, coste del puesto, complementos (importe), coste total y, en **Complementos del periodo**, qué complementos cobró y cuántas veces. Es la hoja para preparar la nómina o cotejar con la gestoría.
+- **Complementos**: la traza. Una línea por complemento cobrado, con la tarea, el centro, el cliente, la persona, su puesto, el complemento, su tipo y su valor, las horas, el precio por hora, el **importe** y el **origen**: el fichaje de entrada del que sale o, si la tarea no tuvo fichajes, la asignación de la tarea. Al pie, cómo se calcula cada tipo. Si en el periodo no se cobró ninguno, la hoja lo dice.
 
 ### Incidencias
 
@@ -65,7 +94,7 @@ La hoja de tareas gana tres columnas al final:
 |---|---|
 | **Material** | Lo consumido en la tarea: cada artículo con su cantidad, y los equipos por su ejemplar. |
 | **Sin cuadrar** | Lo que salió y nadie ha declarado ni devuelto. Es lo que conviene revisar antes de validar. |
-| **Coste material (€)** | Lo consumido por su coste unitario. Vacío si ningún artículo tiene coste en su ficha. |
+| **Coste material** | Lo consumido por su coste unitario. Vacío si ningún artículo tiene coste en su ficha. Va en la fila **Total** de la tarea. |
 
 Y el fichero trae una hoja más, **Material**, con una fila por tarea y artículo o ejemplar: almacén de donde salió, cantidades reservada, salida, consumida, devuelta y sin cuadrar, coste, y para los equipos su tramo de reserva y su uso. Es la hoja para filtrar o hacer tablas dinámicas.
 
@@ -96,6 +125,8 @@ Las métricas agregadas calculadas por la plataforma —tasa de completitud, tie
 
 | Artículo | Descripción |
 |---|---|
+| [Varios puestos para la misma persona](../02-empleados/140-varios-puestos-por-persona.md) | De dónde sale la columna Puesto y su precio por hora |
+| [Complementos](../02-empleados/141-complementos.md) | Qué son, los tres tipos y dónde se eligen |
 | [Valoración del trabajador](./46-valoracion-del-trabajador.md) | Cómo se generan las puntuaciones de desempeño |
 | [Prioridades y fechas límite](./44-prioridades-y-fechas-limite.md) | Configuración de plazos que afectan al seguimiento |
 | [Estados de una tarea](./42-estados-de-una-tarea.md) | Significado de los estados y del cumplimiento temporal |

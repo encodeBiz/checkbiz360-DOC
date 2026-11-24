@@ -70,7 +70,7 @@ O mesmo quadro, semana a semana, para os últimos dois meses:
 - **Cobertura**: das jornadas previstas, quantas tiveram registo.
 - **Atraso**: que parte de quem registou chegou tarde.
 - **Tarefas a tempo**: que parte das tarefas da semana se fez à hora.
-- **Custo por semana**: horas pela tarifa, mais material.
+- **Custo por semana**: horas pela tarifa, mais complementos e material.
 
 Cada número leva a diferença face à semana anterior, e por baixo a tabela por centro. A semana em curso aparece como *semana incompleta*. As semanas de antes de a página inicial começar a guardar o dia a dia marcam-se *Reconstruído com o calendário atual*: servem para orientar, não para discutir um recibo de vencimento. No início, enquanto não houver semanas fechadas, o bloco di-lo.
 

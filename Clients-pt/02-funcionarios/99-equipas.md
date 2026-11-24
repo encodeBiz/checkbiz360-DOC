@@ -11,6 +11,7 @@ Está pensada para empresas que levam as mesmas pessoas de um projeto para outro
 - **Uma equipa é um modelo.** Cada membro leva a sua responsabilidade (trabalhador, supervisor, gerente ou proprietário), a sua função e o seu valor por hora, mas não uma sucursal.
 - **Aplicá-la a uma sucursal** adiciona cada membro a essa sucursal com esses dados, exatamente como se tivesse sido feito à mão.
 - **A sucursal prevalece sobre o modelo.** Alterar uma função ou um valor na equipa não altera as sucursais onde já foi aplicada: isso ajusta-se em cada sucursal. O valor usado nos custos e nos relatórios é sempre o da sucursal.
+- **Um posto por pessoa.** A equipa leva o posto com que cada pessoa é dada de entrada, que fica como o seu predefinido na sucursal. Se aí fizer mais de um trabalho, os outros postos acrescentam-se depois na sua ficha. Ver [Vários postos para a mesma pessoa](./140-varios-postos-para-a-mesma-pessoa.md).
 - **O horário não faz parte da equipa.** Configura-se na sucursal, como sempre.
 - Uma mesma pessoa pode estar em **várias equipas**, mas não duas vezes na mesma.
 
@@ -105,3 +106,4 @@ Criar, editar e eliminar equipas, aplicá-las e guardar uma sucursal como equipa
 | [Criar e gerir funcionários](./06-criar-e-gerir-funcionarios.md) | Registo de funcionários e estados, incluindo o estado pendente |
 | [Atribuir tarefas a funcionários](../06-tarefas/41-atribuir-tarefas-a-funcionarios.md) | Como se atribuem as tarefas às pessoas de uma sucursal |
 | [Análise de custos](../07-inteligencia-operacional/54-analise-de-custos.md) | Porque é que o valor que conta é o da sucursal |
+| [Vários postos para a mesma pessoa](./140-varios-postos-para-a-mesma-pessoa.md) | Os postos adicionais, que a equipa não leva |

@@ -17,7 +17,7 @@ A task with its customer knows where it is done, carries to whoever does the wor
 
 1. In **Task management**, press the new task button.
 2. Choose the **branch** first: the customers come from it.
-3. In **Customer**, choose one of the customers assigned to that branch, or leave **No customer**. If the branch has no customers, the field does not appear.
+3. In **Customer**, choose one of the customers assigned to that branch or available in all branches, or leave **No customer**. If there is none for that branch, the field does not appear.
 4. If the customer has contracts, **Contract** appears: choose which one the task belongs to or **No contract** (see below).
 5. If the customer has an address, **Use the customer's address as the work site** appears ticked, with the address below and its **Margin** in metres.
 6. Fill in the rest of the task as usual and save.
@@ -89,7 +89,7 @@ To see the card, staff need the app updated to the latest version.
 
 ## Common problems
 
-**The Customer field does not appear.** The chosen branch has no customers assigned. Assign the customer to that branch from their record.
+**The Customer field does not appear.** The chosen branch has no customers assigned and no customer is available in all branches. Assign the customer to that branch from their record or, if tasks are created from a branch other than the one serving them, tick **Available in all branches** (see [Add customers](./118-add-customers.md)).
 
 **The Contract drop-down does not appear.** The customer has no active contracts.
 
