@@ -310,9 +310,12 @@ estadísticas enseñan el desglose solo a propietario y administrador.
 
 ## 5. Panel
 
-- **Ficha de la persona, bloque de la sucursal** (`SucursalFromItem`): lista dinámica de puestos
-  con el selector de ocupación de hoy y el marcador «predeterminado». Precio visible solo con
-  permiso de dinero.
+- **Ficha de la persona, bloque de la sucursal** (`SucursalFromItem`) y **alta de la vinculación**
+  (`FormLink`): sucursal y responsabilidad en la misma fila y debajo UNA sola lista, «Puestos en esta
+  sucursal» (`OccupationsField`): la primera fila es el predeterminado (fila 0 = `job`/`price`, el
+  resto `jobs`), «Hacer predeterminado» sube otra, y el conversor de salario va como icono en cada
+  fila. Jose, 24-nov: «una sola lista, la primera es la predeterminada, no hay que duplicarla».
+  Precio visible solo con permiso de dinero.
 - **Configuración → Complementos:** lista nombre / tipo / valor, al lado de las ocupaciones.
 - **Formulario de tarea** (`TaskFormDialog`): en cada chip del multiselect, «como: {puesto} ▾»
   solo si la persona tiene más de un puesto en esa sucursal, y «+ complemento». Misma edición en

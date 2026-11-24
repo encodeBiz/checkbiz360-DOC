@@ -191,7 +191,7 @@ Dispositivo fixo num local, tablet ou telemóvel, onde cada pessoa regista o pon
 Índice único que combinaria fiabilidade, eficiência e avaliações num só valor comparável entre funcionários. **Não existe na versão atual**: o que existe é a *avaliação operacional do funcionário*, um diagnóstico do seu padrão que inclui o sinal de candidato a promoção. Veja [Avaliação operacional do funcionário](../07-inteligencia-operacional/53-pontuacao-de-promocao.md).
 
 ### Posto predefinido
-Dos postos que uma pessoa tem numa sucursal, o que se aplica quando na tarefa ou no turno não se escolhe outro. É o de **Ocupação atual** da sua ficha; os outros estão em **Também pode fazer de**, cada um com o seu preço por hora. Veja [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md).
+Dos postos que uma pessoa tem numa sucursal, o que se aplica quando na tarefa ou no turno não se escolhe outro. É o primeiro da lista **Postos nesta sucursal** da sua ficha, marcado *Predefinido*; cada posto leva o seu preço por hora. Veja [Vários postos para a mesma pessoa](../02-funcionarios/140-varios-postos-para-a-mesma-pessoa.md).
 
 ---
 
