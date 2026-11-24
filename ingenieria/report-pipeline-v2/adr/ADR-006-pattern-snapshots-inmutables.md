@@ -1,6 +1,6 @@
 # ADR-006 — Pattern snapshots idempotentes por fecha en lugar de patrón rolling único
 
-**Fecha:** 2026-06-02  
+**Fecha:** 2026-06-02 · **Revisado:** 2026-11-09 (§«Cómo se captura de verdad y qué fecha lleva»)  
 **Estado:** Aceptado  
 **Decisionario:** Jose Acevedo
 
@@ -94,3 +94,33 @@ raw_pattern            → JSON completo del BranchPattern para auditoría
 - La historia empieza desde el día de activación de Fase 3 (no hay retroactividad automática)
 - Si el batch falla para una branch en un día concreto, ese día no tiene snapshot (hueco en el histórico)
 - El hueco se puede recuperar manualmente si se tiene el BranchPattern de ese día en Firestore (está disponible vía `branchRepo.findPatternByBranch`)
+
+---
+
+## Cómo se captura de verdad y qué fecha lleva (revisión 2026-11-09)
+
+Lo de arriba describe un batch a las 02:00 que nunca se montó así. Lo que corre:
+
+- La foto la escribe **un trigger de Firebase** (`onBranchPatternSync`, `onEmployeePatternSync`) cada
+  vez que cambia el documento del patrón, llamando a `POST /api/analytics/build/pattern-snapshot`, que
+  hace el UPSERT por `(entity_id, COALESCE(branch_id,''), COALESCE(employee_id,''), snapshot_date)`
+  (migración 003: `branch_id` y `employee_id` pueden ser NULL). Varias escrituras el mismo día pisan la
+  misma fila: la foto del día es el estado del patrón tras su último cambio de ese día. Sigue siendo
+  una fila por sujeto y día, que era la decisión.
+- **La fecha** era el día UTC de la escritura. Dos fallos vistos: un ciclo cerrado a las 00:30 de
+  Madrid caía en el día anterior, y cualquier reproceso (la siembra de SaludStart, una reparación)
+  apilaba el histórico entero en hoy, con lo que hubo que rehacer 2.159 fotos a mano. Desde ahora
+  `snapshot_date` = **día local, en la zona del patrón, de su último ciclo** (`pattern.lastCycleAt`,
+  cuando el trigger del fichaje lo escriba) o, si no, del momento de escribir; nunca futuro
+  (`snapshotDateFor` en `packages/shared/src/analysis/snapshotDate.ts`). Las fechas ya guardadas
+  siguen valiendo: solo cambia el reparto de los ciclos de madrugada.
+- Consecuencia asumida: una escritura del patrón sin ciclo nuevo (una tarea validada actualiza
+  `taskSignals`) con `lastCycleAt` presente pisa la foto del día del último ciclo, no la de hoy. Es lo
+  que se quiere: la foto describe el patrón «al cierre de su último ciclo», y las señales de tareas
+  que llegan después forman parte de ese estado. Sin `lastCycleAt`, se comporta como hasta ahora
+  (fecha de hoy, en local).
+- La fila lleva `updated_at` (migración 063) para saber cuándo se pisó; `created_at` solo dice cuándo
+  nació. Y `timing_basis`, `data_quality`, `data_maturity` como columnas, porque la fase dos tiene que
+  poder filtrar en SQL con qué base se midió cada foto (ver TDR-007 §«Base de cada medida»).
+- La compensación de arriba («el histórico es mutable») se mantiene y se amplía: la foto de un día
+  puede cambiar durante ese día local y, con `lastCycleAt`, hasta que entre el siguiente ciclo.

@@ -53,6 +53,11 @@ Se hace primero en `dev-encodebiz` y después, con OK de Jose, en `encodebiz-ser
 
 ## Fase 2 — Cifrar cada documento antes de subirlo
 
+> **11-nov-2026:** decidida y en desarrollo con dos cambios: la llave maestra va en el servidor
+> y no en Cloud KMS (coste; Jose), y la clave de cada fichero va en su cabecera y no en Firestore.
+> **Mandan** [ADR-003](./adr/ADR-003-cifrado-de-documentos-con-llave-en-el-servidor.md) y
+> [TDR-001](./tdr/TDR-001-cifrado-de-documentos.md). La salida a Europa queda fuera.
+
 Objetivo: que lo que hay en el bucket, aunque se lo lleven, no se pueda abrir.
 
 **Cómo funciona (cifrado de sobre).**

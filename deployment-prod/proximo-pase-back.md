@@ -3072,3 +3072,313 @@ se espera según turnos, tareas e histórico). Diseño en `DOCS/ingenieria/panel
 | 72.5 | Prod: relleno | HECHO: simulación (2.320 fichajes en 35 días) y `--apply`, 875 filas |
 | 72.6 | Prod: verificado | HECHO a las 11:22 UTC: «foto de ahora: 5 empresas en 246 ms», 0 fallos. Lecturas dentro del contenedor: 37 previstos, 3 dentro, 25 debían estar sin fichaje, 14 centros donde no ha fichado nadie (sábado); 4 días de referencia; 1 interna fuera |
 | 72.7 | PENDIENTE | Que el worker se salte las internas (en dev son 239 de 245); «Cindy15-09QA» pasa por externa (la regla de `esInterna` pide separador antes de «qa», afecta también a Dirección). `dim_entities` solo trae empresas con actividad en 30 días: una empresa dormida con plantilla prevista no sale en «Hoy» |
+
+## 73. Historia operativa, Fase 3: el sector de la empresa y cada versión del día planificado — EN PROD el 2026-11-17 (hotfix #293, merge `4a78abb`, orden de Jose: «llévalo»; migración 066 `INSERT 0 630`; `analytics tasks customers` reconstruidos; 73.4 resuelto el 2026-11-20: las 5 empresas reales tienen sector y nicho); EN STAGING el 2026-11-16 (develop `040fe42` (#282), staging `7273b2c` (#283))
+
+Diseño: `DOCS/ingenieria/historia-operativa/README.md`. Lo que el espejo pisaba y hay que
+conservar para los modelos de mañana. Jose, 16-nov: «puedes ir haciendo las migraciones y
+escritura de datos». Solo `shared` (tipo y normalizador) y `analytics`.
+
+| # | Paso | Estado |
+|---|---|---|
+| 73.1 | Migración 066 (`066_historia_operativa_espejo.sql`), a mano y **antes** de reconstruir `analytics` (su sync escribe `dim_entities.sector` y `calendar_day_versions`). `… psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/066_historia_operativa_espejo.sql`. Esperado: `ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX` ×2, `INSERT 0 n` con n = filas de `dim_calendar_days` (en dev: 3110). Repetirla no hace daño. | HECHO 17-nov |
+| 73.2 | Reconstruir `analytics` (`up -d --build --no-deps analytics`) y reiniciar nginx. | HECHO 17-nov |
+| 73.3 | Comprobar: `SELECT count(*) FROM calendar_day_versions` = `SELECT count(*) FROM dim_calendar_days` justo después de la semilla. A la hora siguiente (sync de dimensiones, minuto 20) el recuento de versiones **no debe crecer** salvo por días que hayan cambiado de verdad. **Y mirar `dim_sync_log`**: `SELECT dimension, status, count(*) FROM dim_sync_log WHERE synced_at > now() - interval '2 hours' GROUP BY 1,2` sin `calendar_days failed`. | PENDIENTE |
+| 73.3b | **Fallo corregido el 17-nov** (develop vía #290, staging `0c3d8cb`): el INSERT de versiones del día llevaba parámetros sin tipo y Postgres los deducía distintos en el SELECT y en el WHERE («inconsistent types deduced for parameter $2»); en dev el sync de `calendar_days` falló 62 veces del 16 al 17-nov sin que lo viera nadie y lo destapó la QA de Cuidama. A prod va ya corregido; 73.3 lo comprueba. | HECHO en dev |
+| 73.4 | El sector de las empresas reales, **una a una y con Jose delante** (es su dato): `exec -T analytics node services/analytics/dist/scripts/sector-empresa.js --list` y después `--entity <id> --sector <limpieza|sad|oficina|construccion|eventos|mantenimiento|otros> --apply`. Sin `--apply` solo enseña. Escribe `entities/{id}.sector` en Firestore y `dim_entities.sector`. | **HECHO el 2026-11-20**: Arendel oficina, Encodebiz otros, Ayudarte sad, Neteges limpieza, Tapissat mantenimiento. Además `entities.niche` = {id, name, sector} con catálogo en `niches/{id}`; se agrupa por `niche.id`, nunca por nombre. `dim_entities.sector` llega por el sync de la hora; **el nicho no está en el espejo de Postgres**. |
+| 73.5 | El alta de empresa del panel no pedía el sector ni el nicho (repo `encodebiz-front-saas`): las empresas nuevas nacían sin él. Desde el 20-nov se puede poner después en la pestaña de nicho de la empresa (panel #166), que escribe también `entities.sector`; ya no hace falta el script de 73.4. | **HECHO el 2026-11-20**: el alta pide el nicho, obligatorio (panel #168; API #304 con `GET /api/v1/entities/niches` y su location en nginx, probada con `nginx -t` aparte). Si al guardar el nicho falla, la empresa queda creada y se avisa. En develop; staging pendiente. |
+
+**Registro de dev, 2026-11-16:** `git pull` en el VPS (`7273b2c`), migración 066 (`INSERT 0 3110`),
+`analytics` reconstruido y sano, nginx reiniciado. `sector-empresa --list`: 245 empresas, 245 sin
+sector. Puestos con `--apply`: Cuidama → `sad`, Fonteluz → `eventos`, EncodeBiz S.L → `oficina`,
+Netaclara → `limpieza`.
+
+**Lo que NO lleva este punto y sigue abierto** (historia-operativa §Decisiones de Jose): el tipo
+de tarea (`kind`), la foto nocturna a BigQuery (bucket, dataset, región), la frase legal en el
+contrato de encargo.
+
+## 74. Historia operativa, Fase 1: la foto diaria del espejo a BigQuery (`salud`) — PENDIENTE (EN STAGING el 2026-11-17: develop `926a51c` (#284), staging `f637d26` (#285); `salud` reconstruido, foto DESACTIVADA hasta que exista el bucket)
+
+Diseño: `DOCS/ingenieria/historia-operativa/README.md`. `salud/src/foto.ts`: a las 02:45 de Madrid,
+detrás de la copia, 21 tablas del espejo con el rol `copias`, cada una con sus columnas escritas
+(sin nombres, correos, textos libres ni coordenadas), al bucket `<proyecto>-historia` y a BigQuery
+(`historia.crudo_<tabla>`, partición del día). Sin `SALUD_FOTO_BUCKET`, desactivada: desplegar el
+código no enciende nada.
+
+**Lo que a Claude no le dejaron hacer ni en dev (crear recursos en Google Cloud), y hace Jose:**
+
+| # | Paso | Estado |
+|---|---|---|
+| 74.1 | **En dev, desde el portátil:** `salud/scripts/historia-gcp.sh dev-encodebiz`. Crea `gs://dev-encodebiz-historia` (EU, 30 días), el dataset `dev-encodebiz:historia` (EU), la cuenta `historia-escritor` (objectCreator+objectViewer en el bucket, bigquery.jobUser, WRITER del dataset) y la clave `./historia-sa-dev.json`. Región **EU multirregión**: nace y no se mueve (decisión 1 del diseño; si Jose prefiere Madrid, `… dev-encodebiz europe-southwest1` ANTES de la primera foto). | PENDIENTE |
+| 74.2 | Copiar la clave al VPS encima del fichero vacío que ya está: `scp -i ~/.ssh/encodebiz_staging historia-sa-dev.json almalinux@57.129.153.129:/tmp/` y en el VPS `sudo install -m 600 -o root -g root /tmp/historia-sa-dev.json /opt/encodebiz-api-dev/secrets/historia-sa-dev.json && rm /tmp/historia-sa-dev.json`. Borrar la copia del portátil o guardarla en el gestor de contraseñas. | PENDIENTE |
+| 74.3 | En `.env.staging`: `SALUD_FOTO_BUCKET=dev-encodebiz-historia` (`COPIAS_DB_PASSWORD` ya está desde el 17-nov; rol `copias` con LOGIN, migración 057 aplicada en dev). `up -d --no-deps salud`. A los 4 minutos sale la primera foto: `logs salud | grep foto` y `GET /health` → `foto.ultimaOk`. | PENDIENTE |
+| 74.4 | Comprobar en BigQuery: `bq ls dev-encodebiz:historia` (21 tablas `crudo_*`), `bq query --use_legacy_sql=false 'SELECT COUNT(*) FROM historia.crudo_tasks_raw WHERE DATE(_PARTITIONTIME) = CURRENT_DATE()'`, y la **consulta de control sin nombres**: ninguna columna `name`, `email`, `title`, `note` en `INFORMATION_SCHEMA.COLUMNS` del dataset, y `SELECT COUNT(*) FROM historia.crudo_dim_employees WHERE TO_JSON_STRING(t) LIKE '%@%'` = 0. | PENDIENTE |
+| 74.5 | Una semana de fotos en dev sin fallos (el estado va en `/health`; **falta** que `salud` abra un crítico si pasan 26 h sin foto, como hace con la copia). | PENDIENTE |
+| 74.6 | **Prod, en el pase:** `salud/scripts/historia-gcp.sh encodebiz-services` (bucket `encodebiz-services-historia`), clave a `/opt/encodebiz-api/secrets/historia-sa-prod.json` (root 600), en `docker-compose.yml` el bloque de `salud` gana `SALUD_FOTO_BUCKET`, `SALUD_FOTO_DB_URL=postgres://copias:${COPIAS_DB_PASSWORD}@postgres:5432/encodebiz_analytics`, `SALUD_FOTO_CREDENCIALES=/secrets/historia-sa-prod.json` y el montaje del fichero (mismo patrón que staging, commit `b4ee4dc`). Reconstruir `salud`. La primera foto de prod saca los fichajes enteros (cientos de miles de filas): es la única grande. | PENDIENTE |
+| 74.7 | La frase en el contrato de encargo del tratamiento (conservación seudonimizada y uso agregado para mejorar el servicio): decisión 4 del diseño. Sin ella la historia se acumula y no se usa para nada más que el panel. | PENDIENTE |
+
+**Registro de dev, 2026-11-17:** `git pull` (`f637d26`), migración 057 (`DO`, `GRANT ROLE`), `ALTER ROLE copias LOGIN`,
+`COPIAS_DB_PASSWORD` nueva en `.env.staging`, `secrets/historia-sa-dev.json` vacío (root 600), `salud`
+reconstruido y sano: «foto desactivada», `/health` → `foto: sin configurar`. Los 21 SELECT de la foto
+ejecutados contra `encodebiz_staging` con `LIMIT 0`: todos válidos. Claves de los JSON que salen
+(`heuristic_scores`, `raw_pattern`, `schedule_applied`, `employee_responsibility`, `cycles`): medidas
+e ids, sin nombres.
+
+## 75. Historia operativa: cada versión de las filas del espejo, en Postgres (`mirror_versions`) — EN PROD el 2026-11-17 (hotfix #293, merge `4a78abb`; migración 067, semilla 5/179/121/214/129/622 igual al origen; `analytics tasks customers` reconstruidos); EN STAGING el 2026-11-17. Sustituye a la foto a BigQuery del §74, que Jose aparcó: «todo se queda en Postgres por el momento»
+
+Jose, 17-nov: «solo estamos recogiendo datos, no metemos nada todavía a BigQuery, todo se queda en
+Postgres por el momento». La foto del §74 queda en el código pero **no se enciende** (74.1 a 74.6
+pasan a aparcados); lo que iba a conservar fuera se conserva dentro.
+
+| # | Paso | Estado |
+|---|---|---|
+| 75.1 | Migración 067 (`067_versiones_del_espejo.sql`), a mano y **antes** de reconstruir `analytics`, `tasks` y `customers` (sin ella el código se calla y no hay versiones). `… psql -U encodebiz -d encodebiz_analytics -v ON_ERROR_STOP=1 < migrations/067_versiones_del_espejo.sql`. Esperado: `CREATE TABLE`, `CREATE INDEX` ×2, seis `INSERT 0 n` (empresas, centros, empleados, calendarios, clientes, tareas). Repetirla no hace daño. | HECHO 17-nov |
+| 75.2 | Reconstruir `analytics tasks customers` (cambia `shared`) y reiniciar nginx. | HECHO 17-nov |
+| 75.3 | Comprobar: `SELECT table_name, count(*) FROM mirror_versions GROUP BY 1` igual a las filas de cada tabla justo después de la semilla; a la hora siguiente (sync, minuto 20) **no debe crecer** salvo por filas que hayan cambiado de verdad. Si crece en bloque, hay una columna que cambia en cada sync y falta en `exclude` de `rowVersions.ts`. | PENDIENTE |
+| 75.4 | El tipo de tarea (`kind`) sigue siendo decisión de Jose (el sector de las reales, 73.4, ya está). | PENDIENTE |
+
+**Registro de dev, 2026-11-17 12:35 UTC (QA sobre Cuidama, por orden de Jose):** sector `sad` → `otros` → `sad` con el
+script (ya deja versión, #288): tres versiones de la empresa con su hora, la última igual a la primera. Cindy15-09QA
+devuelta a sin sector. El sync real de dimensiones de Cuidama destapó el fallo de tipos del 066 (73.3b); corregido,
+desplegado, y dos syncs seguidos de Cuidama con las diez dimensiones en `success` y sin crecer versiones (7 días,
+7 versiones de día, 100 versiones de filas).
+
+**Registro de dev, 2026-11-17 10:30 UTC:** `git pull` (`aa716d2`), migración 067: `CREATE TABLE`, `CREATE INDEX` ×2 y
+semilla `INSERT 0 245` (empresas), `1299` (centros), `9979` (empleados), `1921` (calendarios), `160` (clientes),
+`11600` (tareas), iguales a las filas de origen. `analytics tasks customers` reconstruidos y sanos, nginx
+reiniciado. Prueba: cambiar el sector de una empresa de prueba creó una versión (`INSERT 0 1`) y repetir la
+sentencia no creó otra (`INSERT 0 0`). Queda mirar a la hora siguiente que el sync no infle el recuento (75.3).
+
+## 76. Cliente disponible en todas las sucursales (cartera TDR-009) — EN PROD el 2026-11-17 (hotfix #292, merge `734c87b`; orden de Jose: «pasa ya a producción»; `documents customers` reconstruidos); (EN STAGING el 2026-11-17: develop `1f53ffc`, staging `817e3b3`; `documents customers` reconstruidos)
+
+Lo pidió Ayudarte. El modelo ya tenía `scope: "entity"`; el hotfix acota quién llega a un cliente así y abre
+sus documentos de Plantilla a toda la plantilla. Rama `hotfix/cliente-todas-las-sucursales` (`47bd282`), desde
+`main`. No toca `shared`. Sin migraciones ni índices.
+
+| # | Paso | Estado |
+|---|---|---|
+| 76.1 | Fusionar la PR #292 a `main` (título con `[skip ci]`), con el OK de Jose. | HECHO 17-nov, `734c87b`; el workflow de producción no se lanzó |
+| 76.2 | En el servidor: `git pull --ff-only origin main`, reconstruir **solo** `documents customers` y reiniciar nginx. | HECHO 17-nov ~12:25 UTC: imágenes construidas antes, `up -d --no-deps`, `nginx -t` bien, nginx reiniciado; los dos `healthy`, llave `prod2026a` cargada |
+| 76.3 | Comprobar en producción con una empresa de prueba. | HECHO 17-nov 12:40 UTC en Encodebiz, por orden de Jose («hazlo tú mismo»): ver el registro de abajo |
+| 76.4 | Después, el panel (front, PR #160). Si el panel saliera antes: el cliente general funciona en las tareas, pero la plantilla no abre sus documentos y la API le daría la ficha a un gestor. | HECHO 17-nov: PR #160 fusionada (`ebd64e3`), Vercel Production `success` 12:31 UTC |
+| 76.5 | Avisar a Ayudarte, con el OK de Jose. | PENDIENTE |
+| 76.6 | Fuera del hotfix, por la cadena normal: `customerReaderReaches` (`shared`) sigue dando el análisis y el parte de un cliente general a la credencial de un gestor o supervisor. | PENDIENTE |
+
+**Registro de dev, 2026-11-17:** `git pull` (`817e3b3`), `documents customers` reconstruidos y sanos, nginx
+reiniciado. Con la empresa de QA de la cartera y sesiones reales (propietario, gestor, dos trabajadoras), 31
+comprobaciones por la API, todas bien: el gestor no puede marcarlo; marcado, sale en el selector de las dos
+sucursales; la ficha, la lista, la edición, la asignación y los contratos dan 403 al gestor; el documento de
+Plantilla lo abren las dos trabajadoras y el gestor, el de Administración solo el propietario desde el panel;
+`/for-task` sigue listando lo de la plantilla; un cliente por sucursales, igual que antes. El cliente se
+devolvió a su sucursal. Sin probar: crear una tarea de principio a fin en otra sucursal, la app instalada y el
+asistente.
+
+**Añadido el mismo día en staging, antes de prod:** con el cliente por sucursales, crear una tarea suya en otra
+sucursal da `task/customer_not_assigned` (400); marcado general, la misma tarea se crea (201) con su cliente y
+su sucursal. Tarea de prueba borrada y cliente restaurado.
+
+**Registro de prod, 2026-11-17 12:40 UTC (Encodebiz, sonda dentro del contenedor `customers`):** con la cuenta
+propietaria genérica de la empresa (`hola@…`; la de Jose es de gestor y la API le dio 403 al crear, que es la
+regla) se creó el cliente «PRUEBA TDR-009 (borrar)» con `scope: "entity"`, una tarea suya sin nadie asignado y
+dos documentos (Plantilla y Administración). 22 comprobaciones bien: el gestor no ve la ficha ni la lista ni
+cambia la asignación; el selector de la sucursal lo trae; el de Plantilla lo abre un empleado por la app y baja
+descifrado igual; el de Administración, solo la propietaria desde el panel. Encodebiz tiene una sola sucursal
+activa: «otra sucursal» queda probado solo en staging. **Limpieza:** tarea, documentos (ficha, fichero y
+buscador) y cliente borrados; comprobado en Firestore, buscador y Storage. En Postgres quedaban la copia de la
+tarea marcada como borrada (`tasks_raw`), su evento de creación (`task_events_raw`) y una versión
+(`mirror_versions`): borradas a mano por id, una fila cada una. No se avisó a nadie (sin asignados; subir un
+documento de cliente no notifica).
+
+## 77. El calendario de tareas dice de qué cliente es cada una — EN PROD el 2026-11-17 (hotfix #294, merge `e74c2a9`; orden de Jose: «bájalos si es seguro»; EN STAGING el 2026-11-17: develop `feb4155`, staging `7d2511c`; `tasks` reconstruido)
+
+Jose, 17-nov: en el calendario de tareas, el resumen de la derecha no enseña el vínculo con el cliente, «y eso
+es importante». `GET /tasks/calendar` y `/calendar/cell` no lo llevaban. Rama `hotfix/calendario-tarea-cliente`
+(`9515022`), desde `main`: cada tarea lleva `customerId`, leído de `tasks_raw`. Sin migraciones.
+
+| # | Paso | Estado |
+|---|---|---|
+| 77.1 | Fusionar la PR #294 a `main` (`[skip ci]`), con el OK de Jose. | HECHO, `e74c2a9` |
+| 77.2 | En el servidor: `git pull --ff-only origin main`, reconstruir **solo** `tasks` y reiniciar nginx. | HECHO: `tasks` sano, `nginx -t` bien, nginx reiniciado |
+| 77.3 | Después, el panel (PR #162). Si sale antes, queda como estaba. | HECHO, `4d013019`, Vercel Production `success` |
+
+**Registro de prod, 2026-11-17:** antes de fusionar, el servidor estaba en `7090157` (#295, de otra sesión, recién
+desplegada y sin construcción en marcha). Tras el despliegue, lectura con la propietaria de Encodebiz:
+`/tasks/calendar` 200 (60 tareas en la ventana) y `/calendar/cell` 200; todas las tareas traen `customerId`, a
+`null` porque ninguna tiene cliente todavía. Rutas del borde sin 502. Falta verlo con una tarea real con cliente.
+
+**Registro de dev, 2026-11-17:** `tasks` reconstruido y sano. El calendario devuelve el `customerId` de la fila.
+Tres tareas de QA del 5-nov salen sin cliente porque su fila de `tasks_raw` no lo tiene (son de antes de que la
+copia lo guardara): es cosa de staging. En producción, 0 tareas con cliente en Firestore y 0 en la copia el
+17-nov, así que no hay nada que rellenar; las nuevas sí lo guardan.
+
+## 78. Solicitudes e incidencias sin atender en las alertas de Inicio — EN PROD el 2026-11-17 (hotfix #295, merge `7090157`; orden de Jose: «sí»; migración 068 `CREATE TABLE`; `analytics checkinbiz assistant` reconstruidos; panel #163) (EN STAGING el 2026-11-17: develop `68b87ff` y siguiente, staging `1517d18` y `44d28dc`; migración 068 aplicada en `encodebiz_staging`; `analytics checkinbiz assistant` reconstruidos)
+
+Jose, 17-nov: Ayudarte tiene 3 solicitudes de vacaciones y no salen en las alertas. Las solicitudes sin responder
+y las incidencias abiertas por la plantilla solo iban en el correo de la mañana, leídas de Firestore; Inicio no
+tenía regla para ninguna de las dos. Ahora se espejan en Postgres (`pending_items`, migración 068) y las evalúa
+`rules.ts`: salen en Inicio, en `ver_alertas` del asistente y en el correo, con los mismos ids de antes. El espejo
+lo escribe `analytics`: una pasada cada 10 minutos por las empresas activas, y al momento cuando `checkinbiz`
+avisa de que una solicitud se creó, se canceló o se decidió (`pending_changed`) o cuando se abre una incidencia.
+Rama `feat/alertas-pendientes-en-panel` (`bc36d0b` y el ajuste de orden). Cambia `shared`, pero solo lo usan
+estos tres servicios.
+
+| # | Paso | Estado |
+|---|---|---|
+| 78.1 | Aplicar `migrations/068_pendientes_de_decision.sql` en `encodebiz_analytics`, **antes** de `analytics`. Sin ella no falla nada, pero las dos alertas dejan de salir también en el correo. | HECHO 17-nov |
+| 78.2 | Reconstruir `analytics checkinbiz assistant` y reiniciar nginx. | HECHO 17-nov ~15:14 UTC, los tres `healthy`, `/health` 200 |
+| 78.3 | Esperar a un minuto acabado en 7 y mirar `SELECT entity_id, kind, COUNT(*) FROM pending_items GROUP BY 1, 2`: Ayudarte debe tener sus 3 solicitudes. | HECHO: pasada de las 15:17 UTC, Ayudarte 3 solicitudes (la más antigua del 12-nov) y Encodebiz 1 incidencia |
+| 78.4 | Después, el panel (`feat/alertas-pendientes-en-panel`, develop `b47e269f`): sin él, Inicio enseña la alerta con la clave en vez del texto. Ver `proximo-pase-front.md`. | HECHO: panel #163, merge `737efa83`, Vercel `success` |
+
+**Registro de dev, 2026-11-17:** 068 aplicada (`CREATE TABLE`). Con el espejo forzado en las empresas de prueba:
+EncodeBiz, 2 solicitudes y 1 incidencia; Fonteluz, 1 solicitud; Cuidama, 1 incidencia; las alertas salen con su
+recuento, sus nombres y el destino a la pestaña. El aviso de `checkinbiz` a `analytics` devuelve aceptado y deja
+`synced_at` al segundo; el job de :07 corrió solo. Sin probar en navegador: el panel está en develop.
+
+**A tener en cuenta:** una incidencia que se cierra desde el panel no avisa a nadie (la escribe el navegador en
+Firestore), así que su alerta puede tardar hasta 10 minutos en irse. Las solicitudes se van al momento. Inicio
+enseña 8 alertas: estas dos van delante de las demás de su gravedad para no quedarse fuera.
+
+**Registro de prod, 2026-11-17:** hotfix desde `main` (`hotfix/alertas-pendientes-en-panel`, cherry-pick de los
+dos commits; 136 pruebas de `analytics` en verde). Sin CI. El correo sí había avisado a Ayudarte de sus
+solicitudes: `alert_sent` tiene `requests_pending` el 13-nov y el 16-nov (lunes), a 9 destinatarios cada vez.
+Sin abrir Inicio en navegador con la cuenta de un cliente.
+
+## 79. El conector al paso de staging (TDR-004) y el paquete de ChatGPT 1.0.17 — EN PROD el 2026-11-20 (hotfix #303, merge `ceebef2`; orden de Jose: «si ya lo probaste todo tienes mi ok»; siete servicios reconstruidos; falta 79.2-79.4); EN STAGING el 2026-11-16 (develop `aae55cc`, staging `c400eb9`; `assistant customers analytics reports inventory merlin tasks` reconstruidos; nginx con `/delegated/` cerrado al público); paquete 1.0.17 en develop `bf44de2`
+
+Quince herramientas nuevas en el conector (cartera y contratos, incidencias, gastos por aprobar,
+informe de tareas, inventario de consulta), `crear_tarea` y `proponer_cuadrante` con cliente, contrato
+y dirección del cliente, y el lote de Excel de Merlin con las mismas columnas.
+
+**Desde el 17-nov la app está aprobada en el directorio de ChatGPT (1.0.16).** OpenAI escanea el
+conector de prod cada día y retiene las herramientas nuevas o cambiadas hasta revisarlas; las demás
+siguen publicadas. Por eso el paquete va con el pase:
+
+| # | Paso | Estado |
+|---|---|---|
+| 79.1 | Pase del código (las siete imágenes de arriba) y nginx de prod con `location /api/v1/inventory/delegated/ { return 404; }`, probado con `nginx -t` en contenedor aparte antes de reiniciar | HECHO 20-nov ~10:10 UTC: cherry-pick sobre `main` de a45c9be, bf384b8, 865aeab, c416465, fd9a438 y 045788a (rama `hotfix/conector-tdr-004`; conflicto en `nginx.conf` resuelto cerrando también `/api/v1/customers/delegated/`, que prod ya publicaba); pruebas en la rama: assistant 233, customers 130, analytics 159, reports 22, inventory 8, merlin 178, tasks 21. Servidor: `git pull` (`ceebef2`), imágenes construidas antes, `nginx -t` bien, `up -d --no-deps --no-build` de los siete, nginx reiniciado; todos `healthy`, sin errores en el log. Desde fuera: `/customers/delegated/` y `/inventory/delegated/` 404, OAuth 200, MCP sin token 401. develop recibe el nginx de prod en `e87fe39` |
+| 79.2 | Cuenta de revisión `openia@` (Encodebiz en prod) con al menos un cliente con contrato en vigor y una incidencia abierta: los casos de prueba 2 y 5 los usan. Escribe en prod: con el OK de Jose | HECHO 20-nov con el «sí» de Jose, como `openia@` por las puertas delegadas (guion que simula por defecto; la simulación vio Encodebiz sin clientes ni incidencias): cliente «Oficinas Muestra (revisión)» `kjR0zXzwh36GBpTFlzco` (ref. DEMO-REV, sucursal Encodebiz), contrato «Limpieza de oficinas 2026-2027 (muestra)» `kflK6hU4rLZXzh6csDug` (12.000 €, 400 h, 01-nov-2026 a 31-oct-2027), tarea en borrador sin asignados `IygfDEMsCETtKgOXs8Rs` (15-dic, 09:00–11:00 Madrid, `notifyIfNotStarted: false`) con su incidencia abierta. Al retirar la cuenta de revisión: borrar los tres |
+| 79.3 | Subir `plugins/checkbiz360/checkbiz360-plugin.zip` (1.0.17, `./build.sh`) al portal el mismo día del pase | HECHO 20-nov (Jose); el escaneo del portal llegó a las 10:25 UTC, todo 200 |
+| 79.4 | Ese día y el siguiente, nginx de prod: 429/400 del user-agent `openai-mcp` | PENDIENTE |
+
+## 80. En «Horario por tareas», la valla de la tarea manda sobre el trabajo remoto — EN PROD el 2026-11-17 (hotfix #296, merge `ac3a0b9`; orden de Jose: «asumido haz el despliegue»; `checkinbiz` reconstruido); EN STAGING el 2026-11-17 (develop `d1eb746`, staging `bcc1c38`; `checkinbiz` reconstruido)
+
+El trabajo remoto del empleado y la valla desactivada de la sucursal eximían al fichaje de toda valla, también
+de la de la tarea: la jornada se abría desde cualquier sitio y el inicio de la tarea se rechazaba después, con
+el fichaje ya válido. Ahora, si la persona está en «Por tareas» **y** la tarea que mueve el fichaje tiene lugar
+propio, se mide contra ese lugar sin esas dos exenciones (entrada, descansos y salida). Sin lugar propio o en
+los otros modos, la sucursal con sus exenciones de siempre. El quiosco sigue exento. Regla en
+`resolveChecklogFence` (`shared`), usada solo por `checkinbiz`. Sin migración, índice ni variable.
+
+| # | Paso | Estado |
+|---|---|---|
+| 80.1 | Reconstruir `checkinbiz` y reiniciar nginx. | HECHO 17-nov, `healthy`; el `dist` del contenedor lleva `resolveChecklogFence`; el borde responde 401 sin credencial |
+| 80.2 | Revisar en Ayudarte las tareas con el punto o el radio mal puestos (auditoría del 14-nov: radios de 46-50 m, un punto a 2,35 km compartido por 3 tareas): ahora bloquean a quien antes entraba por tener remoto. | PENDIENTE (asumido por Jose al desplegar) |
+| 80.3 | Decidir si la salida fuera de la valla de la tarea debe solo medir y no bloquear. Hoy bloquea. | PENDIENTE (decisión de Jose) |
+
+**Registro de dev, 2026-11-17:** en Cuidama, con el empleado con remoto y «Por tareas», fichando por la API.
+Tarea con valla de 100 m: entrada a 8,3 km → 400 `checklog/out_of_radius`; entrada dentro → 201 y tarea en
+curso; salida a 8,3 km → 400; salida dentro → 201 y tarea completada. Tarea sin valla: entrada y salida a
+8,3 km → 201. Quedan en Cuidama las dos tareas «PRUEBA hotfix valla» y sus fichajes. Sin probar con fichajes
+reales: sucursal con valla desactivada y otros modos (solo las 6 pruebas unitarias).
+
+**Registro de prod, 2026-11-17:** hotfix desde `main` (`hotfix/valla-tarea-manda-sobre-remoto`, `aa04cbf`),
+sin CI. Prod pasó de `e74c2a9` a `ac3a0b9`. Sin probar con un fichaje real en prod.
+
+## 81. El rechazo por la valla de la tarea cuenta como «fuera» en el eje de ubicación — EN PROD el 2026-11-17 (hotfix #297, merge `248f774`; orden de Jose: «sí»; `checkinbiz analytics` reconstruidos); EN STAGING el 2026-11-17 (develop `329d74f`, staging `6293448`; `checkinbiz analytics` reconstruidos)
+
+Consecuencia del §80: el fichaje fallido se guarda con el remoto de la persona y el radio de la sucursal, y
+`BuildGeoCompliance` lo archivaba como «trabajo remoto»; además ya no hay `start_rejected` de la tarea. Solo
+afecta al análisis del panel: el bloqueo y el diálogo «Fuera de zona» de la app funcionan. El fichaje guarda
+ahora `metadata.fence = {source: "task", radiusMeters, taskId}` y el análisis trata el rechazo con esa marca
+como marca de tarea. Sin migración (se lee de `metadata_raw`).
+
+| # | Paso | Estado |
+|---|---|---|
+| 81.1 | Mezclar #297 con `[skip ci]`, reconstruir `checkinbiz analytics` y reiniciar nginx. | HECHO 17-nov: los dos `healthy`, el `dist` de cada uno lleva el cambio, sin errores en el log de arranque |
+| 81.2 | Los rechazos anteriores al despliegue no llevan `fence`. Medido en prod el 17-nov tras el §80: 0 rechazos por valla de personas con remoto o sucursal sin valla. Vuelto a contar tras desplegar: 0, no hay nada que recalcular. | HECHO 17-nov |
+
+**Registro de dev, 2026-11-17:** Cuidama, empleado con remoto y «Por tareas»: entrada a 8,3 km de una tarea
+con valla de 100 m → 400; la fila de `checklogs_raw` lleva `fence`; `buildGeoCompliance` de esa persona para
+hoy: 11 marcas, 1 de tarea fuera, `balanced` true (los 2 rechazos de la prueba del §80, sin `fence`, siguen en
+«trabajo remoto»). 137 pruebas de `analytics` en verde.
+
+**Registro de prod, 2026-11-17:** hotfix desde `main` (`hotfix/valla-tarea-cuenta-fuera-de-zona`), sin CI. Prod pasó de
+`ac3a0b9` a `248f774`. Sin probar con un fichaje real en prod ni abrir el análisis con la cuenta de un cliente.
+
+## 82. El eje de cumplimiento de tareas en el análisis (TDR-006 del panel) — EN PROD el 2026-11-18 (hotfix #298, merge `513ed12`; orden de Jose: «up to prod», «continúa la subida a prod»; `analytics tasks assistant` reconstruidos); EN STAGING el 2026-11-18 (develop `0086032`, staging `a5f8906`)
+
+Jose, 18-nov: «no se está analizando el cumplimiento de tareas en general, desviaciones, vallas, etc., y es muy
+importante»; en Inicio como resumen y en el análisis por empresa, sucursal y empleado. Diseño:
+`DOCS/ingenieria/panel-operativo-v2/tdr/TDR-006-eje-de-cumplimiento-de-tareas.md`. Panel: front §«Eje de tareas».
+
+| # | Paso | Estado |
+|---|---|---|
+| 82.1 | Migración **069** (`tasks_raw.completion_policy`, `responsible_employee_id`) a mano, ANTES de `analytics`. | HECHO 18-nov en dev y en prod |
+| 82.2 | Mezclar #298 con `[skip ci]`, reconstruir `analytics tasks assistant`, reiniciar nginx. | HECHO 18-nov: los tres `healthy`, sin errores en el arranque, el borde da 401 sin credenciales |
+| 82.3 | `backfill-tasks --all --apply` para rellenar la encargada (simulado antes: 310 tareas en 5 empresas, 0 a marcar borradas). | HECHO 18-nov: «cuadra» en las 5; 1 tarea con encargada (Encodebiz) |
+| 82.4 | Merlin no narra el eje nuevo todavía (recibe 4 ejes y el bloque, sin texto). | PENDIENTE, sin fecha |
+| 82.5 | Revisar los umbrales del veredicto (§6 del TDR) con un mes de uso. | PENDIENTE |
+
+**Registro de dev, 2026-11-18:** Cuidama, overview `sections=tasks` en los tres niveles: 200, `balanced` true,
+`sections=foo` 400, overview completo con `axesInService` 4 y `deferredAxes` []. Tests: analytics 152, tasks 21,
+merlin 163 (6 saltados), assistant 167.
+
+**Registro de prod, 2026-11-18:** prod pasó de `248f774` a `513ed12`. Ayudarte, noviembre hasta el 17, leído
+con el builder dentro del contenedor (sin sesión de cliente): 53 previstas, 49 hechas (18 a tiempo, 31 con
+retraso, mediana 10 min), 4 sin hacer; inicio: 112 intentos = 49 ocasiones, 4 fuera (las 4 tareas que nunca
+se empezaron); cierre: 11 de 49 fuera, 5 sin posición; 4 personas «fuera de valla», 5 «con retraso»; el
+bloque tarda 35 ms. Después, por el borde (`https://api.checkbiz360.com`) con la sesión del propietario de
+Ayudarte (token propio, solo GET): empresa, sucursal y empleado con `sections=tasks` → 200 en 210-290 ms y las
+mismas cifras; `sections=foo` → 400; overview completo → 200 en 302 ms, 4 ejes, ninguno aplazado. Panel sin
+mirar en pantalla con una cuenta de cliente.
+
+## 83. Eje de tareas: 15 min de margen al terminar, plazos imposibles y cierres de la gestión — EN PROD el 2026-11-18 (hotfix #299, merge `b5693a0`; orden de Jose: «sí, arregla y sube en hotfix»; solo `analytics`); EN STAGING el 2026-11-18 (develop `51edca3`, staging `fa9ad10`)
+
+Recuento a mano de Ayudarte contra las tablas crudas, tras el §82. Los totales cuadraban; tres cosas no:
+
+| # | Qué | Estado |
+|---|---|---|
+| 83.1 | «Con retraso» = cerrar más de **15 min** después del vencimiento (Jose: «15 de margen, como la jornada»). Antes 9 de 31 eran de 0 a 5 min. El margen de 5 min del inicio no cambia. | HECHO |
+| 83.2 | Hecha con el vencimiento anterior al inicio («Acompañamiento domicilio Dolores», vencimiento en 2016) → cajón `noDeadline`, ni a tiempo ni tarde. Antes, 10 años de retraso. | HECHO |
+| 83.3 | Valla al terminar: fuera los cierres de la gestión desde el panel (4) y los cierres sin valla medida (1). Antes daban 5 «sin posición». | HECHO |
+| 83.4 | Panel: cajón «Hechas sin plazo válido» y ayudas con los 15 min (front #165). | HECHO, Vercel `success` |
+| 83.5 | Avisar a Ayudarte de que corrija la fecha de esa tarea. | Solo con OK de Jose |
+
+**Registro de prod, 2026-11-18:** prod pasó de `513ed12` a `b5693a0`. Ayudarte por el borde con la sesión del
+propietario (solo GET), igual que el recuento a mano: 49 hechas = 36 a tiempo + 12 con retraso (mediana
+35 min) + 1 sin plazo; cierres 44 = 33 dentro + 11 fuera + 0 sin posición; `balanced` true. Personas con
+hallazgo de 9 a 6; «con retraso» de 5 a 2. analytics: 155 pruebas en verde.
+
+## 84. El nicho de la empresa en el espejo y en el relato del panel — EN PROD el 2026-11-20 (hotfix #308, merge `10087ed`; orden de Jose: «bájalo a prod como hotfix»; 070 a mano; `analytics merlin` reconstruidos; queda 84.4); EN STAGING el 2026-11-20 (develop #305, staging `8108ef5` #306 con los nichos de #300-#302; 070 aplicada a mano en dev; `analytics merlin entities backoffice` reconstruidos; NO en prod)
+
+Historia operativa, `DOCS/ingenieria/historia-operativa/README.md` §«20-nov: el nicho». Jose, 20-nov:
+«dime cómo lo podemos usar y úsalo». Servicios: `analytics`, `merlin`. Migración 070.
+
+| # | Paso | Estado |
+|---|---|---|
+| 84.1 | **Migración 070 a mano, antes de reconstruir `analytics`**: `dim_entities.niche_id`, tabla `dim_niches` y `'niches'` en la restricción de `dim_sync_log`. `analytics` tolera su ausencia (el nicho va en una sentencia aparte y el catálogo se salta si no hay tabla), pero sin ella el nicho no se guarda. Repetirla no hace nada. | **HECHO en prod el 20-nov**: copia de la noche verificada antes (`prod-20261120T013336Z`, 01:33 UTC); `ALTER`, `CREATE INDEX`, `CREATE TABLE`, `ALTER`, `ALTER` sin error. |
+| 84.2 | Reconstruir `analytics merlin` y reiniciar nginx. | **HECHO**: build y `up -d --no-deps analytics merlin`, los dos healthy; nginx reiniciado; el borde llega a los dos (401, no 502). |
+| 84.3 | Comprobar tras el sync de la hora (minuto 20 UTC): `SELECT entity_id, sector, niche_id FROM dim_entities` con las 5 empresas con nicho; `SELECT count(*), count(*) FILTER (WHERE status='approved') FROM dim_niches`; `dim_sync_log` con `entity_id='*' AND dimension='niches'` en `success`. | **HECHO** con un sync forzado: 21 nichos aprobados; las 5 empresas con `niche_id` y su sector igual al del nicho; `*`/`niches` success, sin fallos; 5 versiones con nicho en `mirror_versions`. Merlin lee «Servicios de Asistencia a Domicilio (SAD)» para Ayudarte. |
+| 84.4 | El relato del panel sube a `panel-v5`: la caché de un día se invalida sola y el primer panel de cada empresa paga su relato nuevo. Leer uno de Ayudarte y comprobar que habla de usuarios y domicilios y que no compara con otras empresas. | PENDIENTE |
+
+Probado en dev el 20-nov, sobre Cuidama: catálogo sembrado en `dev-encodebiz` (`nichos.js --seed --apply`, 21 aprobados; dev no tenía) y Cuidama → `home-care`. Sync forzado: `dim_entities.niche_id = home-care`, `dim_niches` 21 filas, `dim_sync_log` `*`/`niches` success, y una versión nueva en `mirror_versions` con el nicho. Relato real de `gpt-5-mini` con la ficha de Cuidama y dos centros de prueba: la línea «Actividad» llega y el modelo **no compara con otras empresas ni usa el sector como causa**, pero **tampoco cambió el vocabulario** (no habló de usuarios ni domicilios). El efecto en el texto queda por medir con relatos reales (84.4); si sigue sin notarse, se refuerza la regla. Coste de esa llamada: 2.514 tokens de entrada y 1.920 de salida, 1.472 de ellos de razonamiento.
+
+
+## 85. Gestionar la cartera desde el conector (TDR-004 fase E) — PENDIENTE en prod; EN STAGING el 2026-11-21 (develop `22a516b`, staging `0c9cb8b`; `assistant` reconstruido)
+
+Once herramientas nuevas en el conector: `crear_cliente`, `cambiar_cliente` (archivar, no borrar), `crear_sede`,
+`cambiar_sede`, `quitar_sede`, `crear_contrato`, `cambiar_contrato`, `cerrar_contrato`, `reabrir_contrato`,
+`apuntar_gasto` y `cambiar_contrato_del_gasto`. Por la puerta delegada de `customers` que ya está en prod: solo cambia
+`assistant`. Sin migraciones. Probadas en staging de punta a punta en Cuidama por la URL pública (cliente con
+dirección resuelta, todas las sucursales, sede, dos contratos, gasto con base y total, mover el gasto, cerrar,
+reabrir, quitar sede, archivar); datos de prueba borrados y conexión revocada. 249 pruebas del conector.
+
+Mismo día: el `docker-compose.yml` de prod que había en develop no tenía `customers` (llegó a prod por hotfix);
+llevado a develop `9266973` y staging `73945e8`. Staging reconstruido entero desde la rama (15 servicios
+recreados; `analytics`, `merlin` y `backoffice` ya estaban al día); migraciones hasta la 070 aplicadas en
+`encodebiz_staging`.
+
+| # | Paso | Estado |
+|---|---|---|
+| 85.1 | Cherry-pick de `d302db8` sobre `main`, `[skip ci]`, reconstruir solo `assistant` | PENDIENTE (OK de Jose) |
+| 85.2 | ChatGPT: las once salen retenidas en el escaneo diario hasta revisión (escriben); paquete 1.0.18 con ficha y casos | PENDIENTE |

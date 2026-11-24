@@ -74,6 +74,8 @@ La API de tareas pasa a un microservicio dedicado (`tasks`, puerto 3006). Firest
 | [TDR-006](./tdr/TDR-006-borrado-de-tarea.md) | Borrado de una tarea y de todo lo que cuelga de ella | — | Diseño aprobado |
 | [TDR-007](./tdr/TDR-007-adjuntos-en-la-tarea.md) | Adjuntos en la tarea: un recurso que no es evidencia | — | Diseño aprobado |
 | [TDR-008](./tdr/TDR-008-descripcion-y-casillas-marcables.md) | Descripción con casillas que marca el trabajador, con rastro en el historial | — | Diseño aprobado |
+| [TDR-009](./tdr/TDR-009-incidencia-en-la-tarea.md) | Marcar una tarea como incidencia y avisar a operaciones | — | En revisión |
+| [TDR-010](./tdr/TDR-010-puestos-y-complementos.md) | Varios puestos por persona y complementos en la tarea y el turno; informe de tareas por persona con el coste desglosado | — | En develop, API y panel (24-nov-2026); falta staging |
 
 ---
 

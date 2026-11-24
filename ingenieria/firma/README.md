@@ -418,3 +418,132 @@ PDF) y **no toca el inventario**. Diseño en
 
 Atestación del chip (el formato ya reserva el campo), acta de firma en PDF, «no conforme»
 en el documental, y el ajuste por empresa para exigir el nivel 1.
+
+---
+
+## Siguiente fase de la app: confirmar un documento con la contraseña cuando el móvil no puede firmar (2026-11-12)
+
+> Jose, 2026-11-12: «documéntalo para la siguiente fase de la app». Viene de Ayudarte, que pidió:
+> «¿hay opción de que en vez de firma se les habilite meter alguna clave?».
+
+### De dónde sale
+
+Ayudarte (prod, `OPnlEi3npBbLDyKa4wTj`), 11 y 12 de noviembre: «las chicas tienen patrón de
+bloqueo en el móvil pero no pueden firmar». Móviles: Redmi Note 13, Galaxy A35 5G (SM-A356) y
+Galaxy A54, sin huella registrada «por el tipo de trabajo». Lo que se vio:
+
+- **Hasta ahora, sin clave el documento se confirmaba sin firma y sin avisar.** La clave solo se
+  creaba en el login o al arrancar en frío. Quien ponía el patrón después seguía sin clave, y
+  `_confirmAck` mandaba el acuse pulsado. Al servidor le llega un acuse válido, así que no queda
+  error en ningún contenedor.
+- **Arreglado en la app el 2026-11-11** (rama `feat/firma-clave-al-confirmar`, `12b7b76`):
+  `SignAcknowledgement.prepareKey` crea y registra la clave al confirmar. Sin bloqueo de pantalla
+  sale `ScreenLockRequiredDialog`, con los pasos de Android y de iOS, la comprobación al volver a
+  la app y «Confirmar sin firma».
+- **Los modelos no son el problema.** Los tres llevan Android 13 o 14: admiten claves que se
+  desbloquean con el patrón (Android 11+). `biometric_signature` solo cuenta como biometría la
+  **fuerte** (`BIOMETRIC_STRONG`). El desbloqueo facial de Samsung y Xiaomi es débil, no cuenta, y
+  la app cae a `device_credential`, que es lo correcto. Comprobado leyendo el plugin 13.3.0
+  (`BiometricSignaturePlugin.biometricAuthAvailable`, `KeyManager.configurePerOperationAuth`).
+- **Lo que no cuadra está en los datos, sin causa establecida.** Leído en prod el 12-nov (solo
+  lectura):
+  - 19 personas activas sin certificado.
+  - 17 de ellas sin ningún dispositivo en `notification_tokens/{e}/devices` y sin fichajes en
+    10 días.
+  - Jose Tomás Rodriguez se registró a las 13:06 de Madrid como `no_screen_lock`. Si ese móvil
+    tiene patrón, la detección (`local_auth.isDeviceSupported`) falla en ese modelo. Pendiente
+    de confirmar con el cliente: quiénes son las afectadas y qué ven al confirmar.
+
+**Corregido el mismo 12-nov, con los nombres que dio el cliente** (Pilar Villalobos, Rosa María
+Fracchia y Mónica Esquives; lectura de prod):
+
+- Las tres **tienen clave de nivel `biometric`**: el móvil dice que hay una huella registrada.
+- Una clave `biometric` se crea solo con `AUTH_BIOMETRIC_STRONG` y se firma con
+  `allowDeviceCredentials: false`, así que **el patrón no se ofrece**.
+- Si la persona no usa esa huella, la firma falla (`SignFailed`) y `_confirmAck` manda el acuse
+  **pulsado, sin avisar**. Se ve en los datos:
+  - Pilar pasó de `device_credential` (22-oct) a `biometric` (26-oct), y desde entonces sus 8
+    acuses son `tap`, incluido uno de hoy dos minutos después de una clave nueva;
+  - Mónica firmó con huella el 4-nov y el 5-nov ya fue `tap`;
+  - Rosa María no ha confirmado ninguno, y su clave se rehízo el 11-nov porque cambiaron las
+    huellas.
+- Las 17 personas sin dispositivo no son las afectadas.
+
+**Salida inmediata** con la app publicada: borrar las huellas del móvil, dejar el patrón y
+arrancar la app de cero, con lo que se crea una clave `device_credential` nueva. **Arreglo en la
+app, antes que la contraseña:**
+
+- crear siempre la clave con `useDeviceCredentials: true` (`AUTH_BIOMETRIC_STRONG |
+  AUTH_DEVICE_CREDENTIAL`) y firmar con `allowDeviceCredentials: true`, para que la huella o el
+  patrón valgan los dos. Sigue siendo firma avanzada: la clave está en el chip y bajo el control
+  de la persona;
+- que un `SignFailed` deje de confirmar sin firma en silencio: avisar y ofrecer la contraseña (lo
+  de abajo).
+
+Con esto, la contraseña queda para pocos casos.
+
+### Qué se hace
+
+La escalera del §Qué es, nivel 3, que ya tiene la entrega de equipos, llevada al acuse de
+documentos:
+
+1. **Nivel 1 o 2, firma del móvil:** como hasta ahora, con `prepareKey` primero.
+2. **Si el móvil no puede firmar** (sin bloqueo de pantalla, `create_failed_*`, clave invalidada
+   o `not_supported`): la persona **escribe la contraseña de su cuenta**. La app vuelve a
+   autenticarla en Firebase (`reauthenticateWithCredential`, como `confirmWithPassword` del
+   inventario) y manda el acuse con `method: "password"` y el token recién emitido.
+3. **«Confirmar sin firma» deja de ser la salida normal.** Queda solo para quien no tiene
+   contraseña (cuentas de Google o Apple: `AckOutcome.noPasswordAccount` en el inventario). Si
+   se mantiene o no para el resto lo decide Jose.
+4. El diálogo de bloqueo de pantalla se queda: primero se ofrece activar el patrón y firmar con
+   el móvil. La contraseña es la salida, no el camino principal.
+
+### Lo que necesita el servidor (documental)
+
+Hoy `AcknowledgeDocument` solo conoce `tap`, `biometric_signature` y `device_credential`. Falta:
+
+- Aceptar `method: "password"`. Exigir que el token sea de un inicio de sesión reciente, con
+  `auth_time` dentro de la ventana, igual que `REAUTH_WINDOW_SECONDS` del inventario; si no, 401
+  `documents/reauthentication_required`.
+- Guardar lo que da valor a la prueba: `method: "password"`, `verified: true` (la verificación
+  es la reautenticación, no una firma), `auth_time`, `documentId`, `version` y **`contentSha256`
+  del documento confirmado**, más el dispositivo. Sin el hash pierde buena parte de su valor:
+  hay que poder demostrar qué documento se confirmó.
+- Escribir la misma evidencia en Storage que la firma (`signatures/evidence/...`), con su
+  `sha256`, para que no dependa de Firestore.
+- **No hay PDF firmado por dentro** con este método: sin clave no hay firma PAdES. El acuse queda
+  junto al documento, como los que no son PDF.
+
+### Lo que se ve
+
+- **Panel**, ficha del documento → confirmaciones: el chip «Contraseña», distinto de «Firmada y
+  verificada» y de «Pulsada». Ya existe la etiqueta, falta comprobar que el documental la recibe.
+- **Acta:** dice el método y, para la contraseña, «reautenticación con la contraseña de la
+  cuenta», con el hash del documento y la hora.
+- **App:** textos según lo que hace la persona («Escribe la contraseña de tu cuenta para
+  confirmar que eres tú»). Ya existen para el inventario (`myEquipmentPasswordHelp`,
+  `myEquipmentNoPasswordAccount`). En todos los idiomas de los `.arb`.
+
+### Valor legal
+
+Es **firma electrónica simple** (eIDAS art. 25): válida, y no se le pueden negar efectos solo
+por ser electrónica, pero si se discute la tiene que probar quien la presenta. La del móvil es
+**avanzada** (art. 26): atada a la persona, al dispositivo bajo su control y al contenido.
+
+- Para el recibí de una nómina, la contraseña con buena evidencia basta.
+- En una amonestación negada por el trabajador pesa menos que la del móvil.
+
+Por eso el panel y el acta tienen que decir siempre qué método fue. Lo que valga en un conflicto
+concreto lo dice un abogado, no la herramienta.
+
+### QA
+
+- En el catálogo de firma, un FIR nuevo:
+  - acuse de documento con `method: password` y token reciente → `verified`, con `contentSha256`
+    en la evidencia;
+  - token viejo → 401 `documents/reauthentication_required`;
+  - el trabajador no puede pedir el acta.
+- En móviles reales:
+  - un Android sin bloqueo (el caso de Ayudarte);
+  - uno con solo patrón, que debe firmar con el patrón y no pedir contraseña;
+  - una cuenta de Google, sin contraseña.

@@ -203,6 +203,9 @@ Ninguna bloquea el arranque. Se cierran cuando toquen, con un defecto declarado:
 
 1. **Moneda.** El importe sale sin moneda: la tarifa es un número. Defecto: el front pinta la
    moneda de la entidad; si la entidad no la tiene configurada, pinta el número sin símbolo.
+   **Cerrada el 2026-11-24** tal como estaba escrita: [ADR-0003 — La moneda es de la
+   empresa](../adr/0003-la-moneda-es-de-la-empresa.md) (`Entity.currency`, ISO 4217; EUR a
+   las existentes por backfill).
 2. **Vista por sucursal del hoy.** El contrato admite `branchId`; si la portada ofrece el
    selector en v1 o sólo el total con desglose. Defecto: total con desglose por centro y el
    selector en el «ver más».

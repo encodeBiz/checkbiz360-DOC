@@ -51,6 +51,8 @@ producción: el `proximo-pase-back.md` lleva una línea con las herramientas que
 | Funcionalidad (en staging) | En el conector | Fase |
 |---|---|---|
 | Clientes y sedes (consulta) | Entra: `ver_clientes`, `ver_cliente` | A |
+| Clientes, sedes y contratos (alta y cambios; archivar y cerrar, no borrar) | Entra: `crear_cliente`, `cambiar_cliente`, sedes, `crear_contrato`, `cambiar_contrato`, `cerrar_contrato`, `reabrir_contrato` | E |
+| Gastos externos del contrato | Entra: `apuntar_gasto` y `cambiar_contrato_del_gasto` | E |
 | Contratos, horas planificadas y rentabilidad | Entra: `ver_contratos`, `ver_contrato` | A |
 | Análisis del cliente (`analytics /customers/:id/overview` e `insights`) | Entra: `analisis_cliente` | A |
 | Gastos pendientes de aprobar | Entra: `ver_gastos_pendientes`, `aprobar_gasto` y `rechazar_gasto` con confirmación | B |
@@ -90,6 +92,16 @@ El orden va por uso, de lo que más se pregunta a lo que menos:
   delegada de `inventory`, que hoy solo deja pasar GET, abre únicamente esas tres rutas.
   Entregar, recibir, traspasar y ajustar stock siguen fuera: los confirma quien tiene el
   material delante, y el inventario conserva un solo camino de escritura para cada hecho.
+- **Fase E, gestionar la cartera** (acordada con Jose el 2026-11-21: «hay que poder gestionar
+  clientes y contratos […] para poder gestionar todo el círculo»). Con A y B el administrador
+  puede consultar la cartera y decidir los gastos, pero no darla de alta ni mantenerla. Entran
+  las escrituras de clientes, sedes, contratos y gastos externos que ya ofrece la API de
+  `customers`, por la puerta delegada que ya existe (§5): no hace falta tocar el servicio.
+  Todas con vista previa y `confirmacionId`. Dos decisiones de Jose (21-nov):
+  - **No se borra por el conector:** el cliente se archiva y el contrato se cierra. Borrar se
+    queda en el panel, como con las personas. Una sede sí se quita, porque es un dato del
+    cliente y no un registro con historia.
+  - **El PDF del contrato sigue sin pasar por el conector:** se sube y se ve en el panel (§6.2).
 
 ### 4.1 Las herramientas
 
@@ -111,6 +123,13 @@ Todas las de lectura llevan `LEE`. Las de escritura llevan `ESCRIBE` y `confirma
 | `ver_stock` | `empresaId`, `almacenId?`, `soloBajoMinimo?` | Stock por artículo, mínimos y descuadres | `inventory /stock/overview`, `/stock/discrepancies` |
 | `ver_pedidos` | `empresaId`, `estado?` | Pedidos con sus equipos, quién se los lleva y quién los trae | `inventory /orders` |
 | `ver_fuera_del_almacen` | `empresaId`, `buscar?` | Equipos y material fuera, con quién los tiene y desde cuándo | `inventory /materials/outside` |
+| `crear_cliente` (E) | `empresaId`, `nombre`, `tipo`, `direccion?` y `radioMetros?`, `referencia?`, `sucursalIds?` o `todasLasSucursales?`, `mostrarNombre?`, `confirmacionId?` | Vista previa y, con el id, el cliente | `customers POST /` |
+| `cambiar_cliente` (E) | `empresaId`, `clienteId`, los mismos campos, `estado?` (activo o archivado), `confirmacionId?` | Antes y después; las sucursales van por su propia ruta | `customers PATCH /:id`, `PUT /:id/branches` |
+| `crear_sede`, `cambiar_sede`, `quitar_sede` (E) | `empresaId`, `clienteId`, `sedeId?`, dirección o sucursal, `confirmacionId?` | Vista previa y la sede | `customers POST/PATCH/DELETE /:id/sites` |
+| `crear_contrato`, `cambiar_contrato` (E) | `empresaId`, `clienteId` o `contratoId`, `titulo`, `desde`, `hasta?`, `importe?`, `horasPrevistas?`, `notas?`, `confirmacionId?` | Vista previa y el contrato | `customers POST /:id/contracts`, `PATCH /contracts/:id` |
+| `cerrar_contrato`, `reabrir_contrato` (E) | `empresaId`, `contratoId`, `confirmacionId?` | Vista previa y el estado | `customers POST /contracts/:id/close`, `/reopen` |
+| `apuntar_gasto` (E) | `empresaId`, `contratoId`, `concepto`, `importe` (base) o `total` con IVA, `fecha?`, `confirmacionId?` | Gasto externo del contrato apuntado por el administrador, sin ticket | `customers POST /contracts/:id/expenses` |
+| `cambiar_contrato_del_gasto` (E) | `empresaId`, `gastoId`, `contratoId` o «ninguno», `confirmacionId?` | Antes y después | `customers PATCH /expenses/:id/contract` |
 
 ## 5. Las puertas
 

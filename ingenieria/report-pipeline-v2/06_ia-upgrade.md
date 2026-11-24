@@ -254,3 +254,60 @@ Genera:
 | Narrativa generada | No | Sí (reglas) |
 | Preparado para LLM | No | Sí |
 | Datos mínimos para activar tendencias | — | 7 días de snapshots |
+
+---
+
+## Prompts de Merlin: lo observado, no la causa (2026-11-09)
+
+Medido en staging con el modelo real (SaludStart, «Por tareas»), el prompt de sucursal pedía
+«DIAGNOSE root causes» y el modelo afirmaba cosas que no estaban en los datos: «2 ciclos
+esperados» al día en Badalona, una variabilidad que «ha aumentado», y en Barcelona «el
+problema es de planificación, no de ejecución». Dos de doce titulares de persona repetían el
+cuadrante («AT-RISK») pese a prohibirlo. Regla del producto, sin excepción: **nombrar lo
+observado, no la causa**; si la causa no está establecida, el relato lo dice.
+
+Lo que cambió (rama `fix/merlin-prompts-observado`, `services/merlin`):
+
+- **`promptBuilders/commonVocabulary.ts`** es la única fuente de lo que todos los builders le
+  dicen al modelo: la regla (solo cifras del prompt; sin «esperado», sin tendencias fuera de
+  TRAYECTORIA, sin «porque»; acciones como comprobar/preguntar/mirar; lo que va en línea con
+  el plan no se arregla; sin inventario de cifras; conceptos en el idioma de salida, nunca la
+  etiqueta inglesa), el titular sin etiquetas (cuadrante, perfil ni sus traducciones), el
+  glosario de lo que mide cada cifra, el glosario de cuadrantes con la regla que decide cada
+  uno (GHOST = sin datos para clasificar, no «presente y sin valor»), las etiquetas correctas
+  de la trayectoria, `locale ?? lang ?? "es"` con pt, y la **autocomprobación** que cierra cada
+  prompt de sistema (cada cifra tiene que estar en los datos; la única excepción es la
+  diferencia simple con el plan en su unidad). La salida del modelo no se recorta ni se
+  parchea: `interpretBranches` ya no corta por palabras.
+- **`promptBuilders/patternSnapshot.ts`**: una sola foto del patrón para sucursal, persona,
+  la propia persona y las comparaciones. Cada campo con el nombre de lo que mide, comprobado
+  en `fichaje/helper.ts` y `fichaje/employee.ts`: `reliability` es **confianza del dato**
+  (madurez × calidad del registro), no «fiabilidad de asistencia»; `efficiencyIndex` solo con
+  plan y como «trabajado frente a planificado» (sin plan es calidad del dato);
+  valoración siempre en x/5; `promotionScore`, `skillLevel`, `costTrend`, `costCV` y el coste
+  **no entran en ningún prompt**. Con audiencia «employee» tampoco entran confianza del dato,
+  distancia a la valla, valoraciones, rechazos ni críticas.
+- **Sucursal y persona (dirección)**: sin diagnóstico ni umbrales «normales» (7,5-9 h) ni guía
+  causal del perfil (`understaffed → headcount`). El cuadrante llega aparte con **la regla del
+  clasificador que lo decidió** (`profileReason`, TDR-009) y la orden de explicarlo con ella,
+  no ponerlo en el titular y decir si las cifras no enseñan nada que arreglar. Ningún id de
+  persona, centro o empresa viaja al modelo.
+- **Feedback a la propia persona**: ya no manda `JSON.stringify(metrics)` (coste por hora,
+  cuadrante, `promotionScore`, distancia a la valla); solo lo que puede ver de sí misma, en
+  segunda persona, sin «riesgo» ni etiquetas.
+- **Comparaciones** (sucursales, personas): la misma foto por participante, sin JSON crudo,
+  sin «mejor» ni «peor». **Panel**: la regla y la autocomprobación; la valla «merece
+  comprobarse», no «es la causa».
+- **Trayectoria**: no llegan los compuestos internos (`costEfficiency`, `costVariance`,
+  `efficiencyIndex`, `promotionScore`): el modelo narraba «la eficiencia de coste empeora».
+- Caché a `v4` / `panel-v4`; `maxOutputTokens` 6000 → 10000 (medido razonamiento hasta 4928
+  y salida total 5371). `employeeInterpret.builder.ts` (muerto, JSON crudo) se quita.
+- CLI `modules/cli/prompt-real.cli.ts`: inicializa Firebase (moría al cargar), `--feedback`,
+  `--locale`, `--llamar N` (prueba con el modelo real sin escribir nada).
+
+Tests: `test/promptsObservado.test.ts` (regla en todos los builders, titular, vocabulario,
+borde, feedback, idioma, comparaciones, panel) y `test/relatoPorTareas.test.ts` adaptado.
+
+Abierto: el titular «sin etiqueta» y «sin causas» se verificó con el modelo en staging
+(ver informe de la rama); las etiquetas de la trayectoria para `reliability` las pone ahora
+`trendNarrative.ts` según la base del paquete y el glosario las nombra.

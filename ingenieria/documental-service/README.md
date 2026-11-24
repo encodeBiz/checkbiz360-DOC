@@ -58,6 +58,7 @@ La API documental pasa a un microservicio dedicado (`documents`, puerto 3007). F
 | [ADR-004](./adr/ADR-004-auth-solo-firebase-token.md) | Auth **solo Firebase ID token** (sin staff JWT, a diferencia de tasks) | Aceptado |
 | [ADR-005](./adr/ADR-005-notificaciones-reutilizadas-de-shared.md) | Reutilizar el framework de notificaciones ya extraído en el port de tasks | Aceptado |
 | [ADR-006](./adr/ADR-006-indice-de-busqueda-firestore.md) | Conservar el índice de búsqueda en Firestore (`searchIndex`) | Aceptado |
+| [ADR-0002 (plataforma)](../adr/0002-el-panel-demuestra-que-es-el-panel.md) | El canal app/panel se demuestra con un código firmado del panel, no con el `User-Agent`. Complementa ADR-004 | Aceptado |
 
 ## Technical Design Records (TDRs)
 

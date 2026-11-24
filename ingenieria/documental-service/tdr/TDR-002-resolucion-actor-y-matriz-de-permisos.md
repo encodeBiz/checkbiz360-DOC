@@ -96,6 +96,13 @@ unos 25 minutos la gestión documental del panel salió **vacía** a owner y adm
 cliente. Corregido en #259. La lección: el panel no habla con la API desde el navegador, y
 cualquier heurística sobre el cliente tiene que contar con el servidor de Vercel.
 
+> **11-nov-2026: esta fase tiene ya su ADR y su TDR propios**, porque el canal salió de
+> `documents` y vive en `@encodebiz/shared` (también lo usa `tasks`):
+> [ADR-0002](../../adr/0002-el-panel-demuestra-que-es-el-panel.md) y
+> [canal-app-panel/TDR-001](../../canal-app-panel/TDR-001-prueba-de-panel.md). **Mandan esos.**
+> Lo de abajo queda como registro de lo decidido el 06-nov; las dos precisiones (cabecera
+> `v1.<ventana>.<código>` y paso C por variable `PANEL_CHANNEL_STRICT`) están explicadas allí.
+
 **Fase 2 — el panel demuestra que es el panel (DECIDIDO con Jose el 2026-11-06; tarea del
 10-nov en CheckBiz360).** La idea de Jose: «enviar el token de 2FA y verificarlo en el servidor
 solo para cuando es node». Es decir, el que tiene que demostrar algo es el **servidor del panel**,

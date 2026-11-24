@@ -78,3 +78,45 @@ Dispersión de la entrada contra el plan: entre 2,5 y 12,6 min. La prueba
   Quien lea `profileType` del documento, y no de esta ruta, sigue viendo `maverick`.
 - `skillLevel` y `promotionScore` llevan dentro la variabilidad del reloj (se calculan en el
   trigger). Las reglas que los usan no se recalculan aquí.
+
+## Merlin: el relato «Por tareas» (09-nov)
+
+Con la vista contra el plan, el relato de SaludStart seguía siendo falso: «jornadas de 1,5 h»,
+«0 % en tareas críticas», «1,0★», «cambió a understaffed» y una persona `anchor` titulada
+«THE MAVERICK». Rama `fix/merlin-relato-por-tareas` (encodebiz-api):
+
+- **Un ciclo no es una jornada.** Merlin lee del espejo la jornada real: la suma de los ciclos de
+  cada persona y día (`fetchWorkBase.ts`, `computeWorkday` en `domain/conBase.ts`), con lo
+  planificado del día y el reparto por día de la semana. El prompt cuenta la jornada real y, aparte,
+  cuántas tareas y cuánto dura cada una. En «Por tareas» sin jornada real solo se habla de la
+  duración por tarea. La banda de 7,5-9 h se aplica a la jornada, nunca a un ciclo.
+- **Señales sin base, fuera del prompt.** Tareas críticas y valoraciones se cuentan en el espejo
+  (`tasks_raw`, `task_ratings_raw`, 90 días). Sin críticas o sin valoraciones, la señal es `null` y
+  no entra. `branchAvgRating` no lo escribe ningún trigger: era siempre el 0 inicial, que
+  normalizado son 1★. La de persona se pinta en estrellas (antes «0/5» con la escala 0-1).
+- **Perfil del reloj, fuera.** Con base `plan`, ni el `profileType` guardado ni la trayectoria
+  medida con el reloj llegan al modelo: se callan los cambios de perfil, hora de entrada/salida, su
+  consistencia y sus saltos fechados (`trendWithBase`). Además la serie de una persona sin sucursal
+  mezclaba cada día su patrón global y el de cada sucursal (`fetchPatternSeries` de `shared`):
+  83 «días» en 30 y dos cambios de perfil al día. Ahora es `branch_id IS NULL`.
+- **El cuadrante lo decide el servidor** (`classifyQuadrant`, contra el plan) antes de llamar al
+  modelo, y se le pasa: titular y `clean.quadrant` ya no discrepan. El titular ya no lleva la
+  plantilla «[QUADRANT] — [Title]».
+- **Relatos en blanco.** Con esa plantilla el modelo se atascaba en el hueco de la raya
+  escribiendo `\r\n` hasta agotar `max_output_tokens` (dos titulares con cientos de saltos y, en los
+  tres vacíos, JSON cortado). Reproducido en 1 de 12 llamadas con el prompt viejo; 0 de 12 con el
+  nuevo. El renderer ya no parsea una respuesta `incomplete` ni un texto que no es JSON: falla con
+  el motivo y el consumo, que queda en el `reason` del análisis.
+- La caché pasa a `promptVersion: "v3"` (sucursal y persona) para no servir siete días el relato
+  viejo.
+
+Queda en el clasificador de `services/firebase_sdk` el `profileType` guardado, calculado con el
+reloj: Merlin ya no lo usa con base `plan`, pero sigue escribiéndose y lo leen otras pantallas.
+
+## Continuación (09-nov)
+
+El `profileType` guardado por el trigger, el perfil de la heurística y el cuadrante de Merlin
+salen desde el 2026-11-09 de **un solo clasificador** en `shared`, que lee la base de tiempo del
+propio patrón (`timingBasis`, `planTiming`, acumulados por el trigger en `planWindow` sin
+Postgres). Diseño, tabla de reglas y resultado con SaludStart en
+[TDR-009](TDR-009-clasificador-unico.md).

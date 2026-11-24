@@ -278,3 +278,66 @@ a saas.encodebiz.com y ninguno necesita variables ni despliegue del back.
   conservación y protección de datos. Solo se cierra con «Entendido». Se guarda en el
   `localStorage` del onboarding (`dataNoticeAt`), así que sale una vez por navegador. También
   está en `develop` (`7e6ce526`).
+
+## Contrato y tarea con ida y vuelta, y «Sin contrato» de verdad — PENDIENTE; en `develop` el 2026-11-11 (back §67)
+
+Va con la cartera de clientes (back §50.7) y **después** de `customers` del back §67.1.
+
+- `56b3146e`: «Tareas (n)» en la ficha del contrato, de 5 en 5 y de la más reciente, con enlace a
+  cada tarea. En la tarea, el contrato enlaza a la ficha del cliente con ese contrato abierto.
+  - El proxy (`serverBackendProxy.ts`, `checkinbiz_customers_handler`) deja pasar
+    `/contracts/{id}/tasks`.
+  - Sin variable nueva en Vercel: usa `NEXT_BACKEND_URI_CHECKINBIZ_CUSTOMERS_HANDLER` (§50.6 del
+    back).
+- `8f7ca749`: el desplegable de contrato de la tarea sale con un solo contrato, y «Sin contrato»
+  se guarda.
+- `c4add60b` con `9c6df608`, `256d96b3`, `cd4d18a1` y `8c277e76`: la ficha del contrato con el
+  diseño nuevo, el margen legible y los avisos explicados. No dependen del back.
+
+**Si el panel sube antes que `customers`:** el apartado «Tareas» del contrato dice «No se han
+podido cargar las tareas». Lo demás funciona.
+
+**Prueba:** la de back §67.3, desde el panel.
+
+## Cliente disponible en todas las sucursales — EJECUTADO el 2026-11-17 (#160, merge `ebd64e3`; Vercel Production `success` 12:31 UTC); en `develop` el mismo día (back §76)
+
+- Rama `hotfix/cliente-todas-las-sucursales` (`5a92853c`), desde `main`; en `develop` como `254c4e47`.
+- Check «Disponible en todas las {sucursales}» en el alta y en «Editar sucursales», con su aviso; «Todas las
+  {sucursales}» en lista y ficha; al subir un documento a un cliente general se elige Plantilla o
+  Administración. Textos en los 5 idiomas.
+- Sin variable nueva en Vercel.
+
+**Orden:** después de back §76.2. **Si el panel sube antes:** ver back §76.4.
+
+**Prueba:** en local contra staging, con navegador y sesión de propietario en la empresa de QA: las cinco
+pantallas bien. Falta repetirla en producción con una empresa de prueba.
+
+## Editar cliente: sus sucursales en el formulario — EJECUTADO el 2026-11-17 (#161, merge `41627878`; Vercel Production `success` 12:54 UTC; orden de Jose: «bájalo a prod»); en `develop` el mismo día
+
+- Sigue a #160. Jose lo vio en producción: «al editar no me deja editar sucursales ni lo nuevo». «Editar cliente»
+  solo las enseñaba en el alta; desde la lista no se podían cambiar.
+- Rama `hotfix/cliente-editar-sucursales` (`697d0f62`), desde `main`; en `develop` como `acc9a62c`. Solo panel.
+- Probado en local contra staging, guardando de verdad (12 comprobaciones). En producción no se probó con sesión.
+
+## Calendario de tareas: el cliente en el resumen lateral — EJECUTADO el 2026-11-17 (#162, merge `4d013019`; Vercel Production `success`; orden de Jose: «bájalos si es seguro»); en `develop` el mismo día (back §77)
+
+- Rama `hotfix/calendario-tarea-cliente` (`7adb6561`), desde `main`; en `develop` como `fb34bfcd`.
+- Fila «Cliente» con el nombre, que abre su ficha. Sin variable nueva en Vercel.
+- **Orden:** después de back §77.2, y así se hizo. La comprobación «Vercel» de la PR sale en rojo como en #160 y #161 (es la vista previa); la de producción salió bien.
+- Probado en local contra staging con navegador: con cliente, sin cliente y el enlace.
+
+## Inicio: solicitudes e incidencias sin atender en las alertas — EJECUTADO el 2026-11-17 (#163, merge `737efa83`; Vercel Production `success`; orden de Jose: «sí»); en `develop` el mismo día (back §78)
+
+- Rama `feat/alertas-pendientes-en-panel` (`7c8c13a3`), desde `develop`; en `develop` como `b47e269f`.
+- Dos alertas nuevas en «Requiere atención», `requests_pending` e `issues_open`, que llevan a su pestaña de Incidencias. Textos en los cinco idiomas. Sin variable nueva en Vercel.
+- **Orden:** después de back §78.2. Si el back sube antes, Inicio enseña la clave en vez del texto hasta que suba esto.
+- Compila; sin probar en navegador.
+
+## Eje de tareas: Inicio, Análisis y fichas de sucursal y empleado — EJECUTADO el 2026-11-18 (#164, merge `5de91b13`; Vercel Production `success`; orden de Jose: «up to prod»); en `develop` el mismo día (`abb981e1`); back §82
+
+Tarjeta «Tareas del mes» en Inicio, tarjeta de cumplimiento de tareas en Análisis (bajo la de ubicación) con
+columna Tareas en el cruce, y la misma tarjeta en la ficha de sucursal y de empleado (mes en curso: las fichas
+no tienen selector de mes). Todo por `checkinbiz_panel_overview` con `sections=tasks`: sin variables nuevas en
+Vercel. Sin mirar en pantalla antes de subir; de y pt sin revisión nativa.
+
+## Eje de tareas: cajón «sin plazo válido» y 15 min de margen en las ayudas — EJECUTADO el 2026-11-18 (#165, merge `3f9d3dd9`; Vercel Production `success`; orden de Jose: «sí, arregla y sube en hotfix»); en `develop` el mismo día (`08406990`); back §83

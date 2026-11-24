@@ -144,6 +144,11 @@ mueva los adjuntos existentes.
 contemplar horas por clientes; vamos a sacar un MVP de clientes y después agregamos subcapas, si
 no no vamos a salir del hueco.»
 
+**Reabierta en un punto el 2026-11-17:** `scope: "entity"` vuelve a la pantalla como el check
+«Disponible en todas las sucursales», por cliente y apagado por defecto. Lo pidió Ayudarte, que
+tiene muchas sucursales. Diseño en [TDR-009](tdr/TDR-009-cliente-en-todas-las-sucursales.md).
+Lugares y dedicadas siguen fuera.
+
 **Por qué.** El fichaje nunca va sin sucursal pero sí puede ir sin tarea (horario por turnos), y
 en una sucursal con varios clientes no hay forma honesta de saber de quién fue cada hora fichada.
 Resolverlo exige bajar un nivel (lugares, dedicadas, o preguntar al fichar), y cada nivel es un
