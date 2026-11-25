@@ -17,8 +17,8 @@ Esto se hace en la ficha del documento, bloque **Lo que dice el contrato**. Solo
 ## Antes de empezar
 
 - El documento tiene que ser de tipo **Contrato**, estar asignado a **una persona** (ámbito *Empleado*) y ser un **PDF con texto**. Un PDF escaneado como imagen no se puede leer: el bloque lo dice y hay que rellenar la ficha a mano.
-- Para que proponga el convenio, la empresa necesita tener su **actividad** indicada (menú **Entidad**, *A qué se dedica tu empresa*) y, si procede, el convenio en el catálogo. Ver [Convenios colectivos](139-convenios-colectivos.md).
-- Si el oficio de la persona ya está en su **catálogo de puestos**, la lectura lo casa con él. Desde aquí no se crean puestos nuevos.
+- Para que proponga el convenio, su empresa tiene que haberlo referenciado antes: los convenios son de cada empresa. Ver [Convenios colectivos](139-convenios-colectivos.md).
+- Si el oficio de la persona ya está en su **catálogo de puestos**, la lectura lo casa con él. Si no está, al aplicar puede **crear el puesto** con el nombre que dice el contrato.
 
 ---
 
@@ -66,13 +66,13 @@ Lo que puede hacer:
 | Botón | Para qué |
 |---|---|
 | **Cambiar convenio** | Elegir otro de la lista de su empresa. Los que no tienen tablas todavía no se pueden elegir. |
-| **Cambiar fila** / **Elegir fila** | Elegir la categoría de la tabla si la propuesta no es la de esta persona, o si la lectura no supo cuál era. El diálogo enseña cada fila con su grupo, su nivel, su bloque y, si la tiene, la jornada completa de ese bloque. |
+| **Cambiar fila** / **Elegir fila** | Elegir la categoría de la tabla si la propuesta no es la de esta persona, o si la lectura no supo cuál era. El diálogo enseña cada fila con su grupo, su nivel, los puestos que el convenio adscribe a ese grupo, su bloque y, si la tiene, la jornada completa de ese bloque. |
 | **Escribir el precio a mano** | Dejar el convenio fuera y teclear el precio por hora usted. |
 | **Volver al convenio propuesto** | Deshacer los cambios. |
 
 Si cambia el convenio o la fila, el precio por hora propuesto deja de valer: **se recalcula al aplicar**, con la tabla elegida, y el bloque lo avisa.
 
-Cuando el catálogo no tiene convenio para este contrato, el bloque lo dice (*No hay convenio para este contrato en el catálogo*) y le ofrece **Elegir convenio** o **Referenciar otro convenio**. Si hay varios posibles, le pide que elija el que aplica. Mientras no haya convenio, el precio se calcula con la jornada máxima legal y queda marcado como estimado.
+Cuando su empresa no tiene convenio para este contrato, el bloque lo dice (*No hay convenio para este contrato en el catálogo*) y le ofrece **Elegir convenio** o **Referenciar otro convenio**, que abre el formulario de referenciar sin salir de la ficha. Si hay varios posibles, le pide que elija el que aplica. Mientras no haya convenio, el precio se calcula con la jornada máxima legal y queda marcado como estimado.
 
 ---
 
@@ -80,10 +80,10 @@ Cuando el catálogo no tiene convenio para este contrato, el bloque lo dice (*No
 
 El bloque **Aplicar a la ficha del empleado** pasa lo leído a la ficha de la persona:
 
-1. **Puesto del catálogo.** Si el oficio casa con un puesto de su catálogo, viene propuesto. Si no, elija uno o deje **Mantener el puesto que ya tiene**.
+1. **Puesto del catálogo.** Si el oficio casa con un puesto de su catálogo, viene propuesto. Si no, viene propuesto **Crear el puesto «…»** con el nombre que dice el contrato; también puede elegir otro del catálogo o dejar **Mantener el puesto que ya tiene**. El puesto nuevo nace solo con el nombre: su precio es el de la persona, no el del puesto, y si ya había uno igual salvo mayúsculas o tildes se usa ese.
 2. **Precio por hora (€).** Viene propuesto; puede corregirlo. Si va por convenio, aparece *según convenio*: lo calcula el servidor al aplicar.
 3. **Sucursales donde se aplica.** Si la persona está en varias, marque en cuáles. Cada fila enseña *lo que tiene ahora → lo que va a tener*.
-4. Pulse **Aplicar a la ficha** y confirme. La ventana enseña **Antes** y **Después**. El catálogo de puestos no se toca.
+4. Pulse **Aplicar a la ficha** y confirme. La ventana enseña **Antes** y **Después**. El catálogo de puestos solo cambia si se crea el puesto del contrato; los que ya existen no se tocan.
 
 A partir de ahí, esa persona cuenta en los costes con su nuevo puesto y su precio por hora en esas sucursales.
 
@@ -99,9 +99,9 @@ A partir de ahí, esa persona cuenta en los costes con su nuevo puesto y su prec
 
 **El precio por hora sale «Estimado» y no me cuadra.** Mire **Cálculo**: dice qué salario y qué jornada se han usado. Si el convenio no es el correcto, cámbielo; si la categoría no es la suya, cambie la fila; si prefiere su cifra, **Escribir el precio a mano**.
 
-**No hay convenio para este contrato.** Su empresa no tiene la actividad indicada, o el convenio no está en el catálogo. Indique la actividad en **Entidad** o referencie el convenio con el enlace al boletín. Ver [Convenios colectivos](139-convenios-colectivos.md).
+**No hay convenio para este contrato.** Su empresa no ha referenciado el convenio que cita el contrato. Pulse **Referenciar otro convenio** y dele el enlace al boletín o su PDF, sin salir de la ficha. Ver [Convenios colectivos](139-convenios-colectivos.md).
 
-**Las tablas son de un año anterior.** El catálogo tiene la tabla de 2025 y el contrato empieza en 2026. Se usa la más reciente que hay y se avisa. Cuando se publiquen las nuevas, refiéralas con el año nuevo.
+**Las tablas son de un año anterior.** El convenio tiene tablas hasta 2025 y el contrato empieza en 2026. Se usa la más reciente que hay y se avisa. Cuando el boletín publique las nuevas, referencie el convenio otra vez con ese documento: se añaden los años nuevos.
 
 ---
 

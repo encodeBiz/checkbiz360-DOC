@@ -17,8 +17,8 @@ Isto faz-se na ficha do documento, bloco **O que diz o contrato**. Só o veem e 
 ## Antes de começar
 
 - O documento tem de ser do tipo **Contrato**, estar atribuído a **uma pessoa** (âmbito *Funcionário*) e ser um **PDF com texto**. Um PDF digitalizado como imagem não pode ser lido: o bloco di-lo e é preciso preencher a ficha à mão.
-- Para que proponha a convenção, a empresa precisa de ter a sua **atividade** indicada (menu **Entidade**, *A que se dedica a sua empresa*) e, se for o caso, a convenção no catálogo. Ver [Convenções coletivas](139-convencoes-coletivas.md).
-- Se o ofício da pessoa já estiver no seu **catálogo de postos**, a leitura faz a correspondência com ele. A partir daqui não se criam postos novos.
+- Para que proponha a convenção, a sua empresa tem de a ter referenciado antes: as convenções são de cada empresa. Ver [Convenções coletivas](139-convencoes-coletivas.md).
+- Se o ofício da pessoa já estiver no seu **catálogo de postos**, a leitura faz a correspondência com ele. Se não estiver, ao aplicar pode **criar o posto** com o nome que o contrato diz.
 
 ---
 
@@ -80,10 +80,10 @@ Quando o catálogo não tem convenção para este contrato, o bloco di-lo (*Não
 
 O bloco **Aplicar à ficha do funcionário** passa o que foi lido para a ficha da pessoa:
 
-1. **Posto do catálogo.** Se o ofício corresponder a um posto do seu catálogo, vem proposto. Se não, escolha um ou deixe **Manter o posto que já tem**.
+1. **Posto do catálogo.** Se o ofício corresponder a um posto do seu catálogo, vem proposto. Se não, vem proposto **Criar o posto «…»** com o nome que o contrato diz; também pode escolher outro do catálogo ou deixar **Manter o posto que já tem**. O posto novo nasce só com o nome: o preço é da pessoa, não do posto, e se já havia um igual salvo maiúsculas ou acentos usa-se esse.
 2. **Preço por hora (€).** Vem proposto; pode corrigi-lo. Se for pela convenção, aparece *segundo a convenção*: calcula-o o servidor ao aplicar.
 3. **Sucursais onde se aplica.** Se a pessoa estiver em várias, marque em quais. Cada linha mostra *o que tem agora → o que vai ter*.
-4. Prima **Aplicar à ficha** e confirme. A janela mostra **Antes** e **Depois**. O catálogo de postos não é alterado.
+4. Prima **Aplicar à ficha** e confirme. A janela mostra **Antes** e **Depois**. O catálogo de postos só muda se se criar o posto do contrato; os que já existem não são alterados.
 
 A partir daí, essa pessoa conta nos custos com o seu novo posto e o seu preço por hora nessas sucursais.
 
@@ -99,9 +99,9 @@ A partir daí, essa pessoa conta nos custos com o seu novo posto e o seu preço 
 
 **O preço por hora sai «Estimado» e não me bate certo.** Veja **Cálculo**: diz que salário e que horário foram usados. Se a convenção não for a correta, mude-a; se a categoria não for a dela, mude a linha; se preferir o seu valor, **Escrever o preço à mão**.
 
-**Não há convenção para este contrato.** A sua empresa não tem a atividade indicada, ou a convenção não está no catálogo. Indique a atividade em **Entidade** ou referencie a convenção com a ligação ao boletim. Ver [Convenções coletivas](139-convencoes-coletivas.md).
+**Não há convenção para este contrato.** A sua empresa não referenciou a convenção que o contrato cita. Prima **Referenciar outra convenção** e dê-lhe a ligação ao boletim ou o seu PDF, sem sair da ficha. Ver [Convenções coletivas](139-convencoes-coletivas.md).
 
-**As tabelas são de um ano anterior.** O catálogo tem a tabela de 2025 e o contrato começa em 2026. Usa-se a mais recente que há e avisa-se. Quando as novas forem publicadas, referencie-as com o ano novo.
+**As tabelas são de um ano anterior.** A convenção tem tabelas até 2025 e o contrato começa em 2026. Usa-se a mais recente que há e avisa-se. Quando o boletim publicar as novas, referencie a convenção outra vez com esse documento: juntam-se os anos novos.
 
 ---
 

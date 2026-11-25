@@ -56,6 +56,16 @@ Three options are enabled or disabled per employee:
 
 Linking the employee to a branch also defines their **responsibility** at that site, their **job** and their **hourly wage**, which is what feeds the cost analysis, the reports and contract profitability. If the person does more than one kind of work at that site, they can have **several jobs**, each with its own rate, and one of them as the default. See [Several jobs for the same person](140-several-jobs-for-the-same-person.md).
 
+### The employment contract on the profile
+
+Under the profile header, one line says where the person's **employment contract** stands, because their hourly rate comes from it:
+
+- **No employment contract.** Press **Upload the contract**: the **Documents** tab opens with the upload already set to the *Contract* type and in the person's name. Once uploaded, it is read on its own.
+- **We are reading the contract…** / **The contract could not be read.** Press **Open the contract** to go to its record.
+- **The contract proposes an hourly rate that is not on the profile yet.** Press **Open the contract** and, on its record, **Apply to profile**.
+
+Once the rate is applied, the line disappears. Owners and administrators see it: they are the ones who can upload documents to the person. See [What the employment contract says](../05-document-management/138-what-the-employment-contract-says.md).
+
 ---
 
 ## Employee statuses

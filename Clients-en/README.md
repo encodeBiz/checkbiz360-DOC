@@ -186,7 +186,7 @@ Uploading, organising, acknowledging and controlling access to employment docume
 | [Delete documents and free up space](05-document-management/135-delete-documents.md) | Archive or delete, warnings and what remains of the document |
 | [Who sees each document](05-document-management/136-who-sees-each-document.md) | Administration, personal documents and the difference between panel and app |
 | [What the employment contract says](05-document-management/138-what-the-employment-contract-says.md) | Occupation, working hours, agreement and hourly rate read from the contract, with their quote, and how to apply them to the record |
-| [Collective agreements](05-document-management/139-collective-agreements.md) | Your company's list of agreements, the year of their tables and how to reference yours |
+| [Collective agreements](05-document-management/139-collective-agreements.md) | Your company's agreements, their tables per year with each group's positions, and how to reference yours with the gazette |
 
 ---
 

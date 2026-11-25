@@ -17,8 +17,8 @@ This is done in the document's record, **What the contract says** block. Only th
 ## Before you start
 
 - The document must be of the **Contract** type, assigned to **one person** (*Employee* scope) and be a **PDF with text**. A PDF scanned as an image cannot be read: the block says so and the record has to be filled in by hand.
-- For it to propose the agreement, your company needs its **activity** set (**Organisation** menu, *What your company does*) and, where applicable, the agreement in the catalogue. See [Collective agreements](139-collective-agreements.md).
-- If the person's occupation is already in your **job catalogue**, the reading matches it. No new positions are created from here.
+- For it to propose the agreement, your company must have referenced it beforehand: agreements belong to each company. See [Collective agreements](139-collective-agreements.md).
+- If the person's occupation is already in your **job catalogue**, the reading matches it. If it is not, when applying you can **create the position** with the name the contract gives.
 
 ---
 
@@ -80,10 +80,10 @@ When the catalogue has no agreement for this contract, the block says so (*There
 
 The **Apply to the employee record** block passes what was read to the person's record:
 
-1. **Position from the catalogue.** If the occupation matches a position in your catalogue, it comes proposed. If not, choose one or leave **Keep their current position**.
+1. **Position from the catalogue.** If the occupation matches a position in your catalogue, it comes proposed. If not, **Create the position “…”** comes proposed with the name the contract gives; you can also choose another one from the catalogue or leave **Keep their current position**. The new position is created with its name only: the rate belongs to the person, not to the position, and if there was already one identical except for capitals or accents, that one is used.
 2. **Hourly rate (€).** It comes proposed; you can correct it. If it is per agreement, *per agreement* appears: it is worked out when you apply.
 3. **Branches where it applies.** If the person is at several, tick which ones. Each row shows *what they have now → what they will have*.
-4. Press **Apply to profile** and confirm. The window shows **Before** and **After**. The job catalogue is not touched.
+4. Press **Apply to profile** and confirm. The window shows **Before** and **After**. The job catalogue only changes if the contract's position is created; existing ones are not touched.
 
 From then on, that person counts in costs with their new position and their hourly rate at those branches.
 
@@ -99,9 +99,9 @@ From then on, that person counts in costs with their new position and their hour
 
 **The hourly rate comes out as "Estimated" and it does not add up.** Look at **Calculation**: it says which salary and which hours have been used. If the agreement is not the right one, change it; if the category is not theirs, change the row; if you prefer your own figure, **Type the price by hand**.
 
-**There is no agreement for this contract.** Your company does not have its activity set, or the agreement is not in the catalogue. Set the activity in **Organisation** or reference the agreement with the link to the gazette. See [Collective agreements](139-collective-agreements.md).
+**There is no agreement for this contract.** Your company has not referenced the agreement the contract cites. Press **Reference another agreement** and give it the link to the gazette or its PDF, without leaving the record. See [Collective agreements](139-collective-agreements.md).
 
-**The tables are from an earlier year.** The catalogue has the 2025 table and the contract starts in 2026. The most recent one available is used and you are warned. When the new ones are published, reference them with the new year.
+**The tables are from an earlier year.** The agreement has tables up to 2025 and the contract starts in 2026. The most recent one available is used and you are warned. When the gazette publishes the new ones, reference the agreement again with that document: the new years are added.
 
 ---
 

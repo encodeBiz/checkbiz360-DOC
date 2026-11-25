@@ -53,7 +53,7 @@ Removing a collaborator deletes their permissions over the organisation and cann
 | **Billing email** | — | Address the invoices arrive at |
 | **Address** | Yes | Company address, chosen from the address search box. The coordinates and the **time zone** come from it. There is no separate city field: the normalised address already includes it |
 | **Currency** | — | The currency your company's amounts are in: hourly wages, supplements, contracts, expenses and costs. Chosen from the list. It decides how figures are formatted in the panel and which currency the task report declares in its header (*Currency: EUR*). It converts nothing: a single currency per company. Companies set up before the field existed already have it filled in: check that it is yours |
-| **Activity** (*What your company does*) | — | What the company does, chosen from the list or typed if it is not there (it stays *Under review* and you use it from then on). It decides which collective agreements your company sees and which agreement is proposed when an employment contract is read. See [Collective agreements](../05-document-management/139-collective-agreements.md) |
+| **Activity** (*What your company does*) | — | What the company does, chosen from the list or typed if it is not there (it stays *Under review* and you use it from then on). It is used for your sector's reports and analysis; collective agreements do not depend on it: they are the ones your company references (see [Collective agreements](../05-document-management/139-collective-agreements.md)) |
 
 ---
 

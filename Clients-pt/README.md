@@ -186,7 +186,7 @@ Carregamento, organização, confirmação de leitura e controlo de acesso aos d
 | [Eliminar documentos e libertar espaço](05-gestao-documental/135-eliminar-documentos.md) | Arquivar ou eliminar, avisos e o que fica do documento |
 | [Quem vê cada documento](05-gestao-documental/136-quem-ve-cada-documento.md) | Administração, documentos pessoais e diferença entre painel e aplicação |
 | [O que diz o contrato de trabalho](05-gestao-documental/138-o-que-diz-o-contrato-de-trabalho.md) | Ofício, horário, convenção e preço por hora lidos do contrato, com a sua citação, e como aplicá-los à ficha |
-| [Convenções coletivas](05-gestao-documental/139-convencoes-coletivas.md) | A lista de convenções da sua empresa, o ano das suas tabelas e como referenciar a sua |
+| [Convenções coletivas](05-gestao-documental/139-convencoes-coletivas.md) | As convenções da sua empresa, as suas tabelas por ano com os postos de cada grupo, e como referenciar a sua com o boletim |
 
 ---
 

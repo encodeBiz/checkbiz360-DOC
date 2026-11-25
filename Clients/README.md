@@ -186,7 +186,7 @@ Subida, organización, acuse de recibo y control de acceso a los documentos labo
 | [Eliminar documentos y liberar espacio](05-gestion-documental/135-eliminar-documentos.md) | Archivar o eliminar, avisos y lo que queda del documento |
 | [Quién ve cada documento](05-gestion-documental/136-quien-ve-cada-documento.md) | Administración, documentos personales y diferencia entre panel y app |
 | [Lo que dice el contrato de trabajo](05-gestion-documental/138-lo-que-dice-el-contrato-de-trabajo.md) | Oficio, jornada, convenio y precio por hora leídos del contrato, con su cita, y cómo aplicarlos a la ficha |
-| [Convenios colectivos](05-gestion-documental/139-convenios-colectivos.md) | La lista de convenios de su empresa, el año de sus tablas y cómo referenciar el suyo |
+| [Convenios colectivos](05-gestion-documental/139-convenios-colectivos.md) | Los convenios de su empresa, sus tablas por año con los puestos de cada grupo, y cómo referenciar el suyo con el boletín |
 
 ---
 

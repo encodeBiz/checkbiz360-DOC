@@ -56,6 +56,16 @@ Tres opciones se activan o desactivan por empleado:
 
 Al vincular al empleado con una sucursal se definen además su **responsabilidad** en ese centro, su **puesto** y su **salario por hora**, que es el que alimenta el análisis de costes, los informes y la rentabilidad de los contratos. Si la persona hace más de un trabajo en ese centro, puede tener **varios puestos**, cada uno con su precio, y uno predeterminado. Ver [Varios puestos para la misma persona](140-varios-puestos-por-persona.md).
 
+### El contrato de trabajo en la ficha
+
+Debajo de la cabecera de la ficha, una línea dice en qué punto está el **contrato de trabajo** de la persona, porque de él sale su precio por hora:
+
+- **Sin contrato de trabajo.** Pulse **Subir el contrato**: se abre la pestaña **Documentos** con la subida ya en tipo *Contrato* y a nombre de la persona. Al subirlo, se lee solo.
+- **Estamos leyendo el contrato…** / **El contrato no se pudo leer.** Pulse **Ver el contrato** para ir a su ficha.
+- **El contrato propone un precio por hora que aún no está en la ficha.** Pulse **Ver el contrato** y, en su ficha, **Aplicar a la ficha**.
+
+Cuando el precio ya está aplicado, la línea desaparece. La ven propietarios y administradores, que son quienes pueden subir documentos a la persona. Ver [Lo que dice el contrato de trabajo](../05-gestion-documental/138-lo-que-dice-el-contrato-de-trabajo.md).
+
 ---
 
 ## Estados del empleado

@@ -63,6 +63,36 @@ Lo que Jose fijó:
    empresa y de sus sucursales. Lo que no está cubierto aparece en backoffice como «convenios
    por sembrar» y se avisa a soporte. Ver 4.6.
 
+### 2.1 Lo que cambió el 24-nov-2026 (Jose)
+
+Al revisar el primer convenio real aportado por una empresa (eventos, BOE 306 de 20-12-2024):
+
+1. **Los convenios son privados de la empresa que los sube.** Se retira el catálogo compartido
+   por nicho y provincia (puntos 2, 4 y 8 de arriba): una empresa ve y usa los suyos y nada
+   más. La razón es la internacionalización: una empresa chilena sube los suyos y no le
+   aparecen los de España. `status` (`pending`/`approved`/`rejected`) sigue existiendo como
+   revisión de soporte, pero ya no decide quién lo ve. La cobertura del §4.5 (huecos) deja de
+   tener sentido y queda por retirar (pendiente del OK de Jose; hoy sigue corriendo y abrirá
+   huecos que no significan nada).
+2. **El año no se pide a nadie: lo dice el documento.** Una lectura saca TODAS las tablas que
+   el documento traiga, una por año, cada una con su jornada (el BOE de eventos trae 2025,
+   2026 y 2027, y la lectura por año pedido solo guardaba 2025).
+3. **El documento entero al modelo, no páginas elegidas.** La heurística de páginas (≤ 45 mil
+   caracteres) dejó fuera la página 33 (medio 2026 y todo 2027) y el artículo de clasificación
+   profesional con los puestos de cada grupo. Ahora va entero hasta 400 mil caracteres (unos
+   100 mil tokens) y solo por encima se recorta, metiendo siempre clasificación y anexos.
+4. **Los puestos en la fila.** Cuando la tabla va por grupos («Grupo 3.»), la fila lleva los
+   puestos que el convenio adscribe a ese grupo (`jobs`), que entran en las claves del cruce:
+   «técnico de operaciones senior» cae en el Grupo 3 sin preguntar.
+5. **La ficha leída del texto** (`detected`: nombre, REGCON, ámbito, territorio, vigencia,
+   sector) para cotejarla con lo que escribió quien referenció: el de eventos se referenció
+   como «provincial, Madrid» y el BOE dice estatal. Backoffice lo enseña y lo aplica con un botón.
+6. **Modelo grande para esta lectura** (`gpt-5`, esfuerzo medio; `CONVENIOS_MODELO` y
+   `CONVENIOS_ESFUERZO`): es una vez por documento, unos 4 céntimos. El de los contratos sigue
+   con el pequeño.
+7. **El panel enseña el detalle del convenio** (sus tablas por año) y «Referenciar otro
+   convenio» abre el formulario en el sitio, sin sacar a la persona de la ficha.
+
 ## 3. Modelo de datos
 
 ### 3.1 `agreements/{agreementId}` (colección raíz, como `niches`)
@@ -90,16 +120,27 @@ interface Agreement {
   createdByUid: string | null;
   /** Resumen de la tabla más reciente, para no leer la subcolección en las listas. */
   latestTable: { year: number; status: TableStatus; reviewed: boolean } | null;
+  /** Los años con tabla, para las listas (24-nov). */
+  tableYears: number[];
+  /** El último documento dado a leer (boletín o PDF); las tablas copian el suyo (24-nov). */
+  source: AgreementTableSource | null;
+  /** El estado de la lectura de `source`: una por documento, saca todas las tablas (24-nov). */
+  reading: { status: TableStatus; error; startedAt; readAt; years: number[]; warnings: string[]; pagesUsed: number[]; usage } | null;
+  /** Lo que el documento dice del convenio, leído del texto, para cotejarlo con la ficha (24-nov). */
+  detected: { name; regconCode; scope; territory; territoryText; sector; validFrom; validTo } | null;
   createdAt; updatedAt; updatedBy;
 }
 ```
 
-Visibilidad: una empresa ve los `approved` y los `pending` que creó ella. Igual que con los
-nichos, lo que agrupa va por `id`, nunca por nombre.
+Visibilidad (24-nov): una empresa ve **solo los que creó ella** (`createdBy === entityId`),
+sea cual sea su `status`. Igual que con los nichos, lo que agrupa va por `id`, nunca por nombre.
+`nicheIds` se sigue apuntando (el nicho de la empresa, si lo tiene) por si algún día vuelve a
+servir para algo, pero no filtra nada.
 
 ### 3.2 `agreements/{agreementId}/tables/{year}`
 
-Una tabla por año. El `year` es el **año de vigencia de la tabla**, no el de publicación.
+Una tabla por año. El `year` es el **año de vigencia de la tabla**, no el de publicación, y
+lo pone la lectura del documento, no quien lo referencia (24-nov).
 
 ```ts
 interface AgreementTable {
@@ -139,7 +180,13 @@ interface AgreementRow {
   category: string;
   group: string | null;           // «4», «V», «G5»
   level: string | null;
-  /** Normalizados para el cruce. */
+  /**
+   * Los puestos que el convenio adscribe a esta fila cuando la tabla va por grupos o niveles
+   * («Grupo 3.» → «Técnico de operaciones senior», «Técnico de cuentas senior»), tal como los
+   * escribe el artículo de clasificación profesional. Entran en `keys` (24-nov).
+   */
+  jobs: string[];
+  /** Normalizados para el cruce: categoría, grupo, nivel y puestos. */
   keys: string[];
   amountCents: number;
   period: "month" | "year";
@@ -204,39 +251,48 @@ al `price`. No se guarda nada en la empresa.
 
 ### 4.1 Alta de un convenio por Encodebiz (backoffice)
 
-1. Formulario: nombre, sector, ámbito y territorio, nichos, código REGCON (opcional), año de
-   la tabla, y **enlace al boletín o PDF**.
+1. Formulario: nombre, sector, ámbito y territorio, nichos, código REGCON (opcional).
 2. `POST /api/v1/backoffice/agreements` crea el `Agreement` (`approved`, `createdBy: system`).
-3. `POST …/agreements/:id/tables/:year` guarda la fuente y pide a merlin la lectura
-   (`POST /api/v1/gpt/soporte/convenios/:id/tablas/:year/leer`, ruta interna).
+   Desde el 24-nov nadie ve los del sistema (los convenios son de cada empresa): esta ruta
+   queda para la entrada `legal` y para lo que soporte quiera tener de referencia.
+3. «Leer documento»: `POST …/agreements/:id/read` con el **enlace al boletín o el PDF** (sin
+   año) escribe `source` y `reading: processing` en el convenio y pide a merlin la lectura
+   (`POST /api/v1/gpt/soporte/convenios/:id/leer`, ruta interna).
 4. Merlin: si `url`, `descargarDocumentoOficial` (solo oficiales); si `file`, lo lee del bucket
    del sistema; si `documentId` (convenio aportado por una empresa), lo pide al documental con
-   `getDocumentFile`, que es quien tiene la llave del cifrado.
-   `elegirPaginas` (≤ 45 mil caracteres) y una llamada **sin herramientas** que devuelve
-   **todas las filas** de la tabla y la jornada (`tablas_convenio`, esquema con `rows[]`). Es la
-   parte de `tablas.ts` que ya funcionaba; cambia solo que pide la tabla entera y no una fila.
-5. Las filas quedan en `tables/{year}` con `reviewed: false`. Backoffice las enseña junto al PDF
-   (página usada) y soporte marca «revisada» o corrige celdas a mano.
+   `getDocumentFile`, que es quien tiene la llave del cifrado. `textoParaLectura` da el
+   documento **entero** (≤ 400 mil caracteres; por encima, las páginas que importan, con
+   clasificación y anexos siempre) y una llamada **sin herramientas** devuelve la **ficha** y
+   **todas las tablas** del documento, una por año, cada fila con sus puestos
+   (`convenio_completo`, `leerConvenioCompleto`). Modelo `gpt-5`, esfuerzo medio.
+5. `guardarLectura` escribe `tables/{year}` por cada año (`reviewed: false`; una tabla ya
+   revisada se respeta y queda un aviso), `detected`, `tableYears`, `latestTable` y `reading:
+   done` con los años. Backoffice enseña el documento, la lectura, lo detectado frente a la
+   ficha («Aplicar lo leído») y las filas con sus puestos; soporte marca «revisada» o corrige.
 
-Un PDF con tabla de 60 filas son unos 10–15 mil tokens de entrada y 2–4 mil de salida, **una
-vez**.
+Un BOE de convenio de 33 páginas son unos 30 mil tokens de entrada y 4–6 mil de salida, **una
+vez** (unos 4 céntimos con `gpt-5`).
 
 ### 4.2 Alta de un convenio por una empresa (panel)
 
-Pantalla «Convenios» (dentro de Documentos o de la configuración de la empresa): la lista que
-le aplica (los `approved` de su nicho y los suyos) y el botón **«Referenciar convenio»**:
+Pantalla «Convenios» (dentro de Documentos): **sus** convenios, cada uno con sus años de tabla
+y el estado de la lectura, un detalle con las tablas por año, y el botón **«Referenciar
+convenio»** (también desde el bloque Convenio de la lectura de un contrato y desde el selector
+de la subida, en un diálogo, sin salir de la ficha):
 
 1. Nombre, ámbito (estatal / autonómico / provincial; provincia prellenada con la de la
-   empresa), año de la tabla, y enlace o PDF. El nicho se toma de la empresa (`entity.niche`);
-   no se pregunta.
+   empresa) y enlace o PDF. **Sin año**: lo dice el documento. El nicho se apunta si la empresa
+   lo tiene; no se pregunta ni hace falta.
 2. `POST /api/v1/agreements` (en `entities`, requiere escritor de la empresa) crea el
-   `Agreement` como `pending`, `createdBy: entityId`, y lanza la lectura igual que en 4.1.
+   `Agreement` como `pending`, `createdBy: entityId`, escribe `source` y lanza la lectura igual
+   que en 4.1 → 201 `{id, reading}`. Si ya hay uno suyo con ese nombre no es un duplicado: es el
+   mismo convenio con un documento nuevo (las tablas del año siguiente) → se lee ese documento y
+   se suman sus años, 200 `{id, reading, added: true}`. Nunca dos lecturas a la vez
+   (`reading_in_progress`).
 3. La empresa lo usa desde ese momento. Soporte lo ve en backoffice en «aportados, sin
-   revisar» y lo aprueba (pasa a compartido), lo fusiona con uno existente (`mergedInto`; los
-   contratos que lo referencian siguen resolviendo) o lo rechaza (la empresa lo sigue viendo
-   como «rechazado», con el motivo).
-
-Si la empresa no tiene nicho, la pantalla le pide ponerlo antes (ya existe el selector).
+   revisar» y lo aprueba (queda como revisado; nadie más lo ve), lo fusiona con uno existente
+   (`mergedInto`; los contratos que lo referencian siguen resolviendo) o lo rechaza (la empresa
+   lo sigue viendo como «rechazado», con el motivo).
 
 ### 4.3 Lectura de un contrato
 
@@ -284,6 +340,11 @@ responsabilidad.
 
 ### 4.5 Altas de empresas y sucursales: cobertura del catálogo
 
+> **Por retirar (24-nov).** Con los convenios privados de cada empresa no hay «catálogo que
+> cubra» nada: los huecos no significan nada. Sigue corriendo (pasada diaria, hook de
+> `branches`, pestaña «Huecos» de backoffice, correo a soporte) hasta que Jose dé el OK a
+> quitarlo. Lo de abajo describe lo que hay, no lo que debe quedar.
+
 Las provincias de una empresa salen de los **códigos postales**: las dos primeras cifras del
 de la dirección legal (`entity.legal.address.postalCode`) y de cada sucursal
 (`branches/{b}.address.postalCode`) son el código INE de la provincia. No hace falta
@@ -314,7 +375,7 @@ nicho estatal y queda en la lista como «sin provincia».
 
 ### 4.6 El año y el repaso mensual
 
-- En cada lista (panel y backoffice) el convenio se ve con «tablas de {año}».
+- En cada lista (panel y backoffice) el convenio se ve con «tablas de {años}» (`tableYears`).
 - Backoffice, pantalla «Convenios en uso»: por convenio, el año de su última tabla, cuántas
   empresas y cuántos contratos lo referencian. El recuento vive en el propio convenio
   (`usedCount` y `usedBy.{entityId}`, que `aplicar` incrementa al escribir `agreementRef`), para
@@ -330,17 +391,19 @@ nicho estatal y queda en la lista como «sin provincia».
 - La variable `CONTRATOS_BUSQUEDA` y `max_tool_calls`.
 - Los avisos de narración de búsqueda (`narraLaBusqueda`) sobran: ya no hay búsqueda.
 
-Se conservan `descargarDocumentoOficial`, `elegirPaginas`, `textoConDisposicion`, `aJornada`,
-`jornadaAnualCreible` y la llamada `tablas_convenio` (con el esquema ampliado a filas).
+Se conservan `descargarDocumentoOficial`, `textoConDisposicion`, `aJornada` y
+`jornadaAnualCreible`. El 24-nov se quitan también `elegirPaginas`/`elegirPaginasTabla` (el
+documento va entero), `leerTablaCompleta` y la llamada `tablas_convenio` (sustituida por
+`convenio_completo`), y las rutas por año `POST …/tables/:year` y `…/tablas/:year/leer`.
 
 ## 6. Permisos, reglas e índices
 
 - Escrituras de `agreements` **solo por backend** (`entities` para la empresa, `backoffice` para
   soporte). El panel **lee también por API** (`GET /api/v1/agreements…` en `entities`, que
-  filtra por nicho, provincias y `createdBy`), así que no hace falta abrir reglas de Firestore:
-  `agreements`, `tables` y `agreement_gaps` quedan cerrados al cliente.
-- Índice compuesto: `agreements` por `status == approved` + `nicheIds array-contains`. Se crea
-  con `gcloud`, nunca desde el enlace del error.
+  filtra por `createdBy`), así que no hace falta abrir reglas de Firestore: `agreements`,
+  `tables` y `agreement_gaps` quedan cerrados al cliente.
+- Índice compuesto: ya no hace falta ninguno (24-nov): la consulta es `createdBy ==` y el
+  `status` se filtra en memoria. El de `status + nicheIds` puede quedarse o borrarse.
 - Backoffice: permiso nuevo `agreements:write` (como `niches:write`).
 
 ## 7. Siembra
@@ -390,6 +453,13 @@ Cada fase va a staging con empresas de prueba; producción, cuando Jose lo diga.
 
 - Tablas con varias columnas por antigüedad o por tipo de establecimiento (hostelería): la
   primera versión guarda la columna base y avisa de que hay más (`warnings`).
+- **Retirar la cobertura (§4.5)** y la siembra por Encodebiz (§7): con convenios privados no
+  aplican. Falta el OK de Jose para borrar código, pestaña de backoffice y correo.
+- **El mínimo legal es el español.** Una empresa de otro país necesitará su propia entrada
+  `legal` (jornada máxima y salario mínimo de su país). Hoy `agreements/legal` es una sola.
+- **Lo que ya había en staging** (dependientes, eventos de Cuidama) se leyó por año y sin
+  puestos: hay que darle «Releer» desde backoffice a cada tabla (lee el documento entero y
+  suma los años que falten).
 - ~~Una tabla, una jornada~~ → resuelto el 24-nov: bloque y jornada por fila (§3.2). Queda
   volver a leer (o corregir a mano) la tabla 2025 de dependientes sembrada en staging el
   23-nov, que se guardó sin bloques: hoy sus 44 filas valen todas con la jornada de ayuda a

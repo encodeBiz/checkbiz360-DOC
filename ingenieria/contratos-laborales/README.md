@@ -45,6 +45,12 @@ lectura con tablas costaba 35–48 mil tokens y 1–2 minutos.
 
 La decisión del 23-nov (Jose) es sustituir la búsqueda por un **catálogo de convenios** que
 mantiene Encodebiz y al que las empresas pueden añadir el suyo: [TDR-001](tdr/TDR-001-catalogo-de-convenios.md).
+Desde el 24-nov los convenios son **privados de la empresa que los sube** y la lectura del documento
+saca todas las tablas por año (TDR-001 §2.1).
+
+El 25-nov Jose aprobó llevar el contrato a la **ficha del empleado**: una línea de estado («sin
+contrato», «leído sin aplicar»), la subida desde la propia ficha y crear el puesto leído al
+aplicar: [TDR-002](tdr/TDR-002-contrato-desde-el-empleado.md). Hecho el 25-nov: API en staging, panel en develop del front, manual es/en/pt; falta probarlo en el navegador.
 
 ## Reglas que no se negocian
 
@@ -52,13 +58,17 @@ mantiene Encodebiz y al que las empresas pueden añadir el suyo: [TDR-001](tdr/T
 - Un aviso dice lo observado («las tablas guardadas son de 2025»), no la causa.
 - Nada se propone con aspecto de dato oficial si no sale de un documento concreto que se
   pueda enseñar.
+- El catálogo de puestos (`entities/{e}/jobs`) solo se toca para **crear** el puesto que dice el
+  contrato cuando no está (`newJobName`, TDR-002): nunca para cambiar el nombre o el precio de uno
+  que existe. El precio por hora es de la persona, no del puesto.
 - El consumo de tokens de cada llamada se apunta por empresa en `ai_usage/{entityId}_{mes}`
   (`contrato_laboral` y `tabla_convenio`), desde el envoltorio de `shared` y en ningún otro
   sitio: [consumo-ia](../consumo-ia/README.md).
 
 ## Pendiente antes de producción
 
-- Catálogo de convenios (TDR-001) y retirada de la búsqueda web.
+- Catálogo de convenios (TDR-001) y retirada de la búsqueda web. Hecho en staging; falta el pase.
+- El contrato desde la ficha del empleado (TDR-002): hecho el 25-nov; falta probarlo en el navegador contra staging.
 - En el contrato real probado el 23-nov no se leyeron bien las fechas ni el CNO; en los 13 de
   Contrat@ de Ayudarte sí. Hay que mirar por qué (el PDF tenía 45 mil caracteres con cláusulas).
 - Nginx de producción (location con comillas: probar en un contenedor aparte), `PANEL_URL`

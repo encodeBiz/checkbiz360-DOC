@@ -56,6 +56,16 @@ Três opções ativam-se ou desativam-se por funcionário:
 
 Ao associar o funcionário a uma sucursal definem-se ainda a sua **responsabilidade** nesse local, o seu **posto** e o seu **salário por hora**, que é o que alimenta a análise de custos, os relatórios e a rentabilidade dos contratos. Se a pessoa faz mais de um trabalho nesse local, pode ter **vários postos**, cada um com o seu preço, e um predefinido. Ver [Vários postos para a mesma pessoa](140-varios-postos-para-a-mesma-pessoa.md).
 
+### O contrato de trabalho na ficha
+
+Por baixo do cabeçalho da ficha, uma linha diz em que ponto está o **contrato de trabalho** da pessoa, porque é dele que sai o seu preço por hora:
+
+- **Sem contrato de trabalho.** Prima **Carregar o contrato**: abre-se o separador **Documentos** com o carregamento já no tipo *Contrato* e em nome da pessoa. Ao carregá-lo, é lido sozinho.
+- **Estamos a ler o contrato…** / **Não foi possível ler o contrato.** Prima **Ver o contrato** para ir à sua ficha.
+- **O contrato propõe um preço por hora que ainda não está na ficha.** Prima **Ver o contrato** e, na sua ficha, **Aplicar à ficha**.
+
+Quando o preço já está aplicado, a linha desaparece. Veem-na proprietários e administradores, que são quem pode carregar documentos para a pessoa. Ver [O que diz o contrato de trabalho](../05-gestao-documental/138-o-que-diz-o-contrato-de-trabalho.md).
+
 ---
 
 ## Estados do funcionário
