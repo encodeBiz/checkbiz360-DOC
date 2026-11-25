@@ -28,7 +28,7 @@ Uma percentagem calcula-se sobre o preço do posto com que se fez o trabalho, po
 
 ## Criar o catálogo
 
-Os complementos estão em **Funcionários**, separador **Complementos**.
+Os complementos estão em **Entidade**, separador **Complementos**. O mesmo catálogo abre-se também numa janela a partir de onde se usa: o botão **Catálogo de complementos** está ao atribuir a tarefa, em **Posto e complementos** e no editor do turno, para criar o que falta sem sair do que estava a fazer.
 
 1. Prima **Adicionar complemento**.
 2. Escreva o **Nome**, tal como a sua convenção o designa: *Subsídio de condução*, *Feriado*, *Trabalho noturno*.
@@ -80,7 +80,7 @@ Nada: nem valores nem quantias. Os complementos são uma ferramenta de administr
 
 **Não vejo o separador «Complementos» nem os valores.** A sua conta é de gestor. O proprietário e os administradores criam o catálogo; o utilizador gestor pode escolhê-los pelo nome em tarefas e turnos.
 
-**Não consigo escolher um complemento na tarefa.** O catálogo está vazio ou todos estão de baixa. Crie-o em **Funcionários → Complementos**.
+**Não consigo escolher um complemento na tarefa.** O catálogo está vazio ou todos estão de baixa. Crie-o em **Entidade → Complementos**, ou carregue em **Catálogo de complementos** na própria atribuição.
 
 **Corrigi o valor de um complemento e o relatório não muda.** O que já foi escolhido conserva o seu valor. Se foi um erro numa tarefa concreta, retire o complemento dessa pessoa a partir de **Posto e complementos** e volte a adicioná-lo: entra com o valor novo.
 

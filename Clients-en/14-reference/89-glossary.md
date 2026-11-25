@@ -186,7 +186,7 @@ CheckBiz360's contracting mode. There are two: **Bronze**, €2 + VAT per employ
 Intermediate role between Manager and Worker. The Supervisor can review the clock records and tasks of the employees on their direct team if the Manager has granted them that capability, but has no access to the branch's global configuration or to cost or anomaly reports.
 
 ### Supplement
-What a person is paid on top of their job's rate for a particular task or shift: driving, public holiday, night work. It is defined once in the company's catalogue (**Employees → Supplements**), as fixed, per hour or percentage, and chosen when assigning the task or loading the shift. The clock record stores it and the task report itemises it. See [Supplements](../02-employees/141-supplements.md).
+What a person is paid on top of their job's rate for a particular task or shift: driving, public holiday, night work. It is defined once in the company's catalogue (**Organisation → Supplements**), as fixed, per hour or percentage, and chosen when assigning the task or loading the shift. The clock record stores it and the task report itemises it. See [Supplements](../02-employees/141-supplements.md).
 
 ---
 

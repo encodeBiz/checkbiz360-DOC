@@ -51,7 +51,7 @@ Indicador que acompaña a cada tarea y refleja su situación frente a la fecha l
 Persona externa que trabaja para la empresa sin pertenecer a la plantilla: un autónomo, un freelance o un proveedor. Se indica en la ficha del empleado frente a *Plantilla*. Los colaboradores no aparecen en el informe de registro de jornada. No debe confundirse con los *colaboradores* de la entidad, que son los usuarios con acceso al backoffice.
 
 ### Complemento
-Lo que una persona cobra además del precio de su puesto por una tarea o un turno concreto: conducción, festivo, nocturnidad. Se define una vez en el catálogo de la empresa (**Empleados → Complementos**), de tipo fijo, por hora o porcentaje, y se elige al asignar la tarea o cargar el turno. El fichaje lo guarda y el informe de tareas lo desglosa. Véase [Complementos](../02-empleados/141-complementos.md).
+Lo que una persona cobra además del precio de su puesto por una tarea o un turno concreto: conducción, festivo, nocturnidad. Se define una vez en el catálogo de la empresa (**Entidad → Complementos**), de tipo fijo, por hora o porcentaje, y se elige al asignar la tarea o cargar el turno. El fichaje lo guarda y el informe de tareas lo desglosa. Véase [Complementos](../02-empleados/141-complementos.md).
 
 ### Código de error
 Identificador alfanumérico que el sistema devuelve cuando una operación no puede completarse. Los códigos de error siguen el formato `modulo/tipo_de_error` (por ejemplo, `checklog/out_of_radius`). Permiten identificar la causa exacta de un fallo sin necesidad de interpretar mensajes de texto. Véase el artículo [Códigos de error completos](./90-codigos-de-error-completos.md).

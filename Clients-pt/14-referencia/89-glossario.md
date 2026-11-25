@@ -38,7 +38,7 @@ Identificador alfanumérico que o sistema devolve quando uma operação não pod
 Pessoa externa que trabalha para a empresa sem pertencer ao quadro de pessoal: um trabalhador independente, um freelancer ou um prestador de serviços. Indica-se na ficha do funcionário, por oposição a *Pessoal*. Os colaboradores não aparecem no relatório de registo de jornada. Não deve ser confundido com os *colaboradores* da entidade, que são os utilizadores com acesso ao backoffice.
 
 ### Complemento
-O que uma pessoa recebe além do preço do seu posto por uma tarefa ou um turno concreto: condução, feriado, trabalho noturno. Define-se uma vez no catálogo da empresa (**Funcionários → Complementos**), de tipo fixo, por hora ou percentagem, e escolhe-se ao atribuir a tarefa ou carregar o turno. O registo guarda-o e o relatório de tarefas discrimina-o. Veja [Complementos](../02-funcionarios/141-complementos.md).
+O que uma pessoa recebe além do preço do seu posto por uma tarefa ou um turno concreto: condução, feriado, trabalho noturno. Define-se uma vez no catálogo da empresa (**Entidade → Complementos**), de tipo fixo, por hora ou percentagem, e escolhe-se ao atribuir a tarefa ou carregar o turno. O registo guarda-o e o relatório de tarefas discrimina-o. Veja [Complementos](../02-funcionarios/141-complementos.md).
 
 ### Confirmação de leitura
 Confirmação explícita de que um funcionário acedeu a um documento que a exige. Fica registada com a data e a versão concreta do documento que foi lida, de modo que uma versão posterior não herda a confirmação da anterior. Não é uma assinatura eletrónica: a assinatura com validade eIDAS está no roadmap.

@@ -2,11 +2,11 @@
 
 La entidad es el nivel organizativo superior de CheckBiz360: representa a la empresa que ha contratado el servicio y engloba sucursales, empleados y datos. Lo que se configura aquí actúa como referencia para toda la estructura.
 
-Se accede desde **Entidad** en el menú lateral, y la pantalla está organizada en seis pestañas.
+Se accede desde **Entidad** en el menú lateral, y la pantalla está organizada en siete pestañas.
 
 ---
 
-## Las seis pestañas
+## Las siete pestañas
 
 | Pestaña | Qué contiene |
 |---|---|
@@ -16,6 +16,7 @@ Se accede desde **Entidad** en el menú lateral, y la pantalla está organizada 
 | **Suscripciones** | Plan contratado y su estado |
 | **Facturas** | Historial de facturación |
 | **Colaboradores** | Usuarios con acceso al backoffice de esta entidad |
+| **Complementos** | Lo que una persona cobra además del precio de su puesto: conducción, festivo, nocturnidad. Ver [Complementos](../02-empleados/141-complementos.md) |
 
 **Datos de la Empresa** y **Configurar Facturación** muestran un aviso visual mientras estén incompletas. No es decorativo: **sin razón social y sin método de pago no se puede contratar el plan**.
 

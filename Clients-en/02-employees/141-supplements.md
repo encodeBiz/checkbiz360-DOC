@@ -28,7 +28,7 @@ A percentage is calculated on the rate of the job the work was done under, so th
 
 ## Creating the catalogue
 
-Supplements live under **Employees**, on the **Supplements** tab.
+Supplements live under **Organisation**, on the **Supplements** tab. The same catalogue also opens in a window from where it is used: the **Supplement catalogue** button is there when assigning the task, under **Job and supplements** and in the shift editor, so you can create the missing one without leaving what you were doing.
 
 1. Press **Add supplement**.
 2. Enter the **Name**, as your agreement calls it: *Driving allowance*, *Public holiday*, *Night work*.
@@ -80,7 +80,7 @@ Nothing: neither values nor amounts. Supplements are an administration tool.
 
 **I cannot see the "Supplements" tab or the amounts.** Your account is a manager's. The owner and administrators create the catalogue; you can choose supplements by name on tasks and shifts.
 
-**I cannot choose a supplement on the task.** The catalogue is empty or every supplement is deactivated. Create it under **Employees → Supplements**.
+**I cannot choose a supplement on the task.** The catalogue is empty or every supplement is deactivated. Create it under **Organisation → Supplements**, or press **Supplement catalogue** in the assignment itself.
 
 **I corrected a supplement's value and the report does not change.** What has already been chosen keeps its value. If it was a mistake on a particular task, remove the supplement from that person under **Job and supplements** and add it again: it comes in with the new value.
 

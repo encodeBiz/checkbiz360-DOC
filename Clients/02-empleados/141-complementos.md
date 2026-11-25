@@ -28,7 +28,7 @@ Un porcentaje se calcula sobre el precio del puesto con el que se hizo el trabaj
 
 ## Crear el catálogo
 
-Los complementos están en **Empleados**, pestaña **Complementos**.
+Los complementos están en **Entidad**, pestaña **Complementos**. El mismo catálogo se abre también en una ventana desde donde se usa: el botón **Catálogo de complementos** está al asignar la tarea, en **Puesto y complementos** y en el editor del turno, para crear el que falte sin salir de lo que estaba haciendo.
 
 1. Pulse **Añadir complemento**.
 2. Escriba el **Nombre**, como lo nombra su convenio: *Plus de conducción*, *Festivo*, *Nocturnidad*.
@@ -80,7 +80,7 @@ Nada: ni valores ni importes. Los complementos son una herramienta de administra
 
 **No veo la pestaña «Complementos» ni los importes.** Su cuenta es de gestor. El propietario y los administradores crean el catálogo; usted puede elegirlos por su nombre en tareas y turnos.
 
-**No puedo elegir un complemento en la tarea.** El catálogo está vacío o todos están de baja. Créelo en **Empleados → Complementos**.
+**No puedo elegir un complemento en la tarea.** El catálogo está vacío o todos están de baja. Créelo en **Entidad → Complementos**, o pulse **Catálogo de complementos** en la propia asignación.
 
 **He corregido el valor de un complemento y el informe no cambia.** Lo ya elegido conserva su valor. Si fue un error en una tarea concreta, quite el complemento de esa persona desde **Puesto y complementos** y vuelva a añadirlo: entra con el valor nuevo.
 

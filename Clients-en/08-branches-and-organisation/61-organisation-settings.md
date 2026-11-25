@@ -2,11 +2,11 @@
 
 The organisation is CheckBiz360's top organisational level: it represents the company that has contracted the service and encompasses branches, employees and data. What is configured here acts as the reference for the whole structure.
 
-It is reached from **Organisation** in the side menu, and the screen is organised into six tabs.
+It is reached from **Organisation** in the side menu, and the screen is organised into seven tabs.
 
 ---
 
-## The six tabs
+## The seven tabs
 
 | Tab | What it contains |
 |---|---|
@@ -16,6 +16,7 @@ It is reached from **Organisation** in the side menu, and the screen is organise
 | **Subscriptions** | The plan contracted and its status |
 | **Invoices** | Billing history |
 | **Collaborators** | Users with access to this organisation's back office |
+| **Supplements** | What a person is paid on top of their job's rate: driving, public holiday, night work. See [Supplements](../02-employees/141-supplements.md) |
 
 **Company details** and **Billing setup** show a visual warning while they are incomplete. It is not decorative: **without a legal name and a payment method you cannot subscribe to a plan**.
 

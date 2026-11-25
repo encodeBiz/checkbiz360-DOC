@@ -2,11 +2,11 @@
 
 A entidade é o nível organizativo superior do CheckBiz360: representa a empresa que contratou o serviço e engloba sucursais, funcionários e dados. O que aqui se configura funciona como referência para toda a estrutura.
 
-Acede-se a partir de **Entidade** no menu lateral, e o ecrã está organizado em seis separadores.
+Acede-se a partir de **Entidade** no menu lateral, e o ecrã está organizado em sete separadores.
 
 ---
 
-## Os seis separadores
+## Os sete separadores
 
 | Separador | O que contém |
 |---|---|
@@ -16,6 +16,7 @@ Acede-se a partir de **Entidade** no menu lateral, e o ecrã está organizado em
 | **Subscrições** | Plano contratado e o seu estado |
 | **Faturas** | Histórico de faturação |
 | **Colaboradores** | Utilizadores com acesso ao backoffice desta entidade |
+| **Complementos** | O que uma pessoa recebe além do preço do seu posto: condução, feriado, trabalho noturno. Veja [Complementos](../02-funcionarios/141-complementos.md) |
 
 **Dados da Empresa** e **Configurar Faturação** mostram um aviso visual enquanto estiverem incompletos. Não é decorativo: **sem denominação social e sem método de pagamento não é possível contratar o plano**.
 

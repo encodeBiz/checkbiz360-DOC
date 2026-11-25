@@ -1,7 +1,7 @@
 # TDR-010 — Varios puestos por persona y complementos en la tarea y el turno, con el coste desglosado
 
 **Fecha:** 2026-11-24
-**Estado:** Diseño aprobado (Jose, 2026-11-24). **Construido y en `develop` el 24-nov-2026:** API `encodebiz-api` a0eddd8 (fases 1, 2 y 4; con la moneda de la empresa fusionada) y panel `encodebiz-front-saas` 7ead315f (fase 3). Tests y typecheck en verde. **Sin pasar a staging**: hacen falta las migraciones 071 y 072 a mano y el guion de QA §10 con SaludStart o Cuidama. Panel: dar de alta `NEXT_BACKEND_URI_CHECKINBIZ_SUPPLEMENTS_HANDLER` en los entornos. **Manual de clientes escrito el 24-nov** (`DOCS/Clients/02-empleados/140` y `141`, más 48, 41, 114, 61 y otros; en/pt): se publica con el pase a producción. Campaña in-app redactada; la crea Jose en backoffice.
+**Estado:** Diseño aprobado (Jose, 2026-11-24). **Construido y en `develop` el 24-nov-2026:** API `encodebiz-api` a0eddd8 (fases 1, 2 y 4; con la moneda de la empresa fusionada) y panel `encodebiz-front-saas` 7ead315f (fase 3). Tests y typecheck en verde. **API en staging el 25-nov** (3ee9019, migraciones 071 y 072 aplicadas a mano); queda el guion de QA §10 con SaludStart o Cuidama. Panel en `develop` 96257ba4 (25-nov): lista única de puestos, «Como» preseleccionado, catálogo de complementos en Entidad y en modal. Panel: dar de alta `NEXT_BACKEND_URI_CHECKINBIZ_SUPPLEMENTS_HANDLER` en los entornos. **Manual de clientes escrito el 24-nov** (`DOCS/Clients/02-empleados/140` y `141`, más 48, 41, 114, 61 y otros; en/pt): se publica con el pase a producción. Campaña in-app redactada; la crea Jose en backoffice.
 **Componente:** `encodebiz-api` — `@encodebiz/shared`, `checkinbiz` (fichaje), `tasks`, `reports`, `customers`, `analytics`, `assistant`, `rentman`, `merlin`, `employees`; panel. La app no cambia.
 **Origen:** reunión con un cliente de eventos (23-nov-2026). Decisiones de Jose del 24-nov.
 
@@ -316,7 +316,12 @@ estadísticas enseñan el desglose solo a propietario y administrador.
   resto `jobs`), «Hacer predeterminado» sube otra, y el conversor de salario va como icono en cada
   fila. Jose, 24-nov: «una sola lista, la primera es la predeterminada, no hay que duplicarla».
   Precio visible solo con permiso de dinero.
-- **Configuración → Complementos:** lista nombre / tipo / valor, al lado de las ocupaciones.
+- **Entidad → Complementos** (`SupplementsTab`, en `components/features/supplements/catalogue`): lista
+  nombre / tipo / valor. Estuvo un día en Empleados; Jose, 25-nov: «Configuración de la empresa, y
+  que también se pueda levantar en un modal desde donde se use». `SupplementsCatalogueLink` abre el
+  mismo catálogo en un `Dialog` desde `TaskFormDialog`, `TaskActionDialog`,
+  `TaskAssignmentExtrasDialog`, `ShiftWeekCalendar` y `CalendarSection`; al cerrar,
+  `useSupplementCatalogue().reload()`. Solo lo ve quien puede escribir el catálogo (D10).
 - **Formulario de tarea** (`TaskFormDialog`): en cada chip del multiselect, «como: {puesto} ▾»
   solo si la persona tiene más de un puesto en esa sucursal, y «+ complemento». Misma edición en
   «Equipo asignado» de la ficha (`detail/page.tsx`).
