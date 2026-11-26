@@ -341,3 +341,156 @@ no tienen selector de mes). Todo por `checkinbiz_panel_overview` con `sections=t
 Vercel. Sin mirar en pantalla antes de subir; de y pt sin revisión nativa.
 
 ## Eje de tareas: cajón «sin plazo válido» y 15 min de margen en las ayudas — EJECUTADO el 2026-11-18 (#165, merge `3f9d3dd9`; Vercel Production `success`; orden de Jose: «sí, arregla y sube en hotfix»); en `develop` el mismo día (`08406990`); back §83
+
+---
+
+## Pase de RRHH: contrato de trabajo, convenios, puestos y complementos, moneda — PENDIENTE (preparado el 2026-11-26; en `develop` `cb845931`)
+
+Lo que `develop` tiene y `main` no, revisado el 26-nov contra `origin/main` (`d410eebd`, hotfix
+#168 del 20-nov) y contra las variables de producción de Vercel. Nada de esto está en
+producción. **No se fusiona ni se toca Vercel sin el sí de Jose.**
+
+### 0. Resumen
+
+- **Faltan cuatro variables en Vercel (producción).** Comprobado con `vercel env ls production`
+  el 26-nov: no existe ninguna de las cuatro. Sin ellas el proxy responde `auth/forbidden`
+  (no es la sesión: es que falta la variable) y las pantallas nuevas no cargan. Ver §2.
+- **El back va primero.** Todo lo nuevo llama a rutas que hoy solo existen en `staging` de la
+  API. Las secciones del back y su estado están pedidas a la sesión de la API; ver §3.
+- **`develop` no fusiona limpio en `main`: cinco conflictos.** Los hotfixes del 17 al 20-nov
+  entraron en `main` por su cuenta y `develop` los tiene con otros commits. Se resuelve en una
+  rama `release/`, como el 11-nov. Ver §4.
+- **Sin cambios de build.** Ni `package.json`, ni `package-lock.json`, ni `next.config.ts`.
+- **La rama `staging` del panel no existe en el remoto.** Solo queda una copia local. El paso
+  intermedio de la cadena es, de hecho, la rama `release/` (ver §4).
+- **Nada de esto se ha visto en el navegador desde la sesión que lo preparó.** Los cambios del
+  26-nov (estilos, moneda, «Importar tareas») pasan tipos y lint; la prueba en pantalla es de
+  Jose, en local contra staging.
+
+### 1. Qué entra
+
+72 commits de `develop` que `main` no tiene (42 sin contar merges). Diferencia real de
+contenido: 107 ficheros, +7.433 / −479.
+
+| Qué ve el cliente | Merges en `develop` | Necesita en el back |
+|---|---|---|
+| **Contrato de trabajo**: se lee al subirlo; «Lo que dice el contrato» y «Aplicar a la ficha» en la ficha del documento; avisos en Inicio | `ff08fabe`, `16fe13ec`, `0ccaeba1` | merlin, `/api/v1/gpt/contratos-laborales` — back § por confirmar |
+| **Contrato desde el empleado** (TDR-002): una línea en la ficha, y «Aplicar» crea el puesto si no existe | `8b7fe8b2` | la misma ruta, `GET /empleado/{id}` — back § por confirmar |
+| **«Esperando al convenio»** (TDR-003) en la ficha del documento y en la línea del empleado | `6981791a` | back § por confirmar |
+| **Convenios colectivos** (TDR-001): pantalla en Gestión documental, «Referenciar convenio», detalle con tablas, bloque «Convenio» en la lectura y selector al subir | `de6a4e3f`, `29f0f079`, `40ef074e`, `bcf8c71e` | `entities`, `/api/v1/agreements` — back § por confirmar |
+| **Puestos y complementos** (TDR-010): varios puestos por persona y sucursal en una lista, complementos en tarea y turno, catálogo en Configuración de la empresa y en modal | `7ead315f`, `def98034`, `04ee7254`, `ef258b1e`, `b8169512`, `96257ba4`, `6aa86323`, `61ddced2` | `employees`, `/api/v1/employees/supplements`; `tasks` y calendario con puesto y complementos — back § por confirmar |
+| **La moneda es de la empresa** (ADR-0003): los importes del panel llevan la moneda configurada; sin moneda, el número a secas. Incluye complementos, precio del puesto y contrato de trabajo | `6962f7d4`, `c975df7e` | el campo `currency` de la empresa — back § por confirmar |
+| **Bandeja de avisos** en todo el panel (burbuja) | `ff08fabe`, `da60f3a6` | `/api/v1/inbox` (`PATCH`) y la colección `entities/{e}/inbox` — servicio y back § por confirmar |
+| Cartera: clientes por fecha de alta; cambiar el PDF al editar un contrato; la ficha del cliente se relee entre bloques | `028d1911`, `1a37c9d7`, `d019fdc0`, `502f67f9` | orden por fecha de alta en `customers` — back § por confirmar |
+| El aviso del horario por tareas dice quién y por qué (el error de la API conserva `details`) | `75a540d9` | back § por confirmar |
+| **«Importar tareas»** en la cabecera de Gestión de tareas: el importador general, por sucursal | `2cc4a1cb` | nada nuevo: back §3 (cuadrantes por plantilla), en prod desde el 17-oct |
+| Equipos: la columna Acciones centrada | `b65a91eb` | nada |
+| Modales y formularios nuevos con el armazón y los espacios del panel; «Catálogo de complementos» como acción secundaria | `5d0e4a8d`, `6aa86323`, `61ddced2` | nada |
+| Incidencias: contador de las que están sin atender en su pestaña; el aviso dice «Tienes requerimientos sin atender» | `cb845931` | nada |
+| Panel: el rechazo de fichaje por franja es un mapa de calor en rejilla, con totales | `cb845931` | nada |
+
+**Ya en producción, no entra otra vez:** el nicho de la empresa (hotfix #167 y #168, 20-nov), el
+eje de tareas (#164, #165) y los cuatro hotfixes del 17-nov (#160 a #163). `develop` los tiene
+con otros commits: de ahí los conflictos de la §4.
+
+### 2. Variables de Vercel (producción)
+
+Las cuatro faltan hoy. El valor es la base de la API de producción más la ruta; **la ruta la
+confirma el back** antes de escribirla.
+
+| Variable | Handler del proxy | Base esperada | Si falta |
+|---|---|---|---|
+| `NEXT_BACKEND_URI_CHECKINBIZ_SUPPLEMENTS_HANDLER` | `checkinbiz_supplements_handler` | `/api/v1/employees/supplements` | el catálogo de complementos no carga; tareas y turnos no ofrecen complementos |
+| `NEXT_BACKEND_URI_CONTRATOS_LABORALES` | `contratos_laborales_handler` | `/api/v1/gpt/contratos-laborales` | «Lo que dice el contrato» da error; la línea del contrato del empleado no sale |
+| `NEXT_BACKEND_URI_AGREEMENTS` | `agreements_handler` | `/api/v1/agreements` | la pantalla de convenios da error; sin bloque «Convenio» ni selector al subir |
+| `NEXT_BACKEND_URI_INBOX` | `inbox_handler` | `/api/v1/inbox` | los avisos se ven, pero no se pueden descartar ni dar por resueltos |
+
+- El nicho no necesita variable: cae en `NEXT_BACKEND_URI_ENTITY_DELETION_REQUEST`, que ya está
+  en producción (comprobado el 26-nov).
+- Cambiar variables pide **redeploy**: no las recoge un despliegue ya hecho.
+- Se añaden solo en Production. Preview no es staging (§2.5 de arriba).
+
+### 3. Orden y dependencias con el back
+
+Pedido a la sesión de la API el 26-nov; **pendiente de su respuesta**. Lo que tiene que quedar
+escrito aquí antes del pase:
+
+1. Sección de `proximo-pase-back.md` de cada fila de la §1, y si está en `staging` o en prod.
+   El documento del back acaba en §85 (21-nov): convenios, contrato de trabajo, TDR-010, moneda,
+   bandeja y TDR-003 no están apuntados todavía.
+2. Qué servicios corren en prod. La última nota del panel (20-oct) decía que nginx de
+   `employees` solo abría `/teams` y que `entities` no corría; hoy `entities` sirve la solicitud
+   de eliminación y el nicho, pero `/agreements` y `/employees/supplements` hay que sondearlos.
+3. Qué servicio sirve `/api/v1/inbox`.
+4. Migraciones, variables del servidor, índices o reglas de Firestore y funciones que entren.
+
+**Guion, en orden:**
+
+1. Back: migraciones, reconstruir servicios, rutas de nginx. Sondear cada base nueva sin token:
+   tiene que dar **401**, no 404 ni 502.
+2. Vercel: añadir las cuatro variables de la §2 en Production.
+3. Panel: rama `release/`, conflictos, PR a `main` (§4). El despliegue de `main` ya lleva las
+   variables.
+4. Comprobación en producción (§5).
+
+Si el panel sube antes que el back, las pantallas nuevas dan error; nada de lo que ya funciona
+se rompe, salvo lo que se indica en la §6.
+
+### 4. Ramas: cinco conflictos al fusionar `develop` en `main`
+
+`git merge-tree origin/main origin/develop`, 26-nov:
+
+| Fichero | Por qué |
+|---|---|
+| `customers/[id]/detail/page.tsx` | hotfix #160/#161 en `main`; refresco entre bloques en `develop` |
+| `customers/components/CustomerDocumentsSection.tsx` | lo mismo |
+| `customers/page.controller.tsx` | hotfix del cliente en `main`; orden por fecha de alta en `develop` |
+| `documents/components/DocumentUploadModal.tsx` | cliente en todas las sucursales en `main`; convenio y contrato de trabajo en `develop` |
+| `entity/tabs/tabEntity/NicheSettings.tsx` | añadido en los dos lados (hotfix #167 y `develop`) |
+
+`develop` ya contiene los hotfixes y lo de después: **se resuelven a favor de `develop`**, como
+el 11-nov (`release/pase-2026-11-11`). Guion:
+
+1. `release/pase-AAAA-MM-DD` desde `develop`.
+2. `git merge origin/main`, conflictos a favor de `develop`.
+3. `npm run lint` y `npx tsc --noEmit` en la rama.
+4. PR de la rama a `main`. Vercel despliega al fusionar.
+5. Después, `main → develop` para que no vuelva a pasar.
+
+### 5. Comprobación en producción
+
+Con una empresa de prueba, propietario:
+
+- **Configuración de la empresa → Complementos:** crear uno fijo y uno por hora. Con moneda
+  configurada sale con símbolo; sin ella, el número a secas.
+- **Empleado → sucursal:** dos puestos, el primero predeterminado; guardar y volver a abrir.
+- **Tarea:** «Asignar trabajadores» ofrece «Como» y complementos; «Catálogo de complementos»
+  abajo a la izquierda. En la ficha, «Puesto y complementos» de una persona asignada.
+- **Gestión documental → Convenios:** la lista carga; «Referenciar convenio» con un enlace del
+  BOE; el detalle enseña las tablas.
+- **Subir un contrato de trabajo** a un empleado: aviso de lectura, ficha con «Lo que dice el
+  contrato», bloque «Convenio» y «Aplicar a la ficha». En la ficha del empleado, la línea.
+- **Burbuja de avisos:** aparece al terminar la lectura y se puede descartar.
+- **Gestión de tareas → Importar tareas:** elige sucursal y abre el importador.
+- **Incidencias:** contador en la pestaña. **Inicio:** mapa de calor del rechazo de fichaje.
+
+### 6. Si algo falla
+
+- **`auth/forbidden` en una pantalla nueva:** falta la variable del handler o no se ha hecho
+  redeploy. No es la sesión.
+- **404 o 502 en una ruta nueva:** el servicio o su ruta de nginx no está en prod. Es del back.
+- **Riesgo sobre lo que ya funciona:** el alta de tarea, «Asignar» y el editor de turnos piden
+  ahora el catálogo de complementos y los puestos de cada persona. Si esas llamadas fallan no
+  enseñan nada de complementos y el resto sigue; conviene comprobarlo en el paso 4 del guion.
+- **Vuelta atrás:** en Vercel, promover el despliegue anterior de `main`. Las variables nuevas
+  no molestan al código viejo.
+
+### 7. Abierto, para Jose
+
+- **Textos en francés:** faltan los cuatro del mapa de calor y el del contador de incidencias.
+- **Contrato de trabajo sin moneda configurada:** antes enseñaba «€» siempre; ahora el número a
+  secas. Si se quiere «€» por defecto ahí, se cambia antes del pase.
+- **«Importar tareas»:** el importador de dentro se sigue titulando «Importar cuadrante de
+  {sucursal}», y el botón lo ve cualquiera que entre en Gestión de tareas.
+- **Enlace al catálogo de complementos:** abajo a la izquierda en «Asignar» y en «Puesto y
+  complementos»; en el alta de tarea y en el editor de turnos sigue dentro del cuerpo.
